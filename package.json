@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "pack": "electron-packager ./ --all --out packaged",
+    "pack": "electron-packager ./ --prune --all --out packaged",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "npm run build && electron ./dist/main.js",
     "test": "jest"
@@ -46,6 +46,7 @@
     "@types/react-leaflet": "^1.1.6",
     "@types/shapefile": "^0.6.0",
     "alasql": "^0.4.11",
+    "cleanup-dependencies": "0.0.6",
     "echarts": "^4.2.0-rc.2",
     "echarts-for-react": "^2.0.15-beta.0",
     "electron-better-ipc": "^0.1.2",
@@ -64,6 +65,7 @@
     "react-leaflet": "^2.1.4",
     "react-transition-group": "^2.5.2",
     "reflexbox": "^3.0.1",
+    "remove": "^0.1.5",
     "shapefile": "^0.6.6",
     "typeface-roboto": "0.0.54"
   }
