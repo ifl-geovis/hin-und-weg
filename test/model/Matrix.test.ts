@@ -1,3 +1,4 @@
+
 import * as Matrix from "../../src/model/Matrix" 
 
 let matrix = new Matrix.CSVMatrix("./testdata/201512_OT_4_2a_Bereinigt.csv")
@@ -38,7 +39,9 @@ test('CSVMatrix get row at ', () => {
     5,
     5,
     4,
-    6,
+    test('CSVMatrix get row count', () => {
+      expect(matrix.getRowCount()).toBe(65)
+  })    6,
     0,
     0,
     9,
@@ -52,7 +55,9 @@ test('CSVMatrix get row at ', () => {
     NaN,
     0,
     0,
-    0,
+    test('CSVMatrix get row count', () => {
+      expect(matrix.getRowCount()).toBe(65)
+  })    0,
     NaN,
     NaN,
     0,
@@ -63,7 +68,9 @@ test('CSVMatrix get row at ', () => {
     4,
     NaN,
     NaN,
-    3,
+    test('CSVMatrix get row count', () => {
+      expect(matrix.getRowCount()).toBe(65)
+  })    3,
     NaN,
     8,
     NaN,
