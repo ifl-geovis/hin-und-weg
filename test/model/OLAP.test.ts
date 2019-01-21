@@ -98,9 +98,58 @@ import * as fs from "fs"
 
 test('Create Datacube from csv matrix for one year',() => {
     let csv = fs.readFileSync("./testdata/201512_OT_4_2a_Bereinigt.csv").toString()
-    let lines = R.reject(R.isEmpty,csv.split(/\n|\r\n/)) as string[]
-    expect(R.length(lines)).toEqual(64)
-    let columns = R.nth(0,lines)!.split(/;|,|:/) as string[]
+    let rows = R.reject(R.isEmpty,csv.split(/\n|\r\n/)) as string[]
+    expect(R.length(rows)).toEqual(64)
+    let columns = R.nth(0,rows)!.split(/;|,|:/) as string[]
     expect(R.length(columns)).toEqual(64)
     
+    // ---
+    let defaultStr = R.defaultTo('')
+    let toColumns = R.split(/;|,|:/)
+    let xAxis = toColumns(defaultStr(first(rows)))
+    expect(R.length(xAxis)).toEqual(64)
+
+    let firstColumn = R.pipe(toColumns,first,defaultStr)
+    let yAxis = R.map(firstColumn,rows) 
+    expect(R.length(yAxis)).toEqual(64)
+    
+    let migrations = new Cubus(dimensions)
+    migrations.addDimensionValue('Jahr','2015')
+    R.forEach(ot => migrations.addDimensionValue('von',ot),yAxis)
+    R.forEach(ot => migrations.addDimensionValue('nach',ot),xAxis)
+  
+    yAxis.forEach((y) => {
+        let yIndex = R.indexOf(y,yAxis)
+        xAxis.forEach((x) => {
+            let xIndex = R.indexOf(x,xAxis)
+            let value = toColumns(rows[yIndex])[xIndex]
+            let property = {'Jahr':'2015','von': y,'nach':x}
+            migrations.add(value,property)
+        },xAxis)
+    }, yAxis)
+
+    let checkOne = (von:string,nach:string,expected:string) => {
+        let results = migrations.query({'Jahr':['2015'],'von':[von], 'nach':[nach]})
+        expect(results[0]['value']).toEqual(expected)
+    }    
+    checkOne('23','42','0')
+    checkOne('42','23','3')
+    checkOne('3','71','35')
+
+    let xResults = migrations.query({'von':['5'],'nach':['23','42']})
+    expect(R.length(xResults)).toEqual(2)
+    expect(xResults[0].value).toEqual('5')
+    expect(xResults[1].value).toEqual('0')
+
+    let yResults = migrations.query({'von':['5','23'],'nach':['23']})
+    expect(R.length(yResults)).toEqual(2)
+    expect(yResults[0].value).toEqual('5')
+    expect(yResults[1].value).toEqual('190')
+
+    let _2dResults = migrations.query({'von':['5','23'],'nach':['23','42']})
+    expect(R.length(_2dResults)).toEqual(4)
+    expect(_2dResults[0].value).toEqual('5')
+    expect(_2dResults[1].value).toEqual('190')
+    expect(_2dResults[2].value).toEqual('0')
+    expect(_2dResults[3].value).toEqual('0')
 })
