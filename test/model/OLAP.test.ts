@@ -93,3 +93,14 @@ test('2015: 01,02,03 => 03,04,05 und '+
     expect(values).toEqual([17, 12, 83, 78, 235, 230, 25, 20, 76, 71, 96, 91, 16, 11, 23, 18, 38, 33])  
 })
 
+// Read a real file 
+import * as fs from "fs"
+
+test('Create Datacube from csv matrix for one year',() => {
+    let csv = fs.readFileSync("./testdata/201512_OT_4_2a_Bereinigt.csv").toString()
+    let lines = R.reject(R.isEmpty,csv.split(/\n|\r\n/)) as string[]
+    expect(R.length(lines)).toEqual(64)
+    let columns = R.nth(0,lines)!.split(/;|,|:/) as string[]
+    expect(R.length(columns)).toEqual(64)
+    
+})
