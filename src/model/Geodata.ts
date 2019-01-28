@@ -10,7 +10,6 @@ export default class Geodata {
     data: FeatureCollection<Geometry>
     
     private static createGeodata = function(features: FeatureCollection<Geometry>): Geodata {
-        console.log(features.features[0].properties)
         return new Geodata(features)
     }
 
@@ -29,9 +28,8 @@ export default class Geodata {
     }
 
     public fields(): string[] {
-        //assert(R.not(R.isEmpty(this.data.features)),"data.features is empty")
-        let first = R.head(this.data.features)!   
-        console.log(first.properties)         
+        assert(R.not(R.isEmpty(this.data.features)),"data.features is empty")
+        let first = R.head(this.data.features)!      
         return R.keys(first.properties)
     }
 
