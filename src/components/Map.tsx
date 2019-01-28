@@ -2,12 +2,13 @@ import React, { Component } from "react"
 import R from "ramda"
 import * as shapefile from "shapefile" 
 import { Map, GeoJSON } from 'react-leaflet'
+
+//import * as Map from "react-d3-map"
 import { FeatureCollection, Geometry } from "geojson"
 import { FileInput , Card, Elevation} from '@blueprintjs/core'
 import { Cell, Column, Table} from '@blueprintjs/table'
 import { Flex, Box} from 'reflexbox'
 //import proj4 from "proj4"
-
 
 interface IFeaturesProps {   
 }
@@ -22,6 +23,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
     constructor(props: IFeaturesProps){
         super(props)
         this.state = { features: null, title: ""}
+        
     }
 
     handleFile(event: React.ChangeEvent<HTMLInputElement>) {
@@ -58,7 +60,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
             }
             return (
                 <Box>
-                    <Card elevation={Elevation.TWO}>
+                    <Card elevation={Elevation.ONE}>
                     <Flex px={2}>                               
                         <FileInput disabled={false} text="Shape Datei aufrufen ..." onInputChange={this.handleFile.bind(this)} />
                     </Flex>
@@ -73,7 +75,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
                     <Flex px={2} py={2}>
                         <Box w={1/2} px={2} py={2}>
                             <Map center={[51.34,12.37]} zoom={10} style={{height: "300px",width: "300px"}}>
-                                <GeoJSON data={this.state.features} />                                    
+                                                              
                             </Map>
                         </Box>
                         <Box px={2} py={2}>
