@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+<head>
+	<meta charset="utf-8">
+	<title>H&W - Double Bar</title>
+</head>
+<body>
+<div id="chartdiv" class="diagram"></div>
+<style>
+	.diagram {
+		width: 1800px;
+		height: 900px;
+		float: left;
+	}
+</style>
+<script src="../vendor/requirejs/require.js"></script>
+<script>
+	require.config({
+		baseUrl: "../../apps/",
+		shim: {
+			'vendor/amcharts4/core': {
+				init: function () {
+					return window.am4core;
+				}
+			},
+			'vendor/amcharts4/charts': {
+				deps: ['vendor/amcharts4/core'],
+				exports: 'vendor/amcharts4/charts',
+				init: function () {
+					return window.am4charts;
+				}
+			},
+			'vendor/amcharts4/themes/animated': {
+				deps: ['vendor/amcharts4/core'],
+				exports: 'vendor/amcharts4/themes/animated',
+				init: function () {
+					return window.am4themes_animated;
+				}
+			}
+		},
+	});
+</script>
+<script src="chart.js"></script>
+</body>
+</html>
