@@ -1,5 +1,7 @@
-import R from 'ramda'
+import { expect } from "chai"
 
-test("Simple Calculations",() => {
-    expect(0.3*366).toEqual(109.8)
+describe('Common tests and evaluations', ()=> {
+    it("Simple Calculations",() => {
+        expect(0.3*366).equal(109.8)
+    })
 })

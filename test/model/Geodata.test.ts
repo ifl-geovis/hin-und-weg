@@ -1,14 +1,36 @@
+import { expect } from "chai"
 import R from "ramda"
 import * as Debug from '../../src/debug'
 import Geodata from '../../src/model/Geodata'
 
-Debug.off()
+Debug.on()
 describe('Load shapefile and provide geojson data',() => {
     
-    test('Shapefile is loaded',(done) => {
-        Geodata.read('./testdata/ot_wgs84.shp',(data:Geodata) => {
-            expect(data.count()).toEqual(63)          
-            expect(R.length(data.fields())).toEqual(2)
+    it('Shapefile is loaded',(done) => {
+        Geodata.read('./testdata/ot.shp',(data:Geodata) => {
+            expect(data.count()).equal(63)          
+            expect(R.length(data.fields())).equal(2)
+            expect(data.fields()).eql(["OT","Name"])
+            done()
+        })
+    })
+
+    it('Iterate trough data and check values (geometry and properties)',(done) => {       
+        Geodata.read('./testdata/ot.shp',(data:Geodata) => {        
+            for(let index of R.range(0,data.count())){
+                expect(data.getGeometryOf(index)).not.equal(null)
+                expect(data.getValueFor(index,'Name')).not.equal(null)
+                expect(data.getValueFor(index,'OT')).not.equal(null)
+            }              
+            done()
+        })
+    });
+
+    it('Select field for association of table data',(done) => {
+        Geodata.read('./testdata/ot.shp',(data:Geodata) => {      
+            expect(data.getLinkField()).to.equal(undefined)  
+            data.setLinkField('OT')           
+            expect(data.getLinkField()).to.equal('OT')
             done()
         })
     })

@@ -1,3 +1,4 @@
+import { expect } from "chai"
 import R from 'ramda'
 import Cubus from 'cubus'
 import fs from 'fs'
@@ -37,77 +38,76 @@ for(let nachIdx=0;nachIdx<values.length;nachIdx++){
     } 
 }
 
-test('Cubus for migrations can be created ', () => {
-    expect(migrations).not.toBe(null)
+it('Cubus for migrations can be created ', () => {
+    expect(migrations).not.equal(null)
 })
 
-test('Von "02" nach 03 81 Umzüge ', () => {
+it('Von "02" nach 03 81 Umzüge ', () => {
     let results = migrations.query({'Jahr':['2015'],
         'von':['02'], 'nach':['03']
     })    
-    expect(results).toHaveLength(1)
+    expect(results).to.have.length(1)
 
     let result = first(results)!
-    expect(result.value).toEqual(83)
+    expect(result.value).equal(83)
     let dims = result.property
-    expect(dims).toHaveLength(3)
-    expect(first(dims)!.name).toEqual('Jahr')
-    expect(first(dims)!.value).toEqual('2015')
-    expect(second(dims)!.name).toEqual('von')
-    expect(second(dims)!.value).toEqual('02')
-    expect(third(dims)!.name).toEqual('nach')
-    expect(third(dims)!.value).toEqual('03')
+    expect(dims).to.have.length(3)
+    expect(first(dims)!.name).equal('Jahr')
+    expect(first(dims)!.value).equal('2015')
+    expect(second(dims)!.name).equal('von')
+    expect(second(dims)!.value).equal('02')
+    expect(third(dims)!.name).equal('nach')
+    expect(third(dims)!.value).equal('03')
 })
 
-test('Von "01" nach "02" waren es 46 und nach "03" 17 Umzüge', () => {
+it('Von "01" nach "02" waren es 46 und nach "03" 17 Umzüge', () => {
     let results = migrations.query({'Jahr':['2015'],
         'von':['01'], 'nach':['02','03']
     })    
-    expect(results).toHaveLength(2)
+    expect(results).to.have.length(2)
     
     let firstResult = first(results)!
     let secondResult = second(results)!
 
-    expect(firstResult.value).toEqual(46)
+    expect(firstResult.value).equal(46)
     let dims = firstResult.property
-    expect(dims).toHaveLength(3)
-    expect(first(dims)!.name).toEqual('Jahr')
-    expect(first(dims)!.value).toEqual('2015')
-    expect(second(dims)!.name).toEqual('von')
-    expect(second(dims)!.value).toEqual('01')
-    expect(third(dims)!.name).toEqual('nach')
-    expect(third(dims)!.value).toEqual('02')
+    expect(dims).to.have.length(3)
+    expect(first(dims)!.name).equal('Jahr')
+    expect(first(dims)!.value).equal('2015')
+    expect(second(dims)!.name).equal('von')
+    expect(second(dims)!.value).equal('01')
+    expect(third(dims)!.name).equal('nach')
+    expect(third(dims)!.value).equal('02')
 
-    expect(secondResult.value).toEqual(17)
+    expect(secondResult.value).equal(17)
 })
 
-test('2015: 01,02,03 => 03,04,05 und '+
-  '\n 2016: 01,02,03 => 03,04,05: ', () => {
+it('2015: 01,02,03 => 03,04,05 und 2016: 01,02,03 => 03,04,05: ', () => {
     let results = migrations.query({'Jahr':['2015','2016'],
         'von':['01','02','03'], 'nach':['03','04','05']
     })    
-    expect(results).toHaveLength(18)
+    expect(results).to.have.length(18)
     let values = R.map(result => result.value,results)
     
-    expect(values).toEqual([17, 12, 83, 78, 235, 230, 25, 20, 76, 71, 96, 91, 16, 11, 23, 18, 38, 33])  
+    expect(values).eql([17, 12, 83, 78, 235, 230, 25, 20, 76, 71, 96, 91, 16, 11, 23, 18, 38, 33])  
 })
 
-test('Create Datacube from csv matrix for one year',() => {
+it('Create Datacube from csv matrix for one year',() => {
     let csv = fs.readFileSync("./testdata/201512_OT_4_2a_Bereinigt.csv").toString()
     let rows = R.reject(R.isEmpty,csv.split(/\n|\r\n/)) as string[]
-    expect(R.length(rows)).toEqual(64)
+    expect(R.length(rows)).equal(64)
     let columns = R.nth(0,rows)!.split(/;|,|:/) as string[]
-    expect(R.length(columns)).toEqual(64)
+    expect(R.length(columns)).equal(64)
     
     // ---
     let defaultStr = R.defaultTo('')
     let toColumns = R.split(/;|,|:/)
     let xAxis = toColumns(defaultStr(first(rows)))
-    expect(R.length(xAxis)).toEqual(64)
+    expect(R.length(xAxis)).equal(64)
 
     let firstColumn = R.pipe(toColumns,first,defaultStr)
     let yAxis = R.map(firstColumn,rows) 
-    expect(R.length(yAxis)).toEqual(64)
+    expect(R.length(yAxis)).equal(64)
     
     let migrations = new Cubus(dimensions)
     migrations.addDimensionValue('Jahr','2015')
@@ -126,26 +126,26 @@ test('Create Datacube from csv matrix for one year',() => {
 
     let checkFirst = (von:string, nach:string, expected:number) => {
         let results = migrations.query({'Jahr':['2015'],'von':[von], 'nach':[nach]})        
-        expect(results[0].value).toEqual(expected)              
+        expect(results[0].value).equal(expected)              
     }    
     checkFirst('23','42',0)
     checkFirst('42','23',3)
     checkFirst('3','71',35)
 
     let xResults = migrations.query({'von':['5'],'nach':['23','42']})
-    expect(R.length(xResults)).toEqual(2)
-    expect(xResults[0].value).toEqual(5)
-    expect(xResults[1].value).toEqual(0)
+    expect(R.length(xResults)).equal(2)
+    expect(xResults[0].value).equal(5)
+    expect(xResults[1].value).equal(0)
 
     let yResults = migrations.query({'von':['5','23'],'nach':['23']})
-    expect(R.length(yResults)).toEqual(2)
-    expect(yResults[0].value).toEqual(5)
-    expect(yResults[1].value).toEqual(190)
+    expect(R.length(yResults)).equal(2)
+    expect(yResults[0].value).equal(5)
+    expect(yResults[1].value).equal(190)
 
     let _2dResults = migrations.query({'von':['5','23'],'nach':['23','42']})
-    expect(R.length(_2dResults)).toEqual(4)
-    expect(_2dResults[0].value).toEqual(5)
-    expect(_2dResults[1].value).toEqual(190)
-    expect(_2dResults[2].value).toEqual(0)
-    expect(_2dResults[3].value).toEqual(0)
+    expect(R.length(_2dResults)).equal(4)
+    expect(_2dResults[0].value).equal(5)
+    expect(_2dResults[1].value).equal(190)
+    expect(_2dResults[2].value).equal(0)
+    expect(_2dResults[3].value).equal(0)
 })
