@@ -2,6 +2,7 @@ import R from 'ramda'
 import { expect } from "chai"
 import * as Debug from '../../src/debug'
 import Tabledata from '../../src/model/Tabledata'
+import Cubus from 'cubus'
 
 Debug.on()
 describe('Load tabledata from csv and provide ',() => {
@@ -32,5 +33,26 @@ describe('Load tabledata from csv and provide ',() => {
             expect(data.getValueAt(34,11)).equal('.')
             done()
         })       
+    })
+
+    it('Create a tabledata from regions', (done) => {
+        Tabledata.read('./testdata/201512_OT_4_2a_Bereinigt.csv',(data:Tabledata) => {            
+            let subTable = data.getTabledataBy([1,64],[1,64])
+            expect(subTable.getRowCount()).equal(63)
+            expect(subTable.getColumnCount()).equal(63)
+            expect(subTable.getValueAt(0,0)).equal('29')
+            expect(subTable.getValueAt(62,62)).equal('96')
+            expect(subTable.getValueAt(42,25)).equal('5')
+            done()
+        })
+    })
+
+    it('Create a OLAP Matrix from Tabledata', (done) => {
+        Tabledata.read('./testdata/201512_OT_4_2a_Bereinigt.csv',(data:Tabledata) => {            
+            let cubus = data.getCubusMatrixFor('Jahr','2015','Von','Nach')            
+            expect(cubus.query({'Jahr':['2015'],'Von':['0'],'Nach':['0']})[0].value).equal('29')  
+            expect(cubus.query({'Von':['52'],'Nach':['50']})[0].value).equal('25')    
+            done()
+        })
     })
 })
