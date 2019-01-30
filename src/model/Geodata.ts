@@ -62,4 +62,8 @@ export default class Geodata {
         }
         return null
     }
+
+    public getFeatureByFieldValue(fieldName: string,fieldValue: string|number): Feature {
+        return R.find((feature:Feature) => feature.properties![fieldName] === fieldValue,this.data.features)!
+    }
 }
