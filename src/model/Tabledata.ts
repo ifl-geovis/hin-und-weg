@@ -3,8 +3,10 @@ import assert from 'assert'
 import fs from 'fs'
 import Cubus from 'cubus'
 
+//TODO: Maybe use an own builded assert module
 let notNilOrEmpty = (data:string|string[][]) => R.and(R.not(R.isNil(data)),R.not(R.isEmpty(data)))
 
+// TODO: Add typesafe Tabledata with generics
 export default class Tabledata {
 
     private data: string[][]
