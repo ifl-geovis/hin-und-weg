@@ -7,6 +7,11 @@ import Cubus from 'cubus'
 let notNilOrEmpty = (data:string|string[][]) => R.and(R.not(R.isNil(data)),R.not(R.isEmpty(data)))
 
 // TODO: Add typesafe Tabledata with generics
+/** 
+ * Represents tabledata as matrix of cells. The cells will be adressed by rows and columns.
+ * Additionally it provides a conversion to a OLAP [https://de.wikipedia.org/wiki/OLAP-W%C3%BCrfel] 
+ * datastructure. 
+*/
 export default class Tabledata {
 
     private data: string[][]
@@ -77,7 +82,7 @@ export default class Tabledata {
         return new Tabledata(cells)
     }
 
-    public getCubusMatrixFor(tableName: string,tableValue: string,rowName:string, columnName: string): Cubus<string> {
+    public getOLAPMatrixFor(tableName: string,tableValue: string,rowName:string, columnName: string): Cubus<string> {
         assert(notNilOrEmpty(tableName),"tableName should not be nil or undefined")       
         assert(notNilOrEmpty(tableValue),"tableValue should not be nil or undefined")       
         assert(notNilOrEmpty(rowName),"rowName should not be nil or undefined")   

@@ -49,7 +49,7 @@ describe('Load tabledata from csv and provide ',() => {
 
     it('Create a OLAP Matrix from Tabledata', (done) => {
         Tabledata.read('./testdata/201512_OT_4_2a_Bereinigt.csv',(data:Tabledata) => {            
-            let cubus = data.getCubusMatrixFor('Jahr','2015','Von','Nach')            
+            let cubus = data.getOLAPMatrixFor('Jahr','2015','Von','Nach')            
             expect(cubus.query({'Jahr':['2015'],'Von':['0'],'Nach':['0']})[0].value).equal('29')  
             expect(cubus.query({'Von':['52'],'Nach':['50']})[0].value).equal('25')    
             done()

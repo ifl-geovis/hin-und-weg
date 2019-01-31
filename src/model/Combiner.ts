@@ -1,6 +1,6 @@
-import R from "ramda"
+import R from 'ramda'
 import Geodata from '../../src/model/Geodata'
-import Cubus from 'cubus';
+import Cubus from 'cubus'
 
 export default class Combiner {
 
@@ -18,12 +18,20 @@ export default class Combiner {
         this.geodataId = id 
     }
 
+    public getGeodataId():string {
+        return this.geodataId
+    }
+
     public setGeodataSelector(selector: string){
         this.geodataSelector = selector
     }
 
+    public getGeodataSelector():string {
+        return this.geodataSelector
+    }
+
     // TODO: How to ensure that numbers like '05' == '5'
-    public getCubusKeyFor(selector: string): string {
+    private getCubusKeyFor(selector: string): string {
         let selectedFeature = this.geodata.getFeatureByFieldValue(this.geodataSelector,selector) 
         return ""+parseInt(selectedFeature.properties![this.geodataId])        
     }
