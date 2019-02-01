@@ -25,13 +25,5 @@ describe('Load shapefile and provide geojson data',() => {
             done()
         })
     });
-
-    it('Select field for association of table data',(done) => {
-        Geodata.read('./testdata/ot.shp',(data:Geodata) => {      
-            expect(data.getLinkField()).to.equal(undefined)  
-            data.setLinkField('OT')           
-            expect(data.getLinkField()).to.equal('OT')
-            done()
-        })
-    })
+    
 })

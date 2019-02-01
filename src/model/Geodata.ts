@@ -8,7 +8,6 @@ Debug.on()
 export default class Geodata {
 
     data: FeatureCollection<Geometry>
-    linkField: string | undefined 
     
     private static createGeodata = function(features: FeatureCollection<Geometry>): Geodata {
         return new Geodata(features)
@@ -24,17 +23,7 @@ export default class Geodata {
     constructor(data: FeatureCollection<Geometry>){
         this.data = data        
     }
-
-    public getLinkField(): undefined | string {
-        return this.linkField
-    }
-
-    public setLinkField(name: string): Geodata {
-        assert(this.fields().indexOf(name)>-1,`LinkField should be one of the fields ${this.fields()}`)
-        this.linkField = name
-        return this
-    }
-
+    
     public count(): number {                
         return R.length(this.data.features)
     }
