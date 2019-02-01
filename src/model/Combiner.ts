@@ -7,12 +7,14 @@ export default class Combiner {
     geodata: Geodata
     cubus: Cubus<string>
     geodataId: string = "ID"
-    geodataSelector: string = "Name"
+    geodataSelector: string = "Name"   
 
     constructor(geodata: Geodata,cubus: Cubus<string>){
         this.geodata = geodata
         this.cubus = cubus
     }
+
+  
 
     public setGeodataId(id: string){
         this.geodataId = id 

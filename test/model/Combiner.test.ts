@@ -22,7 +22,6 @@ describe('Combiner takes Geodata and OLAP Data and combines Geodata fields and M
         })          
     })
 
-
     it('Provides geodataId and geodataSelector',(done) => {
         Tabledata.read('./testdata/201512_OT_4_2a_Bereinigt.csv',(tabledata:Tabledata) => {
             Geodata.read('./testdata/ot.shp',(geodata:Geodata) => {

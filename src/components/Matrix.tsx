@@ -162,8 +162,7 @@ export class MatrixUI extends React.Component<MatrixProps,MatrixState> {
         )
     }
 
-    render(){
-        console.log(`Current state: ${R.keys(this.state)} ${R.values(this.state)}`)
+    render(){        
         var matrixUI = null 
         if (this.state.matrix != null) {
             let matrix = this.state.matrix
