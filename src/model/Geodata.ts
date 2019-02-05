@@ -9,7 +9,7 @@ export default class Geodata {
 
     data: FeatureCollection<Geometry>
     
-    private static createGeodata = function(features: FeatureCollection<Geometry>): Geodata {
+    private static createGeodata = function(features: FeatureCollection<Geometry>): Geodata {        
         return new Geodata(features)
     }
 

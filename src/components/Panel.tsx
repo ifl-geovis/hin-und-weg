@@ -2,7 +2,7 @@ import React from "react"
 import { Rnd, } from "react-rnd"
 
 export interface PanelProps {
-
+   
 }
 
 export interface PanelState {
@@ -12,7 +12,7 @@ export interface PanelState {
     y: number
 }
 export default class Panel extends React.Component<PanelProps,PanelState>{
-
+    
     constructor(props:PanelProps){
         super(props)
         this.state = {
