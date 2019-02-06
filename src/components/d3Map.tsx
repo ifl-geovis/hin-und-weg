@@ -18,14 +18,9 @@ export class D3Map extends React.Component<D3MapProps,D3MapState> {
 
 
     constructor(props:D3MapProps){
-        super(props)        
-        Proj4.defs('EPSG:3006','+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs')
-        Geodata.read('./testdata/ot_wgs84.shp',(data: Geodata) => {
-            let point = [1.0,2.0]
-            let newPoint = Proj4.transform(Proj4.Proj('EPSG:3006'),Proj4.Proj("EPSG:4326"),point)
-            console.log(newPoint.x)
-            console.log(newPoint.y)
-            this.setState({data:data.data})
+        super(props)                
+        Geodata.read('./testdata/ot_wgs84.shp',(data: Geodata) => {          
+            this.setState({data:data.featureCollection})
         })        
         this.state = { data: null}
     }   
