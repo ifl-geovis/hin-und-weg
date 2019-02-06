@@ -1,7 +1,4 @@
 import * as React from "react"
-import { Card, Elevation} from '@blueprintjs/core'
-import { Box} from "reflexbox"
-import Panel from "./Panel"
 
 export interface SystemInfoProps {
     version: string
@@ -14,9 +11,7 @@ export class SystemInfo extends React.Component<SystemInfoProps,{}> {
     }
     
     render() {
-        return (
-            <Panel>
-                <Box w={1} p={2}>
+        return (                
                 <table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
                     <thead>
                         <tr>
@@ -35,8 +30,6 @@ export class SystemInfo extends React.Component<SystemInfoProps,{}> {
                         </tr>
                     </tbody>
                 </table>
-            </Box>
-            </Panel>
         )
     }
 }

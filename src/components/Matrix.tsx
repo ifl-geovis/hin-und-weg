@@ -4,10 +4,8 @@ import {Matrix,CSVMatrix} from "../model/Matrix"
 import {FileInput,Menu, Label, ControlGroup, NumericInput} from "@blueprintjs/core"
 import {Table,Column, Cell,IRegion,SelectionModes,IMenuContext,Utils} from '@blueprintjs/table'
 import {HTMLSelect, Card, Elevation} from '@blueprintjs/core'
-import {Flex, Box} from 'reflexbox'
 import ReactEcharts from 'echarts-for-react'
 import { ECharts, EChartOption } from 'echarts'
-
 
 interface MatrixState {
     matrix: Matrix | null,
@@ -188,14 +186,10 @@ export class MatrixUI extends React.Component<MatrixProps,MatrixState> {
            </Table>
         }
         return (
-                <Box>
-                    <Card elevation={Elevation.TWO}>
-                    <Flex>
-                        <FileInput disabled={false} text="CSV Datei aufrufen ..." onInputChange={this.handleFile} />                           
-                    </Flex>
-                    <Flex><Box w={1} my={2}><ReactEcharts ref="diagram" option={this.diagramOptions} className='echarts-for-echarts' /></Box></Flex>                    
-                    <Flex>        
-                       <Box px={2} py={2}>
+                <div>                
+                    <FileInput disabled={false} text="CSV Datei aufrufen ..." onInputChange={this.handleFile} />                                           
+                    <ReactEcharts ref="diagram" option={this.diagramOptions} className='echarts-for-echarts' />                    
+                    <div>
                             <Label className="bp3-inline">Spaltentrenner:
                                 <HTMLSelect onChange={this.setColumnSeparator}>
                                             <option value=";">;</option>
@@ -203,19 +197,17 @@ export class MatrixUI extends React.Component<MatrixProps,MatrixState> {
                                             <option value="|">|</option>
                                     </HTMLSelect>
                             </Label>
-                        </Box>
-                        <Box px={2} py={2}>
+                        </div>
+                        <div>
                             <Label className="bp3-inline">Zeilentrenner:
                                 <HTMLSelect onChange={this.setLineSeparator}>
                                     <option value="\n">Unix</option>
                                     <option value="\r\n">Windows</option>
                                 </HTMLSelect>            
                             </Label>     
-                        </Box>                   
-                    </Flex>                         
-                    <Flex>{matrixUI}</Flex>
-                    </Card>
-                </Box>
+                        </div>                                         
+                        {matrixUI}
+                    </div>
         )
     }
 }

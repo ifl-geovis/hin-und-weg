@@ -1,52 +1,78 @@
-import React from 'react'
-import { FeatureCollection } from 'geojson'
+import R from 'ramda'
+import React, { CSSProperties } from 'react'
+import { FeatureCollection,Feature, Point } from 'geojson'
+import { FileInput } from '@blueprintjs/core'
 import * as d3 from 'd3'
-import Panel from './Panel'
 import Geodata from '../model/Geodata'
-import * as Proj4 from 'proj4'
-//import * as reproject from 'reproject'
 
 interface D3MapProps {
-
+    //styleByFeature: (feature: Feature) => CSSProperties,
+    //idByFeature: (feature:Feature) => string
 }
 
 interface D3MapState {
     data: FeatureCollection|null
+    title: string|null
+    width: number
+    height: number
 }
 
 export class D3Map extends React.Component<D3MapProps,D3MapState> {   
 
-
     constructor(props:D3MapProps){
-        super(props)                
-        Geodata.read('./testdata/sbz.shp',(data: Geodata) => {                      
-            this.setState({data:data.transformToWGS84().featureCollection})
-        })        
-        this.state = { data: null}
+        super(props)                       
+        this.state = { data: null, title: null, width: 640, height: 480}         
     }   
-    
-    render(){
-        let width=500
-        let height=500       
-        
 
+    handleFile(event: React.ChangeEvent<HTMLInputElement>) {
+        if(event.target.files !=null && event.target.files.length > 0){
+            var file = event.target.files[0]
+            Geodata.read(file.path,(data:Geodata) => {
+                this.setState({data: data.transformToWGS84().featureCollection, title:  file.path})
+            })           
+        }   
+    }        
+    
+    render(){        
         if(this.state.data!=null){
-            let projection = d3.geoMercator().fitSize([width,height],this.state.data)
-            let path = d3.geoPath().projection(projection)//d3.geoPath().projection(d3.geoTransverseMercator().fitSize([width,height],this.state.data))
-            let style={stroke: '#ff0000', fill:'#ffffff'}
-            let features = this.state.data.features.map((feature) => {
-                let key:string= feature.properties?feature.properties['OT']: ''                
-                return <path d={path(feature)||undefined} style={style} key={key}/>
-            })
+            let projection = d3.geoMercator().fitSize([this.state.width,this.state.height],this.state.data)
+            let path = d3.geoPath().projection(projection)            
+            let indexedMap = R.addIndex(R.map)
+            let features = indexedMap( (feature,id:number):JSX.Element => {           
+                let f = feature as Feature
+                let color = 20+id*2
+                let style = {fill:`#aaaa${color}`,stroke:'#000000'}
+                let center = d3.geoCentroid(f)
+                let firstProp = R.head(R.keys(f.properties!))                
+                let name = R.prop(firstProp!,f.properties!)
+                return (<g>
+                        <path  d={path(f)||undefined} style={style} key={id}/>
+                        <text transform={"translate("+projection(center)+")"} style={{ fill:'#ffffff', stroke: '#aaaaaa'}}>{name}</text>   
+                        </g>                     
+                        )
+            },this.state.data.features)
             return(
-                <Panel> 
-                    <svg width={width} height={height}>                                      
-                        <g>{features}</g>                                            
-                    </svg>
-                </Panel>
+                <div>       
+                    <div>
+                        <FileInput disabled={false} fill={true} text="Shape Datei aufrufen ..." onInputChange={this.handleFile.bind(this)} /> 
+                    </div> 
+                    <div>
+                        <svg width={this.state.width} height={this.state.height}>                                      
+                            {features}    
+                        </svg> 
+                    </div>                
+                </div>
             ) 
         }else{
-            return <Panel><span>Keine Daten geladen</span></Panel>
+            return (   
+                <div>       
+                    <div>
+                        <FileInput disabled={false} fill={true} text="Shape Datei aufrufen ..." onInputChange={this.handleFile.bind(this)} /> 
+                    </div>
+                    <div>                       
+                    </div>    
+                </div>                           
+            )
         }   
     }
 }
