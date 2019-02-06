@@ -1,14 +1,11 @@
 import React, { Component } from "react"
 import R from "ramda"
-import * as shapefile from "shapefile" 
 import { Map, GeoJSON } from 'react-leaflet'
-
-//import * as Map from "react-d3-map"
 import { FeatureCollection, Geometry } from "geojson"
 import { FileInput , Card, Elevation} from '@blueprintjs/core'
 import { Cell, Column, Table} from '@blueprintjs/table'
 import { Flex, Box} from 'reflexbox'
-//import proj4 from "proj4"
+import Geodata from '../model/Geodata'
 
 interface IFeaturesProps {   
 }
@@ -29,10 +26,9 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
     handleFile(event: React.ChangeEvent<HTMLInputElement>) {
         if(event.target.files !=null && event.target.files.length > 0){
             var file = event.target.files[0]
-            shapefile.read(file.path,file.path.replace('.shp','.dbf'),{encoding:"UTF-8"}).then((features:FeatureCollection<Geometry>) => {  
-                //proj4.defs('EPSG:3006','+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs')                
-                this.setState({features: features, title:  file.path})
-            })
+            Geodata.read(file.path,(data:Geodata) => {
+                this.setState({features: data.transformToWGS84().featureCollection, title:  file.path})
+            })           
         }   
     }    
     
@@ -75,7 +71,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
                     <Flex px={2} py={2}>
                         <Box w={1/2} px={2} py={2}>
                             <Map center={[51.34,12.37]} zoom={10} style={{height: "300px",width: "300px"}}>
-                                                              
+                                <GeoJSON data={this.state.features} key={this.state.title} />      
                             </Map>
                         </Box>
                         <Box px={2} py={2}>
