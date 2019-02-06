@@ -19,8 +19,8 @@ export class D3Map extends React.Component<D3MapProps,D3MapState> {
 
     constructor(props:D3MapProps){
         super(props)                
-        Geodata.read('./testdata/ot_wgs84.shp',(data: Geodata) => {          
-            this.setState({data:data.featureCollection})
+        Geodata.read('./testdata/sbz.shp',(data: Geodata) => {                      
+            this.setState({data:data.transformToWGS84().featureCollection})
         })        
         this.state = { data: null}
     }   
