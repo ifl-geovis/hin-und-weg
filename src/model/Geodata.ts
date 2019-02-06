@@ -1,31 +1,36 @@
 import * as shapefile from 'shapefile'
+import fs from 'fs'
 import R from 'ramda'
 import {FeatureCollection,Geometry, Feature} from 'geojson'
 import * as Debug from '../debug'
 import assert from 'assert'
+import * as reproject from 'reproject';
+import * as Proj4 from 'proj4';
 
 Debug.on()
 export default class Geodata {
 
     featureCollection: FeatureCollection<Geometry>
+    projection: string | Proj4.ProjectionDefinition
     
-    private static createGeodata = function(features: FeatureCollection<Geometry>): Geodata {        
-        return new Geodata(features)
+    private static createGeodata = function(features: FeatureCollection<Geometry>,projection:string|Proj4.ProjectionDefinition): Geodata {      
+        return new Geodata(features,projection)
     }
 
     public static read(path: string,callback: (data: Geodata) => void){
         shapefile.read(path,path.replace('.shp','.dbf'),{encoding:"UTF-8"})
-            .then((data) => {
-                /*Proj4.defs('EPSG:3006','+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs')
-                let newPoint = Proj4.transform(Proj4.Proj('EPSG:3006'),Proj4.Proj("EPSG:4326"),point)
-                console.log(newPoint.x)
-                console.log(newPoint.y)*/
-                callback(Geodata.createGeodata(data))
+            .then((data) => {                
+                let projection = fs.readFileSync(path.replace('.shp','.prj')).toString()
+                if(projection==null || projection == undefined){
+                    projection = Proj4.WGS84
+                }
+                callback(Geodata.createGeodata(data,projection))
             }).catch(console.error)        
     }
 
-    constructor(featureCollection: FeatureCollection<Geometry>){
+    constructor(featureCollection: FeatureCollection<Geometry>,projection: string|Proj4.ProjectionDefinition){
         this.featureCollection = featureCollection        
+        this.projection = projection
     }
     
     public count(): number {                
@@ -36,7 +41,7 @@ export default class Geodata {
         assert(R.not(R.isEmpty(this.featureCollection.features)),"data.features is empty")
         let first = R.head(this.featureCollection.features)!      
         return R.keys(first.properties)
-    }
+    }    
 
     public getGeometryOf(index: number): Geometry {
         return this.getFeatureOf(index).geometry
@@ -58,5 +63,12 @@ export default class Geodata {
 
     public getFeatureByFieldValue(fieldName: string,fieldValue: string|number): Feature {
         return R.find((feature:Feature) => feature.properties![fieldName] === fieldValue,this.featureCollection.features)!
+    }
+
+    public transformToWGS84():Geodata {
+        if(this.projection==Proj4.WGS84){
+            return this
+        }
+        return new Geodata(reproject.reproject(this.featureCollection,this.projection,Proj4.WGS84),Proj4.WGS84)
     }
 }
