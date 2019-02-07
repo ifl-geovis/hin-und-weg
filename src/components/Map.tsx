@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import R from "ramda"
-import { Map, GeoJSON } from 'react-leaflet'
+import { Map, GeoJSON,Marker } from 'react-leaflet'
 import { FeatureCollection, Geometry } from "geojson"
 import { FileInput , Card, Elevation} from '@blueprintjs/core'
 import { Cell, Column, Table} from '@blueprintjs/table'
@@ -19,8 +19,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
     
     constructor(props: IFeaturesProps){
         super(props)
-        this.state = { features: null, title: ""}
-        
+        this.state = { features: null, title: ""}        
     }
 
     handleFile(event: React.ChangeEvent<HTMLInputElement>) {
@@ -53,7 +52,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
                 }
                 columnNames = R.keys(firstFeature.properties)
                 columns = R.map(createColumn,columnNames)
-            }
+            }                             
             return (
                 <Box>
                     <Card elevation={Elevation.ONE}>
@@ -70,8 +69,8 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
                     </Flex>    
                     <Flex px={2} py={2}>
                         <Box w={1/2} px={2} py={2}>
-                            <Map center={[51.34,12.37]} zoom={10} style={{height: "300px",width: "300px"}}>
-                                <GeoJSON data={this.state.features} key={this.state.title} />      
+                            <Map ref='map' center={[51.34,12.37]} zoom={10} style={{height: "300px",width: "300px"}}>
+                                <GeoJSON data={this.state.features} key={this.state.title} />                                                           
                             </Map>
                         </Box>
                         <Box px={2} py={2}>

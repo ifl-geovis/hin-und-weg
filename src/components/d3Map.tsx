@@ -14,7 +14,7 @@ interface D3MapState {
     data: FeatureCollection|null
     title: string|null
     width: number
-    height: number
+    height: number    
 }
 
 export class D3Map extends React.Component<D3MapProps,D3MapState> {   
@@ -23,7 +23,7 @@ export class D3Map extends React.Component<D3MapProps,D3MapState> {
         super(props)                       
         this.state = { data: null, title: null, width: 640, height: 480}         
     }   
-
+    
     handleFile(event: React.ChangeEvent<HTMLInputElement>) {
         if(event.target.files !=null && event.target.files.length > 0){
             var file = event.target.files[0]
@@ -35,13 +35,13 @@ export class D3Map extends React.Component<D3MapProps,D3MapState> {
     
     render(){        
         if(this.state.data!=null){
-            let projection = d3.geoMercator().fitSize([this.state.width,this.state.height],this.state.data)
+            let projection = d3.geoMercator().fitSize([this.state.width,this.state.height],this.state.data)                           
             let path = d3.geoPath().projection(projection)            
             let indexedMap = R.addIndex(R.map)
             let features = indexedMap( (feature,id:number):JSX.Element => {           
                 let f = feature as Feature
                 let color = 20+id*2
-                let style = {fill:`#aaaa${color}`,stroke:'#000000'}
+                let style = {fill:`#aaaa${color}`,stroke:'#FFFFFF'}
                 let center = d3.geoCentroid(f)
                 let firstProp = R.head(R.keys(f.properties!))                
                 let name = R.prop(firstProp!,f.properties!)
@@ -53,10 +53,10 @@ export class D3Map extends React.Component<D3MapProps,D3MapState> {
             },this.state.data.features)
             return(
                 <div>       
-                    <div>
-                        <FileInput disabled={false} fill={true} text="Shape Datei aufrufen ..." onInputChange={this.handleFile.bind(this)} /> 
+                    <div>                        
+                        <FileInput disabled={false} fill={true} text="Shape Datei aufrufen ..." onInputChange={this.handleFile.bind(this)} />                         
                     </div> 
-                    <div>
+                    <div>                        
                         <svg width={this.state.width} height={this.state.height}>                                      
                             {features}    
                         </svg> 

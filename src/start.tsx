@@ -5,11 +5,11 @@ import { Flex, Box} from 'reflexbox'
 import { Checkbox,Card,Elevation } from '@blueprintjs/core'
 // HUW software
 import { SystemInfo } from './components/SystemInfo'
-//import { GeodataMap } from './components/Map'
-import { D3Map } from './components/d3Map'
+import { GeodataMap } from './components/Map'
+//import { D3Map } from './components/d3Map'
 import { MatrixUI } from './components/Matrix'
 import RGL, { WidthProvider} from 'react-grid-layout'
-import { on } from './debug';
+
 
 let ReactGridLayout = WidthProvider(RGL)
 let layout = [
@@ -22,7 +22,7 @@ ReactDOM.render(
     <ReactGridLayout layout={layout} rowHeight={100}>
         <div key="info"><SystemInfo version="0.0.2"/></div>
         <div key="matrix"><MatrixUI/></div>
-        <div key="map"><D3Map/></div>
+        <div key="map"><GeodataMap/></div>
     </ReactGridLayout>
 ,document.getElementById("root"))
 /*
