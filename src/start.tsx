@@ -9,8 +9,18 @@ import { GeodataMap } from './components/Map'
 //import { D3Map } from './components/d3Map'
 import { MatrixUI } from './components/Matrix'
 import RGL, { WidthProvider} from 'react-grid-layout'
+import TabledataView from './view/table/TabledataView'
+import GeodataView from './view/geo/GeodataView'
+import ChartsView from './view/charts/ChartsView'
 
+ReactDOM.render(
+<div>
+    <GeodataView/>
+    <ChartsView/>
+    <TabledataView/>    
+</div>,document.getElementById('root'))
 
+/*
 let ReactGridLayout = WidthProvider(RGL)
 let layout = [
     {i: 'info', x:0, y:0, w: 6, h:2},
@@ -25,6 +35,7 @@ ReactDOM.render(
         <div key="map"><GeodataMap/></div>
     </ReactGridLayout>
 ,document.getElementById("root"))
+*/
 /*
 ReactDOM.render( <div>
     <Flex p={1} m={1}>
