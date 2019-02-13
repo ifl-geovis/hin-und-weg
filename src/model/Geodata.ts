@@ -1,7 +1,7 @@
 import * as shapefile from 'shapefile'
 import fs from 'fs'
 import R from 'ramda'
-import {FeatureCollection,Geometry, Feature} from 'geojson'
+import {FeatureCollection,Geometry, Feature, GeoJsonProperties} from 'geojson'
 import * as Debug from '../debug'
 import assert from 'assert'
 import * as reproject from 'reproject';
@@ -42,6 +42,10 @@ export default class Geodata {
         let first = R.head(this.featureCollection.features)!      
         return R.keys(first.properties)
     }    
+
+    public attributes(): GeoJsonProperties[]{
+        return R.map((feature) => feature.properties,this.featureCollection.features)
+    }
 
     public getGeometryOf(index: number): Geometry {
         return this.getFeatureOf(index).geometry

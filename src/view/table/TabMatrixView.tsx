@@ -2,27 +2,38 @@ import R from 'ramda'
 import React from 'react'
 import { Tab, Tabs } from "@blueprintjs/core"
 import MatrixView from './MatrixView';
+import Tabledata from '../../model/Tabledata';
 
 export interface TabMatrixViewProps {
-
+    fieldNames: string[]
+    tabledatas:  { [name:string]: Tabledata }
+    onSelectTableDataId: (selectedTabledataId:string)=> void
 }
 
 export default class TabMatrixView extends React.Component<TabMatrixViewProps> {
 
     constructor(props:TabMatrixViewProps){
         super(props)
+        this.handleTabChange = this.handleTabChange.bind(this)
     }
 
-    handleTabChange(newTabId: string | number, prevTabId: string | number, event: React.MouseEvent<HTMLElement, MouseEvent>){
-        console.log("handleTabChange")
+    handleTabChange(selectedTabId: string){
+        this.props.onSelectTableDataId(selectedTabId)
     }
 
     render(){
+        let tabledataIds = Object.keys(this.props.tabledatas)
         let createTab = (name:string):JSX.Element => {
-            return <Tab key={name} id={name} title={"Matrix "+name} panel={<MatrixView/>}/>
+            return <Tab key={name} id={name} title={"Matrix "+name} 
+                panel={<MatrixView 
+                        tabledata={this.props.tabledatas[name]} 
+                        fields={this.props.fieldNames} 
+                        onIdSelect={console.log} 
+                        onLabelSelect={console.log}/>}
+            />
         }                
         return <Tabs id="TabMatrix" onChange={this.handleTabChange}>
-            {R.map(createTab,R.map(R.toString,R.range(2001,2018)))}                 
+            {R.map(createTab,tabledataIds)}                 
         </Tabs>
     }
 }

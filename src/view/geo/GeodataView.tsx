@@ -2,10 +2,12 @@ import React from "react"
 import FileInput from '../input/FileInput'
 import AttributeView from "./AttributeView"
 import MapView from "./MapView"
-import Panel from "../Panel"
+import Geodata from '../../model/Geodata'
+import { GeoJsonProperties } from 'geojson';
 
 export interface GeodataProps {
-
+    geodata: Geodata | null
+    onSelectGeodata: (file:File) => void
 }
 
 export default class GeodataView extends React.Component<GeodataProps>{
@@ -16,16 +18,20 @@ export default class GeodataView extends React.Component<GeodataProps>{
     }    
 
     public shpFileSelected(file:File){
-        console.log(`Shapefile ${file.path} selected.`)
+        this.props.onSelectGeodata(file)    
     }
 
     public render():JSX.Element{
+        let attributes:GeoJsonProperties[] = []
+        if(this.props.geodata!=null){
+            attributes=this.props.geodata.attributes()
+        }
        return (
-        <Panel>
+        <div>
             <FileInput label="Shape Datei auswählen..." fileSelected={this.shpFileSelected} disabled={false}/>    
-            <MapView/>
-            <AttributeView/>
-        </Panel>        
+            <MapView geodata={this.props.geodata}/>
+            <AttributeView attributes={attributes}/>
+        </div>        
        ) 
     }
   }

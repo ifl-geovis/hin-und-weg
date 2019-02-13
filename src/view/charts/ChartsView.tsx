@@ -2,11 +2,10 @@ import React from "react"
 import ChartChooserView from "./ChartChooserView"
 import LegendView from "./LegendView"
 import ChartView from "./ChartView"
-import Panel from "../Panel"
-
+import Tabledata from '../../model/Tabledata';
 
 export interface ChartsViewProps {
-
+    data: Tabledata | null
 }
 
 export default class ChartsView extends React.Component<ChartsViewProps>{
@@ -24,8 +23,8 @@ export default class ChartsView extends React.Component<ChartsViewProps>{
     }
 
     public render():JSX.Element{
-       return (
-           <Panel>
+       return <div>
+                <div>{this.props.data!=null?this.props.data.getCellCount():'Keine Daten für Diagramme vorhanden'}</div>
                 <ChartChooserView 
                     onSelectYearsType={console.log}
                     onSelectChartType={console.log}
@@ -34,7 +33,7 @@ export default class ChartsView extends React.Component<ChartsViewProps>{
                 />
                 <ChartView/>
                 <LegendView/>
-            </Panel>
-       ) 
+            </div>
+       
     }
   }
