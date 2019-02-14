@@ -40,7 +40,7 @@ export default class Geodata {
     public fields(): string[] {
         assert(R.not(R.isEmpty(this.featureCollection.features)),"data.features is empty")
         let first = R.head(this.featureCollection.features)!      
-        return R.keys(first.properties)
+        return R.keys(first.properties) as string[]
     }    
 
     public attributes(): GeoJsonProperties[]{

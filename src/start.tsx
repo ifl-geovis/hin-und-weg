@@ -8,15 +8,16 @@ import GeodataView from './view/geo/GeodataView'
 import ChartsView from './view/charts/ChartsView'
 import Geodata from './model/Geodata';
 import Tabledata from './model/Tabledata'
+import Combiner from './model/Combiner'
 
 interface AppProps {
-
 }
 
 interface AppState {
     geodata: Geodata | null
     tabledatas: { [id:string]: Tabledata}
     selectedTabledataId: string | null
+    combiner: Combiner | null
 }
 
 class App extends React.Component<AppProps,AppState>{
@@ -29,7 +30,8 @@ class App extends React.Component<AppProps,AppState>{
         this.state = {
             geodata: null,
             tabledatas: {},
-            selectedTabledataId: null
+            selectedTabledataId: null,
+            combiner: null
         }
     }
 
@@ -42,18 +44,21 @@ class App extends React.Component<AppProps,AppState>{
     }
 
     onSelectTabledata(file:File) {
-        Tabledata.read(file.path,(tabledata: Tabledata) => {            
-            this.setState({ tabledatas: R.assoc(path.basename(file.path),tabledata,this.state.tabledatas) })
+        Tabledata.read(file.path,(tabledata: Tabledata) => { 
+            let newTabledata = tabledata.getTabledataBy([2,tabledata.getRowCount()],[0,tabledata.getColumnCount()])           
+            this.setState({ tabledatas: R.assoc(path.basename(file.path),newTabledata,this.state.tabledatas) })
+            
         })
     }
 
     render(){
         return <GridLayout className="layout" cols={2} width={1600} rowHeight={600} preventCollision={false}>
             <div key="charts-view"  data-grid={{x: 0, y: 0, w: 1, h: 1}}>
-                <ChartsView data={this.state.selectedTabledataId!=null?this.state.tabledatas[this.state.selectedTabledataId]:null}/>
+                <ChartsView tabledatas={this.state.tabledatas}/>
             </div>
             <div key="tabledata-view" data-grid={{x: 0, y: 1, w: 2, h: 1}}>
-                <TabledataView tabledatas={this.state.tabledatas}
+                <TabledataView  geodata={this.state.geodata}
+                                tabledatas={this.state.tabledatas}
                                geoFieldNames={this.state.geodata==null?[]:this.state.geodata.fields()} 
                                onSelectTabledataId={this.onSelectTabledataId}
                                onSelectTabledataFile={this.onSelectTabledata}/>

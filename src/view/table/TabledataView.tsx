@@ -2,9 +2,11 @@ import React from "react"
 import FileInput from '../input/FileInput'
 import TabMatrixView from "./TabMatrixView"
 import Panel from "../Panel"
-import Tabledata from '../../model/Tabledata';
+import Tabledata from '../../model/Tabledata'
+import Geodata from '../../model/Geodata'
 
 export interface TabledataViewProps {
+    geodata: Geodata | null
     geoFieldNames: string[],
     tabledatas: { [id:string]: Tabledata }
     onSelectTabledataId: (selected:string) => void
@@ -35,7 +37,7 @@ export default class TabledataView extends React.Component<TabledataViewProps,Ta
        return (
         <Panel>
             <FileInput label="CSV Datei auswählen..." fileSelected={this.csvFileSelected} disabled={false}/>    
-            <TabMatrixView fieldNames={this.props.geoFieldNames} tabledatas={this.props.tabledatas} onSelectTableDataId={this.onSelectTableDataId}/>
+            <TabMatrixView geodata={this.props.geodata} fieldNames={this.props.geoFieldNames} tabledatas={this.props.tabledatas} onSelectTableDataId={this.onSelectTableDataId}/>
         </Panel>        
        ) 
     }

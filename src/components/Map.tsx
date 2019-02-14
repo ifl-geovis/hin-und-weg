@@ -50,7 +50,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
                 let createColumn = (column:string) => {
                     return <Column key={column} name={column} cellRenderer={cellRenderer}/>
                 }
-                columnNames = R.keys(firstFeature.properties)
+                columnNames = R.keys(firstFeature.properties) as string[]
                 columns = R.map(createColumn,columnNames)
             }                             
             return (

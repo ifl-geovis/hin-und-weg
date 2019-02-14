@@ -1,39 +1,48 @@
 import React from "react"
+import R from 'ramda'
 import ChartChooserView from "./ChartChooserView"
 import LegendView from "./LegendView"
 import ChartView from "./ChartView"
-import Tabledata from '../../model/Tabledata';
+import Tabledata from '../../model/Tabledata'
 
 export interface ChartsViewProps {
-    data: Tabledata | null
+    tabledatas: {[name:string]: Tabledata}
 }
 
-export default class ChartsView extends React.Component<ChartsViewProps>{
+interface ChartsViewState {
+    chartType: string 
+}
+
+export default class ChartsView extends React.Component<ChartsViewProps,ChartsViewState>{
     
     constructor(props:ChartsViewProps){
-        super(props)                
+        super(props)         
+        this.onChartTypeSelect = this.onChartTypeSelect.bind(this)
+        this.onRangeSelect = this.onRangeSelect.bind(this)
+        this.state = {
+            chartType: 'Liniendiagramm'
+        }       
     }    
 
-    private onChartTypeSelect(event: React.ChangeEvent<HTMLSelectElement>){
-        console.log(`onChartTypeSelect:${event.target.options[event.target.selectedIndex].value}`)
+    private onChartTypeSelect(selected: string){        
+        this.setState({chartType:selected})
     }
    
-    private onYearSelect(event: React.ChangeEvent<HTMLSelectElement>){
-        console.log(`onYearSelect: ${event.target.options[event.target.selectedIndex].value}`)
+    private onRangeSelect(range: string){
+       console.log("Selected range "+range)
     }
 
     public render():JSX.Element{
-       return <div>
-                <div>{this.props.data!=null?this.props.data.getCellCount():'Keine Daten für Diagramme vorhanden'}</div>
+        let ranges = R.keys(this.props.tabledatas) as string[]
+        return <div>                
                 <ChartChooserView 
-                    onSelectYearsType={console.log}
-                    onSelectChartType={console.log}
-                    diagramTypes={['Diagrammtyp auswählen','Liniendiagramm','Balkendiagramm','Sankey']}
-                    yearTypes={['Jahr(e) auswählen','Alle Jahre','2001','2002','2003']}
+                    onSelectRange={this.onRangeSelect}
+                    onSelectChartType={this.onChartTypeSelect}
+                    diagramTypes={['Liniendiagramm','Balkendiagramm','Sankey']}
+                    rangeTypes={ranges}
                 />
-                <ChartView/>
-                <LegendView/>
-            </div>
-       
+                <ChartView tabledatas={this.props.tabledatas} type={this.state.chartType}/>
+                <LegendView tabledatas={this.props.tabledatas}/>
+            </div>       
     }
   }

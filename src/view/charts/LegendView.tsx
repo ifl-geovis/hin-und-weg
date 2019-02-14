@@ -1,7 +1,9 @@
 import React from "react"
+import R from 'ramda'
+import Tabledata from "../../model/Tabledata"
 
 export interface LegendProps {
-    
+    tabledatas: { [name: string] : Tabledata}
 }
 
 export default class LegendView extends React.Component<LegendProps>{
@@ -13,7 +15,9 @@ export default class LegendView extends React.Component<LegendProps>{
     public render():JSX.Element{
        return (
         <div>
-            <p>Insert legend for chart here.</p>
+            <svg width="500" height="250">
+                <text transform="translate(250,125)">Legend for {R.length(R.keys(this.props.tabledatas))} Datensätze.</text>
+            </svg>
         </div>   
        ) 
     }

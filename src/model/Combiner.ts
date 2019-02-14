@@ -12,9 +12,7 @@ export default class Combiner {
     constructor(geodata: Geodata,cubus: Cubus<string>){
         this.geodata = geodata
         this.cubus = cubus
-    }
-
-  
+    }  
 
     public setGeodataId(id: string){
         this.geodataId = id 
@@ -32,7 +30,7 @@ export default class Combiner {
         return this.geodataSelector
     }
 
-    // TODO: How to ensure that numbers like '05' == '5'
+    // TODO: How to ensure that numbers like '05' == '5' ?
     private getCubusKeyFor(selector: string): string {
         let selectedFeature = this.geodata.getFeatureByFieldValue(this.geodataSelector,selector) 
         return ""+parseInt(selectedFeature.properties![this.geodataId])        
