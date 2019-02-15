@@ -72,3 +72,11 @@ class App extends React.Component<AppProps,AppState>{
 }
 
 ReactDOM.render(<App/>,document.getElementById('root'))
+
+//TODO: 18.02.2019 - 22.02.2019
+// [ ] Model grouping for theme, time and spatial ranges
+// [ ] Link geodata attributes for ALL matrices
+// [ ] Use OLAP and Geodata as main data structure
+// [ ] Model aggregation of *ranges: Sum //
+// [ ] Model difference of *ranges: diff of year values (time)
+// [ ] Model Index attributes: Example -> Move persons to all persons 
