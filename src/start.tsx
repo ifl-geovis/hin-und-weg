@@ -45,9 +45,10 @@ class App extends React.Component<AppProps,AppState>{
 
     onSelectTabledata(file:File) {
         Tabledata.read(file.path,(tabledata: Tabledata) => { 
-            let newTabledata = tabledata.getTabledataBy([2,tabledata.getRowCount()],[0,tabledata.getColumnCount()])           
-            this.setState({ tabledatas: R.assoc(path.basename(file.path),newTabledata,this.state.tabledatas) })
-            
+            let rowOffset = 3
+            let columnOffset = 1
+            let newTabledata = tabledata.getTabledataBy([rowOffset,tabledata.getRowCount()],[columnOffset,tabledata.getColumnCount()])           
+            this.setState({ tabledatas: R.assoc(path.basename(file.path),newTabledata,this.state.tabledatas) })            
         })
     }
 

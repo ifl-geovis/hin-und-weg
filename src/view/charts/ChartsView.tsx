@@ -11,6 +11,7 @@ export interface ChartsViewProps {
 
 interface ChartsViewState {
     chartType: string 
+    chartRange: string | null
 }
 
 export default class ChartsView extends React.Component<ChartsViewProps,ChartsViewState>{
@@ -20,7 +21,8 @@ export default class ChartsView extends React.Component<ChartsViewProps,ChartsVi
         this.onChartTypeSelect = this.onChartTypeSelect.bind(this)
         this.onRangeSelect = this.onRangeSelect.bind(this)
         this.state = {
-            chartType: 'Liniendiagramm'
+            chartType: 'Liniendiagramm',
+            chartRange: null
         }       
     }    
 
@@ -28,8 +30,8 @@ export default class ChartsView extends React.Component<ChartsViewProps,ChartsVi
         this.setState({chartType:selected})
     }
    
-    private onRangeSelect(range: string){
-       console.log("Selected range "+range)
+    private onRangeSelect(selected: string){
+        this.setState({chartRange:selected})
     }
 
     public render():JSX.Element{
@@ -41,7 +43,7 @@ export default class ChartsView extends React.Component<ChartsViewProps,ChartsVi
                     diagramTypes={['Liniendiagramm','Balkendiagramm','Sankey']}
                     rangeTypes={ranges}
                 />
-                <ChartView tabledatas={this.props.tabledatas} type={this.state.chartType}/>
+                <ChartView tabledatas={this.props.tabledatas} type={this.state.chartType} range={this.state.chartRange}/>
                 <LegendView tabledatas={this.props.tabledatas}/>
             </div>       
     }
