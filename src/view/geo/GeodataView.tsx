@@ -14,11 +14,12 @@ export default class GeodataView extends React.Component<GeodataProps>{
     
     constructor(props:GeodataProps){
         super(props)        
-        this.shpFileSelected = this.shpFileSelected.bind(this)        
+        this.shpFilesSelected = this.shpFilesSelected.bind(this)        
     }    
 
-    public shpFileSelected(file:File){
-        this.props.onSelectGeodata(file)    
+    //HINT: In the moment we support only one geodata file for selection
+    public shpFilesSelected(fileList:FileList){
+        this.props.onSelectGeodata(fileList[0])    
     }
 
     public render():JSX.Element{
@@ -28,7 +29,7 @@ export default class GeodataView extends React.Component<GeodataProps>{
         }
        return (
         <div>
-            <FileInput label="Shape Datei auswählen..." fileSelected={this.shpFileSelected} disabled={false}/>    
+            <FileInput label="Shape Datei auswählen..." filesSelected={this.shpFilesSelected} disabled={false}/>    
             <MapView geodata={this.props.geodata}/>
             <AttributeView attributes={attributes}/>
         </div>        

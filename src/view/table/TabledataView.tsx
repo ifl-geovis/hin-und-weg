@@ -1,6 +1,8 @@
+import R from 'ramda'
 import React from "react"
 import FileInput from '../input/FileInput'
 import TabMatrixView from "./TabMatrixView"
+import LinkView from './LinkView'
 import Panel from "../Panel"
 import Tabledata from '../../model/Tabledata'
 import Geodata from '../../model/Geodata'
@@ -10,34 +12,50 @@ export interface TabledataViewProps {
     geoFieldNames: string[],
     tabledatas: { [id:string]: Tabledata }
     onSelectTabledataId: (selected:string) => void
-    onSelectTabledataFile: (file:File) => void
+    onSelectTabledataFiles: (fileList:FileList) => void
 }
 
 interface TabledataViewState {
-    
+    nameField: string 
+    idField: string    
 }
 
 export default class TabledataView extends React.Component<TabledataViewProps,TabledataViewState>{
     
     constructor(props:TabledataViewProps){
         super(props)        
-        this.csvFileSelected = this.csvFileSelected.bind(this) 
-        this.onSelectTableDataId = this.onSelectTableDataId.bind(this)                         
+        this.onCSVFilesSelected = this.onCSVFilesSelected.bind(this) 
+        this.onSelectTableDataId = this.onSelectTableDataId.bind(this)  
+        this.onIdSelect = this.onIdSelect.bind(this) 
+        this.onNameSelect = this.onNameSelect.bind(this)            
+        this.state = {
+            nameField: (R.nth(0,props.geoFieldNames)?R.nth(0,props.geoFieldNames)!:"Auswählen"),
+            idField: (R.nth(1,props.geoFieldNames)?R.nth(1,props.geoFieldNames)!:"Auswählen"),            
+        }              
     }    
 
-    private csvFileSelected(file:File){
-        this.props.onSelectTabledataFile(file)
+    private onCSVFilesSelected(fileList:FileList){
+        this.props.onSelectTabledataFiles(fileList)
     }
 
     private onSelectTableDataId(selectedId:string){
         this.props.onSelectTabledataId(selectedId)
+    }   
+
+    private onNameSelect(name:string){        
+        this.setState({nameField: name})
     }
 
+    private onIdSelect(id:string){       
+        this.setState({idField: id})
+    }    
+  
     public render():JSX.Element{
        return (
         <Panel>
-            <FileInput label="CSV Datei auswählen..." fileSelected={this.csvFileSelected} disabled={false}/>    
-            <TabMatrixView geodata={this.props.geodata} fieldNames={this.props.geoFieldNames} tabledatas={this.props.tabledatas} onSelectTableDataId={this.onSelectTableDataId}/>
+            <LinkView fieldNames={this.props.geoFieldNames} nameField={this.state.nameField} idField={this.state.idField} onNameSelect={this.onNameSelect} onIdSelect={this.onIdSelect}/>            
+            <FileInput label="CSV Dateien auswählen..." filesSelected={this.onCSVFilesSelected} disabled={false}/>                
+            <TabMatrixView idField={this.state.idField} nameField={this.state.nameField} geodata={this.props.geodata} tabledatas={this.props.tabledatas} onSelectTableDataId={this.onSelectTableDataId}/>
         </Panel>        
        ) 
     }

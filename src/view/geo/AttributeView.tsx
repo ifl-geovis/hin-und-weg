@@ -12,6 +12,7 @@ export default class AttributeView extends React.Component<AttributeViewProps>{
     constructor(props:AttributeViewProps){
         super(props)                  
     }      
+    
     public render():JSX.Element{       
         if(R.isEmpty(this.props.attributes)) return <div></div>                
         let createColumn = ((name: string) => {

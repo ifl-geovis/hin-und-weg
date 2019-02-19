@@ -4,6 +4,7 @@ import path from 'path'
 import R from 'ramda'
 import GridLayout from 'react-grid-layout'
 import TabledataView from './view/table/TabledataView'
+import MatrixConfigView from './view/table/MatrixConfigView'
 import GeodataView from './view/geo/GeodataView'
 import ChartsView from './view/charts/ChartsView'
 import Geodata from './model/Geodata';
@@ -16,8 +17,10 @@ interface AppProps {
 interface AppState {
     geodata: Geodata | null
     tabledatas: { [id:string]: Tabledata}
-    selectedTabledataId: string | null
+    selectedTabledataId: string | null        
     combiner: Combiner | null
+    rowOffset: number
+    columnOffset: number
 }
 
 class App extends React.Component<AppProps,AppState>{
@@ -25,13 +28,17 @@ class App extends React.Component<AppProps,AppState>{
     constructor(props:AppProps){
         super(props)
         this.onSelectGeodata = this.onSelectGeodata.bind(this)
-        this.onSelectTabledata = this.onSelectTabledata.bind(this)
+        this.onSelectTabledatas = this.onSelectTabledatas.bind(this)
         this.onSelectTabledataId = this.onSelectTabledataId.bind(this)
+        this.onSelectRowOffset = this.onSelectRowOffset.bind(this)
+        this.onSelectColumnOffset = this.onSelectColumnOffset.bind(this)
         this.state = {
-            geodata: null,
+            geodata: null,            
             tabledatas: {},
             selectedTabledataId: null,
-            combiner: null
+            combiner: null,
+            rowOffset: 0,
+            columnOffset: 0            
         }
     }
 
@@ -43,26 +50,48 @@ class App extends React.Component<AppProps,AppState>{
         Geodata.read(file.path,(data:Geodata) => this.setState({geodata:data.transformToWGS84()}))
     }
 
-    onSelectTabledata(file:File) {
-        Tabledata.read(file.path,(tabledata: Tabledata) => { 
-            let rowOffset = 3
-            let columnOffset = 1
-            let newTabledata = tabledata.getTabledataBy([rowOffset,tabledata.getRowCount()],[columnOffset,tabledata.getColumnCount()])           
-            this.setState({ tabledatas: R.assoc(path.basename(file.path),newTabledata,this.state.tabledatas) })            
-        })
+    onSelectTabledatas(fileList:FileList) {
+        for(let i=0;i<fileList.length;i++){
+            let file = fileList.item(i)
+            if(file!=null){
+                Tabledata.read(file.path,(tabledata: Tabledata) => {             
+                    this.setState({ tabledatas: R.assoc(path.basename(file!.path),tabledata,this.state.tabledatas) })                                       
+                })
+            }
+        }                  
+    }
+
+    onSelectRowOffset(rowOffset: number){                                       
+        this.setState({rowOffset: rowOffset})                     
+    }
+
+    onSelectColumnOffset(columnOffset: number){                    
+        this.setState({columnOffset: columnOffset})            
+    }
+
+    private getOffsetTabledatas(tabledatas: { [id:string]: Tabledata}) : { [id:string]: Tabledata} {
+        let result = {}
+        R.forEach((tableName) => {
+            let tableData = this.state.tabledatas[tableName]
+            let newTabledata = tableData.getTabledataBy([this.state.rowOffset,tableData.getRowCount()],[this.state.columnOffset,tableData.getColumnCount()])           
+            result = R.assoc(tableName,newTabledata,result)      
+        }, R.keys(this.state.tabledatas) as string[])
+        return result  
     }
 
     render(){
+        let tabledatas = this.getOffsetTabledatas(this.state.tabledatas)
         return <GridLayout className="layout" cols={2} width={1600} rowHeight={600} preventCollision={false}>
             <div key="charts-view"  data-grid={{x: 0, y: 0, w: 1, h: 1}}>
-                <ChartsView tabledatas={this.state.tabledatas}/>
+                <ChartsView tabledatas={tabledatas}/>
             </div>
             <div key="tabledata-view" data-grid={{x: 0, y: 1, w: 2, h: 1}}>
-                <TabledataView  geodata={this.state.geodata}
-                                tabledatas={this.state.tabledatas}
+                <MatrixConfigView onRowOffsetSelect={this.onSelectRowOffset} onColumnOffsetSelect={this.onSelectColumnOffset}/>                
+                <TabledataView geodata={this.state.geodata}
+                               tabledatas={tabledatas}
                                geoFieldNames={this.state.geodata==null?[]:this.state.geodata.fields()} 
                                onSelectTabledataId={this.onSelectTabledataId}
-                               onSelectTabledataFile={this.onSelectTabledata}/>
+                               onSelectTabledataFiles={this.onSelectTabledatas}/>
             </div>
             <div key="geodata-view" data-grid={{x: 1, y: 0, w: 1, h: 1}}>
                 <GeodataView geodata={this.state.geodata} onSelectGeodata={this.onSelectGeodata}/>
@@ -74,9 +103,10 @@ class App extends React.Component<AppProps,AppState>{
 ReactDOM.render(<App/>,document.getElementById('root'))
 
 //TODO: 18.02.2019 - 22.02.2019
-// [ ] Model grouping for theme, time and spatial ranges
-// [ ] Link geodata attributes for ALL matrices
+// [✓] Link geodata attributes for ALL matrices
+// [✓] Add offset selectors for row and column
 // [ ] Use OLAP and Geodata as main data structure
 // [ ] Model aggregation of *ranges: Sum //
 // [ ] Model difference of *ranges: diff of year values (time)
 // [ ] Model Index attributes: Example -> Move persons to all persons 
+// [ ] Model grouping for theme, time and spatial ranges
