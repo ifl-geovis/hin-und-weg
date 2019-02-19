@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import path from 'path'
 import R from 'ramda'
+import cubus from 'cubus'
 import GridLayout from 'react-grid-layout'
 import TabledataView from './view/table/TabledataView'
 import MatrixConfigView from './view/table/MatrixConfigView'
@@ -9,7 +10,8 @@ import GeodataView from './view/geo/GeodataView'
 import ChartsView from './view/charts/ChartsView'
 import Geodata from './model/Geodata';
 import Tabledata from './model/Tabledata'
-import Combiner from './model/Combiner'
+import OLAPView from './view/olap/OLAPView'
+import Cubus from 'cubus';
 
 interface AppProps {
 }
@@ -18,7 +20,6 @@ interface AppState {
     geodata: Geodata | null
     tabledatas: { [id:string]: Tabledata}
     selectedTabledataId: string | null        
-    combiner: Combiner | null
     rowOffset: number
     columnOffset: number
 }
@@ -35,8 +36,7 @@ class App extends React.Component<AppProps,AppState>{
         this.state = {
             geodata: null,            
             tabledatas: {},
-            selectedTabledataId: null,
-            combiner: null,
+            selectedTabledataId: null,            
             rowOffset: 0,
             columnOffset: 0            
         }
@@ -100,7 +100,58 @@ class App extends React.Component<AppProps,AppState>{
     }
 }
 
-ReactDOM.render(<App/>,document.getElementById('root'))
+//ReactDOM.render(<App/>,document.getElementById('root'))
+let createExampleCubus = (): cubus<number> => {
+    let dimensions = ['Jahr','Von','Nach']
+    let cube = new Cubus<number>(dimensions)
+    
+    cube.addDimensionValue('Jahr','2015')
+    cube.addDimensionValue('Jahr','2016')
+    cube.addDimensionValue('Jahr','2017')
+
+    cube.addDimensionValue('Von','10000')
+    cube.addDimensionValue('Von','10001')
+    cube.addDimensionValue('Von','10002')
+
+    cube.addDimensionValue('Nach','10000')
+    cube.addDimensionValue('Nach','10001')
+    cube.addDimensionValue('Nach','10002')
+    // - Add data -
+    // 2015
+    cube.add(29,{'Jahr':'2015','Von':'10000','Nach':'10000'})
+    cube.add(4, {'Jahr':'2015','Von':'10000','Nach':'10001'})
+    cube.add(28,{'Jahr':'2015','Von':'10000','Nach':'10002'})
+    cube.add(4, {'Jahr':'2015','Von':'10001','Nach':'10000'})
+    cube.add(46,{'Jahr':'2015','Von':'10001','Nach':'10001'})
+    cube.add(24,{'Jahr':'2015','Von':'10001','Nach':'10002'})
+    cube.add(13,{'Jahr':'2015','Von':'10002','Nach':'10000'})
+    cube.add(46,{'Jahr':'2015','Von':'10002','Nach':'10001'})
+    cube.add(470,{'Jahr':'2015','Von':'10002','Nach':'10002'})
+    // 2016
+    cube.add(28,{'Jahr':'2016','Von':'10000','Nach':'10000'})
+    cube.add(8, {'Jahr':'2016','Von':'10000','Nach':'10001'})
+    cube.add(61,{'Jahr':'2016','Von':'10000','Nach':'10002'})
+    cube.add(5, {'Jahr':'2016','Von':'10001','Nach':'10000'})
+    cube.add(40,{'Jahr':'2016','Von':'10001','Nach':'10001'})
+    cube.add(38,{'Jahr':'2016','Von':'10001','Nach':'10002'})
+    cube.add(16,{'Jahr':'2016','Von':'10002','Nach':'10000'})
+    cube.add(39,{'Jahr':'2016','Von':'10002','Nach':'10001'})
+    cube.add(735,{'Jahr':'2016','Von':'10002','Nach':'10002'})
+    // 2017
+    cube.add(17,{'Jahr':'2017','Von':'10000','Nach':'10000'})
+    cube.add(13, {'Jahr':'2017','Von':'10000','Nach':'10001'})
+    cube.add(16,{'Jahr':'2017','Von':'10000','Nach':'10002'})
+    cube.add(4, {'Jahr':'2017','Von':'10001','Nach':'10000'})
+    cube.add(62,{'Jahr':'2017','Von':'10001','Nach':'10001'})
+    cube.add(31,{'Jahr':'2017','Von':'10001','Nach':'10002'})
+    cube.add(18,{'Jahr':'2017','Von':'10002','Nach':'10000'})
+    cube.add(44,{'Jahr':'2017','Von':'10002','Nach':'10001'})
+    cube.add(552,{'Jahr':'2017','Von':'10002','Nach':'10002'})
+    return cube
+}
+Geodata.read('./testdata/ot.shp',(geodata:Geodata) => {
+    ReactDOM.render(<OLAPView geodata={geodata} cubus={createExampleCubus()}/>,document.getElementById('root'))
+})
 
 //TODO: 18.02.2019 - 22.02.2019
 // [✓] Link geodata attributes for ALL matrices
