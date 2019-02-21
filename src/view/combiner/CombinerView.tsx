@@ -6,7 +6,6 @@ import Geodata from "../../model/Geodata";
 import Tabledata from "../../model/Tabledata";
 import GeodataView from "../geo/GeodataView";
 import FileInput from "../input/FileInput";
-import { Query } from 'cubus';
 
 export interface ICombinerState {
     combiner: Combiner;
@@ -48,7 +47,7 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
             <div> Von:  <Select options={fromOptions} onChange={this.onSelectFrom} isMulti={true}/></div>
             <div> Nach: <Select options={toOptions} onChange={this.onSelectTo} isMulti={true}/></div>
             <div>
-               {R.join(", ",R.map((result) => result.value, results))}
+               {R.join(", ", R.map((result) => result.value, results))}
             </div>
         </div>
         );

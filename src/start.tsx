@@ -1,5 +1,5 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import path from 'path'
 import R from 'ramda'
 import GridLayout from 'react-grid-layout'
@@ -7,10 +7,8 @@ import TabledataView from './view/table/TabledataView'
 import MatrixConfigView from './view/table/MatrixConfigView'
 import GeodataView from './view/geo/GeodataView'
 import ChartsView from './view/charts/ChartsView'
-import Geodata from './model/Geodata';
 import Tabledata from './model/Tabledata'
-import CombinerView from './view/combiner/CombinerView'
-import Combiner from "./model/Combiner";
+import CombinerView from "./view/combiner/CombinerView";
 
 /*
 interface AppProps {
