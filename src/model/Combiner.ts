@@ -5,25 +5,33 @@ import Tabledata from "../../src/model/Tabledata";
 
 export default class Combiner {
 
-    private geodata: Geodata;
-    private cubus: Cubus<number>; 
+    private geodata: Geodata | null;
+    private cubus: Cubus<number>;
     private tableDimensions: string[];
     private tables: { [name: string]: Tabledata };
     private geodataId: string = "ID";
     private geodataSelector: string = "Name";
 
-    constructor(geodata: Geodata, tableDimensions: string[]) {
-        this.geodata = geodata;
+    constructor(tableDimensions: string[]) {
+        this.geodata = null;
         this.tables = {};
         this.tableDimensions = tableDimensions;
         this.cubus = new Cubus<number>(tableDimensions);
     }
 
+    public setGeodata(geodata: Geodata): Combiner {
+        this.geodata = geodata;
+        return this;
+    }
+
     public getColumnNamesFor(name: string): string[] {
+        if (R.or(R.isEmpty(this.tables), R.isNil(this.tables[name]))) {
+            return [];
+        }
         return R.map(this.getNameById.bind(this), R.tail(this.tables[name].getRowAt(0)));
     }
 
-    public addTable(dimension: string,name: string, table: Tabledata): Combiner {
+    public addTable(dimension: string, name: string, table: Tabledata): Combiner {
         this.tables = R.assoc(name, table, this.tables);
 
         this.cubus.addDimensionValue(dimension, name);
@@ -45,6 +53,10 @@ export default class Combiner {
             }
         }
         return this;
+    }
+
+    public getGeodata(): Geodata | null {
+        return this.geodata;
     }
 
     public getTableCount(): number {
@@ -72,19 +84,23 @@ export default class Combiner {
     public getGeodataSelector(): string {
         return this.geodataSelector;
     }
-
+/*
     public getValueFor(row: [string, string],column: [string, string]): number {
         const selectedRowKey = this.getCubusKeyFor(row[1]);
         const selectedColumnKey = this.getCubusKeyFor(column[1]);
         const query = R.assoc(column[0], [selectedColumnKey], R.assoc(row[0], [selectedRowKey], {}));
         return this.cubus.query(query)[0].value;
     }
+*/
 
     public getTableNames(): string[] {
         return R.sort(( a, b ) => a.localeCompare(b), R.keys(this.tables) as string[]);
     }
 
     public getRowNamesFor(name: string): string[] {
+        if (R.or(R.isEmpty(this.tables),R.isNil(this.tables[name]))) {
+            return [];
+        }
         return R.map(this.getNameById.bind(this), R.tail(this.tables[name].getColumnAt(0)));
     }
 
@@ -97,12 +113,21 @@ export default class Combiner {
     }
 
     private getNameById(id: string): string{
-        const feature = this.geodata.getFeatureByFieldValue(this.getGeodataId(), this.normalizeValue(id));
-        return feature.properties![this.getGeodataSelector()];
+        if(this.geodata == null || this.geodataId == null || this.getGeodataSelector == null) {
+            return id;
+        }
+        try {
+            const feature = this.geodata.getFeatureByFieldValue(this.getGeodataId(), this.normalizeValue(id));
+            return feature.properties![this.getGeodataSelector()];
+        } catch (error) {
+            return id;
+        }
     }
 
+    /*
     private getCubusKeyFor(selector: string): string {
         const selectedFeature = this.geodata.getFeatureByFieldValue(this.geodataSelector,selector);
         return "" + parseInt(selectedFeature.properties![this.geodataId], 10);
     }
+    */
 }
