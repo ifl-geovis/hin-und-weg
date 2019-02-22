@@ -58,8 +58,14 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         );
     }
 
-    protected createTableFrom(results: Array<Result<number>>): JSX.Element {
-        return <div>{R.join(", ", R.map((result) => result.value, results))}</div>;
+    protected createTableFrom(results: Array<Result<number>>): JSX.Element[] {
+        return results.map((result) =>
+                 <p>
+                   {result.property[0].value + " " +
+                   result.property[1].name + " " + result.property[1].value + " " +
+                   result.property[2].name + " " + result.property[2].value + ": " +
+                   result.value}
+                   </p>);
     }
 
     protected createDiagramsFrom(results: Array<Result<number>>): JSX.Element {
