@@ -56,6 +56,7 @@ describe("Combiner takes Geodata and Tabledata and combines Geodata fields and M
             expect(year2002[0].property[2].name).equal("Nach");
             expect(year2002[0].property[2].value).equal("Zentrum");
             // TODO: expect("Not implemented","Convert Result to Tabledata ?").equal("Is implemented");
+            expect(combiner.getValueFor(["Jahr", "2002"],["Von", "Zentrum"], ["Nach", "Zentrum"])).equal(10);
             done();
         });
     });

@@ -84,14 +84,14 @@ export default class Combiner {
     public getGeodataSelector(): string {
         return this.geodataSelector;
     }
-/*
-    public getValueFor(row: [string, string],column: [string, string]): number {
-        const selectedRowKey = this.getCubusKeyFor(row[1]);
-        const selectedColumnKey = this.getCubusKeyFor(column[1]);
-        const query = R.assoc(column[0], [selectedColumnKey], R.assoc(row[0], [selectedRowKey], {}));
+
+    public getValueFor(tableSpec: [string,string], rowSpec: [string,string], columnSpec: [string, string]): number {
+        const selectedRowKey = this.getCubusKeyFor(rowSpec[1]);
+        const selectedColumnKey = this.getCubusKeyFor(columnSpec[1]);
+        const request = R.objOf(tableSpec[0],tableSpec[1]);
+        const query = R.assoc(columnSpec[0], [selectedColumnKey], R.assoc(rowSpec[0], [selectedRowKey], request));
         return this.cubus.query(query)[0].value;
     }
-*/
 
     public getTableNames(): string[] {
         return R.sort(( a, b ) => a.localeCompare(b), R.keys(this.tables) as string[]);
@@ -124,10 +124,12 @@ export default class Combiner {
         }
     }
 
-    /*
     private getCubusKeyFor(selector: string): string {
-        const selectedFeature = this.geodata.getFeatureByFieldValue(this.geodataSelector,selector);
+        if (this.geodata == null){
+            return selector;
+        }
+        const selectedFeature = this.geodata.getFeatureByFieldValue(this.geodataSelector, selector);
+        // TODO: How can we factor out this ?
         return "" + parseInt(selectedFeature.properties![this.geodataId], 10);
     }
-    */
 }

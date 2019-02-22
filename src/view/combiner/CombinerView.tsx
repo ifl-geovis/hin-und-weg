@@ -59,13 +59,21 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
     }
 
     protected createTableFrom(results: Array<Result<number>>): JSX.Element[] {
-        return results.map((result) =>
-                 <p>
-                   {result.property[0].value + " " +
-                   result.property[1].name + " " + result.property[1].value + " " +
-                   result.property[2].name + " " + result.property[2].value + ": " +
-                   result.value}
-                   </p>);
+        const createYearTable = (year: string): JSX.Element => {
+            return (
+        <table key={year}><thead></thead><tbody>{
+            R.map((from: string): JSX.Element => {
+                return (<tr key={from}>{
+                    R.map((to: string): JSX.Element => {
+                        return <td key={to}>{
+                            this.state.combiner.getValueFor(["Jahr", year], ["Von", from], ["Nach", to])
+                        }</td>;
+                    }, this.state.tos)}
+                    </tr>);
+            }, this.state.froms)
+            }</tbody></table>);
+        };
+        return R.map(createYearTable, this.state.years);
     }
 
     protected createDiagramsFrom(results: Array<Result<number>>): JSX.Element {
