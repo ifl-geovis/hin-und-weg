@@ -1,9 +1,11 @@
+import { Result } from "cubus";
 import R from "ramda";
 import React from "react";
 import Select from "react-select";
 import Combiner from "../../model/Combiner";
 import Geodata from "../../model/Geodata";
 import Tabledata from "../../model/Tabledata";
+import ChartsView from "../charts/ChartsView";
 import GeodataView from "../geo/GeodataView";
 import FileInput from "../input/FileInput";
 
@@ -41,6 +43,8 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         const results = this.state.combiner.query(query);
         const geodata = this.state.combiner.getGeodata() == null ? null :
                         this.state.combiner.getGeodata()!.transformToWGS84();
+        const resultTable = this.createTableFrom(results);
+        const diagrams = this.createDiagramsFrom(results);
         return (
         <div>
             <FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onAddTabledatas} disabled={false}/>
@@ -48,11 +52,18 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
             <div> Jahre: <Select options={yearsOptions} onChange={this.onSelectYears} isMulti={true}/></div>
             <div> Von:  <Select options={fromOptions} onChange={this.onSelectFrom} isMulti={true}/></div>
             <div> Nach: <Select options={toOptions} onChange={this.onSelectTo} isMulti={true}/></div>
-            <div>
-               {R.join(", ", R.map((result) => result.value, results))}
-            </div>
+            <div>{resultTable}</div>
+            <div>{diagrams}</div>
         </div>
         );
+    }
+
+    protected createTableFrom(results: Array<Result<number>>): JSX.Element {
+        return <div>{R.join(", ", R.map((result) => result.value, results))}</div>;
+    }
+
+    protected createDiagramsFrom(results: Array<Result<number>>): JSX.Element {
+        return <ChartsView tabledatas={{}}/>;
     }
 
     private onSelectFrom(selected: any) {
