@@ -1,23 +1,20 @@
-import React, { Component } from "react"
-import R from "ramda"
-import { Map, GeoJSON,Marker } from 'react-leaflet'
+import React, { Component } from "react";
+import R from "ramda";
+import { GeoJSON, Map } from 'react-leaflet'
 import { FeatureCollection, Geometry } from "geojson"
 import { FileInput , Card, Elevation} from '@blueprintjs/core'
 import { Cell, Column, Table} from '@blueprintjs/table'
 import { Flex, Box} from 'reflexbox'
 import Geodata from '../model/Geodata'
 
-interface IFeaturesProps {   
-}
-
 interface IFeaturesState {
-    features: FeatureCollection<Geometry> | null
-    title: string
+    features: FeatureCollection<Geometry> | null;
+    title: string;
 }
 
-export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
+export class GeodataMap extends Component<{}, IFeaturesState> {
     
-    constructor(props: IFeaturesProps){
+    constructor(props: {}) {
         super(props)
         this.state = { features: null, title: ""}        
     }
@@ -26,7 +23,7 @@ export class GeodataMap extends Component<IFeaturesProps,IFeaturesState> {
         if(event.target.files !=null && event.target.files.length > 0){
             var file = event.target.files[0]
             Geodata.read(file.path,(data:Geodata) => {
-                this.setState({features: data.transformToWGS84().featureCollection, title:  file.path})
+                this.setState({features: data.transformToWGS84().getFeatureCollection(), title:  file.path})
             })           
         }   
     }    

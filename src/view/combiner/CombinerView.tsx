@@ -39,10 +39,12 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         const toOptions = R.map(optionFor, this.state.combiner.getColumnNamesFor(this.state.years[0]));
         const query = {Jahr: this.state.years, Von: this.state.froms, Nach: this.state.tos};
         const results = this.state.combiner.query(query);
+        const geodata = this.state.combiner.getGeodata() == null ? null :
+                        this.state.combiner.getGeodata()!.transformToWGS84();
         return (
         <div>
             <FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onAddTabledatas} disabled={false}/>
-            <GeodataView geodata={this.state.combiner.getGeodata()} onSelectGeodata={this.onSelectGeodataFile}/>
+            <GeodataView geodata={geodata} onSelectGeodata={this.onSelectGeodataFile}/>
             <div> Jahre: <Select options={yearsOptions} onChange={this.onSelectYears} isMulti={true}/></div>
             <div> Von:  <Select options={fromOptions} onChange={this.onSelectFrom} isMulti={true}/></div>
             <div> Nach: <Select options={toOptions} onChange={this.onSelectTo} isMulti={true}/></div>
