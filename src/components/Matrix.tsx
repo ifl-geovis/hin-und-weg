@@ -1,6 +1,6 @@
 import React from "react"
 import R from "ramda"
-import {Matrix,CSVMatrix} from "../model/Matrix"
+import {IMatrix ,CSVMatrix} from "../model/Matrix"
 import {FileInput,Menu, Label, ControlGroup, NumericInput} from "@blueprintjs/core"
 import {Table,Column, Cell,IRegion,SelectionModes,IMenuContext,Utils} from '@blueprintjs/table'
 import {HTMLSelect, Card, Elevation} from '@blueprintjs/core'
@@ -8,7 +8,7 @@ import ReactEcharts from 'echarts-for-react'
 import { ECharts, EChartOption } from 'echarts'
 
 interface MatrixState {
-    matrix: Matrix | null,
+    matrix: IMatrix | null,
     lineSeparator: RegExp,
     columnSeparator: RegExp,
     rowOffset: number,

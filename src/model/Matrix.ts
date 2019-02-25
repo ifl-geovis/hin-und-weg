@@ -1,61 +1,61 @@
 
-interface Matrix {
+interface IMatrix {
 
-    getRowCount(): number
-    getColumnCount(): number
-    getRowAt(rowNum: number): number[]
-    getColumnAt(columnNum: number): number[]
-    getValueAt(rowNum: number, columnNum:number): number
-    getCells(): number[][]
+    getRowCount(): number;
+    getColumnCount(): number;
+    getRowAt(rowNum: number): number[];
+    getColumnAt(columnNum: number): number[];
+    getValueAt(rowNum: number, columnNum: number): number;
+    getCells(): number[][];
 
 }
 // Implementation of Matrix
-import * as fs from "fs"
+import * as fs from "fs";
 
-class CSVMatrix implements Matrix {
+class CSVMatrix implements IMatrix {
 
-    cells: Array<Array<number>>
-    offsets:[number,number] // row,col
+    private cells: number[][];
+    private offsets: [number, number]; // row,col
 
-    constructor(csvFilePath: string,offsets:[number,number]=[1,1],rowSeparator:RegExp = /[\r]\n/,columnSeparator:RegExp = /;/) { 
-        this.offsets = offsets
-        let csvContent = fs.readFileSync(csvFilePath,"UTF-8").toString()
-        this.cells = new Array<Array<number>>()
-        let rows = csvContent.split(rowSeparator)
-        for(let row of rows){
-            let newRow = new Array<number>()
-            let columns = row.split(columnSeparator)
-            for(let column of columns){   
-                newRow.push(parseInt(column))
+    constructor(csvFilePath: string,offsets:[number, number] = [1, 1], rowSeparator: RegExp = /[\r]\n/,columnSeparator: RegExp = /;/) {
+        this.offsets = offsets;
+        const csvContent = fs.readFileSync(csvFilePath,"UTF-8").toString();
+        this.cells = new Array<Array<number>>();
+        const rows = csvContent.split(rowSeparator);
+        for(const row of rows) {
+            const newRow = new Array<number>();
+            const columns = row.split(columnSeparator);
+            for (const column of columns) {
+                newRow.push(parseInt(column, 10));
             }
-            this.cells.push(newRow)
+            this.cells.push(newRow);
         }
     }
 
-    getRowCount(): number {
-        return this.cells.length-this.offsets[0]-1
+    public getRowCount(): number {
+        return this.cells.length - this.offsets[0] - 1;
     }
 
-    getColumnCount(): number {
-        return this.cells[0].length-this.offsets[1]
+    public getColumnCount(): number {
+        return this.cells[0].length - this.offsets[1];
     }
 
-    getRowAt(rowNum: number): number[] {
-        return this.cells[rowNum+this.offsets[0]]
+    public getRowAt(rowNum: number): number[] {
+        return this.cells[rowNum + this.offsets[0]];
     }
 
-    getColumnAt(columnNum: number): number[] {
-        return this.cells.map((row) => row[columnNum+this.offsets[1]])
+    public getColumnAt(columnNum: number): number[] {
+        return this.cells.map((row) => row[columnNum + this.offsets[1]]);
     }
 
-    getValueAt(rowNum: number, columnNum:number): number {
-        return this.cells[rowNum+this.offsets[0]][columnNum+this.offsets[1]]
+    public getValueAt(rowNum: number, columnNum: number): number {
+        return this.cells[rowNum + this.offsets[0]][columnNum + this.offsets[1]];
     }
 
-    getCells(): number[][] {
-        return this.cells
+    public getCells(): number[][] {
+        return this.cells;
     }
 }
 
-export { Matrix }
-export { CSVMatrix }
+export { IMatrix };
+export { CSVMatrix };

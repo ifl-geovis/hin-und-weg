@@ -26,8 +26,8 @@ export default class Geodata {
             return new Geodata(features, projection);
     }
 
+    public projection: string | Proj4.ProjectionDefinition;
     protected featureCollection: FeatureCollection<Geometry>;
-    protected projection: string | Proj4.ProjectionDefinition;
 
     constructor(featureCollection: FeatureCollection<Geometry>, projection: string|Proj4.ProjectionDefinition) {
         this.featureCollection = featureCollection;

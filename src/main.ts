@@ -1,8 +1,8 @@
 
-import { app, BrowserWindow } from "electron"
-import path from "path"
+import { app, BrowserWindow } from "electron";
+import path from "path";
 
-let mainWindow: Electron.BrowserWindow
+let mainWindow: Electron.BrowserWindow;
 
 function createWindow() {
 
@@ -11,20 +11,20 @@ function createWindow() {
     height: 960,
     width: 1400,
     title: "Hin & Weg",
-  })
+  });
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../index.html"));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools({mode: 'undocked'});
+  mainWindow.webContents.openDevTools({mode: "undocked"});
 
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-  })
+  });
 }
 
 // This method will be called when Electron has finished
@@ -37,7 +37,7 @@ app.on("window-all-closed", () => {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== "darwin") {
-    app.quit()
+    app.quit();
   }
 })
 
@@ -45,7 +45,7 @@ app.on("activate", () => {
   // On OS X it"s common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
-    createWindow()
+    createWindow();
   }
 })
 

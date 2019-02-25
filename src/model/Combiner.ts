@@ -68,7 +68,7 @@ export default class Combiner {
     }
 
     public setGeodataId(id: string): Combiner {
-        this.geodataId = id; 
+        this.geodataId = id;
         return this;
     }
 
@@ -88,7 +88,7 @@ export default class Combiner {
     public getValueFor(tableSpec: [string,string], rowSpec: [string,string], columnSpec: [string, string]): number {
         const selectedRowKey = this.getCubusKeyFor(rowSpec[1]);
         const selectedColumnKey = this.getCubusKeyFor(columnSpec[1]);
-        const request = R.objOf(tableSpec[0],tableSpec[1]);
+        const request = R.objOf(tableSpec[0], tableSpec[1]);
         const query = R.assoc(columnSpec[0], [selectedColumnKey], R.assoc(rowSpec[0], [selectedRowKey], request));
         return this.cubus.query(query)[0].value;
     }

@@ -43,7 +43,7 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         const results = this.state.combiner.query(query);
         const geodata = this.state.combiner.getGeodata() == null ? null :
                         this.state.combiner.getGeodata()!.transformToWGS84();
-        const resultTable = this.createTableFrom(results);
+        const resultTable = <div></div>; //this.createTableFrom(results);
         const diagrams = this.createDiagramsFrom(results);
         return (
         <div>
@@ -77,7 +77,7 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
     }
 
     protected createDiagramsFrom(results: Array<Result<number>>): JSX.Element {
-        return <ChartsView tabledatas={{}}/>;
+        return <ChartsView datas={results}/>;
     }
 
     private onSelectFrom(selected: any) {
