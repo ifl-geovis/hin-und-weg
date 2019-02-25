@@ -35,7 +35,7 @@ export default class ChartsView extends React.Component<ChartsViewProps,ChartsVi
     }
 
     public render():JSX.Element{
-        let ranges = R.keys(this.props.tabledatas) as string[]
+        let ranges = R.keys(this.props.tabledatas) as string[];
         return <div>                
                 <ChartChooserView 
                     onSelectRange={this.onRangeSelect}
@@ -43,7 +43,7 @@ export default class ChartsView extends React.Component<ChartsViewProps,ChartsVi
                     diagramTypes={['Liniendiagramm','Balkendiagramm','Sankey']}
                     rangeTypes={ranges}
                 />
-                <ChartView tabledatas={this.props.tabledatas} type={this.state.chartType} range={this.state.chartRange}/>
+                <ChartView/>
                 <LegendView tabledatas={this.props.tabledatas}/>
             </div>       
     }

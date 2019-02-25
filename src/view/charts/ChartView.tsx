@@ -1,55 +1,64 @@
-import React from 'react'
-import R from 'ramda'
-import Tabledata from '../../model/Tabledata'
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts'
+import React from "react";
+/*
+// Does not work in electronjs, so we use the @ts-ignore annotation
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
+*/
+export default class ChartView extends React.Component {
 
-export interface ChartViewProps {
-  tabledatas: { [name: string] : Tabledata} 
-  type: string | null
-  range: string | null
-}
+  // @ts-ignore
+  private chart: am4charts.Chart | null;
 
-export default class ChartView extends React.Component<ChartViewProps>{    
+    constructor(props: {}) {
+        super(props);
+        this.chart = null;
+    }
 
-    constructor(props:ChartViewProps){
-        super(props)                
-    }    
+    public componentDidMount() {
+      // @ts-ignore
+      const chart = am4core.create("chartdiv", am4charts.XYChart);
+      chart.paddingRight = 20;
 
-    render():JSX.Element {
-        if(this.props.tabledatas && this.props.range){          
-          let selectedTabledata = this.props.tabledatas[this.props.range]
-          if(selectedTabledata){
-            let toNum = (val: string) => {
-              try{
-                return parseFloat(val)
-              }catch(e){
-                return 0
-              }
-            }
-            selectedTabledata = selectedTabledata.getTabledataBy([1,selectedTabledata.getRowCount()],[1,selectedTabledata.getColumnCount()])         
-            let sumOfDestinationMoves = R.map((rowNum) => {              
-              let sumValue = R.reduce((sum,val) => R.add(sum,toNum(val)),0,selectedTabledata.getRowAt(rowNum))
-              return { rowNum: rowNum, sum: sumValue}
-            },R.range(0,selectedTabledata.getRowCount()))                            
-            return(
-              <BarChart
-              width={500}
-              height={300}
-              data={sumOfDestinationMoves}
-              margin={{
-                top: 5, right: 30, left: 20, bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3YAxis 3" />
-              <XAxis dataKey="sum" />
-              <YAxis/>
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="sum" fill="#8884d8" />              
-            </BarChart>
-            )
-          }       
-      }      
-      return (<svg width="500" height="500"><text transform="translate(250,250)">{this.props.type==null?'Kein':this.props.type}</text></svg>)
-     }      
+      const data = [];
+      let visits = 10;
+      for (let i = 1; i < 366; i++) {
+        visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
+        data.push({ date: new Date(2018, 0, i), name: "name" + i, value: visits });
+      }
+
+      chart.data = data;
+      // @ts-ignore
+      const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+      dateAxis.renderer.grid.template.location = 0;
+       // @ts-ignore
+      const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      valueAxis.tooltip.disabled = true;
+      valueAxis.renderer.minWidth = 35;
+      // @ts-ignore
+      const series = chart.series.push(new am4charts.LineSeries());
+      series.dataFields.dateX = "date";
+      series.dataFields.valueY = "value";
+
+      series.tooltipText = "{valueY.value}";
+      // @ts-ignore
+      chart.cursor = new am4charts.XYCursor();
+       // @ts-ignore
+      const scrollbarX = new am4charts.XYChartScrollbar();
+      scrollbarX.series.push(series);
+      chart.scrollbarX = scrollbarX;
+
+      this.chart = chart;
+    }
+
+    public componentWillUnmount() {
+      if (this.chart) {
+        this.chart.dispose();
+      }
+    }
+
+    public render(): JSX.Element {
+      return (
+        <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>
+      );
+    }
 }
