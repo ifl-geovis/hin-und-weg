@@ -22,7 +22,7 @@ export default class ChartsView extends React.Component<IChartsViewProps, IChart
         this.onRangeSelect = this.onRangeSelect.bind(this);
         this.state = {
             chartRange: null,
-            chartType: "Liniendiagramm",
+            chartType: "Sankey",
         };
     }
 
@@ -33,10 +33,10 @@ export default class ChartsView extends React.Component<IChartsViewProps, IChart
                 <ChartChooserView 
                     onSelectRange={this.onRangeSelect}
                     onSelectChartType={this.onChartTypeSelect}
-                    diagramTypes={["Liniendiagramm", "Balkendiagramm", "Sankey"]}
+                    diagramTypes={["Sankey", "Chord"]}
                     rangeTypes={ranges}
                 />
-                <ChartView data={this.props.datas}/>
+                <ChartView data={this.props.datas} type={this.state.chartType}/>
             </div>
         );
     }

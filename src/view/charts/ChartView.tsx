@@ -8,6 +8,7 @@ import React from "react";
 
 export interface IChartViewProps {
   data: Array<Result<number>>;
+  type: string;
 }
 
 export default class ChartView extends React.Component<IChartViewProps> {
@@ -21,14 +22,14 @@ export default class ChartView extends React.Component<IChartViewProps> {
   }
 
   public componentDidMount() {
-    this.chart = this.createSanykeyChart();
+    this.chart = this.createChart();
   }
 
   public componentDidUpdate() {
     if (this.chart) {
       this.chart.dispose();
     }
-    this.chart = this.createSanykeyChart();
+    this.chart = this.createChart();
   }
 
   public componentWillUnmount() {
@@ -43,15 +44,28 @@ export default class ChartView extends React.Component<IChartViewProps> {
     );
   }
 
-  private createSanykeyChart() {
+  private createChart() {
     // @ts-ignore
-    const chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+    let chart = null;
+    if (this.props.type === "Sankey"){
+      // @ts-ignore
+      chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+    } else if (this.props.type === "Chord"){
+      // @ts-ignore
+      chart = am4core.create("chartdiv", am4charts.ChordDiagram);
+    } else {
+      // @ts-ignore
+      chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+    }
+    const notSameFromTo = (item: Result<number>) => {
+        return  item.property[1].value !== item.property[2].value;
+    };
     const createItem = (item: Result<number>) => {
       return { from: item.property[1].value , to: item.property[2].value , value: item.value};
     };
-    // How to get real tooltip values ?
-    //chart.tooltipText = "1. {valueFromName} 2. {valuefromName} 3.{fromName} "
-    chart.data = R.map(createItem, this.props.data);
+    const linkTemplate = chart.links.template;
+    linkTemplate.tooltipText = "Von {fromName} nach {toName}: {value.value}";
+    chart.data = R.map(createItem, R.filter(notSameFromTo, this.props.data));
     chart.dataFields.fromName = "from";
     chart.dataFields.toName = "to";
     chart.dataFields.value = "value";

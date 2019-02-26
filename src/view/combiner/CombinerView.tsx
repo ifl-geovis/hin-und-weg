@@ -43,7 +43,7 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         const results = this.state.combiner.query(query);
         const geodata = this.state.combiner.getGeodata() == null ? null :
                         this.state.combiner.getGeodata()!.transformToWGS84();
-        const resultTable = <div></div>; //this.createTableFrom(results);
+        const resultTable = this.createTableFrom(results);
         const diagrams = this.createDiagramsFrom(results);
         return (
         <div>
@@ -61,17 +61,8 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
     protected createTableFrom(results: Array<Result<number>>): JSX.Element[] {
         const createYearTable = (year: string): JSX.Element => {
             return (
-        <table key={year}><thead></thead><tbody>{
-            R.map((from: string): JSX.Element => {
-                return (<tr key={from}>{
-                    R.map((to: string): JSX.Element => {
-                        return <td key={to}>{
-                            this.state.combiner.getValueFor(["Jahr", year], ["Von", from], ["Nach", to])
-                        }</td>;
-                    }, this.state.tos)}
-                    </tr>);
-            }, this.state.froms)
-            }</tbody></table>);
+                <div>{R.length(results)} Ergebnisse.</div>
+            );
         };
         return R.map(createYearTable, this.state.years);
     }
