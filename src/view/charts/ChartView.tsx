@@ -3,8 +3,9 @@ import R from "ramda";
 import React from "react";
 
 // Does not work in electronjs, so we use the @ts-ignore annotation
-//import * as am4core from '@amcharts/amcharts4/core';
-//import * as am4charts from '@amcharts/amcharts4/charts';
+// For development (hint types, autocompletion) uncomment this 2 lines below
+// import * as am4core from '@amcharts/amcharts4/core';
+// import * as am4charts from '@amcharts/amcharts4/charts';
 
 export interface IChartViewProps {
   data: Array<Result<number>>;

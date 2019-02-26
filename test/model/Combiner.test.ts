@@ -5,7 +5,6 @@ import Geodata from "../../src/model/Geodata";
 import Tabledata from "../../src/model/Tabledata";
 
 Debug.on();
-
 describe("Combiner takes Geodata and Tabledata and combines Geodata fields and Matrix cells", () => {
 
     const combiner = new Combiner(["Jahr", "Von", "Nach"]);
@@ -44,7 +43,7 @@ describe("Combiner takes Geodata and Tabledata and combines Geodata fields and M
         const name = "./testdata/Leipzig-OT Umzüge_2002.csv";
         Tabledata.read(name,(tabledata) => {
             combiner.addTable("Jahr", "2002", tabledata.getTabledataBy(
-                [3, tabledata.getRowCount() - 2],[1, tabledata.getColumnCount() - 1]
+                [3, tabledata.getRowCount() - 2], [1, tabledata.getColumnCount() - 1]
             ));
             const year2002 = combiner.query({Jahr: ["2002"]});
             expect(year2002).length(63 * 63);
@@ -55,8 +54,7 @@ describe("Combiner takes Geodata and Tabledata and combines Geodata fields and M
             expect(year2002[0].property[1].value).equal("Zentrum");
             expect(year2002[0].property[2].name).equal("Nach");
             expect(year2002[0].property[2].value).equal("Zentrum");
-            // TODO: expect("Not implemented","Convert Result to Tabledata ?").equal("Is implemented");
-            expect(combiner.getValueFor(["Jahr", "2002"],["Von", "Zentrum"], ["Nach", "Zentrum"])).equal(10);
+            expect(combiner.getValueFor(["Jahr", "2002"], ["Von", "Zentrum"], ["Nach", "Zentrum"])).equal(32);
             done();
         });
     });

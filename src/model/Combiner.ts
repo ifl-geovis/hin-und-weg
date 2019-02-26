@@ -85,12 +85,11 @@ export default class Combiner {
         return this.geodataSelector;
     }
 
-    public getValueFor(tableSpec: [string,string], rowSpec: [string,string], columnSpec: [string, string]): number {
-        const selectedRowKey = this.getCubusKeyFor(rowSpec[1]);
-        const selectedColumnKey = this.getCubusKeyFor(columnSpec[1]);
-        const request = R.objOf(tableSpec[0], tableSpec[1]);
-        const query = R.assoc(columnSpec[0], [selectedColumnKey], R.assoc(rowSpec[0], [selectedRowKey], request));
-        return this.cubus.query(query)[0].value;
+    public getValueFor(tableSpec: [string, string], rowSpec: [string, string], columnSpec: [string, string]): number {
+        const request = R.objOf(tableSpec[0], [tableSpec[1]]);
+        const query = R.assoc(columnSpec[0], [columnSpec[1]], R.assoc(rowSpec[0], [rowSpec[1]], request));
+        const result = this.cubus.query(query);
+        return result[0].value;
     }
 
     public getTableNames(): string[] {
@@ -98,7 +97,7 @@ export default class Combiner {
     }
 
     public getRowNamesFor(name: string): string[] {
-        if (R.or(R.isEmpty(this.tables),R.isNil(this.tables[name]))) {
+        if (R.or(R.isEmpty(this.tables), R.isNil(this.tables[name]))) {
             return [];
         }
         return R.map(this.getNameById.bind(this), R.tail(this.tables[name].getColumnAt(0)));
@@ -106,7 +105,7 @@ export default class Combiner {
 
     protected normalizeValue(value: string): string {
         const newValue = value.substr(-2);
-        if (newValue.length === 1){
+        if (newValue.length === 1) {
             return "0" + newValue;
         }
         return newValue;
@@ -122,14 +121,5 @@ export default class Combiner {
         } catch (error) {
             return id;
         }
-    }
-
-    private getCubusKeyFor(selector: string): string {
-        if (this.geodata == null){
-            return selector;
-        }
-        const selectedFeature = this.geodata.getFeatureByFieldValue(this.geodataSelector, selector);
-        // TODO: How can we factor out this ?
-        return "" + parseInt(selectedFeature.properties![this.geodataId], 10);
     }
 }
