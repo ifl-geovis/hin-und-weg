@@ -14,12 +14,16 @@ export interface IChartViewProps {
 
 export default class ChartView extends React.Component<IChartViewProps> {
 
+  private static idCounter: number = 0;
   // @ts-ignore
   private chart: am4charts.Chart | null;
+  private id: number;
 
   constructor(props: IChartViewProps) {
     super(props);
     this.chart = null;
+    ChartView.idCounter++;
+    this.id = ChartView.idCounter;
   }
 
   public componentDidMount() {
@@ -41,7 +45,7 @@ export default class ChartView extends React.Component<IChartViewProps> {
 
   public render(): JSX.Element {
     return (
-      <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>
+      <div id={"chart-" + this.id} style={{ width: "100%", height: "500px" }}></div>
     );
   }
 
@@ -50,13 +54,13 @@ export default class ChartView extends React.Component<IChartViewProps> {
     let chart = null;
     if (this.props.type === "Sankey"){
       // @ts-ignore
-      chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+      chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
     } else if (this.props.type === "Chord"){
       // @ts-ignore
-      chart = am4core.create("chartdiv", am4charts.ChordDiagram);
+      chart = am4core.create("chart-" + this.id, am4charts.ChordDiagram);
     } else {
       // @ts-ignore
-      chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
+      chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
     }
     const notSameFromTo = (item: Result<number>) => {
         return  item.property[1].value !== item.property[2].value;

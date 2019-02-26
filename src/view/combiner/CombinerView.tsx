@@ -1,3 +1,4 @@
+import {Column, Table } from "@blueprintjs/table";
 import { Result } from "cubus";
 import R from "ramda";
 import React from "react";
@@ -8,6 +9,7 @@ import Tabledata from "../../model/Tabledata";
 import ChartsView from "../charts/ChartsView";
 import GeodataView from "../geo/GeodataView";
 import FileInput from "../input/FileInput";
+import CubusResultView from "./CubusResultView";
 
 export interface ICombinerState {
     combiner: Combiner;
@@ -44,31 +46,30 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         const geodata = this.state.combiner.getGeodata() == null ? null :
                         this.state.combiner.getGeodata()!.transformToWGS84();
         const resultTable = this.createTableFrom(results);
-        const diagrams = this.createDiagramsFrom(results);
         return (
-        <div>
-            <FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onAddTabledatas} disabled={false}/>
-            <GeodataView geodata={geodata} onSelectGeodata={this.onSelectGeodataFile}/>
-            <div> Jahre: <Select options={yearsOptions} onChange={this.onSelectYears} isMulti={true}/></div>
-            <div> Von:  <Select options={fromOptions} onChange={this.onSelectFrom} isMulti={true}/></div>
-            <div> Nach: <Select options={toOptions} onChange={this.onSelectTo} isMulti={true}/></div>
-            <div>{resultTable}</div>
-            <div>{diagrams}</div>
-        </div>
+            <div>
+                <FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onAddTabledatas} disabled={false}/>
+                <GeodataView geodata={geodata} onSelectGeodata={this.onSelectGeodataFile}/>
+                <div> Jahre: <Select options={yearsOptions} onChange={this.onSelectYears} isMulti={true}/></div>
+                <div> Von:  <Select options={fromOptions} onChange={this.onSelectFrom} isMulti={true}/></div>
+                <div> Nach: <Select options={toOptions} onChange={this.onSelectTo} isMulti={true}/></div>
+                <div>{resultTable}</div>
+            </div>
         );
     }
 
     protected createTableFrom(results: Array<Result<number>>): JSX.Element[] {
         const createYearTable = (year: string): JSX.Element => {
+            const yearResults = R.filter((result) => result.property[0].value === year, results);
             return (
-                <div>{R.length(results)} Ergebnisse.</div>
+                <div key={year}>
+                    <h3>{year}</h3>
+                    <CubusResultView results={yearResults}/>
+                    <ChartsView datas={yearResults}/>
+                </div>
             );
         };
         return R.map(createYearTable, this.state.years);
-    }
-
-    protected createDiagramsFrom(results: Array<Result<number>>): JSX.Element {
-        return <ChartsView datas={results}/>;
     }
 
     private onSelectFrom(selected: any) {

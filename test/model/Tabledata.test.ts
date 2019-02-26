@@ -2,7 +2,6 @@ import R from 'ramda'
 import { expect } from "chai"
 import * as Debug from '../../src/debug'
 import Tabledata from '../../src/model/Tabledata'
-import Cubus from 'cubus'
 
 Debug.on()
 describe('Load tabledata from csv and provide ',() => {

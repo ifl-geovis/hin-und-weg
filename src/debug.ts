@@ -1,18 +1,22 @@
-import * as R from 'ramda'
+import R from "ramda";
 
-var DEBUG = true
+let DEBUG = true;
 
 export const on = () => {
-    DEBUG = true
-}
+    DEBUG = true;
+};
 
 export const off = () => {
-    DEBUG = false
-}
+    DEBUG = false;
+};
 
-export const trace = R.curry((message:string,some: any): any => {
-    if(DEBUG){
-        console.log(message,some)
+export const log = (message: string): void => {
+    console.log(message);
+};
+
+export const trace = R.curry((message: string, some: any): any => {
+    if (DEBUG) {
+        console.log(message, some);
     }
-    return some
-})
+    return some;
+});
