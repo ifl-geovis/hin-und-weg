@@ -5,6 +5,7 @@ import FileInput from "../input/FileInput";
 import AttributeView from "./AttributeView";
 import MapView from "./MapView";
 
+
 export interface IGeodataProps {
     geodata: Geodata | null;
     onSelectGeodata: (file: File) => void;
@@ -28,10 +29,16 @@ export default class GeodataView extends React.Component<IGeodataProps> {
             attributes = this.props.geodata.attributes();
         }
         return (
-        <div>
-            <FileInput label="Shape Datei auswählen..." filesSelected={this.shpFilesSelected} disabled={false}/>
-            <MapView geodata={this.props.geodata}/>
-            <AttributeView attributes={attributes}/>
+        <div key="geodataView">
+            <div  key="shapeFileInput">
+                <FileInput label="Shape Datei auswählen..." filesSelected={this.shpFilesSelected} disabled={false}/>
+            </div>
+            <div key="mapView">
+                <MapView  geodata={this.props.geodata}/>
+            </div>
+            <div key="attributeView">
+                <AttributeView  attributes={attributes}/>
+            </div>
         </div>
        );
     }

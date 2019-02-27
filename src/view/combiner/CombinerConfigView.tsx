@@ -27,13 +27,14 @@ export default class ChartConfigView extends React.Component<ICombinerConfigView
         const fromOptions = combiner.getRowNamesFor(yearsOptions[0]);
         const toOptions = combiner.getColumnNamesFor(yearsOptions[0]);
         return (
-            <div>
-                <FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.props.onAddTabledatas} disabled={false}/>
-                <div> GeodatenId: <SelectInput options={geodataFields} onSelected={this.props.onSelectGeoId}/></div>
-                <div> GeodatenName: <SelectInput options={geodataFields} onSelected={this.props.onSelectGeoName}/></div>
-                <div> Jahre: <MultiSelectInput options={yearsOptions} onSelected={this.props.onSelectYears} /></div>
-                <div> Von:   <MultiSelectInput options={fromOptions}  onSelected={this.props.onSelectFroms} /></div>
-                <div> Nach:  <MultiSelectInput options={toOptions}    onSelected={this.props.onSelectTos} /></div>
+            <div key="combinerConfigView">
+                <div key="geodataId"> GeodatenId: <SelectInput options={geodataFields} onSelected={this.props.onSelectGeoId}/></div>
+                <div key="geodataName"> GeodatenName: <SelectInput options={geodataFields} onSelected={this.props.onSelectGeoName}/></div>
+                <FileInput key="addTabledata" label={"Tabellendaten hinzufügen..."} disabled={false}
+                                              filesSelected={this.props.onAddTabledatas}/>
+                <div key="selectYears"> Jahre: <MultiSelectInput options={yearsOptions} onSelected={this.props.onSelectYears} /></div>
+                <div key="selectFroms"> Von:   <MultiSelectInput options={fromOptions}  onSelected={this.props.onSelectFroms} /></div>
+                <div key="selectTos"> Nach:  <MultiSelectInput options={toOptions}    onSelected={this.props.onSelectTos} /></div>
             </div>
        );
     }

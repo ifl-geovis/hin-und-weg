@@ -1,10 +1,17 @@
+
 import { Result } from "cubus";
+
+import { Tab, Tabs } from "@blueprintjs/core";
+import GridLayout from "react-grid-layout";
+
 import R from "ramda";
+
 import React from "react";
 
 import Combiner from "../../model/Combiner";
 import Geodata from "../../model/Geodata";
 import Tabledata from "../../model/Tabledata";
+
 import ChartsView from "../charts/ChartsView";
 import GeodataView from "../geo/GeodataView";
 import CombinerConfigView from "./CombinerConfigView";
@@ -42,34 +49,40 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         const geodata = combiner.getGeodata() == null ? null : combiner.getGeodata()!.transformToWGS84();
         const results = combiner.query(query);
         const resultsView = this.createResultsViewFrom(results);
+     
         return (
             <div>
-                <GeodataView geodata={geodata} onSelectGeodata={this.onSelectGeodataFile}/>
-                <CombinerConfigView combiner={this.state.combiner}
-                    onAddTabledatas={this.onAddTabledatas}
-                    onSelectYears={this.onSelectYears}
-                    onSelectFroms={this.onSelectFroms}
-                    onSelectTos={this.onSelectTos}
-                    onSelectGeoId={this.onSelectGeoId}
-                    onSelectGeoName={this.onSelectGeoName}
-                />
-                <div>{resultsView}</div>
+                <div key="geodataView">
+                    <GeodataView  geodata={geodata} onSelectGeodata={this.onSelectGeodataFile}/>
+                </div>
+                <div key="combinerConfigView">
+                    <CombinerConfigView
+                        combiner={this.state.combiner}
+                        onAddTabledatas={this.onAddTabledatas}
+                        onSelectYears={this.onSelectYears}
+                        onSelectFroms={this.onSelectFroms}
+                        onSelectTos={this.onSelectTos}
+                        onSelectGeoId={this.onSelectGeoId}
+                        onSelectGeoName={this.onSelectGeoName}
+                    />
+                </div>
+                <div key="resultsViewTabs">
+                    <Tabs id="ResultsViewTabs" >{resultsView}</Tabs>
+                </div>
             </div>
         );
     }
 
     protected createResultsViewFrom(results: Array<Result<number>>): JSX.Element[] {
-        const createYearTable = (year: string): JSX.Element => {
+        const createYearResultView = (year: string): JSX.Element => {
             const yearResults = R.filter((result) => result.property[0].value === year, results);
-            return (
-                <div key={year}>
-                    <h3>{year}</h3>
-                    <CubusResultView results={yearResults}/>
-                    <ChartsView datas={yearResults}/>
-                </div>
-            );
+            const yearResultView = <div key={year}>
+                <CubusResultView results={yearResults}/>
+                <ChartsView datas={yearResults}/>
+            </div>;
+            return <Tab key={year} id={year} title={year} panel={yearResultView}/>;
         };
-        return R.map(createYearTable, this.state.years);
+        return R.map(createYearResultView, this.state.years);
     }
 
     private onSelectFroms(selected: string[]) {

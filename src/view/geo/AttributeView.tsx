@@ -33,7 +33,8 @@ export default class AttributeView extends React.Component<IAttributeViewProps, 
         const columns = R.map(createColumn, R.keys(firstAttributes) as string[]);
 
         return (
-            <div style={{width: `${this.state.width}px`, height: `${this.state.height}px`, overflow: "auto"}}>
+            //style={{width: `${this.state.width}px`, height: `${this.state.height}px`, overflow: "auto"}}
+            <div>
                 <Table numRows={this.props.attributes.length}>
                     {columns}
                 </Table>

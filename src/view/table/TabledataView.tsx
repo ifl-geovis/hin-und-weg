@@ -2,8 +2,6 @@ import R from 'ramda'
 import React from "react"
 import FileInput from '../input/FileInput'
 import TabMatrixView from "./TabMatrixView"
-import LinkView from './LinkView'
-import Panel from "../Panel"
 import Tabledata from '../../model/Tabledata'
 import Geodata from '../../model/Geodata'
 
@@ -52,11 +50,10 @@ export default class TabledataView extends React.Component<TabledataViewProps,Ta
   
     public render():JSX.Element{
        return (
-        <Panel>
-            <LinkView fieldNames={this.props.geoFieldNames} nameField={this.state.nameField} idField={this.state.idField} onNameSelect={this.onNameSelect} onIdSelect={this.onIdSelect}/>            
+        <div>           
             <FileInput label="CSV Dateien auswählen..." filesSelected={this.onCSVFilesSelected} disabled={false}/>                
             <TabMatrixView idField={this.state.idField} nameField={this.state.nameField} geodata={this.props.geodata} tabledatas={this.props.tabledatas} onSelectTableDataId={this.onSelectTableDataId}/>
-        </Panel>        
+        </div>        
        ) 
     }
   }
