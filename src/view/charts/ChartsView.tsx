@@ -1,9 +1,7 @@
 import { Result } from "cubus";
-import R from "ramda";
 import React from "react";
-import ChartChooserView from "./ChartChooserView";
+import ChartConfigView from "./ChartConfigView";
 import ChartView from "./ChartView";
-// import LegendView from "./LegendView";
 
 export interface IChartsViewProps {
     datas: Array<Result<number>>;
@@ -11,7 +9,6 @@ export interface IChartsViewProps {
 
 interface IChartsViewState {
     chartType: string;
-    chartRange: string | null;
 }
 
 export default class ChartsView extends React.Component<IChartsViewProps, IChartsViewState> {
@@ -19,23 +16,15 @@ export default class ChartsView extends React.Component<IChartsViewProps, IChart
     constructor(props: IChartsViewProps) {
         super(props);
         this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
-        this.onRangeSelect = this.onRangeSelect.bind(this);
         this.state = {
-            chartRange: null,
-            chartType: "Sankey",
+            chartType: ChartView.getTypes()[0],
         };
     }
 
     public render(): JSX.Element{
-        const ranges = [] as string[];
         return (
             <div>
-                <ChartChooserView 
-                    onSelectRange={this.onRangeSelect}
-                    onSelectChartType={this.onChartTypeSelect}
-                    diagramTypes={["Sankey", "Chord"]}
-                    rangeTypes={ranges}
-                />
+                <ChartConfigView onSelectChartType={this.onChartTypeSelect} diagramTypes={ChartView.getTypes()} />
                 <ChartView data={this.props.datas} type={this.state.chartType}/>
             </div>
         );
@@ -43,9 +32,5 @@ export default class ChartsView extends React.Component<IChartsViewProps, IChart
 
     private onChartTypeSelect(selected: string) {
         this.setState({chartType: selected});
-    }
-
-    private onRangeSelect(selected: string) {
-        this.setState({chartRange: selected});
     }
 }

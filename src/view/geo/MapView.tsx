@@ -12,24 +12,24 @@ interface IMapViewState {
     width: number;
     height: number;
 }
-
-export default class MapView extends React.Component<IMapViewProps, IMapViewState>{
+// TODO: [ ] Factor out styles
+export default class MapView extends React.Component<IMapViewProps, IMapViewState> {
 
     constructor(props: IMapViewProps) {
         super(props);
         this.state = {
-            height: 300,
-            width: 300,
+            height: 350,
+            width: 350,
         };
     }
 
     public render(): JSX.Element {
         return (
-         <svg width={this.state.width} height={this.state.height}>
-             {this.createD3Map()}
-         </svg>
+            <svg width={this.state.width} height={this.state.height}>
+                 {this.createD3Map()}
+            </svg>
         );
-     }
+    }
 
     private createD3Map(): object[] {
         const geodata = this.props.geodata;
@@ -37,12 +37,11 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
             return [
                 <g key="no-geodata">
                     <text transform={"translate(" + this.state.width / 2 + "," + this.state.height / 2 + ")"}
-                          style={{ fill:"#000000", stroke: "#aaaaaa"}}>Keine Geodaten geladen</text>
+                          style={{ fill: "#000000", stroke: "#aaaaaa"}}>Keine Geodaten geladen</text>
                 </g>,
             ];
-        } 
-        const projection = d3.geoMercator().fitSize([this.state.width,this.state.height],
-                                                     geodata.getFeatureCollection());
+        }
+        const projection = d3.geoMercator().fitSize([this.state.width, this.state.height],geodata.getFeatureCollection());
         const path = d3.geoPath().projection(projection);
         const indexedMap = R.addIndex(R.map);
         const features = indexedMap( (feature, id: number): JSX.Element => {

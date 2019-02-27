@@ -22,7 +22,7 @@ export default class CubusResultView extends React.Component<ICubusResultViewPro
                return result.property[1].value === rowNames[rowNum % rowNames.length] &&
                       result.property[2].value === columnNames[columnNum % columnNames.length];
             }, this.props.results).value;
-            return isNaN(found) ? "." : found;
+            return isNaN(found) ? "." : found.toString();
         };
 
         const cellRenderer = (rowNum: number, colNum: number) => {
@@ -35,14 +35,10 @@ export default class CubusResultView extends React.Component<ICubusResultViewPro
             return <Column key={column} name={columnNames[column % columnNames.length]} cellRenderer={cellRenderer}/>;
         };
         const columns = R.map(createColumn, R.range(0, columnNames.length));
-        const matrixUI = (
-            <Table rowHeaderCellRenderer={rowHeaderCellRenderer} numRows={rowNames.length}
-                   selectionModes={SelectionModes.ALL}
-                  //onSelection={this.updateDiagram.bind(this)}
-            >
-            {columns}
-            </Table>
+        return (
+            <div>
+                <Table rowHeaderCellRenderer={rowHeaderCellRenderer} numRows={rowNames.length}>{columns}</Table>
+            </div>
         );
-        return <div>{matrixUI}</div>;
     }
 }

@@ -14,6 +14,10 @@ export interface IChartViewProps {
 
 export default class ChartView extends React.Component<IChartViewProps> {
 
+  public static getTypes(): string[] {
+    return ["Chord","Sankey"];
+  }
+
   private static idCounter: number = 0;
   // @ts-ignore
   private chart: am4charts.Chart | null;
