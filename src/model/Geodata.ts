@@ -21,8 +21,7 @@ export default class Geodata {
             });
     }
 
-    private static createGeodata =
-        (features: FeatureCollection<Geometry>,projection: string | Proj4.ProjectionDefinition): Geodata => {
+    private static createGeodata = (features: FeatureCollection<Geometry>, projection: string | Proj4.ProjectionDefinition): Geodata => {
             return new Geodata(features, projection);
     }
 
@@ -39,7 +38,7 @@ export default class Geodata {
     }
 
     public fields(): string[] {
-        assert(R.not(R.isEmpty(this.featureCollection.features)),"data.features is empty");
+        assert(R.not(R.isEmpty(this.featureCollection.features)), "data.features is empty");
         const first = R.head(this.featureCollection.features)!;
         return R.keys(first.properties) as string[];
     }

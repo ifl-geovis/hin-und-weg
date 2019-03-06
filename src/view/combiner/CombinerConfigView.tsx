@@ -22,7 +22,8 @@ export default class ChartConfigView extends React.Component<ICombinerConfigView
 
     public render(): JSX.Element {
         const combiner = this.props.combiner;
-        const geodataFields = combiner.getGeodata() ? combiner.getGeodata().fields() : [];
+        const geodata = combiner.getGeodata();
+        const geodataFields = geodata != null ? geodata.fields() : [];
         const yearsOptions = combiner.getTableNames();
         const fromOptions = combiner.getRowNamesFor(yearsOptions[0]);
         const toOptions = combiner.getColumnNamesFor(yearsOptions[0]);

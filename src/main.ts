@@ -1,6 +1,6 @@
-
 import { app, BrowserWindow } from "electron";
 import path from "path";
+import * as Debugger from "./debug";
 
 let mainWindow: Electron.BrowserWindow;
 
@@ -10,6 +10,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     height: 960,
     width: 1400,
+    // tslint:disable-next-line: object-literal-sort-keys
     title: "Hin & Weg",
   });
 
@@ -39,7 +40,7 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
-})
+});
 
 app.on("activate", () => {
   // On OS X it"s common to re-create a window in the app when the
@@ -47,8 +48,8 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
-})
+});
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
-console.log("Started Hin & weg application ")
+Debugger.log("Started Hin & weg application ");

@@ -9,6 +9,8 @@ export interface ICubusResultViewProps {
 
 export default class CubusResultView extends React.Component<ICubusResultViewProps> {
 
+    public static NO_DATA = ".";
+
     constructor(props: ICubusResultViewProps) {
         super(props);
     }
@@ -21,8 +23,12 @@ export default class CubusResultView extends React.Component<ICubusResultViewPro
             const found = R.find((result) => {
                return result.property[1].value === rowNames[rowNum % rowNames.length] &&
                       result.property[2].value === columnNames[columnNum % columnNames.length];
-            }, this.props.results).value;
-            return isNaN(found) ? "." : found.toString();
+            }, this.props.results);
+            if (found !== undefined) {
+                return isNaN(found.value) ? CubusResultView.NO_DATA : found.value.toString();
+            } else {
+                return CubusResultView.NO_DATA;
+            }
         };
 
         const cellRenderer = (rowNum: number, colNum: number) => {

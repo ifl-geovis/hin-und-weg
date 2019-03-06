@@ -112,7 +112,7 @@ export default class Combiner {
     }
 
     private getNameById(id: string): string{
-        if(this.geodata == null || this.geodataId == null || this.getGeodataSelector == null) {
+        if (this.geodata == null || this.geodataId == null || this.getGeodataSelector == null) {
             return id;
         }
         try {
