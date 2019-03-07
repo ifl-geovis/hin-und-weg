@@ -1,17 +1,17 @@
-import * as React from "react"
+import * as React from "react";
 
-export interface SystemInfoProps {
-    version: string
+export interface ISystemInfoProps {
+    version: string;
 }
 
-export class SystemInfo extends React.Component<SystemInfoProps,{}> { 
+export class SystemInfo extends React.Component<ISystemInfoProps, {}> {
 
-    constructor(props:SystemInfoProps){
-        super(props)
+    constructor(props: ISystemInfoProps) {
+        super(props);
     }
-    
-    render() {
-        return (                
+
+    public render(): JSX.Element {
+        return (
                 <table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
                     <thead>
                         <tr>
