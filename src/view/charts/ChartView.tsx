@@ -15,7 +15,7 @@ export interface IChartViewProps {
 export default class ChartView extends React.Component<IChartViewProps> {
 
   public static getTypes(): string[] {
-    return ["Chord","Sankey"];
+    return ["Chord", "Sankey"];
   }
 
   private static idCounter: number = 0;
@@ -59,7 +59,7 @@ export default class ChartView extends React.Component<IChartViewProps> {
     if (this.props.type === "Sankey"){
       // @ts-ignore
       chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
-    } else if (this.props.type === "Chord"){
+    } else if (this.props.type === "Chord") {
       // @ts-ignore
       chart = am4core.create("chart-" + this.id, am4charts.ChordDiagram);
     } else {

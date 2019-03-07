@@ -15,7 +15,7 @@ const notNilOrEmpty = (data: string|string[][]) => R.and(R.not(R.isNil(data)), R
 export default class Tabledata {
 
     // TODO: Add cases for load different files (not only csv), depending on file suffixes
-    // - Maybe add a CSVLoader, Excelloader, DBF loader 
+    // - Maybe add a CSVLoader, Excelloader, DBF loader
     public static read(path: string, callback: (data: Tabledata) => void): void {
         assert(notNilOrEmpty(path),"path should not be nil or undefined");
         fs.exists(path, (exists) => assert(exists, `File with path ${path} should exists`));
@@ -84,12 +84,12 @@ export default class Tabledata {
         return new Tabledata(cells);
     }
 
-    public getOLAPMatrixFor(tableName: string,tableValue: string,rowName:string, columnName: string): Cubus<string> {
-        assert(notNilOrEmpty(tableName),"tableName should not be nil or undefined");
-        assert(notNilOrEmpty(tableValue),"tableValue should not be nil or undefined");
-        assert(notNilOrEmpty(rowName),"rowName should not be nil or undefined");
-        assert(notNilOrEmpty(columnName),"columnName should not be nil or undefined");
-        assert(R.length(R.keys(R.reduce((obj, key: string) => R.assoc(key, "", obj), {}, [tableName,tableValue, rowName, columnName])))
+    public getOLAPMatrixFor(tableName: string, tableValue: string, rowName: string, columnName: string): Cubus<string> {
+        assert(notNilOrEmpty(tableName), "tableName should not be nil or undefined");
+        assert(notNilOrEmpty(tableValue), "tableValue should not be nil or undefined");
+        assert(notNilOrEmpty(rowName), "rowName should not be nil or undefined");
+        assert(notNilOrEmpty(columnName), "columnName should not be nil or undefined");
+        assert(R.length(R.keys(R.reduce((obj, key: string) => R.assoc(key, "", obj), {}, [tableName, tableValue, rowName, columnName])))
                 === 4,
                 "Parameter values (tableName etc) should be different");
         const rowKeys = R.tail(this.getRowAt(0));
