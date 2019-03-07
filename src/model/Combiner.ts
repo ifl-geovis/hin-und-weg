@@ -1,7 +1,11 @@
 import Cubus, { Query, Result } from "cubus";
 import R from "ramda";
-import Geodata from "../../src/model/Geodata";
-import Tabledata from "../../src/model/Tabledata";
+import * as Debug from "../../src/debug";
+import Aggregator from "./Aggregator";
+import Geodata from "./Geodata";
+import Tabledata from "./Tabledata";
+
+Debug.off();
 
 export default class Combiner {
 
@@ -65,6 +69,10 @@ export default class Combiner {
 
     public query(query: Query): Array<Result<number>> {
         return this.cubus.query(query);
+    }
+
+    public aggregate(operation: string, query: Query): number[] {
+        return new Aggregator(operation).aggregate(this.query(query));
     }
 
     public setGeodataId(id: string): Combiner {
