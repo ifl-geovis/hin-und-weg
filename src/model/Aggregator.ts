@@ -1,6 +1,6 @@
 import { Result } from "cubus";
 import R from "ramda";
-import * as Debug from "../../src/debug";
+import * as Debug from "../debug";
 
 Debug.on();
 
