@@ -1,6 +1,6 @@
 import Cubus, { Query, Result } from "cubus";
 import R from "ramda";
-import * as Debug from "../../src/debug";
+import * as Debug from "../debug";
 import Aggregator from "./Aggregator";
 import Geodata from "./Geodata";
 import Tabledata from "./Tabledata";
@@ -71,7 +71,7 @@ export default class Combiner {
         return this.cubus.query(query);
     }
 
-    public aggregate(operation: string, query: Query): number[] {
+    public aggregate(operation: string, query: Query): number {
         return new Aggregator(operation).aggregate(this.query(query));
     }
 
