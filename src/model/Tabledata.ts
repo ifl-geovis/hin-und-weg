@@ -17,14 +17,20 @@ export default class Tabledata {
     // TODO: Add cases for load different files (not only csv), depending on file suffixes
     // - Maybe add a CSVLoader, Excelloader, DBF loader
     public static read(path: string, callback: (data: Tabledata) => void): void {
-        assert(notNilOrEmpty(path),"path should not be nil or undefined");
+        assert(notNilOrEmpty(path), "path should not be nil or undefined");
         fs.exists(path, (exists) => assert(exists, `File with path ${path} should exists`));
         fs.readFile(path, {encoding: "UTF-8"}, R.pipe(Tabledata.createTabledataFromCSV, callback));
     }
 
+    public static readSync(path: string): Tabledata {
+        assert(notNilOrEmpty(path), "path should not be nil or undefined");
+        fs.exists(path, (exists) => assert(exists, `File with path ${path} should exists`));
+        return Tabledata.createTabledataFromCSV( {} as Error, fs.readFileSync(path, {encoding: "UTF-8"}));
+    }
+
     private static createTabledataFromCSV(err: NodeJS.ErrnoException, data: string): Tabledata {
-        assert(notNilOrEmpty(data),"data should not be nil or undefined");
-        const rows = R.reject(R.isEmpty,data.split(/\n|\r\n/)) as string[];
+        assert(notNilOrEmpty(data), "data should not be nil or undefined");
+        const rows = R.reject(R.isEmpty, data.split(/\n|\r\n/)) as string[];
         const cells = R.map(R.split(/;|,|:/), rows);
         return new Tabledata(cells);
     }

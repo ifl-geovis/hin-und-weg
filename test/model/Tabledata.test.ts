@@ -26,15 +26,6 @@ describe("Load tabledata from csv and provide access to rows and columns", () =>
         });
     });
 
-    it("Load csv and getting value at row and column", (done) => {
-        Tabledata.read("./testdata/201512_OT_4_2a_Bereinigt.csv", (data: Tabledata) => {
-            expect(data.getValueAt(23,23)).equal("23");
-            expect(data.getValueAt(42,42)).equal("115");
-            expect(data.getValueAt(34,11)).equal(".");
-            done();
-        });
-    });
-
     it("Create a tabledata from regions", (done) => {
         Tabledata.read("./testdata/201512_OT_4_2a_Bereinigt.csv", (data: Tabledata) => {
             const subTable = data.getTabledataBy([1, 64], [1, 64]);

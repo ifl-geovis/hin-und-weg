@@ -1,7 +1,7 @@
 import Cubus, { Query, Result } from "cubus";
 import R from "ramda";
 import * as Debug from "../debug";
-import Aggregator from "./Aggregator";
+import Aggregator, { Operation } from "./Aggregator";
 import Geodata from "./Geodata";
 import Tabledata from "./Tabledata";
 
@@ -47,7 +47,7 @@ export default class Combiner {
 
         for (let row = 1; row < table.getRowCount(); row++){
             const rowName = this.getNameById(table.getColumnAt(0)[row]);
-            for (let column = 1; column < table.getColumnCount(); column++){
+            for (let column = 1; column < table.getColumnCount(); column++) {
                 const columnName = this.getNameById(table.getRowAt(0)[column]);
                 const value = parseFloat(table.getValueAt(row,column));
                 let address = R.objOf(dimension, name);
@@ -71,8 +71,8 @@ export default class Combiner {
         return this.cubus.query(query);
     }
 
-    public aggregate(operation: string, query: Query): number {
-        return new Aggregator(operation).aggregate(this.query(query));
+    public aggregate(operation: Operation, query: Query): number {
+        return Aggregator.create(operation).aggregate(this.query(query)) as number;
     }
 
     public setGeodataId(id: string): Combiner {
