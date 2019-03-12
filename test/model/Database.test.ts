@@ -16,7 +16,7 @@ describe("Use a SQL Database for analysis of table/matrix data", () => {
 
     it("Has matrix table", () => {
        expect(db).is.not.equal(null);
-       const result = db.sql("SELECT * FROM matrix;");
+       const result = db.sql("SELECT * FROM matrices;");
        expect(result.length).is.equal(0);
     });
 });
