@@ -10,7 +10,7 @@ import * as Debug from "../debug";
 Debug.on();
 export default class Geodata {
 
-    public static read(path: string,callback: (data: Geodata) => void){
+    public static read(path: string,callback: (data: Geodata) => void) {
         shapefile.read(path, path.replace(".shp", ".dbf"), { encoding: "UTF-8"})
             .then((data) => {
                 let projection = fs.readFileSync(path.replace(".shp", ".prj")).toString();
