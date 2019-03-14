@@ -1,11 +1,7 @@
 
 import { Result } from "cubus";
-
-import { Tab, Tabs } from "@blueprintjs/core";
-import GridLayout from "react-grid-layout";
-
 import R from "ramda";
-
+import { Tabs, Tab} from "@blueprintjs/core";
 import React from "react";
 
 import Combiner from "../../model/Combiner";
@@ -78,7 +74,6 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
             const yearResults = R.filter((result) => result.property[0].value === year, results);
             const yearResultView = <div key={year}>
                 <CubusResultView results={yearResults}/>
-                <ChartsView datas={yearResults}/>
             </div>;
             return <Tab key={year} id={year} title={year} panel={yearResultView}/>;
         };
@@ -130,6 +125,5 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
             }));
         });
     }
-
 }
 

@@ -1,4 +1,3 @@
-import { Result } from "cubus";
 import R from "ramda";
 import React from "react";
 
@@ -7,12 +6,16 @@ import React from "react";
 // import * as am4core from '@amcharts/amcharts4/core';
 // import * as am4charts from '@amcharts/amcharts4/charts';
 
+export interface IChartItem {
+  [name: string]: number;
+}
+
 export interface IChartViewProps {
-  data: Array<Result<number>>;
+  data: IChartItem[];
   type: string;
 }
 
-export default class ChartView extends React.Component<IChartViewProps> {
+export class ChartView extends React.Component<IChartViewProps> {
 
   public static getTypes(): string[] {
     return ["Chord", "Sankey"];
@@ -66,15 +69,12 @@ export default class ChartView extends React.Component<IChartViewProps> {
       // @ts-ignore
       chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
     }
-    const notSameFromTo = (item: Result<number>) => {
-        return  item.property[1].value !== item.property[2].value;
-    };
-    const createItem = (item: Result<number>) => {
-      return { from: item.property[1].value , to: item.property[2].value , value: item.value};
+    const createItem = (item: IChartItem) => {
+      return { from: item.from , to: item.to , value: item.value};
     };
     const linkTemplate = chart.links.template;
     linkTemplate.tooltipText = "Von {fromName} nach {toName}: {value.value}";
-    chart.data = R.map(createItem, R.filter(notSameFromTo, this.props.data));
+    chart.data = R.map(createItem, this.props.data);
     chart.dataFields.fromName = "from";
     chart.dataFields.toName = "to";
     chart.dataFields.value = "value";

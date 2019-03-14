@@ -1,16 +1,23 @@
+import { Dropdown } from "primereact/dropdown";
 import React from "react";
-import Select from "react-select";
 
 export interface ISelectInputProps {
     options: string[];
     onSelected: (selected: string) => void;
 }
 
-export default class SelectInput extends React.Component<ISelectInputProps> {
+interface ISelectInputState {
+    selected: string;
+}
+
+export default class SelectInput extends React.Component<ISelectInputProps, ISelectInputState> {
 
     constructor(props: ISelectInputProps) {
         super(props);
         this.onSelected = this.onSelected.bind(this);
+        this.state = {
+            selected: "",
+        };
     }
 
     public render(): JSX.Element {
@@ -18,12 +25,12 @@ export default class SelectInput extends React.Component<ISelectInputProps> {
             return { value: option, label: option};
         });
         return (
-            <Select options={options} onChange={this.onSelected} isMulti={false}/>
+            <Dropdown value={this.state.selected} options={options} onChange={this.onSelected} />
         );
     }
 
-    private onSelected(selected: any) {
-        const selectedValue = selected as {[value: string]: string};
-        this.props.onSelected(selectedValue.value);
+    private onSelected(event: { originalEvent: Event, value: any}) {
+        this.props.onSelected(event.value);
+        this.setState({selected: event.value});
     }
 }

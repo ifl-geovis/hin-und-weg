@@ -1,4 +1,4 @@
-import { FileInput as BlueFileInput} from "@blueprintjs/core";
+import {FileUpload} from "primereact/fileupload";
 import React from "react";
 
 export interface IFileInputProps {
@@ -16,19 +16,15 @@ export default class FileInput extends React.Component<IFileInputProps>{
 
     public render(): JSX.Element {
        return (
-            <div>
-                <BlueFileInput disabled={this.props.disabled}
-                               text={this.props.label}
-                               onInputChange={this.handleFiles}
-                               inputProps={{multiple: true}}/>
-            </div>
+            <FileUpload mode="basic"
+                        disabled={this.props.disabled}
+                        chooseLabel={this.props.label} 
+                        multiple={true}
+                        onSelect={this.handleFiles}/>
        );
     }
 
-    private handleFiles(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.files != null && event.target.files.length > 0) {
-            this.props.filesSelected(event.target.files);
-        }
+    private handleFiles(event: { originalEvent: Event, files: any}) {
+        this.props.filesSelected(event.files);
     }
-
 }

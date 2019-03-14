@@ -1,17 +1,23 @@
-
+import {MultiSelect} from "primereact/multiselect";
 import React from "react";
-import Select from "react-select";
 
 export interface IMultiSelectInputProps {
     options: string[];
     onSelected: (selected: string[]) => void;
 }
 
-export default class MultiSelectInput extends React.Component<IMultiSelectInputProps> {
+interface IMultiSelectInputState {
+    selected: string[];
+}
+
+export default class MultiSelectInput extends React.Component<IMultiSelectInputProps,IMultiSelectInputState> {
 
     constructor(props: IMultiSelectInputProps) {
         super(props);
         this.onSelected = this.onSelected.bind(this);
+        this.state = {
+            selected: [],
+        };
     }
 
     public render(): JSX.Element {
@@ -19,13 +25,13 @@ export default class MultiSelectInput extends React.Component<IMultiSelectInputP
             return { value: option, label: option};
         });
         return (
-            <Select options={options} onChange={this.onSelected} isMulti={true}/>
+            <MultiSelect value={this.state.selected} options={options} onChange={this.onSelected}/>
         );
     }
 
-    private onSelected(selected: any) {
-        const selectedValues = selected as Array<{[value: string]: string}>;
-        const newSelectedValues = selectedValues.map((selectedValue) => selectedValue.value);
-        this.props.onSelected(newSelectedValues);
+    private onSelected(event: { originalEvent: Event, value: any}) {
+        const selectedValues = event.value as string[];
+        this.setState({selected: selectedValues});
+        this.props.onSelected(selectedValues);
     }
 }

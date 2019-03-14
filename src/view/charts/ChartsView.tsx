@@ -1,10 +1,9 @@
-import { Result } from "cubus";
 import React from "react";
 import ChartConfigView from "./ChartConfigView";
-import ChartView from "./ChartView";
+import { ChartView, IChartItem} from "./ChartView";
 
 export interface IChartsViewProps {
-    datas: Array<Result<number>>;
+    items: IChartItem[];
 }
 
 interface IChartsViewState {
@@ -21,11 +20,11 @@ export default class ChartsView extends React.Component<IChartsViewProps, IChart
         };
     }
 
-    public render(): JSX.Element{
+    public render(): JSX.Element {
         return (
             <div>
                 <ChartConfigView onSelectChartType={this.onChartTypeSelect} diagramTypes={ChartView.getTypes()} />
-                <ChartView data={this.props.datas} type={this.state.chartType}/>
+                <ChartView data={this.props.items} type={this.state.chartType}/>
             </div>
         );
     }
