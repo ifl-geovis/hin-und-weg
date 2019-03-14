@@ -55,7 +55,9 @@ export default class App extends React.Component<IAppProps, IAppState> {
                             <Button label="Saldi"/>
                         </Panel>
                         <Panel header="Jahre" className="p-col-12">
-                            {R.map((year) => <Checkbox onChange={console.log} value={year} key={year}>{year}</Checkbox>, this.state.years)}
+                            {R.map((year) =>
+                                <div key={year}className="p-col-12">{year}<Checkbox onChange={console.log} value={year}/></div>,
+                                this.state.years)}
                         </Panel>
                     </div>
                 </div>
