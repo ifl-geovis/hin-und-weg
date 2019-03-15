@@ -22,6 +22,7 @@ export interface IAppProps {
 interface IAppState {
     geodata: Geodata | null;
     years: string[];
+    results: Iterable<any>;
 }
 
 export default class App extends React.Component<IAppProps, IAppState> {
@@ -30,14 +31,15 @@ export default class App extends React.Component<IAppProps, IAppState> {
         super(props);
         this.state = {
             geodata: null,
+            results: [],
             years: [],
         };
     }
 
     public render(): JSX.Element {
-        let results = [];
-        if (this.state.years.length > 0) {
-            results = this.props.db("SELECT * FROM matrices;");
+        const resultItems = [];
+        for (const result of this.state.results) {
+            resultItems.push(R.objOf("val", result.val));
         }
         return (
             <div className="p-grid">
@@ -67,7 +69,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
                         <QueryView db={this.props.db}/>
                     </TabPanel>
                     <TabPanel header="Diagramme">
-                        <ChartsView items={[]}/>
+                        <ChartsView items={resultItems}/>
                     </TabPanel>
                     <TabPanel header="Verwaltung">
                         <ConfigurationView db={this.props.db} geodata={this.state.geodata}
