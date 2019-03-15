@@ -49,7 +49,7 @@ export default class CombinerView extends React.Component<{}, ICombinerState> {
         return (
             <div>
                 <div key="geodataView">
-                    <GeodataView  geodata={geodata} onSelectGeodata={this.onSelectGeodataFile}/>
+                    <GeodataView geodata={geodata}/>
                 </div>
                 <div key="combinerConfigView">
                     <CombinerConfigView

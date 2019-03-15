@@ -9,7 +9,7 @@ export interface IFileInputProps {
 
 export default class FileInput extends React.Component<IFileInputProps>{
 
-    constructor(props: IFileInputProps){
+    constructor(props: IFileInputProps) {
         super(props);
         this.handleFiles = this.handleFiles.bind(this);
     }
@@ -18,7 +18,7 @@ export default class FileInput extends React.Component<IFileInputProps>{
        return (
             <FileUpload mode="basic"
                         disabled={this.props.disabled}
-                        chooseLabel={this.props.label} 
+                        chooseLabel={this.props.label}
                         multiple={true}
                         onSelect={this.handleFiles}/>
        );
