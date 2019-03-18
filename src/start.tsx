@@ -8,7 +8,7 @@ function setupDB() {
     const DB = alasql;
     DB("CREATE DATABASE hin_und_weg");
     DB("USE hin_und_weg");
-    DB("CREATE TABLE matrices (x STRING,y STRING ,z STRING ,val FLOAT);");
+    DB("CREATE TABLE matrices (Nach STRING,Von STRING ,Jahr STRING ,Wert FLOAT);");
     return DB;
 }
 

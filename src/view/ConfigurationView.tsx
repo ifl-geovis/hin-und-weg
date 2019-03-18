@@ -1,4 +1,3 @@
-import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { Panel } from "primereact/panel";
 
@@ -116,7 +115,7 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
     }
 
     private addTabledataToDB(year: string, path: string) {
-        Tabledata.read(path,(tabledata) => {
+        Tabledata.read(path, (tabledata) => {
             const columnHeaders = R.slice(2, tabledata.getColumnCount() - 1, tabledata.getRowAt(3));
             const rowHeaders = R.slice(4, tabledata.getRowCount() - 2, tabledata.getColumnAt(1));
             const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
@@ -124,11 +123,11 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
             const valueMatrix = tabledata.getTabledataBy([4, tabledata.getRowCount() - 2], [2, tabledata.getColumnCount()  - 1]);
             for (let row = 0; row < valueMatrix.getRowCount(); row++) {
                 for (let column = 0; column < valueMatrix.getColumnCount(); column++) {
-                    const value = parseInt(valueMatrix.getValueAt(row, column), 10);
-                    const x = columnNames[column];
-                    const y = rowNames[row];
-                    const z = `${year}`;
-                    this.props.db(`INSERT INTO matrices ('${x}','${y}','${z}', ${isNaN(value) ? "NULL" : value});`);
+                    const wert = parseInt(valueMatrix.getValueAt(row, column), 10);
+                    const nach = columnNames[column];
+                    const von = rowNames[row];
+                    const jahr = `${year}`;
+                    this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
                 }
             }
             this.props.addYear(year);

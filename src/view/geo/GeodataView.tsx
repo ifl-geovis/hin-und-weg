@@ -1,7 +1,7 @@
 import { GeoJsonProperties } from "geojson";
 import React from "react";
 import Geodata from "../../model/Geodata";
-import TableView from "../db/TableView";
+import TableView from "../TableView";
 import MapView from "./MapView";
 
 export interface IGeodataProps {

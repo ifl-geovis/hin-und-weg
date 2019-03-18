@@ -3,7 +3,7 @@ import React from "react";
 import {Button} from "primereact/button";
 import {InputTextarea} from "primereact/inputtextarea";
 
-import TableView from "./db/TableView";
+import TableView from "./TableView";
 
 export interface IQueryViewProps {
     db: alaSQLSpace.AlaSQL;
@@ -18,7 +18,7 @@ export default class QueryView extends React.Component<IQueryViewProps, IQueryVi
     constructor(props: IQueryViewProps) {
         super(props);
         this.state = {
-            query: "SELECT y as Von, x as Nach, z as Jahr FROM matrices;",
+            query: "SELECT * FROM matrices;",
         };
     }
 
