@@ -1,5 +1,4 @@
 
-import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Panel } from "primereact/panel";
 import { ScrollPanel } from "primereact/scrollpanel";
@@ -14,6 +13,8 @@ import ChartsView from "./charts/ChartsView";
 import ConfigurationView from "./ConfigurationView";
 import GeodataView from "./geo/GeodataView";
 import QueryView from "./QueryView";
+import Themes from "./Themes";
+import Years from "./Years";
 
 export interface IAppProps {
     db: alaSQLSpace.AlaSQL;
@@ -21,8 +22,10 @@ export interface IAppProps {
 
 interface IAppState {
     geodata: Geodata | null;
+    yearsAvailable: string[];
     years: string[];
     query: string;
+    theme: string;
 }
 
 export default class App extends React.Component<IAppProps, IAppState> {
@@ -32,7 +35,9 @@ export default class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             geodata: null,
             query: "SELECT * FROM matrices;",
+            theme: "Von",
             years: [],
+            yearsAvailable: [],
         };
     }
 
@@ -43,16 +48,10 @@ export default class App extends React.Component<IAppProps, IAppState> {
                 </Panel>
                 <div className="p-col-2">
                     <div className="p-grid p-justify-around">
-                        <Panel header="Themen" className="p-col-12">
-                            <Button label="Von"/>
-                            <Button label="Nach"/>
-                            <Button label="Saldi"/>
-                        </Panel>
-                        <Panel header="Jahre" className="p-col-12">
-                            {R.map((year) =>
-                                <div key={year} className="p-p-col-12">{year}<Checkbox onChange={console.log} value={year}/></div>,
-                                this.state.years)}
-                        </Panel>
+                        <Themes themes={["Von", "Nach", "Saldi"]} 
+                                selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
+                        <Years availableYears={this.state.yearsAvailable} selected={this.state.years}
+                               setYears={(newYears) => this.setState({years: newYears})}/>
                     </div>
                 </div>
                 <TabView className="p-col-10 p-tabview-right" activeIndex={3}>
@@ -69,7 +68,9 @@ export default class App extends React.Component<IAppProps, IAppState> {
                     </TabPanel>
                     <TabPanel header="Verwaltung">
                         <ConfigurationView db={this.props.db} geodata={this.state.geodata}
-                                           addYear={(year) => { this.setState({ years: R.append(year, this.state.years ) }); } }
+                                           addYear={(year) => {
+                                               this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable )) });
+                                            }}
                                            setGeodata={(newGeodata) => { this.setState({geodata: newGeodata}); }} />
                     </TabPanel>
                 </TabView>
