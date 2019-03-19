@@ -1,3 +1,4 @@
+import { Panel } from "primereact/panel";
 import { RadioButton } from "primereact/radiobutton";
 import R from "ramda";
 import * as React from "react";
@@ -18,9 +19,11 @@ export default class Themes extends React.Component<IThemesProps> {
     public render(): JSX.Element {
         const radioButtons = R.map(this.makeRadioButton, this.props.themes);
         return (
-            <div className="p-grid" style={{ margin: "10px" }}>
-                {radioButtons}
-            </div>
+            <Panel header="Thema">
+                <div className="p-grid" style={{ margin: "10px" }}>
+                    {radioButtons}
+                </div>
+            </Panel>
         );
     }
 

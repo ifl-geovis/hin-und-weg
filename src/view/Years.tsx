@@ -1,5 +1,5 @@
 import { Checkbox } from "primereact/checkbox";
-
+import { Panel } from "primereact/panel";
 import R from "ramda";
 import * as React from "react";
 
@@ -20,9 +20,11 @@ export default class Years extends React.Component<IYearsProps> {
     public render(): JSX.Element {
         const checkboxes = R.map(this.makeCheckBox, this.props.availableYears);
         return (
-            <div className="p-grid" style={{ margin: "10px" }}>
-                {checkboxes}
-            </div>
+            <Panel header="Jahr(e)">
+                <div className="p-grid" style={{ margin: "10px" }}>
+                    {checkboxes}
+                </div>
+            </Panel>
         );
     }
 
