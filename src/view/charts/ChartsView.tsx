@@ -22,9 +22,13 @@ export default class ChartsView extends React.Component<IChartsViewProps, IChart
 
     public render(): JSX.Element {
         return (
-            <div>
-                <ChartConfigView onSelectChartType={this.onChartTypeSelect} diagramTypes={ChartView.getTypes()} />
-                <ChartView data={this.props.items} type={this.state.chartType}/>
+            <div className="p-grid">
+                <div className="p-col-12">
+                    <ChartConfigView onSelectChartType={this.onChartTypeSelect} diagramTypes={ChartView.getTypes()} />
+                </div>
+                <div className="p-col-12">
+                    <ChartView data={this.props.items} type={this.state.chartType}/>
+                </div>
             </div>
         );
     }

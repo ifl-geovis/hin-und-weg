@@ -25,7 +25,7 @@ interface IAppState {
     geodata: Geodata | null;
     yearsAvailable: string[];
     years: string[];
-    query: string;
+    location: string | null;
     theme: string;
 }
 
@@ -35,7 +35,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
         super(props);
         this.state = {
             geodata: null,
-            query: "SELECT * FROM matrices;",
+            location: null,
             theme: "Von",
             years: [],
             yearsAvailable: [],
@@ -43,11 +43,20 @@ export default class App extends React.Component<IAppProps, IAppState> {
     }
 
     public render(): JSX.Element {
+        let results = [];
+        if (R.and(R.not(R.isNil(this.state.location)), R.not(R.isEmpty(this.state.yearsAvailable)))) {
+            const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
+            const stringYears =  R.join(", ", R.map((year) => `'${year}'`, years));
+            const location = ` WHERE ${this.state.theme} = '${this.state.location}' `;
+            const query = `SELECT * FROM matrices ${location} AND Jahr IN (${stringYears});`;
+            console.log("Query: ", query);
+            results = this.props.db(query);
+        }
         return (
             <div className="p-grid">
                 <div className="p-col-2">
                     <div className="p-grid p-justify-around">
-                        <div className="p-col-12"><Themes themes={["Von", "Nach", "Saldi"]} 
+                        <div className="p-col-12"><Themes themes={["Von", "Nach", "Saldi"]}
                                 selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
                         </div>
                         <div className="p-col-12"><Years availableYears={this.state.yearsAvailable} selected={this.state.years}
@@ -58,15 +67,15 @@ export default class App extends React.Component<IAppProps, IAppState> {
                 <div className="p-col-10">
                     <TabView className="p-tabview-right" activeIndex={3}>
                         <TabPanel header="Karte">
-                            <ScrollPanel style={{ width: "100%", height: "850px" }}>
-                                <GeodataView geodata={this.state.geodata} />
-                            </ScrollPanel>
+                                <GeodataView geodata={this.state.geodata} items={results}
+                                             onSelectLocation={(newLocation) => this.setState({location: newLocation})}
+                                             selectedLocation={this.state.location} />
                         </TabPanel>
                         <TabPanel header="Tabelle">
-                            <TableView items={[]} />
+                            <TableView items={results} maxRows={20}/>
                         </TabPanel>
                         <TabPanel header="Diagramm">
-                            <ChartsView items={[]} />
+                            <ChartsView items={results} />
                         </TabPanel>
                         <TabPanel header="Verwaltung">
                             <ConfigurationView db={this.props.db} geodata={this.state.geodata}

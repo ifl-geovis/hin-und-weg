@@ -52,7 +52,7 @@ export class ChartView extends React.Component<IChartViewProps> {
 
   public render(): JSX.Element {
     return (
-      <div id={"chart-" + this.id} style={{ width: "100%", height: "500px" }}></div>
+      <div id={"chart-" + this.id} style={{ width: "100%", height: "800px" }}></div>
     );
   }
 
@@ -69,15 +69,12 @@ export class ChartView extends React.Component<IChartViewProps> {
       // @ts-ignore
       chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
     }
-    const createItem = (item: IChartItem) => {
-      return { from: item.from , to: item.to , value: item.value};
-    };
     const linkTemplate = chart.links.template;
     linkTemplate.tooltipText = "Von {fromName} nach {toName}: {value.value}";
-    chart.data = R.map(createItem, this.props.data);
-    chart.dataFields.fromName = "from";
-    chart.dataFields.toName = "to";
-    chart.dataFields.value = "value";
+    chart.data = R.reject((item) => item.Von === item.Nach, this.props.data);
+    chart.dataFields.fromName = "Von";
+    chart.dataFields.toName = "Nach";
+    chart.dataFields.value = "Wert";
     return chart;
   }
 
