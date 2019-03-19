@@ -43,15 +43,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
     }
 
     public render(): JSX.Element {
-        let results = [];
-        if (R.and(R.not(R.isNil(this.state.location)), R.not(R.isEmpty(this.state.yearsAvailable)))) {
-            const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
-            const stringYears =  R.join(", ", R.map((year) => `'${year}'`, years));
-            const location = ` WHERE ${this.state.theme} = '${this.state.location}' `;
-            const query = `SELECT * FROM matrices ${location} AND Jahr IN (${stringYears});`;
-            console.log("Query: ", query);
-            results = this.props.db(query);
-        }
+        const results = this.query();
         return (
             <div className="p-grid">
                 <div className="p-col-2">
@@ -91,5 +83,30 @@ export default class App extends React.Component<IAppProps, IAppState> {
                 </div>
             </div>
         );
+    }
+
+    private query(): any[] {
+        let results: any[] = [];
+        if ( R.or(R.isNil(this.state.location), R.isEmpty(this.state.yearsAvailable)) ) {
+            return results;
+        }
+        const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
+        const stringYears =  R.join(", ", R.map((year) => `'${year}'`, years));
+        const location = ` ${this.state.theme} IN ('${this.state.location}') `;
+        let query = "";
+        if ( this.state.theme === "Von") {
+            query = `SELECT '${this.state.location}' as Von, Nach, SUM(Wert) as Wert FROM matrices ` +
+                    `WHERE ${location} AND Jahr IN (${stringYears}) ` +
+                    `GROUP BY Nach `;
+        } else if ( this.state.theme === "Nach") {
+            query = `SELECT Von, '${this.state.location}' as Nach, SUM(Wert) as Wert FROM matrices ` +
+                    `WHERE ${location} AND Jahr IN (${stringYears}) ` +
+                    `GROUP BY Von `;
+        } else if ( this.state.theme === "Saldi") {
+            query = "SELECT * FROM matrices;";
+        }
+        console.log("Query: ", query);
+        results = this.props.db(query);
+        return results;
     }
 }

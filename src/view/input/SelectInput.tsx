@@ -3,21 +3,15 @@ import React from "react";
 
 export interface ISelectInputProps {
     options: string[];
+    selected?: string|null;
     onSelected: (selected: string) => void;
 }
 
-interface ISelectInputState {
-    selected: string;
-}
-
-export default class SelectInput extends React.Component<ISelectInputProps, ISelectInputState> {
+export default class SelectInput extends React.Component<ISelectInputProps> {
 
     constructor(props: ISelectInputProps) {
         super(props);
         this.onSelected = this.onSelected.bind(this);
-        this.state = {
-            selected: "",
-        };
     }
 
     public render(): JSX.Element {
@@ -25,12 +19,11 @@ export default class SelectInput extends React.Component<ISelectInputProps, ISel
             return { value: option, label: option};
         });
         return (
-            <Dropdown value={this.state.selected} options={options} onChange={this.onSelected} />
+            <Dropdown value={this.props.selected} options={options} onChange={this.onSelected} />
         );
     }
 
     private onSelected(event: { originalEvent: Event, value: any}) {
         this.props.onSelected(event.value);
-        this.setState({selected: event.value});
     }
 }

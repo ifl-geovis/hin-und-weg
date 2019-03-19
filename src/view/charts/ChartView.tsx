@@ -71,7 +71,11 @@ export class ChartView extends React.Component<IChartViewProps> {
     }
     const linkTemplate = chart.links.template;
     linkTemplate.tooltipText = "Von {fromName} nach {toName}: {value.value}";
-    chart.data = R.reject((item) => item.Von === item.Nach, this.props.data);
+    if ( this.props.type === "Sankey"){
+      chart.data = R.reject((item) => item.Von === item.Nach, this.props.data);
+    } else {
+      chart.data = this.props.data;
+    }
     chart.dataFields.fromName = "Von";
     chart.dataFields.toName = "Nach";
     chart.dataFields.value = "Wert";
