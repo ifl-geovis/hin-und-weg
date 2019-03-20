@@ -1,7 +1,4 @@
 
-import { Checkbox } from "primereact/checkbox";
-import { Panel } from "primereact/panel";
-import { ScrollPanel } from "primereact/scrollpanel";
 import { TabPanel, TabView } from "primereact/tabview";
 
 import R from "ramda";
@@ -13,9 +10,9 @@ import ChartsView from "./charts/ChartsView";
 import ConfigurationView from "./ConfigurationView";
 import DBView from "./DBView";
 import GeodataView from "./geo/GeodataView";
+import TableView from "./TableView";
 import Themes from "./Themes";
 import Years from "./Years";
-import TableView from "./TableView";
 
 export interface IAppProps {
     db: alaSQLSpace.AlaSQL;
@@ -44,8 +41,10 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
     public render(): JSX.Element {
         const results = this.query();
+        const status = this.getStatus();
         return (
             <div className="p-grid">
+                <div className="p-col-12"><p>{status}</p></div>
                 <div className="p-col-2">
                     <div className="p-grid p-justify-around">
                         <div className="p-col-12"><Themes themes={["Von", "Nach", "Saldi"]}
@@ -64,7 +63,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
                                              selectedLocation={this.state.location} />
                         </TabPanel>
                         <TabPanel header="Tabelle">
-                            <TableView items={results} maxRows={20}/>
+                            <TableView items={results} maxRows={25}/>
                         </TabPanel>
                         <TabPanel header="Diagramm">
                             <ChartsView items={results} />
@@ -76,13 +75,31 @@ export default class App extends React.Component<IAppProps, IAppState> {
                                 }}
                                 setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }} />
                         </TabPanel>
-                        <TabPanel header="Datenbank ">
+                        <TabPanel header="Datenbank">
                             <DBView db={this.props.db} />
                         </TabPanel>
                     </TabView>
                 </div>
             </div>
         );
+    }
+
+    private getStatus(): string {
+        let status = "";
+        if (this.state.location) {
+            status = `Ort/Gebiet ${this.state.location}, `;
+        }else{
+            status = "Kein Ort/Gebiet, ";
+        }
+        if (this.state.theme) {
+            status += ` Thema '${this.state.theme}', `;
+        }
+        if (R.not(R.isEmpty(this.state.years))){
+            status += `und Jahre: ${R.join(", ", R.sort((a, b) => a.localeCompare(b), this.state.years))}`;
+        } else {
+            status += `und Jahre: ${R.join(", ", R.sort((a, b) => a.localeCompare(b), this.state.yearsAvailable))}`;
+        }
+        return `${status} ausgewählt.`;
     }
 
     private query(): any[] {
@@ -92,20 +109,33 @@ export default class App extends React.Component<IAppProps, IAppState> {
         }
         const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
         const stringYears =  R.join(", ", R.map((year) => `'${year}'`, years));
-        const location = ` ${this.state.theme} IN ('${this.state.location}') `;
+        const location = ` ('${this.state.location}') `;
         let query = "";
         if ( this.state.theme === "Von") {
             query = `SELECT '${this.state.location}' as Von, Nach, SUM(Wert) as Wert FROM matrices ` +
-                    `WHERE ${location} AND Jahr IN (${stringYears}) ` +
+                    `WHERE Von IN ${location} AND Jahr IN (${stringYears}) ` +
                     `GROUP BY Nach `;
         } else if ( this.state.theme === "Nach") {
             query = `SELECT Von, '${this.state.location}' as Nach, SUM(Wert) as Wert FROM matrices ` +
-                    `WHERE ${location} AND Jahr IN (${stringYears}) ` +
+                    `WHERE Nach IN ${location} AND Jahr IN (${stringYears}) ` +
                     `GROUP BY Von `;
         } else if ( this.state.theme === "Saldi") {
-            query = "SELECT * FROM matrices;";
+            const vonQuery = `SELECT '${this.state.location}' as Von, Nach, SUM(Wert) as Wert FROM matrices ` +
+                    `WHERE  Von IN ${location}  AND Jahr IN (${stringYears}) ` +
+                    `GROUP BY Nach ORDER BY Nach`;
+            const nachQuery = `SELECT Von, '${this.state.location}' as Nach, SUM(Wert) as Wert FROM matrices ` +
+                    `WHERE Nach IN ${location} AND Jahr IN (${stringYears}) ` +
+                    `GROUP BY Von ORDER BY Von`;
+            const vonResults = this.props.db(vonQuery);
+            const nachResults = this.props.db(nachQuery);
+
+            for (let i = 0 ; i < nachResults.length; i++) {
+                const saldiItem = { Von: nachResults[i].Von, Nach:  nachResults[i].Nach, Wert: (nachResults[i].Wert - vonResults[i].Wert) };
+                results = R.append(saldiItem, results);
+            }
+            return results;
         }
-        console.log("Query: ", query);
+        // console.log("Query: ", query);
         results = this.props.db(query);
         return results;
     }

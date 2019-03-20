@@ -21,12 +21,23 @@ export default class TableView extends React.Component<ITableViewProps> {
             return <div>Keine Daten vorhanden.</div>;
         }
         const fieldNames = R.keys(this.props.items[0]);
-        const columns = R.map((fieldName) => <Column key={fieldName} field={`${fieldName}`} header={fieldName}></Column>, fieldNames);
+        const columns = R.map(this.createColumn, fieldNames);
         return (
             <DataTable value={this.props.items} paginator={true} rows={this.props.maxRows || 10}
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks CurrentPageReport NextPageLink LastPageLink">
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks CurrentPageReport NextPageLink LastPageLink"
+                currentPageReportTemplate="({currentPage} von {totalPages})"
+                emptyMessage="Keine Daten vorhanden.">
                 {columns}
             </DataTable>
         );
+    }
+
+    private createColumn(fieldName: string): JSX.Element {
+        let filterMatchMode = "contains";
+        if (fieldName === "Wert"){
+            filterMatchMode = "equals";
+        }
+        return <Column key={fieldName}  field={`${fieldName}`} header={fieldName} filterPlaceholder="Filtern ..."
+                        sortable={true} filter={true} filterMatchMode={filterMatchMode}/>;
     }
 }

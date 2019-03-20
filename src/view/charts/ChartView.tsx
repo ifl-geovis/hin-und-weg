@@ -1,3 +1,5 @@
+import {Slider} from "primereact/slider";
+
 import R from "ramda";
 import React from "react";
 
@@ -15,7 +17,11 @@ export interface IChartViewProps {
   type: string;
 }
 
-export class ChartView extends React.Component<IChartViewProps> {
+interface IChartViewState {
+    threshold: number;
+}
+
+export class ChartView extends React.Component<IChartViewProps, IChartViewState> {
 
   public static getTypes(): string[] {
     return ["Chord", "Sankey"];
@@ -31,6 +37,9 @@ export class ChartView extends React.Component<IChartViewProps> {
     this.chart = null;
     ChartView.idCounter++;
     this.id = ChartView.idCounter;
+    this.state = {
+      threshold: 0,
+    };
   }
 
   public componentDidMount() {
@@ -51,15 +60,24 @@ export class ChartView extends React.Component<IChartViewProps> {
   }
 
   public render(): JSX.Element {
+    const [min, max] = this.getMinMax();
     return (
-      <div id={"chart-" + this.id} style={{ width: "100%", height: "800px" }}></div>
+      <div className="p-grid">
+        <div className="p-col-1">{min}</div>
+        <div className="p-col-10"><Slider min={min} max={max} value={this.state.threshold} orientation="horizontal"
+                  onChange={(e) => this.setState({ threshold: e.value as number})}/>
+        </div>
+        <div className="p-col-1">{max}</div>
+        <div className="p-col-12 p-justify-center">Anzeige ab Wert: {this.state.threshold}</div>
+        <div className="p-col-12" id={"chart-" + this.id} style={{ width: "100%", height: "800px" }}></div>
+      </div>
     );
   }
 
   private createChart() {
     // @ts-ignore
     let chart = null;
-    if (this.props.type === "Sankey"){
+    if (this.props.type === "Sankey") {
       // @ts-ignore
       chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
     } else if (this.props.type === "Chord") {
@@ -70,16 +88,25 @@ export class ChartView extends React.Component<IChartViewProps> {
       chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
     }
     const linkTemplate = chart.links.template;
-    linkTemplate.tooltipText = "Von {fromName} nach {toName}: {value.value}";
-    if ( this.props.type === "Sankey"){
-      chart.data = R.reject((item) => item.Von === item.Nach, this.props.data);
-    } else {
-      chart.data = this.props.data;
+    let normalizedData = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
+    if ( this.props.type === "Sankey")  {
+      normalizedData = R.reject((item) => item.Von === item.Nach, normalizedData);
     }
+    chart.data = normalizedData;
     chart.dataFields.fromName = "Von";
     chart.dataFields.toName = "Nach";
     chart.dataFields.value = "Wert";
     return chart;
   }
+
+  private getMinMax(): [number, number] {
+    let max = 0;
+    let min = 0;
+    if (this.props.data) {
+        max = R.reduce((acc, item) => R.max(acc, item.Wert), Number.MIN_VALUE, this.props.data);
+        min = R.reduce((acc, item) => R.min(acc, item.Wert), Number.MAX_VALUE, this.props.data);
+    }
+    return [min, max];
+}
 
 }

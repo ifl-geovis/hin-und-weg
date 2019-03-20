@@ -27,14 +27,14 @@ export default class GeodataView extends React.Component<IGeodataProps> {
         }
         return (
             <div className="p-grid">
+            <div className="p-col-4">Fläche auswählen:</div>
+                <div className="p-col-8">
+                    <SelectInput options={locations} selected={this.props.selectedLocation} onSelected={this.props.onSelectLocation}/>
+                </div>
                 <div className="p-col-12">
                     <MapView geodata={this.props.geodata} nameField="Name" items={this.props.items}
                              selectedLocation={this.props.selectedLocation}
                              onSelectLocation={this.props.onSelectLocation}/>
-                </div>
-                <div className="p-col-4">Fläche auswählen:</div>
-                <div className="p-col-8">
-                    <SelectInput options={locations} selected={this.props.selectedLocation} onSelected={this.props.onSelectLocation}/>
                 </div>
             </div>
        );
