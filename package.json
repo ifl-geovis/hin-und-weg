@@ -3,7 +3,13 @@
   "productName": "Hin-und-weg",
   "version": "0.0.1",
   "description": "Hin & weg",
+  "author": "Ralf Puchert, DELPHI IMM GmbH",
+  "license": "UNLICENSED",
   "main": "./dist/main.js",
+  "repository": {
+    "type": "svn",
+    "url": "svn://svn.geoway.de/hin-und-weg/main"
+  },
   "directories": {
     "doc": "docs"
   },
@@ -15,8 +21,6 @@
     "start": "npm run build && electron ./dist/main.js",
     "test": "mocha -r ts-node/register test/**/*.test.ts"
   },
-  "author": "Ralf Puchert, DELPHI IMM GmbH",
-  "license": "",
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
