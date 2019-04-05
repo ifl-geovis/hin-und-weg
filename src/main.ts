@@ -11,14 +11,14 @@ function createWindow() {
     height: 960,
     width: 1400,
     // tslint:disable-next-line: object-literal-sort-keys
-    title: "Hin & Weg",
+    title: "hin&weg " + process.env.npm_package_version,
   });
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../index.html"));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools({mode: "undocked"});
+  //mainWindow.webContents.openDevTools({mode: "undocked"});
 
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {
