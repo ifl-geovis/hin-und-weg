@@ -12,3 +12,20 @@ p.status
 	border-color: lightgray;
 	border-radius: 10px;
 }
+
+/* Prime React */
+
+.p-tabview.p-tabview-right > div.p-tabview-panels
+{
+	width: 85%;
+}
+
+.p-tabview.p-tabview-right > ul.p-tabview-nav
+{
+	width: 15%;
+}
+
+ul.p-tabview-nav li a
+{
+	width: 100%;
+}
