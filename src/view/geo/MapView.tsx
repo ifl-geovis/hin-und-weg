@@ -67,7 +67,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
         const indexedMap = R.addIndex(R.map);
         const features = indexedMap( (feature, id: number): JSX.Element => {
             const f = feature as Feature;
-            const center = d3.geoCentroid(f);
+            const center = projection(d3.geoCentroid(f));
             let title = "";
             if (this.props.nameField == null) {
                 const firstProp = R.head(R.keys(f.properties!));
@@ -81,8 +81,8 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
                     <path d={path(f) || undefined} style={style} key={id} onClick={(e) => {
                         this.props.onSelectLocation(title);
                     }}/>
-                    <text transform={"translate(" + projection(center) + ")"}
-                         style={{ fill: "#000000", stroke: "#000000"}}>
+                    <text x={(center == null) ? 0 : center["0"]} y={(center == null) ? 0 : center["1"]}
+                         style={{ fill: "#000000", stroke: "#000000"}} pointerEvents="none">
                          {title}
                     </text>
                 </g>
