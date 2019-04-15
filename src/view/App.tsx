@@ -57,15 +57,15 @@ export default class App extends React.Component<IAppProps, IAppState> {
                 </div>
                 <div className="p-col-10">
                     <TabView className="p-tabview-right" activeIndex={3}>
-                        <TabPanel header="Karte">
+                        <TabPanel header="Karte" disabled={this.state.geodata == null}>
                                 <GeodataView geodata={this.state.geodata} items={results}
                                              onSelectLocation={(newLocation) => this.setState({location: newLocation})}
                                              selectedLocation={this.state.location} />
                         </TabPanel>
-                        <TabPanel header="Tabelle">
+                        <TabPanel header="Tabelle" disabled={this.state.yearsAvailable.length == 0}>
                             <TableView items={results} maxRows={25}/>
                         </TabPanel>
-                        <TabPanel header="Diagramm">
+                        <TabPanel header="Diagramm" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
                             <ChartsView items={results} />
                         </TabPanel>
                         <TabPanel header="Datei">
@@ -75,7 +75,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
                                 }}
                                 setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }} />
                         </TabPanel>
-                        <TabPanel header="Datenbank">
+                        <TabPanel header="Datenbank" disabled={this.state.yearsAvailable.length == 0}>
                             <DBView db={this.props.db} />
                         </TabPanel>
                     </TabView>
