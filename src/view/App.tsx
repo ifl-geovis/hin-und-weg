@@ -44,8 +44,8 @@ export default class App extends React.Component<IAppProps, IAppState> {
         const status = this.getStatus();
         return (
             <div className="p-grid">
-                <div className="p-col-12"><p>{status}</p></div>
                 <div className="p-col-2">
+                    <div className="p-col-12"><img src="./assets/blue_huwlogo.png" /></div>
                     <div className="p-grid p-justify-around">
                         <div className="p-col-12"><Themes themes={["Von", "Nach", "Saldi"]}
                                 selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
@@ -68,7 +68,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
                         <TabPanel header="Diagramm">
                             <ChartsView items={results} />
                         </TabPanel>
-                        <TabPanel header="Verwaltung">
+                        <TabPanel header="Datei">
                             <ConfigurationView db={this.props.db} geodata={this.state.geodata}
                                 addYear={(year) => {
                                     this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) });
@@ -80,6 +80,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
                         </TabPanel>
                     </TabView>
                 </div>
+                <div className="p-col-12"><p className="status">{status}</p></div>
             </div>
         );
     }
