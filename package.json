@@ -14,7 +14,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && sh build-extras.sh",
     "watch": "tsc -w",
     "pack": "electron-packager ./ --prune --all --out packaged",
     "lint": "tslint -c tslint.json -p tsconfig.json",
