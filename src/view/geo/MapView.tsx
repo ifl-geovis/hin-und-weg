@@ -82,7 +82,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
                         this.props.onSelectLocation(title);
                     }}/>
                     <text x={(center == null) ? 0 : center["0"]} y={(center == null) ? 0 : center["1"]}
-                         dominant-baseline="middle" text-anchor="middle"
+                         dominantBaseline="middle" textAnchor="middle"
                          style={{fontSize: "small"}} pointerEvents="none">
                          {title}
                     </text>
