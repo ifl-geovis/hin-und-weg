@@ -23,6 +23,7 @@ interface IAppState {
     yearsAvailable: string[];
     years: string[];
     location: string | null;
+    showLabels: boolean;
     theme: string;
 }
 
@@ -33,6 +34,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             geodata: null,
             location: null,
+            showLabels: true,
             theme: "Von",
             years: [],
             yearsAvailable: [],
@@ -60,7 +62,8 @@ export default class App extends React.Component<IAppProps, IAppState> {
                         <TabPanel header="Karte" disabled={this.state.geodata == null}>
                                 <GeodataView geodata={this.state.geodata} items={results}
                                              onSelectLocation={(newLocation) => this.setState({location: newLocation})}
-                                             selectedLocation={this.state.location} />
+                                             setShowLabels={(show) => this.setState({showLabels: show})}
+                                             selectedLocation={this.state.location} showLabels={this.state.showLabels} />
                         </TabPanel>
                         <TabPanel header="Tabelle" disabled={this.state.yearsAvailable.length == 0}>
                             <TableView items={results} maxRows={25}/>

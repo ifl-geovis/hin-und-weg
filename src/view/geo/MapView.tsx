@@ -10,6 +10,7 @@ export interface IMapViewProps {
     nameField?: string | null;
     selectedLocation?: string | null;
     onSelectLocation: (newLocation: string) => void;
+    showLabels: boolean;
 }
 
 interface IMapViewState {
@@ -36,6 +37,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
             <div className="p-grid">
                 <svg className="p-col-11" width={this.state.width} height={this.state.height}>
                     {this.createD3Map()}
+                    {this.createMapLabels()}
                 </svg>
                 <svg className="p-col-1" width="24" height="270">
                     <rect fill="rgb(255,247,251)" width="24" height="24" y="0"><text>{min}</text></rect>
@@ -67,7 +69,6 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
         const indexedMap = R.addIndex(R.map);
         const features = indexedMap( (feature, id: number): JSX.Element => {
             const f = feature as Feature;
-            const center = projection(d3.geoCentroid(f));
             let title = "";
             if (this.props.nameField == null) {
                 const firstProp = R.head(R.keys(f.properties!));
@@ -81,6 +82,32 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
                     <path d={path(f) || undefined} style={style} key={id} onClick={(e) => {
                         this.props.onSelectLocation(title);
                     }}/>
+                </g>
+            );
+        } , geodata.getFeatures());
+        return features;
+    }
+
+    private createMapLabels(): object[] {
+        const geodata = this.props.geodata;
+        if ((geodata == null) || (this.props.showLabels == false)) {
+            return [];
+        }
+        const projection = d3.geoMercator().fitSize([this.state.width, this.state.height],geodata.getFeatureCollection());
+        const path = d3.geoPath().projection(projection);
+        const indexedMap = R.addIndex(R.map);
+        const labels = indexedMap( (feature, id: number): JSX.Element => {
+            const f = feature as Feature;
+            const center = projection(d3.geoCentroid(f));
+            let title = "";
+            if (this.props.nameField == null) {
+                const firstProp = R.head(R.keys(f.properties!));
+                title = R.prop(firstProp!, f.properties!);
+            } else {
+                title = R.prop(this.props.nameField, f.properties!);
+            }
+            return (
+                <g key={id}>
                     <text x={(center == null) ? 0 : center["0"]} y={(center == null) ? 0 : center["1"]}
                          dominantBaseline="middle" textAnchor="middle"
                          style={{fontSize: "small"}} pointerEvents="none">
@@ -89,7 +116,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
                 </g>
             );
         } , geodata.getFeatures());
-        return features;
+        return labels;
     }
 
     private getStyleFor(title: string, feature: Feature): object {
