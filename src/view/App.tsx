@@ -10,6 +10,7 @@ import ConfigurationView from "./ConfigurationView";
 import DBView from "./DBView";
 import GeodataView from "./geo/GeodataView";
 import TableView from "./TableView";
+import Location from "./Location";
 import Themes from "./Themes";
 import Years from "./Years";
 
@@ -49,14 +50,16 @@ export default class App extends React.Component<IAppProps, IAppState>
 	{
 		const results = this.query();
 		const status = this.getStatus();
-		return
-		(
+		return (
 			<div className="p-grid">
 				<div className="p-col-2">
 					<div className="p-col-12">
 						<img src="./assets/blue_huwlogo.png" />
 					</div>
 					<div className="p-grid p-justify-around">
+						<div className="p-col-12">
+							<Location title="test 123"/>
+						</div>
 						<div className="p-col-12">
 							<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 						</div>
