@@ -19,7 +19,7 @@ export default class SelectInput extends React.Component<ISelectInputProps> {
             return { value: option, label: option};
         });
         return (
-            <Dropdown value={this.props.selected} options={options} onChange={this.onSelected} />
+            <Dropdown value={this.props.selected} options={options} onChange={this.onSelected} style={{ width: "100%" }} />
         );
     }
 

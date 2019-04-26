@@ -4,6 +4,7 @@ import R from "ramda";
 import React from "react";
 
 import Geodata from "../model/Geodata";
+import { GeoJsonProperties } from "geojson";
 
 import ChartsView from "./charts/ChartsView";
 import ConfigurationView from "./ConfigurationView";
@@ -50,6 +51,13 @@ export default class App extends React.Component<IAppProps, IAppState>
 	{
 		const results = this.query();
 		const status = this.getStatus();
+		let attributes: GeoJsonProperties[] = [];
+		let locations: string[] = [];
+		if (this.state.geodata != null)
+		{
+			attributes = this.state.geodata.attributes();
+			locations = R.sort((a: string, b: string) => a.localeCompare(b), R.map((item) => item!.Name, attributes));
+		}
 		return (
 			<div className="p-grid">
 				<div className="p-col-2">
@@ -58,7 +66,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 					<div className="p-grid p-justify-around">
 						<div className="p-col-12">
-							<Location title="test 123"/>
+							<Location title="Fläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 						</div>
 						<div className="p-col-12">
 							<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
@@ -71,7 +79,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 				<div className="p-col-10">
 					<TabView className="p-tabview-right" activeIndex={3}>
 						<TabPanel header="Karte" disabled={this.state.geodata == null}>
-							<GeodataView geodata={this.state.geodata} items={results} selectedLocation={this.state.location} showLabels={this.state.showLabels}
+							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} showLabels={this.state.showLabels}
 								onSelectLocation={(newLocation) => this.setState({location: newLocation})}
 								setShowLabels={(show) => this.setState({showLabels: show})}
 							/>
