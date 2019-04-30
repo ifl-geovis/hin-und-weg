@@ -29,7 +29,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 
 	public static getTypes(): string[]
 	{
-		return ["Chord", "Sankey"];
+		return ["Chord", "Sankey", "Balken"];
 	}
 
 	private static idCounter: number = 0;
@@ -101,21 +101,47 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.ChordDiagram);
 		}
+		else if (this.props.type === "Balken")
+		{
+			// @ts-ignore
+			chart = am4core.create("chart-" + this.id, am4charts.XYChart);
+		}
 		else
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
 		}
-		const linkTemplate = chart.links.template;
+		if (this.props.type === "Sankey")
+		{
+			chart.nodes.template.nameLabel.align = "center";
+		}
+		if (this.props.type === "Balken")
+		{
+			// @ts-ignore
+			var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+			categoryAxis.dataFields.category = "Von";
+			// @ts-ignore
+			var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+			// @ts-ignore
+			var series = chart.series.push(new am4charts.ColumnSeries());
+			series.dataFields.valueX = "Wert";
+			series.dataFields.categoryY = "Von";
+			series.name = "Nach";
+		}
+		else
+		{
+			chart.nodes.template.tooltipText = "nodes.template {Von} → {Nach}: {Wert}";
+			chart.links.template.tooltipText = "links.template {Von} → {Nach}: {Wert}";
+			chart.dataFields.fromName = "Von";
+			chart.dataFields.toName = "Nach";
+			chart.dataFields.value = "Wert";
+		}
 		let normalizedData = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
-		if ( this.props.type === "Sankey")
+		if (this.props.type === "Sankey")
 		{
 			normalizedData = R.reject((item) => item.Von === item.Nach, normalizedData);
 		}
 		chart.data = normalizedData;
-		chart.dataFields.fromName = "Von";
-		chart.dataFields.toName = "Nach";
-		chart.dataFields.value = "Wert";
 		return chart;
 	}
 
