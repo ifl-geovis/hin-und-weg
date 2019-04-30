@@ -89,60 +89,60 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 
 	private createChart()
 	{
+		let normalizedData = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
 		// @ts-ignore
 		let chart = null;
 		if (this.props.type === "Sankey")
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
+			this.initializeChartSankeyChord(chart);
+			normalizedData = R.reject((item) => item.Von === item.Nach, normalizedData);
 		}
 		else if (this.props.type === "Chord")
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.ChordDiagram);
+			this.initializeChartSankeyChord(chart);
 		}
 		else if (this.props.type === "Balken")
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.XYChart);
+			this.initializeChartBar(chart);
 		}
-		else
+		/*else
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
-		}
-		if (this.props.type === "Sankey")
-		{
-			chart.nodes.template.nameLabel.align = "center";
-		}
-		if (this.props.type === "Balken")
-		{
-			// @ts-ignore
-			var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-			categoryAxis.dataFields.category = "Von";
-			// @ts-ignore
-			var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
-			// @ts-ignore
-			var series = chart.series.push(new am4charts.ColumnSeries());
-			series.dataFields.valueX = "Wert";
-			series.dataFields.categoryY = "Von";
-			series.name = "Nach";
-		}
-		else
-		{
-			chart.nodes.template.tooltipText = "nodes.template {Von} → {Nach}: {Wert}";
-			chart.links.template.tooltipText = "links.template {Von} → {Nach}: {Wert}";
-			chart.dataFields.fromName = "Von";
-			chart.dataFields.toName = "Nach";
-			chart.dataFields.value = "Wert";
-		}
-		let normalizedData = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
-		if (this.props.type === "Sankey")
-		{
-			normalizedData = R.reject((item) => item.Von === item.Nach, normalizedData);
-		}
+		}*/
 		chart.data = normalizedData;
 		return chart;
+	}
+
+	// @ts-ignore
+	private initializeChartSankeyChord(chart: Chart)
+	{
+		chart.nodes.template.tooltipText = "nodes.template {Von} → {Nach}: {Wert}";
+		chart.links.template.tooltipText = "links.template {Von} → {Nach}: {Wert}";
+		chart.dataFields.fromName = "Von";
+		chart.dataFields.toName = "Nach";
+		chart.dataFields.value = "Wert";
+	}
+
+	// @ts-ignore
+	private initializeChartBar(chart: Chart)
+	{
+		// @ts-ignore
+		var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+		categoryAxis.dataFields.category = "Von";
+		// @ts-ignore
+		var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+		// @ts-ignore
+		var series = chart.series.push(new am4charts.ColumnSeries());
+		series.dataFields.valueX = "Wert";
+		series.dataFields.categoryY = "Von";
+		series.name = "Nach";
 	}
 
 	private getMinMax(): [number, number]
