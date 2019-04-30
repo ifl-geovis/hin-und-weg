@@ -121,14 +121,32 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 
 	private getMinMax(): [number, number]
 	{
-		let max = 0;
-		let min = 0;
+		let max = Number.MIN_VALUE;
+		let second_max = Number.MIN_VALUE;
+		let min = Number.MAX_VALUE;
 		if (this.props.data)
 		{
-			max = R.reduce((acc, item) => R.max(acc, item.Wert), Number.MIN_VALUE, this.props.data);
-			min = R.reduce((acc, item) => R.min(acc, item.Wert), Number.MAX_VALUE, this.props.data);
+			for (let item of this.props.data)
+			{
+				if (item["Wert"] < min)
+				{
+					min = item["Wert"];
+				}
+				if (item["Wert"] > max)
+				{
+					if (max > second_max)
+					{
+						second_max = max;
+					}
+					max = item["Wert"];
+				}
+				else if (item["Wert"] > second_max)
+				{
+					second_max = item["Wert"];
+				}
+			}
 		}
-		return [min, max];
+		return [min, second_max + 1];
 	}
 
 }
