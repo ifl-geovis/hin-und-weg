@@ -88,7 +88,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 							<TableView items={results} maxRows={25}/>
 						</TabPanel>
 						<TabPanel header="Diagramm" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
-							<ChartsView items={results} />
+							<ChartsView items={results} theme={this.state.theme} />
 						</TabPanel>
 						<TabPanel header="Datei">
 							<ConfigurationView db={this.props.db} geodata={this.state.geodata}

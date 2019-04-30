@@ -10,13 +10,17 @@ import React from "react";
 
 export interface IChartItem
 {
-	[name: string]: number;
+	//[name: string]: number;
+	Von: string;
+	Nach: string;
+	Wert: number;
 }
 
 export interface IChartViewProps
 {
 	data: IChartItem[];
 	type: string;
+	theme: string;
 }
 
 interface IChartViewState
@@ -111,11 +115,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 			chart = am4core.create("chart-" + this.id, am4charts.XYChart);
 			this.initializeChartBar(chart);
 		}
-		/*else
-		{
-			// @ts-ignore
-			chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
-		}*/
+		console.log(normalizedData);
 		chart.data = normalizedData;
 		return chart;
 	}
@@ -123,8 +123,8 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	// @ts-ignore
 	private initializeChartSankeyChord(chart: Chart)
 	{
-		chart.nodes.template.tooltipText = "nodes.template {Von} → {Nach}: {Wert}";
-		chart.links.template.tooltipText = "links.template {Von} → {Nach}: {Wert}";
+		chart.nodes.template.tooltipText = "nodes.template {Von} → {Nach}: [bold]{Wert}[/]";
+		chart.links.template.tooltipText = "links.template {Von} → {Nach}: [bold]{Wert}[/]";
 		chart.dataFields.fromName = "Von";
 		chart.dataFields.toName = "Nach";
 		chart.dataFields.value = "Wert";
@@ -135,14 +135,27 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	{
 		// @ts-ignore
 		var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-		categoryAxis.dataFields.category = "Von";
+		categoryAxis.renderer.minGridDistance = 0;
+		categoryAxis.renderer.minLabelPosition = 0;
+		categoryAxis.renderer.marginBottom = "10px";
+		categoryAxis.renderer.paddingBottom = "10px";
+		categoryAxis.renderer.fixedWidthGrid = true;
 		// @ts-ignore
 		var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		// @ts-ignore
 		var series = chart.series.push(new am4charts.ColumnSeries());
+		if (this.props.theme === "Von")
+		{
+			series.dataFields.categoryY = "Nach";
+			categoryAxis.dataFields.category = "Nach";
+		}
+		else
+		{
+			series.dataFields.categoryY = "Von";
+			categoryAxis.dataFields.category = "Von";
+		}
 		series.dataFields.valueX = "Wert";
-		series.dataFields.categoryY = "Von";
-		series.name = "Nach";
+		series.columns.template.tooltipText = "{Von} → {Nach}: [bold]{Wert}[/]";
 	}
 
 	private getMinMax(): [number, number]

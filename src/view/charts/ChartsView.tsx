@@ -5,6 +5,7 @@ import { ChartView, IChartItem} from "./ChartView";
 export interface IChartsViewProps
 {
 	items: IChartItem[];
+	theme: string;
 }
 
 interface IChartsViewState
@@ -34,7 +35,7 @@ export default class ChartsView extends React.Component<IChartsViewProps, IChart
 					<ChartConfigView diagramTypes={ChartView.getTypes()} selected={this.state.chartType} onSelectChartType={this.onChartTypeSelect}/>
 				</div>
 				<div className="p-col-12">
-					<ChartView data={this.props.items} type={this.state.chartType}/>
+					<ChartView data={this.props.items} type={this.state.chartType} theme={this.props.theme}/>
 				</div>
 			</div>
 		);
