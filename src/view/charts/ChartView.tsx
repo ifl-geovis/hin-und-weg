@@ -102,7 +102,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
 			normalizedData = R.reject((item) => item.Von === item.Nach, normalizedData);
-			normalizedData.push({"Von": normalizedData[0].Nach, "Nach": "__undefined", "Wert": 0, "Absolutwert": 0});
+			//normalizedData.push({"Von": normalizedData[0].Nach, "Nach": "__undefined", "Wert": 0});
 			normalizedData = this.toAbsoluteValues(normalizedData);
 			this.initializeChartSankeyChord(chart);
 		}
@@ -110,6 +110,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.ChordDiagram);
+			normalizedData = this.toAbsoluteValues(normalizedData);
 			normalizedData = this.toAbsoluteValues(normalizedData);
 			this.initializeChartSankeyChord(chart);
 		}
