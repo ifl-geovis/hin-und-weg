@@ -28,8 +28,11 @@
 	{
 		"@types/chai": "^4.1.7",
 		"@types/mocha": "^5.2.6",
+		"acorn": "^6.1.1",
+		"ajv": "^6.10.0",
 		"awesome-typescript-loader": "^5.2.1",
 		"chai": "^4.2.0",
+		"css-loader": "^2.1.1",
 		"electron": "3.0.10",
 		"electron-packager": "^13.1.0",
 		"mocha": "^5.2.0",
@@ -37,7 +40,8 @@
 		"ts-node": "^7.0.1",
 		"tslint": "^5.12.1",
 		"typescript": "^2.9.2",
-		"typings-for-css-modules-loader": "^1.7.0"
+		"typings-for-css-modules-loader": "^1.7.0",
+		"webpack": "^4.30.0"
 	},
 	"dependencies":
 	{
