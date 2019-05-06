@@ -123,8 +123,8 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	// @ts-ignore
 	private initializeChartSankeyChord(chart: Chart)
 	{
-		chart.nodes.template.tooltipText = "nodes.template {Von} → {Nach}: [bold]{Wert}[/]";
-		chart.links.template.tooltipText = "links.template {Von} → {Nach}: [bold]{Wert}[/]";
+		chart.nodes.template.tooltipText = "{Von} → {Nach}: [bold]{Wert}[/]";
+		chart.links.template.tooltipText = "{Von} → {Nach}: [bold]{Wert}[/]";
 		chart.dataFields.fromName = "Von";
 		chart.dataFields.toName = "Nach";
 		chart.dataFields.value = "Wert";
