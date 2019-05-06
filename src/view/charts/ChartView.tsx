@@ -137,6 +137,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	{
 		// @ts-ignore
 		var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+		//categoryAxis.renderer.grid.template.location = 0;
 		categoryAxis.renderer.minGridDistance = 0;
 		categoryAxis.renderer.minLabelPosition = 0;
 		categoryAxis.renderer.marginBottom = "10px";
@@ -146,6 +147,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		// @ts-ignore
 		var series = chart.series.push(new am4charts.ColumnSeries());
+		series.name = this.props.theme;
 		if (this.props.theme === "Von")
 		{
 			series.dataFields.categoryY = "Nach";
@@ -158,6 +160,9 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		}
 		series.dataFields.valueX = "Wert";
 		series.columns.template.tooltipText = "{Von} → {Nach}: [bold]{Wert}[/]";
+		let columnTemplate = series.columns.template;
+		columnTemplate.strokeWidth = 2;
+		columnTemplate.strokeOpacity = 1;
 	}
 
 	private getMinMax(): [number, number]
