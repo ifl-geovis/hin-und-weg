@@ -14,6 +14,7 @@ export interface IChartItem
 	Von: string;
 	Nach: string;
 	Wert: number;
+	Absolutwert: number;
 }
 
 export interface IChartViewProps
@@ -100,13 +101,15 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.SankeyDiagram);
-			this.initializeChartSankeyChord(chart);
 			normalizedData = R.reject((item) => item.Von === item.Nach, normalizedData);
+			normalizedData = this.toAbsoluteValues(normalizedData);
+			this.initializeChartSankeyChord(chart);
 		}
 		else if (this.props.type === "Chord")
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.ChordDiagram);
+			normalizedData = this.toAbsoluteValues(normalizedData);
 			this.initializeChartSankeyChord(chart);
 		}
 		else if (this.props.type === "Balken")
@@ -127,7 +130,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		chart.links.template.tooltipText = "{Von} → {Nach}: [bold]{Wert}[/]";
 		chart.dataFields.fromName = "Von";
 		chart.dataFields.toName = "Nach";
-		chart.dataFields.value = "Wert";
+		chart.dataFields.value = "Absolutwert";
 	}
 
 	// @ts-ignore
@@ -186,6 +189,23 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 			}
 		}
 		return [min, second_max + 1];
+	}
+
+	private toAbsoluteValues(data: IChartItem[]): IChartItem[]
+	{
+		var absolutes: IChartItem[];
+		absolutes = [];
+		for (let item of data)
+		{
+			let newitem = item;
+			newitem["Absolutwert"] = item["Wert"];
+			if (item["Wert"] < 0)
+			{
+				newitem["Absolutwert"] = - item["Wert"];
+			}
+			absolutes.push(newitem);
+		}
+		return absolutes;
 	}
 
 }
