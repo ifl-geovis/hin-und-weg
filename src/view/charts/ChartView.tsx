@@ -118,7 +118,6 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 			chart = am4core.create("chart-" + this.id, am4charts.XYChart);
 			this.initializeChartBar(chart);
 		}
-		console.log(normalizedData);
 		chart.data = normalizedData;
 		return chart;
 	}
