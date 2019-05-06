@@ -77,7 +77,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 				</div>
 				<div className="p-col-10">
-					<TabView className="p-tabview-right" activeIndex={3}>
+					<TabView className="p-tabview-right" activeIndex={4}>
 						<TabPanel header="Karte" disabled={this.state.geodata == null}>
 							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} showLabels={this.state.showLabels}
 								onSelectLocation={(newLocation) => this.setState({location: newLocation})}
@@ -86,6 +86,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 						</TabPanel>
 						<TabPanel header="Tabelle" disabled={this.state.yearsAvailable.length == 0}>
 							<TableView items={results} maxRows={25}/>
+						</TabPanel>
+						<TabPanel header="Zeitreihen" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
+							<ChartsView items={results} theme={this.state.theme} />
 						</TabPanel>
 						<TabPanel header="Diagramm" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
 							<ChartsView items={results} theme={this.state.theme} />
