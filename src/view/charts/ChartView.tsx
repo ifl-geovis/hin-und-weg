@@ -116,9 +116,27 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.XYChart);
+			normalizedData.unshift({"Von": "", "Nach": "", "Wert": 0, "Absolutwert": 0});
 			this.initializeChartBar(chart);
 		}
 		chart.data = normalizedData;
+		/*if (this.props.type === "Balken")
+		{
+			console.log(chart);
+			console.log(chart.yAxes.values[0]);
+			console.log(chart.yAxes.values[0].renderer.labels);
+			console.log(chart.yAxes.values[0].renderer.grid);
+			console.log(chart.series.values[0]);
+			console.log(chart.series.values[0].dataItems.values[0]);
+			//console.log(chart.series.values[0].dataItems.first.hidden);
+			chart.yAxes.values[0].renderer.labels.values[0].disabled = true;
+			//chart.yAxes.values[0].renderer.grid.values[0].disabled = true;
+			chart.series.values[0].dataItems.first.hidden = true;
+			chart.series.values[0].dataItems.first.visible = false;
+			//chart.yAxes.values[0].renderer.labels.values[0].disabled = true;
+			//chart.data.shift();
+			//chart.yAxes.values[0].renderer.labels.template.disabled = false;
+		}*/
 		return chart;
 	}
 
@@ -143,6 +161,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		categoryAxis.renderer.marginBottom = "10px";
 		categoryAxis.renderer.paddingBottom = "10px";
 		categoryAxis.renderer.fixedWidthGrid = true;
+		categoryAxis.renderer.labels.template.disabled = false;
 		// @ts-ignore
 		var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		// @ts-ignore
