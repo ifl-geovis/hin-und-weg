@@ -117,7 +117,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		{
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.XYChart);
-			normalizedData.unshift({"Von": "", "Nach": "", "Wert": 0, "Absolutwert": 0});
+			//normalizedData.unshift({"Von": "", "Nach": "", "Wert": 0, "Absolutwert": 0});
 			this.initializeChartBar(chart);
 		}
 		chart.data = normalizedData;
