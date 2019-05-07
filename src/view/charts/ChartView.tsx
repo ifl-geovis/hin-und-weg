@@ -10,7 +10,6 @@ import React from "react";
 
 export interface IChartItem
 {
-	//[name: string]: number;
 	Von: string;
 	Nach: string;
 	Wert: number;
@@ -121,23 +120,6 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 			this.initializeChartBar(chart);
 		}
 		chart.data = normalizedData;
-		/*if (this.props.type === "Balken")
-		{
-			console.log(chart);
-			console.log(chart.yAxes.values[0]);
-			console.log(chart.yAxes.values[0].renderer.labels);
-			console.log(chart.yAxes.values[0].renderer.grid);
-			console.log(chart.series.values[0]);
-			console.log(chart.series.values[0].dataItems.values[0]);
-			//console.log(chart.series.values[0].dataItems.first.hidden);
-			chart.yAxes.values[0].renderer.labels.values[0].disabled = true;
-			//chart.yAxes.values[0].renderer.grid.values[0].disabled = true;
-			chart.series.values[0].dataItems.first.hidden = true;
-			chart.series.values[0].dataItems.first.visible = false;
-			//chart.yAxes.values[0].renderer.labels.values[0].disabled = true;
-			//chart.data.shift();
-			//chart.yAxes.values[0].renderer.labels.template.disabled = false;
-		}*/
 		return chart;
 	}
 
