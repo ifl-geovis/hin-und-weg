@@ -7,6 +7,7 @@ import Geodata from "../model/Geodata";
 import { GeoJsonProperties } from "geojson";
 
 import ChartsView from "./charts/ChartsView";
+import { TimelineView } from "./charts/TimelineView";
 import ConfigurationView from "./ConfigurationView";
 import DBView from "./DBView";
 import GeodataView from "./geo/GeodataView";
@@ -50,9 +51,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 	public render(): JSX.Element
 	{
 		const results = this.query();
-		console.log("**************************");
 		const timeline = this.queryTimeline();
-		console.log(timeline);
 		const status = this.getStatus();
 		let attributes: GeoJsonProperties[] = [];
 		let locations: string[] = [];
@@ -91,7 +90,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 							<TableView items={results} maxRows={25}/>
 						</TabPanel>
 						<TabPanel header="Zeitreihen" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
-							<ChartsView items={results} theme={this.state.theme} />
+							<TimelineView data={timeline} />
 						</TabPanel>
 						<TabPanel header="Diagramm" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
 							<ChartsView items={results} theme={this.state.theme} />
@@ -190,7 +189,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 		let results_zuzug = this.props.db(query_zuzug);
 		let query_wegzug = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' GROUP BY Von, Jahr`;
 		let results_wegzug = this.props.db(query_wegzug);
-		for (let year of this.state.yearsAvailable)
+		for (let year of this.state.yearsAvailable.sort())
 		{
 			let zuzug = this.getFieldForYear(results_zuzug, year, "zuzug");
 			let wegzug = this.getFieldForYear(results_wegzug, year, "wegzug");
@@ -199,7 +198,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 					"Ort": this.state.location,
 					"Jahr": year,
 					"Zuzug": zuzug,
-					"Wegzug": wegzug,
+					"Wegzug": - wegzug,
 					"Saldo": zuzug - wegzug,
 				}
 			);
