@@ -73,6 +73,8 @@ export class TimelineView extends React.Component<ITimelineViewProps>
 		am4core.useTheme(am4themes_animated);
 		// @ts-ignore
 		let timeline = am4core.create("timeline-" + this.id, am4charts.XYChart);
+		console.log(this.props.data);
+		timeline.data = this.props.data;
 		// @ts-ignore
 		var categoryAxis = timeline.xAxes.push(new am4charts.CategoryAxis());
 		categoryAxis.renderer.minGridDistance = 0;
@@ -85,20 +87,27 @@ export class TimelineView extends React.Component<ITimelineViewProps>
 		zuzug.dataFields.categoryX = "Jahr";
 		zuzug.dataFields.valueY = "Zuzug";
 		zuzug.columns.template.tooltipText = "Zuzug nach {Ort} für {Jahr}: [bold]{Zuzug}[/]";
+		zuzug.yAxis = valueAxis;
+		zuzug.xAxis = categoryAxis;
+		zuzug.clustered = false;
 		// @ts-ignore
 		var wegzug = timeline.series.push(new am4charts.ColumnSeries());
 		wegzug.name = "Wegzug";
 		wegzug.dataFields.categoryX = "Jahr";
 		wegzug.dataFields.valueY = "Wegzug";
 		wegzug.columns.template.tooltipText = "Wegzug von {Ort} für {Jahr}: [bold]{Wegzug}[/]";
+		wegzug.yAxis = valueAxis;
+		wegzug.xAxis = categoryAxis;
+		wegzug.clustered = false;
 		// @ts-ignore
 		var saldi = timeline.series.push(new am4charts.LineSeries());
 		saldi.name = "Saldi";
 		saldi.dataFields.categoryX = "Jahr";
 		saldi.dataFields.valueY = "Saldo";
 		saldi.tooltipText = "Saldo in {Ort} für {Jahr}: [bold]{Saldo}[/]";
-		console.log(this.props.data);
-		timeline.data = this.props.data;
+		saldi.yAxis = valueAxis;
+		saldi.xAxis = categoryAxis;
+		saldi.clustered = false;
 		return timeline;
 	}
 
