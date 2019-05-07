@@ -50,6 +50,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 	public render(): JSX.Element
 	{
 		const results = this.query();
+		console.log("**************************");
+		const timeline = this.queryTimeline();
+		console.log(timeline);
 		const status = this.getStatus();
 		let attributes: GeoJsonProperties[] = [];
 		let locations: string[] = [];
@@ -174,6 +177,46 @@ export default class App extends React.Component<IAppProps, IAppState>
 		// console.log("Query: ", query);
 		results = this.props.db(query);
 		return results;
+	}
+
+	private queryTimeline(): any[]
+	{
+		let results: any[] = [];
+		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.state.yearsAvailable)) )
+		{
+			return results;
+		}
+		let query_zuzug = `SELECT Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' GROUP BY Nach, Jahr`;
+		let results_zuzug = this.props.db(query_zuzug);
+		let query_wegzug = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' GROUP BY Von, Jahr`;
+		let results_wegzug = this.props.db(query_wegzug);
+		for (let year of this.state.yearsAvailable)
+		{
+			let zuzug = this.getFieldForYear(results_zuzug, year, "zuzug");
+			let wegzug = this.getFieldForYear(results_wegzug, year, "wegzug");
+			results.push(
+				{
+					"Ort": this.state.location,
+					"Jahr": year,
+					"Zuzug": zuzug,
+					"Wegzug": wegzug,
+					"Saldo": zuzug - wegzug,
+				}
+			);
+		}
+		return results;
+	}
+
+	private getFieldForYear(data: any[], year: string, field: string)
+	{
+		for (let item of data)
+		{
+			if (item["Jahr"] === year)
+			{
+				return item[field];
+			}
+		}
+		return 0;
 	}
 
 }
