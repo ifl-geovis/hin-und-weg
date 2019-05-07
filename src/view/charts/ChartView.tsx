@@ -111,7 +111,6 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 			// @ts-ignore
 			chart = am4core.create("chart-" + this.id, am4charts.ChordDiagram);
 			normalizedData = this.toAbsoluteValues(normalizedData);
-			normalizedData = this.toAbsoluteValues(normalizedData);
 			this.initializeChartSankeyChord(chart);
 		}
 		else if (this.props.type === "Balken")
