@@ -4,7 +4,7 @@ import React from "react";
 // For development (hint types, autocompletion) uncomment this 2 lines below
 // import * as am4core from '@amcharts/amcharts4/core';
 // import * as am4charts from '@amcharts/amcharts4/charts';
-//import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+// import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 export interface ITimelineItem
 {
@@ -70,7 +70,7 @@ export class TimelineView extends React.Component<ITimelineViewProps>
 	private createTimeline()
 	{
 		// @ts-ignore
-		//am4core.useTheme(am4themes_animated);
+		am4core.useTheme(am4themes_animated);
 		// @ts-ignore
 		let timeline = am4core.create("timeline-" + this.id, am4charts.XYChart);
 		// @ts-ignore
