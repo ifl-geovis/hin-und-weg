@@ -24,7 +24,11 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 {
 
 	// Taken from http://colorbrewer2.org/
+	// http://colorbrewer2.org/?type=sequential&scheme=PuBu&n=9
 	protected colors = ["#fff7fb", "#ece7f2", "#d0d1e6", "#a6bddb", "#74a9cf", "#3690c0", "#0570b0", "#045a8d", "#023858"];
+	protected neutral_color = '#ffffff';
+	// http://colorbrewer2.org/?type=sequential&scheme=YlOrRd&n=9
+	protected negative_colors = ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026'];
 
 	constructor(props: IMapViewProps)
 	{
@@ -34,6 +38,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 			height: 700,
 			width: 600,
 		};
+		this.pickColor = this.pickColor.bind(this);
 	}
 
 	public render(): JSX.Element
@@ -46,18 +51,25 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 					{this.createMapLabels()}
 				</svg>
 				<svg className="p-col-1" width="24" height="270">
-					<rect fill="rgb(255,247,251)" width="24" height="24" y="0"><text>{min}</text></rect>
-					<rect fill="rgb(236,231,242)" width="24" height="24" y="24"></rect>
-					<rect fill="rgb(208,209,230)" width="24" height="24" y="48"></rect>
-					<rect fill="rgb(166,189,219)" width="24" height="24" y="72"></rect>
-					<rect fill="rgb(116,169,207)" width="24" height="24" y="96"></rect>
-					<rect fill="rgb(54,144,192)" width="24" height="24" y="120"></rect>
-					<rect fill="rgb(5,112,176)" width="24" height="24" y="144"></rect>
-					<rect fill="rgb(4,90,141)" width="24" height="24" y="168"></rect>
-					<rect fill="rgb(2,56,88)" width="24" height="24" y="192"><text>{max}</text></rect>
+					{this.createLegend(this.colors, 0)}
+					{this.createLegend(this.negative_colors, 1)}
 				</svg>
 			</div>
 		);
+	}
+
+	private createLegend(colors: string[], offset: number): object[]
+	{
+		let y = 0;
+		const indexedMap = R.addIndex(R.map);
+		const boxes = indexedMap( (color, id: number): JSX.Element =>
+		{
+			let y = id * 24;
+			let x = offset * 24;
+			let c = color as string;
+			return (<rect key={id} fill={c} width="24" height="24" x={x} y={y}></rect>);
+		}, colors);
+		return boxes;
 	}
 
 	private createD3Map(): object[]
@@ -122,7 +134,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 			}
 			else
 			{
-				 title = R.prop(this.props.nameField, f.properties!);
+				title = R.prop(this.props.nameField, f.properties!);
 			}
 			return (
 				<g key={id}>
@@ -131,7 +143,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 					</text>
 				</g>
 			);
-		} , geodata.getFeatures());
+		}, geodata.getFeatures());
 		return labels;
 	}
 
@@ -155,9 +167,30 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 				return {fill: "#FFFFFF", stroke: "#000000"};
 			}
 			const value = parseInt(itemForFeature.Wert, 10);
-			const colorProvider = d3.scaleQuantize<string>().domain(this.getMinMax()).range(this.colors);
+			const colorProvider = this.pickColor;
 			return {fill: colorProvider(value), stroke: "#000000"};
 		}
+	}
+
+	private pickColor(value: number): string
+	{
+		if (value === 0)
+		{
+			return this.neutral_color;
+		}
+		else if (value > 0)
+		{
+			const [min, max] = this.getMinMax();
+			const positive = d3.scaleQuantize<string>().domain([1, max]).range(this.colors);
+			return positive(value);
+		}
+		else if (value < 0)
+		{
+			const [min, max] = this.getMinMax();
+			const negative = d3.scaleQuantize<string>().domain([1, - min]).range(this.negative_colors);
+			return negative(- value);
+		}
+		return this.neutral_color;
 	}
 
 	private getMinMax(): [number, number] {
@@ -165,8 +198,9 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 		let min = 0;
 		if (this.props.items)
 		{
-			max = R.reduce((acc, item) => R.max(acc, item.Wert), Number.MIN_VALUE, this.props.items);
-			min = R.reduce((acc, item) => R.min(acc, item.Wert), Number.MAX_VALUE, this.props.items);
+			let normalizedData = R.reject((item) => item.Von === item.Nach, this.props.items);
+			max = R.reduce((acc, item) => R.max(acc, item.Wert), Number.MIN_VALUE, normalizedData);
+			min = R.reduce((acc, item) => R.min(acc, item.Wert), Number.MAX_VALUE, normalizedData);
 		}
 		return [min, max];
 	}
