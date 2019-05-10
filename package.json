@@ -34,7 +34,7 @@
 		"chai": "^4.2.0",
 		"css-loader": "^2.1.1",
 		"electron": "3.0.10",
-		"electron-packager": "^13.1.0",
+		"electron-packager": "^13.1.1",
 		"mocha": "^5.2.0",
 		"source-map-loader": "^0.2.4",
 		"ts-node": "^7.0.1",
