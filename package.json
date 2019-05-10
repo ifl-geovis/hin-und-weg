@@ -1,9 +1,9 @@
 {
 	"name": "hin-und-weg",
-	"productName": "Hin-und-weg",
+	"productName": "hin-und-weg",
 	"version": "1.0.0",
-	"description": "Hin & weg",
-	"author": "Ralf Puchert, DELPHI IMM GmbH",
+	"description": "hin&weg",
+	"author": "Ralf Puchert, Jörgen Kosche, DELPHI IMM GmbH",
 	"license": "UNLICENSED",
 	"main": "./dist/main.js",
 	"repository":
@@ -19,7 +19,7 @@
 	{
 		"build": "tsc && sh build-extras.sh",
 		"watch": "tsc -w",
-		"pack": "electron-packager ./ --prune --all --out packaged",
+		"pack": "sh pack.sh",
 		"lint": "tslint -c tslint.json -p tsconfig.json",
 		"start": "npm run build && electron ./dist/main.js",
 		"test": "mocha -r ts-node/register test/**/*.test.ts"
