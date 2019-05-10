@@ -73,7 +73,6 @@ export class TimelineView extends React.Component<ITimelineViewProps>
 		am4core.useTheme(am4themes_animated);
 		// @ts-ignore
 		let timeline = am4core.create("timeline-" + this.id, am4charts.XYChart);
-		console.log(this.props.data);
 		timeline.data = this.props.data;
 		// @ts-ignore
 		var categoryAxis = timeline.xAxes.push(new am4charts.CategoryAxis());
