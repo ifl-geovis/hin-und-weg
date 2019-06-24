@@ -18,6 +18,16 @@ div.status-progress
 	color: #9e810c;
 }
 
+div.status-success
+{
+	color: #14cc1a;
+}
+
+div.status-failure
+{
+	color: #ad0505;
+}
+
 /* Prime React */
 
 .p-tabview.p-tabview-right > div.p-tabview-panels

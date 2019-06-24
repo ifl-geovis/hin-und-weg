@@ -34,4 +34,16 @@ export default class TableFileStatus
 		return this.message
 	}
 
+	public success(message: string)
+	{
+		this.status = "success"
+		this.message = message;
+	}
+
+	public failure(message: string)
+	{
+		this.status = "failure"
+		this.message = message;
+	}
+
 }

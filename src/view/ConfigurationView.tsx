@@ -97,7 +97,7 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 			const start = files[i].path.length - 8;
 			const stop = start + 4;
 			const year = files[i].path.substring(start, stop);
-			this.addTabledataToDB(year, files[i].path);
+			this.addTabledataToDB(year, status);
 			newTablefiles = R.append(status, newTablefiles);
 		}
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
@@ -121,9 +121,9 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 		}
 	}
 
-	private addTabledataToDB(year: string, path: string)
+	private addTabledataToDB(year: string, filestatus: TableFileStatus)
 	{
-		Tabledata.read(path, (tabledata) => {
+		Tabledata.read(filestatus.getPath(), (tabledata) => {
 			const columnHeaders = R.slice(2, tabledata.getColumnCount() - 1, tabledata.getRowAt(3));
 			const rowHeaders = R.slice(4, tabledata.getRowCount() - 2, tabledata.getColumnAt(1));
 			const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
@@ -140,13 +140,22 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 					this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
 				}
 			}
+			filestatus.success("Datei erfolgreich geladen");
 			this.props.addYear(year);
 		});
 	}
 
 	private formatTableStatus(tablefile: TableFileStatus)
 	{
-		return (<div key={tablefile.getPath()} className="p-col-12 status-progress">… {tablefile.getPath()} wird geladen</div>);
+		if (tablefile.getStatus() == "success")
+		{
+			return (<div key={tablefile.getPath()} className="p-col-12 status-success">✓ {tablefile.getPath()} erfolgreich geladen.</div>);
+		}
+		if (tablefile.getStatus() == "failure")
+		{
+			return (<div key={tablefile.getPath()} className="p-col-12 status-failure">✗ Laden von {tablefile.getPath()} gescheitert: {tablefile.getMessage()}.</div>);
+		}
+		return (<div key={tablefile.getPath()} className="p-col-12 status-progress">↺ {tablefile.getPath()} wird geladen…</div>);
 	}
 
 }
