@@ -54,7 +54,7 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 		{
 			geodatafile = <div className="p-col-8">{this.state.geodatafile}</div>;
 		}
-		const tablesfiles = R.map((tablefile) => { return (<div key={tablefile} className="p-col-12">{tablefile}</div>); }, this.state.tablefiles);
+		const tablesfiles = R.map((tablefile) => { return this.formatTableStatus(tablefile); }, this.state.tablefiles);
 		return (
 			<div>
 				<Panel header="1. Geodaten">
@@ -140,6 +140,11 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 			}
 			this.props.addYear(year);
 		});
+	}
+
+	private formatTableStatus(tablefile: string)
+	{
+		return (<div key={tablefile} className="p-col-12 status-progress">… {tablefile} wird geladen</div>);
 	}
 
 }

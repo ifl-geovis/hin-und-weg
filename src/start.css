@@ -13,6 +13,11 @@ p.status
 	border-radius: 10px;
 }
 
+div.status-progress
+{
+	color: #9e810c;
+}
+
 /* Prime React */
 
 .p-tabview.p-tabview-right > div.p-tabview-panels
