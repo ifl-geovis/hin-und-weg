@@ -95,7 +95,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	{
 		let normalizedData = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
 		// @ts-ignore
-		am4core.useTheme(am4themes_moonrisekingdom);
+		am4core.useTheme(am4themes_animated);
 		// @ts-ignore
 		let chart = null;
 		if (this.props.type === "Sankey")
@@ -164,6 +164,11 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		}
 		series.dataFields.valueX = "Wert";
 		series.columns.template.tooltipText = "{Von} → {Nach}: [bold]{Wert}[/]";
+		// @ts-ignore
+		/*series.columns.template.adapter.add("fill", function(fill, target)
+		{
+			return chart.colors.getIndex(target.dataItem.index);
+		});*/
 		let columnTemplate = series.columns.template;
 		columnTemplate.strokeWidth = 2;
 		columnTemplate.strokeOpacity = 1;
