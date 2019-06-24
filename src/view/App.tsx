@@ -15,6 +15,7 @@ import TableView from "./TableView";
 import Location from "./Location";
 import Themes from "./Themes";
 import Years from "./Years";
+import SystemInfo from "../components/SystemInfo";
 
 export interface IAppProps
 {
@@ -107,6 +108,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 						</TabPanel>
 						<TabPanel header="Datenbank" disabled={this.state.yearsAvailable.length == 0}>
 							<DBView db={this.props.db} />
+						</TabPanel>
+						<TabPanel header="Systeminformationen">
+							<SystemInfo />
 						</TabPanel>
 					</TabView>
 				</div>
