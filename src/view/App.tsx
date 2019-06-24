@@ -29,6 +29,7 @@ interface IAppState
 	location: string | null;
 	showLabels: boolean;
 	theme: string;
+	activeTab: number;
 }
 
 export default class App extends React.Component<IAppProps, IAppState>
@@ -45,6 +46,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 			theme: "Von",
 			years: [],
 			yearsAvailable: [],
+			activeTab: 4,
 		};
 	}
 
@@ -70,16 +72,16 @@ export default class App extends React.Component<IAppProps, IAppState>
 						<div className="p-col-12">
 							<Location title="Fläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 						</div>
-						<div className="p-col-12">
+						<div className="p-col-12" style={(this.state.activeTab == 2) ? {display: "none"} : {display: "block"}}>
 							<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 						</div>
-						<div className="p-col-12">
+						<div className="p-col-12" style={((this.state.yearsAvailable.length == 0) || (this.state.activeTab == 2)) ? {display: "none"} : {display: "block"}}>
 							<Years availableYears={this.state.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
 						</div>
 					</div>
 				</div>
 				<div className="p-col-10">
-					<TabView className="p-tabview-right" activeIndex={4}>
+					<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.setState({activeTab: e.index})}>
 						<TabPanel header="Karte" disabled={this.state.geodata == null}>
 							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} showLabels={this.state.showLabels}
 								onSelectLocation={(newLocation) => this.setState({location: newLocation})}
