@@ -97,7 +97,16 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 			const start = files[i].path.length - 8;
 			const stop = start + 4;
 			const year = files[i].path.substring(start, stop);
-			this.addTabledataToDB(year, status);
+			const regexp = new RegExp('^[1-9][01-9]{3}$');
+			const test = regexp.test(year);
+			if (test)
+			{
+				this.addTabledataToDB(year, status);
+			}
+			else
+			{
+				status.failure("'" + year + "' sieht nicht wie ein Jahr aus");
+			}
 			newTablefiles = R.append(status, newTablefiles);
 		}
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
