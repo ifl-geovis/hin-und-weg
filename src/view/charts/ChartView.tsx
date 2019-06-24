@@ -95,7 +95,7 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	{
 		let normalizedData = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
 		// @ts-ignore
-		am4core.useTheme(am4themes_animated);
+		am4core.useTheme(am4themes_moonrisekingdom);
 		// @ts-ignore
 		let chart = null;
 		if (this.props.type === "Sankey")

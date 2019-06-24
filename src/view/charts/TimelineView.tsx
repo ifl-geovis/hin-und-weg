@@ -70,7 +70,7 @@ export class TimelineView extends React.Component<ITimelineViewProps>
 	private createTimeline()
 	{
 		// @ts-ignore
-		am4core.useTheme(am4themes_animated);
+		am4core.useTheme(am4themes_moonrisekingdom);
 		// @ts-ignore
 		let timeline = am4core.create("timeline-" + this.id, am4charts.XYChart);
 		timeline.data = this.props.data;
