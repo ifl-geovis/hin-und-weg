@@ -8,6 +8,7 @@ import FileInput from "./input/FileInput";
 
 import Geodata from "../model/Geodata";
 import Tabledata from "../model/Tabledata";
+import TableFileStatus from "../data/TableFileStatus";
 
 export interface IConfigurationProps
 {
@@ -21,7 +22,7 @@ interface IConfigurationState
 {
 	geoId: string | null;
 	geoName: string | null;
-	tablefiles: string[];
+	tablefiles: TableFileStatus[];
 	geodatafile: string;
 }
 
@@ -89,14 +90,15 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 
 	private onSelectTabledataFiles(files: FileList)
 	{
-		let newTablefiles = [] as string[];
+		let newTablefiles = [] as TableFileStatus[];
 		for (let i=0;i<files.length; i++)
 		{
+			let status: TableFileStatus = new TableFileStatus(files[i].path)
 			const start = files[i].path.length - 8;
 			const stop = start + 4;
 			const year = files[i].path.substring(start, stop);
 			this.addTabledataToDB(year, files[i].path);
-			newTablefiles = R.append(files[i].path, newTablefiles);
+			newTablefiles = R.append(status, newTablefiles);
 		}
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
 	}
@@ -142,9 +144,9 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 		});
 	}
 
-	private formatTableStatus(tablefile: string)
+	private formatTableStatus(tablefile: TableFileStatus)
 	{
-		return (<div key={tablefile} className="p-col-12 status-progress">… {tablefile} wird geladen</div>);
+		return (<div key={tablefile.getPath()} className="p-col-12 status-progress">… {tablefile.getPath()} wird geladen</div>);
 	}
 
 }
