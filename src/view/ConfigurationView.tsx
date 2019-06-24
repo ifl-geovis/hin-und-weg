@@ -67,7 +67,7 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 						<Dropdown className="p-col-6" key="geoName" value={this.state.geoName} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="Namenspalte auswählen" onChange={(e) => {this.setState({geoName: e.value}); } }/>
 					</div>
 				</Panel>
-				<Panel header="2. Tabellendaten">
+				<Panel header="2. Tabellendaten" style={(this.props.geodata == null) ? {display: "none"} : {display: "block"}}>
 					<div className="p-grid">
 						<div className="p-col-12">
 							<FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onSelectTabledataFiles} disabled={false}/>
