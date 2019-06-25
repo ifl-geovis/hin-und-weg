@@ -78,14 +78,15 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	public render(): JSX.Element
 	{
 		const [min, max] = this.getMinMax();
+		let threshold: number = this.calculateCurrentThreshold();
 		return (
 			<div className="p-grid">
 				<div className="p-col-1">{min}</div>
 				<div className="p-col-10">
-					<Slider min={min} max={max} value={this.state.threshold} orientation="horizontal" onChange={(e) => this.setState({ threshold: e.value as number})}/>
+					<Slider min={min} max={max} value={threshold} orientation="horizontal" onChange={(e) => this.setState({ threshold: e.value as number})}/>
 				</div>
 				<div className="p-col-1">{max}</div>
-				<div className="p-col-12 p-justify-center">Anzeige ab Wert: {this.state.threshold}</div>
+				<div className="p-col-12 p-justify-center">Anzeige ab Wert: {threshold}</div>
 				<div className="p-col-12" id={"chart-" + this.id} style={{ width: "100%", height: "800px" }}></div>
 			</div>
 		);
@@ -93,7 +94,8 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 
 	private createChart()
 	{
-		let normalizedData = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
+		let threshold: number = this.calculateCurrentThreshold();
+		let normalizedData = R.filter((item) => item.Wert >= threshold, this.props.data);
 		// @ts-ignore
 		am4core.useTheme(am4themes_animated);
 		// @ts-ignore
@@ -172,6 +174,16 @@ export class ChartView extends React.Component<IChartViewProps, IChartViewState>
 		let columnTemplate = series.columns.template;
 		columnTemplate.strokeWidth = 2;
 		columnTemplate.strokeOpacity = 1;
+	}
+
+	private calculateCurrentThreshold(): number
+	{
+		const [min, max] = this.getMinMax();
+		let threshold: number = this.state.threshold;
+		if (this.state.threshold == 0) threshold = min;
+		if (this.state.threshold < min) threshold = min;
+		if (this.state.threshold > max) threshold = max;
+		return threshold;
 	}
 
 	private getMinMax(): [number, number]
