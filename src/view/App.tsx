@@ -154,7 +154,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 		{
 			return results;
 		}
-		const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
+		// disabled because of #2883
+		//const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
+		const years = this.state.years;
 		const stringYears =  R.join(", ", R.map((year) => `'${year}'`, years));
 		const location = ` ('${this.state.location}') `;
 		let query = "";
