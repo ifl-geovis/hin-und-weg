@@ -6,17 +6,14 @@
 	"author": "Ralf Puchert, Jörgen Kosche, DELPHI IMM GmbH",
 	"license": "UNLICENSED",
 	"main": "./dist/main.js",
-	"repository":
-	{
+	"repository": {
 		"type": "svn",
 		"url": "svn://svn.geoway.de/hin-und-weg/main"
 	},
-	"directories":
-	{
+	"directories": {
 		"doc": "docs"
 	},
-	"scripts":
-	{
+	"scripts": {
 		"build": "tsc && sh build-extras.sh",
 		"watch": "tsc -w",
 		"pack": "sh pack.sh",
@@ -24,8 +21,7 @@
 		"start": "npm run build && electron ./dist/main.js",
 		"test": "mocha -r ts-node/register test/**/*.test.ts"
 	},
-	"devDependencies":
-	{
+	"devDependencies": {
 		"@types/chai": "^4.1.7",
 		"@types/mocha": "^5.2.6",
 		"acorn": "^6.1.1",
@@ -43,8 +39,7 @@
 		"typings-for-css-modules-loader": "^1.7.0",
 		"webpack": "^4.30.0"
 	},
-	"dependencies":
-	{
+	"dependencies": {
 		"@amcharts/amcharts4": "^4.4.3",
 		"@types/d3": "^5.7.1",
 		"@types/electron-store": "^1.3.0",
