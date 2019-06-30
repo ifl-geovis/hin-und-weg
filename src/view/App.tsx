@@ -25,6 +25,8 @@ export interface IAppProps
 interface IAppState
 {
 	geodata: Geodata | null;
+	geoId: string | null;
+	geoName: string | null;
 	yearsAvailable: string[];
 	years: string[];
 	location: string | null;
@@ -42,6 +44,8 @@ export default class App extends React.Component<IAppProps, IAppState>
 		this.state =
 		{
 			geodata: null,
+			geoId: "OT",
+			geoName: "Name",
 			location: null,
 			showLabels: true,
 			theme: "Von",
@@ -99,12 +103,14 @@ export default class App extends React.Component<IAppProps, IAppState>
 							<ChartsView items={results} theme={this.state.theme} />
 						</TabPanel>
 						<TabPanel header="Datei">
-							<ConfigurationView db={this.props.db} geodata={this.state.geodata}
-								addYear= {(year) =>
+							<ConfigurationView db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId}
+								addYear={(year) =>
 									{
 										this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) });
 									}}
-								setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }} />
+								setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
+								setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
+								setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }} />
 						</TabPanel>
 						<TabPanel header="Datenbank" disabled={this.state.yearsAvailable.length == 0}>
 							<DBView db={this.props.db} />

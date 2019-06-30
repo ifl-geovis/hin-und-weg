@@ -14,14 +14,16 @@ export interface IConfigurationProps
 {
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
+	geoId: string | null;
+	geoName: string | null;
 	setGeodata: (geodata: Geodata) => void;
+	setGeoName: (geoName: string) => void;
+	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
 }
 
 interface IConfigurationState
 {
-	geoId: string | null;
-	geoName: string | null;
 	tablefiles: TableFileStatus[];
 	geodatafile: string;
 }
@@ -36,8 +38,6 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 		this.onSelectTabledataFiles = this.onSelectTabledataFiles.bind(this);
 		this.state =
 		{
-			geoId: "OT",
-			geoName: "Name",
 			geodatafile: "",
 			tablefiles: [],
 		};
@@ -64,8 +64,8 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 							<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false}/>
 						</div>
 						{geodatafile}
-						<Dropdown className="p-col-6" key="geoId" value={this.state.geoId} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="ID Spalte auswählen" onChange={(e) => {this.setState({geoId: e.value}); } }/>
-						<Dropdown className="p-col-6" key="geoName" value={this.state.geoName} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="Namenspalte auswählen" onChange={(e) => {this.setState({geoName: e.value}); } }/>
+						<Dropdown className="p-col-6" key="geoId" value={this.props.geoId} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="ID Spalte auswählen" onChange={(e) => {this.props.setGeoId(e.value); } }/>
+						<Dropdown className="p-col-6" key="geoName" value={this.props.geoName} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="Namenspalte auswählen" onChange={(e) => {this.props.setGeoName(e.value); } }/>
 					</div>
 				</Panel>
 				<Panel header="2. Tabellendaten" style={(this.props.geodata == null) ? {display: "none"} : {display: "block"}}>
@@ -119,10 +119,10 @@ export default class App extends React.Component<IConfigurationProps, IConfigura
 			return id;
 		}
 		const geoId = parseInt(id, 10) % 100;
-		const feature = this.props.geodata.getFeatureByFieldValue(this.state.geoId || "OT", `${geoId < 10 ? "0" + geoId : geoId}`);
-		if ( feature && feature.properties && this.state.geoName)
+		const feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", `${geoId < 10 ? "0" + geoId : geoId}`);
+		if ( feature && feature.properties && this.props.geoName)
 		{
-			return feature.properties[this.state.geoName];
+			return feature.properties[this.props.geoName];
 		}
 		else
 		{
