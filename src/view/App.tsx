@@ -88,7 +88,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 				<div className="p-col-10">
 					<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.setState({activeTab: e.index})}>
 						<TabPanel header="Karte" disabled={this.state.geodata == null}>
-							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} showLabels={this.state.showLabels}
+							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} showLabels={this.state.showLabels} geoName={this.state.geoName}
 								onSelectLocation={(newLocation) => this.setState({location: newLocation})}
 								setShowLabels={(show) => this.setState({showLabels: show})}
 							/>

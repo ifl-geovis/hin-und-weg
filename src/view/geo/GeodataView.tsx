@@ -9,6 +9,7 @@ export interface IGeodataProps
 {
 	items?: Array<{[name: string]: any}> | null;
 	geodata: Geodata | null;
+	geoName: string | null;
 	locations: string[];
 	selectedLocation?: string | null;
 	onSelectLocation: (newLocation: string) => void;
@@ -38,7 +39,7 @@ export default class GeodataView extends React.Component<IGeodataProps>
 					<label htmlFor="showlabels" className="p-checkbox-label">zeige Namen</label>
 				</div>
 				<div className="p-col-12">
-					<MapView geodata={this.props.geodata} nameField="Name" items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.props.showLabels} />
+					<MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.props.showLabels} />
 				</div>
 			</div>
 		);
