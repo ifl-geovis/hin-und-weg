@@ -1,11 +1,8 @@
 import Cubus, { Query, Result } from "cubus";
 import R from "ramda";
-import * as Debug from "../debug";
 import Aggregator, { Operation } from "./Aggregator";
 import Geodata from "./Geodata";
 import Tabledata from "./Tabledata";
-
-Debug.off();
 
 export default class Combiner {
 

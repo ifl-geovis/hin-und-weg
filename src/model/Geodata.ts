@@ -5,9 +5,7 @@ import * as Proj4 from "proj4";
 import R from "ramda";
 import * as reproject from "reproject";
 import * as shapefile from "shapefile";
-import * as Debug from "../debug";
 
-Debug.on();
 export default class Geodata {
 
     public static read(path: string,callback: (data: Geodata) => void) {

@@ -1,8 +1,6 @@
 import { Result } from "cubus";
 import R from "ramda";
-import * as Debug from "../debug";
 
-Debug.on();
 export type Operation = "Summe" | "Anzahl" | "Saldo" |
                  "Mittelwert" | "Mittelwert" | "Medianwert" |
                  "Minimum" | "Maximum" |
