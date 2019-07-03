@@ -116,12 +116,13 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 
 	private getNameForId(id: string): string
 	{
+		console.log("getNameForId: " + id);
 		if (!this.props.geodata)
 		{
 			return id;
 		}
-		const geoId = parseInt(id, 10) % 100;
-		const feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", `${geoId < 10 ? "0" + geoId : geoId}`);
+		console.log(this.props.geoId);
+		const feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", id);
 		if ( feature && feature.properties && this.props.geoName)
 		{
 			return feature.properties[this.props.geoName];
@@ -135,11 +136,11 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	private addTabledataToDB(year: string, filestatus: TableFileStatus)
 	{
 		Tabledata.read(filestatus.getPath(), (tabledata) => {
-			const columnHeaders = R.slice(2, tabledata.getColumnCount() - 1, tabledata.getRowAt(3));
-			const rowHeaders = R.slice(4, tabledata.getRowCount() - 2, tabledata.getColumnAt(1));
+			const columnHeaders = R.slice(1, tabledata.getColumnCount(), tabledata.getRowAt(2));
+			const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
 			const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
 			const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
-			const valueMatrix = tabledata.getTabledataBy([4, tabledata.getRowCount() - 2], [2, tabledata.getColumnCount()  - 1]);
+			const valueMatrix = tabledata.getTabledataBy([3, tabledata.getRowCount()], [1, tabledata.getColumnCount()]);
 			for (let row = 0; row < valueMatrix.getRowCount(); row++)
 			{
 				for (let column = 0; column < valueMatrix.getColumnCount(); column++)
