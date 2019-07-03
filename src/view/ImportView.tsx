@@ -115,12 +115,12 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
 	}
 
-	private getNameForId(id: string): string
+	private getNameForId(id: string): string|null
 	{
 		Log.trace("ImportView.getNameForId(" + id + ")");
 		if (!this.props.geodata)
 		{
-			return id;
+			return null;
 		}
 		const feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", id);
 		if ( feature && feature.properties && this.props.geoName)
@@ -129,31 +129,52 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		}
 		else
 		{
-			return id;
+			return null;
 		}
+	}
+
+	private loadHeaderNames(tabledata: Tabledata, filestatus: TableFileStatus): [any[], any[]]
+	{
+		const columnHeaders = R.slice(1, tabledata.getColumnCount(), tabledata.getRowAt(2));
+		const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
+		const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
+		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
+		for (let i in columnNames)
+		{
+			if (columnNames[i] == null) filestatus.failure("Index '" + columnHeaders[i] + "' nicht in den Geodaten gefunden");
+		}
+		for (let j in rowNames)
+		{
+			if (rowNames[j] == null) filestatus.failure("Index '" + rowHeaders[j] + "' nicht in den Geodaten gefunden");
+		}
+		return [columnNames, rowNames];
 	}
 
 	private addTabledataToDB(year: string, filestatus: TableFileStatus)
 	{
 		Tabledata.read(filestatus.getPath(), (tabledata) => {
-			const columnHeaders = R.slice(1, tabledata.getColumnCount(), tabledata.getRowAt(2));
-			const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
-			const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
-			const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
-			const valueMatrix = tabledata.getTabledataBy([3, tabledata.getRowCount()], [1, tabledata.getColumnCount()]);
-			for (let row = 0; row < valueMatrix.getRowCount(); row++)
+			const [columnNames, rowNames] = this.loadHeaderNames(tabledata, filestatus);
+			Log.debug("columnNames: ", columnNames);
+			Log.debug("rowNames: ", rowNames);
+			Log.debug("filestatus.getStatus(): ", filestatus.getStatus());
+			if (filestatus.getStatus() == "running")
 			{
-				for (let column = 0; column < valueMatrix.getColumnCount(); column++)
+				const valueMatrix = tabledata.getTabledataBy([3, tabledata.getRowCount()], [1, tabledata.getColumnCount()]);
+				for (let row = 0; row < valueMatrix.getRowCount(); row++)
 				{
-					const wert = parseInt(valueMatrix.getValueAt(row, column), 10);
-					const nach = columnNames[column];
-					const von = rowNames[row];
-					const jahr = `${year}`;
-					this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
+					for (let column = 0; column < valueMatrix.getColumnCount(); column++)
+					{
+						const wert = parseInt(valueMatrix.getValueAt(row, column), 10);
+						const nach = columnNames[column];
+						const von = rowNames[row];
+						const jahr = `${year}`;
+						this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
+					}
 				}
+				filestatus.success("Datei erfolgreich geladen");
+				this.props.addYear(year);
 			}
-			filestatus.success("Datei erfolgreich geladen");
-			this.props.addYear(year);
+			this.setState({ tablefiles: this.state.tablefiles });
 		});
 	}
 
