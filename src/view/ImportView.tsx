@@ -64,11 +64,13 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 							<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false}/>
 						</div>
 						{geodatafile}
-						<Dropdown className="p-col-6" key="geoId" value={this.props.geoId} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="ID Spalte auswählen" onChange={(e) => {this.props.setGeoId(e.value); } }/>
-						<Dropdown className="p-col-6" key="geoName" value={this.props.geoName} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="Namenspalte auswählen" onChange={(e) => {this.props.setGeoName(e.value); } }/>
+						<div className="p-col-3">ID-Attribut auswählen:</div>
+						<Dropdown className="p-col-3" key="geoId" value={this.props.geoId} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="ID Spalte auswählen" onChange={(e) => {this.props.setGeoId(e.value); } }/>
+						<div className="p-col-3">Namens-Attribut auswählen:</div>
+						<Dropdown className="p-col-3" key="geoName" value={this.props.geoName} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="Namenspalte auswählen" onChange={(e) => {this.props.setGeoName(e.value); } }/>
 					</div>
 				</Panel>
-				<Panel header="2. Tabellendaten" style={(this.props.geodata == null) ? {display: "none"} : {display: "block"}}>
+				<Panel header="2. Tabellendaten" style={((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0)) ? {display: "none"} : {display: "block"}}>
 					<div className="p-grid">
 						<div className="p-col-12">
 							<FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onSelectTabledataFiles} disabled={false}/>
