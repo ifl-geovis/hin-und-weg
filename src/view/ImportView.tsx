@@ -3,6 +3,7 @@ import { Panel } from "primereact/panel";
 
 import R from "ramda";
 import React from "react";
+import Log from "../log";
 
 import FileInput from "./input/FileInput";
 
@@ -116,12 +117,11 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 
 	private getNameForId(id: string): string
 	{
-		console.log("getNameForId: " + id);
+		Log.trace("ImportView.getNameForId(" + id + ")");
 		if (!this.props.geodata)
 		{
 			return id;
 		}
-		console.log(this.props.geoId);
 		const feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", id);
 		if ( feature && feature.properties && this.props.geoName)
 		{

@@ -1,12 +1,11 @@
 import { app, BrowserWindow } from "electron";
 import path from "path";
-import * as Debugger from "./debug";
+import Log from "./log";
 
 let mainWindow: Electron.BrowserWindow;
 
 function createWindow()
 {
-
 	// Create the browser window.
 	mainWindow = new BrowserWindow(
 		{
@@ -61,4 +60,4 @@ app.on("activate", () =>
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
-Debugger.log("Started Hin & weg application ");
+Log.debug("Started Hin & weg application ");
