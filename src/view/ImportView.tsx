@@ -10,7 +10,7 @@ import Geodata from "../model/Geodata";
 import Tabledata from "../model/Tabledata";
 import TableFileStatus from "../data/TableFileStatus";
 
-export interface IConfigurationProps
+export interface IImportProps
 {
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
@@ -22,16 +22,16 @@ export interface IConfigurationProps
 	addYear: (year: string) => void;
 }
 
-interface IConfigurationState
+interface IImportState
 {
 	tablefiles: TableFileStatus[];
 	geodatafile: string;
 }
 
-export default class App extends React.Component<IConfigurationProps, IConfigurationState>
+export default class ImportView extends React.Component<IImportProps, IImportState>
 {
 
-	constructor(props: IConfigurationProps)
+	constructor(props: IImportProps)
 	{
 		super(props);
 		this.onSelectGeodataFile = this.onSelectGeodataFile.bind(this);

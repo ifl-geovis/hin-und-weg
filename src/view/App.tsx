@@ -8,7 +8,7 @@ import { GeoJsonProperties } from "geojson";
 
 import ChartsView from "./charts/ChartsView";
 import { TimelineView } from "./charts/TimelineView";
-import ConfigurationView from "./ConfigurationView";
+import ImportView from "./ImportView";
 import DBView from "./DBView";
 import GeodataView from "./geo/GeodataView";
 import TableView from "./TableView";
@@ -103,7 +103,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 							<ChartsView items={results} theme={this.state.theme} />
 						</TabPanel>
 						<TabPanel header="Datei">
-							<ConfigurationView db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId}
+							<ImportView db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId}
 								addYear={(year) =>
 									{
 										this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) });
