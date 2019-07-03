@@ -1,23 +1,37 @@
 {
+
 	"profile": "development",
 
 	"production":
 	{
-		"devtools": false,
-		"debug": false,
+		"logging":
+		{
+			"debug": false,
+		},
 	},
 
 	"development":
 	{
-		"devtools": true,
-		"debug": true,
-		"trace": true,
+		"global":
+		{
+			"devtools": true,
+		},
+		"logging":
+		{
+			"trace": true,
+		},
 	},
 
 	"default":
 	{
-		"devtools": false,
-		"debug": true,
-		"trace": false,
+		"global":
+		{
+			"devtools": false,
+		},
+		"logging":
+		{
+			"debug": true,
+			"trace": false,
+		},
 	},
 }

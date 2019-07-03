@@ -23,7 +23,7 @@ function createWindow()
 	mainWindow.setMenu(null);
 
 	// Open the DevTools.
-	if (Config.getValue("devtools"))
+	if (Config.getValue("global", "devtools"))
 	{
 		mainWindow.webContents.openDevTools({mode: "undocked"});
 	}

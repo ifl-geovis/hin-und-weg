@@ -3,8 +3,8 @@ import Config from "./config";
 export default class Log
 {
 
-	public static DEBUG: boolean = Config.getValue("debug");
-	public static TRACE: boolean = Config.getValue("trace");
+	public static DEBUG: boolean = Config.getValue("logging", "debug");
+	public static TRACE: boolean = Config.getValue("logging", "trace");
 
 	public static log(level: boolean, message: string, some?: any)
 	{
