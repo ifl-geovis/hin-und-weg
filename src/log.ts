@@ -1,10 +1,10 @@
-import R from "ramda";
+import Config from "./config";
 
 export default class Log
 {
 
-	public static DEBUG: boolean = true;
-	public static TRACE: boolean = true;
+	public static DEBUG: boolean = Config.getValue("debug");
+	public static TRACE: boolean = Config.getValue("trace");
 
 	public static log(level: boolean, message: string, some?: any)
 	{

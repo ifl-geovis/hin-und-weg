@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import path from "path";
 import Log from "./log";
+import Config from "./config";
 
 let mainWindow: Electron.BrowserWindow;
 
@@ -22,7 +23,10 @@ function createWindow()
 	mainWindow.setMenu(null);
 
 	// Open the DevTools.
-	mainWindow.webContents.openDevTools({mode: "undocked"});
+	if (Config.getValue("devtools"))
+	{
+		mainWindow.webContents.openDevTools({mode: "undocked"});
+	}
 
 	// Emitted when the window is closed.
 	mainWindow.on("closed", () =>

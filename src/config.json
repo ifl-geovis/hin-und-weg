@@ -1,0 +1,23 @@
+{
+	"profile": "development",
+
+	"production":
+	{
+		"devtools": false,
+		"debug": false,
+	},
+
+	"development":
+	{
+		"devtools": true,
+		"debug": true,
+		"trace": true,
+	},
+
+	"default":
+	{
+		"devtools": false,
+		"debug": true,
+		"trace": false,
+	},
+}
