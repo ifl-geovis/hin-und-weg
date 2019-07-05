@@ -122,7 +122,10 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		{
 			return null;
 		}
-		const feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", id);
+		let feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", id);
+		if (feature == null) feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", "0" + id);
+		if (feature == null) feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", "00" + id);
+		if (feature == null) feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", "000" + id);
 		if ( feature && feature.properties && this.props.geoName)
 		{
 			return feature.properties[this.props.geoName];
@@ -141,11 +144,13 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
 		for (let i in columnNames)
 		{
-			if (columnNames[i] == null) filestatus.failure("Index '" + columnHeaders[i] + "' nicht in den Geodaten gefunden");
+			const colnum = parseInt(i, 10) + 2;
+			if (columnNames[i] == null) filestatus.failure("Index '" + columnHeaders[i] + "' (Spalte" + colnum + ") nicht in den Geodaten gefunden");
 		}
 		for (let j in rowNames)
 		{
-			if (rowNames[j] == null) filestatus.failure("Index '" + rowHeaders[j] + "' nicht in den Geodaten gefunden");
+			const rownum = parseInt(j, 10) + 4;
+			if (rowNames[j] == null) filestatus.failure("Index '" + rowHeaders[j] + "' (Zeile " + rownum + ") nicht in den Geodaten gefunden");
 		}
 		return [columnNames, rowNames];
 	}
