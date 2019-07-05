@@ -148,7 +148,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 		}
 		else
 		{
-			status += `und Jahre: ${R.join(", ", R.sort((a, b) => a.localeCompare(b), this.state.yearsAvailable))}`;
+			status += "und keine Jahre";
 		}
 		return `${status} ausgewählt.`;
 	}
