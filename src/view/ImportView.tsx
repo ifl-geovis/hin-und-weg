@@ -142,6 +142,9 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
 		const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
 		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
+		const geocount = this.props.geodata!.count();
+		if (columnNames.length != geocount) filestatus.failure("Spaltenzahl (" + columnNames.length + ") entspricht nicht den Geodaten (" + geocount + ")");
+		if (rowNames.length != geocount) filestatus.failure("Zeilenzahl (" + rowNames.length + ") entspricht nicht den Geodaten (" + geocount + ")");
 		for (let i in columnNames)
 		{
 			const colnum = parseInt(i, 10) + 2;
