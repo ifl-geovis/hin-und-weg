@@ -17,6 +17,8 @@ import Themes from "./Themes";
 import Years from "./Years";
 import SystemInfo from "../components/SystemInfo";
 
+import Config from "../config";
+
 export interface IAppProps
 {
 	db: alaSQLSpace.AlaSQL;
@@ -62,6 +64,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 		const status = this.getStatus();
 		let attributes: GeoJsonProperties[] = [];
 		let locations: string[] = [];
+		const systeminfo = (Config.getValue("components", "systeminfo") == true);
 		if (this.state.geodata != null)
 		{
 			attributes = this.state.geodata.attributes();
@@ -115,7 +118,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 						<TabPanel header="Datenbank" disabled={this.state.yearsAvailable.length == 0}>
 							<DBView db={this.props.db} />
 						</TabPanel>
-						<TabPanel header="Systeminformationen">
+						<TabPanel header="Systeminformationen" headerStyle={(systeminfo) ? {display: "block"} : {display: "none"}}>
 							<SystemInfo />
 						</TabPanel>
 					</TabView>

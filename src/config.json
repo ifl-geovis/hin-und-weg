@@ -16,6 +16,10 @@
 		{
 			"devtools": true,
 		},
+		"components":
+		{
+			"systeminfo": true,
+		},
 		"logging":
 		{
 			"trace": false,
@@ -27,6 +31,10 @@
 		"global":
 		{
 			"devtools": false,
+		},
+		"components":
+		{
+			"systeminfo": false,
 		},
 		"logging":
 		{
