@@ -20,6 +20,11 @@ export default class Config
 		return null;
 	}
 
+	public static getProfile(): string
+	{
+		return Config.profile;
+	}
+
 	public static getValue(section: string, key: string): any
 	{
 		const sec = Config.getSection(section);

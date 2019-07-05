@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import Config from "../config";
+
 export default class SystemInfo extends React.Component<{}, {}>
 {
 
@@ -12,21 +14,21 @@ export default class SystemInfo extends React.Component<{}, {}>
 							<th align="right">hin&weg Version:</th>
 							<td>{process.env.npm_package_version}</td>
 						</tr>
+						<tr>
 							<th align="right">NodeJS Version:</th>
 							<td>{process.versions.node}</td>
-						<tr>
 						</tr>
-							<th align="right">NodeJS Umgebung:</th>
-							<td>{process.env.NODE_ENV}</td>
 						<tr>
-						</tr>
 							<th align="right">Chrome Version:</th>
 							<td>{process.versions.chrome}</td>
-						<tr>
 						</tr>
 						<tr>
 							<th align="right">Electron Version:</th>
 							<td>{process.versions.electron}</td>
+						</tr>
+						<tr>
+							<th align="right">Konfigurationsprofil:</th>
+							<td>{Config.getProfile()}</td>
 						</tr>
 					</tbody>
 				</table>
