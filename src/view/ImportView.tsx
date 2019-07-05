@@ -126,7 +126,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		if (feature == null) feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", "0" + id);
 		if (feature == null) feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", "00" + id);
 		if (feature == null) feature = this.props.geodata.getFeatureByFieldValue(this.props.geoId || "OT", "000" + id);
-		if ( feature && feature.properties && this.props.geoName)
+		if (id && feature && feature.properties && this.props.geoName)
 		{
 			return feature.properties[this.props.geoName];
 		}
