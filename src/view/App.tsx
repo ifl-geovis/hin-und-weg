@@ -47,7 +47,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 		{
 			geodata: null,
 			geoId: "OT",
-			geoName: "Name",
+			geoName: null,
 			location: null,
 			showLabels: true,
 			theme: "Von",
@@ -63,12 +63,13 @@ export default class App extends React.Component<IAppProps, IAppState>
 		const timeline = this.queryTimeline();
 		const status = this.getStatus();
 		let attributes: GeoJsonProperties[] = [];
+		let fieldNameLoc = this.state.geoName as string;
 		let locations: string[] = [];
 		const systeminfo = (Config.getValue("components", "systeminfo") == true);
-		if (this.state.geodata != null)
+		if (this.state.geodata != null && this.state.geoName != null)
 		{
 			attributes = this.state.geodata.attributes();
-			locations = R.sort((a: string, b: string) => a.localeCompare(b), R.map((item) => item!.Name, attributes));
+			locations = R.sort((a: string, b: string) => a.localeCompare(b), R.map((item) => item![fieldNameLoc], attributes));
 		}
 		return (
 			<div className="p-grid">
