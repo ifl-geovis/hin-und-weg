@@ -28,7 +28,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 	// http://colorbrewer2.org/?type=sequential&scheme=YlOrRd&n=9
 	//protected colors = ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026'];
 	protected colors = ['#f7f7f7','#fddbc7','#f4a582','#d6604d','#b2182b','#67001f'];
-	protected colorsPos = ['#fddbc7','#f4a582','#d6604d','#b2182b','#67001f'];	
+	protected colorsPos = ['#fddbc7','#f4a582','#d6604d','#b2182b','#67001f'];
 	//http://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
 	protected colorsAll = ['#67001f','#b2182b','#d6604d','#f4a582','#fddbc7','#f7f7f7',"#d1e5f0", "#92c5de", "#4393c3", "#2166ac", "#053061"];
 
@@ -53,7 +53,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 	{
 		const [min, max] = this.getMinMax();
 		let m= max;
-		let mn = min; 
+		let mn = min;
 		let col;
 		let ymx;
 		let ymn;
@@ -128,8 +128,8 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 			let breaksO:Array<number> = [0];
 			let breaks2:Array<number>;
 			let lb;
-			
-			
+
+
 		if(this.props.theme ==="Saldi"){
 
 					legendScalePos = d3.scaleQuantize<string>().domain([1, max]).range(this.colorsPos);
@@ -137,34 +137,34 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 
 					domPos = legendScalePos.domain();
 					domNeg = legendScaleNeg.domain();
-    				lPos = (domPos[1] - domPos[0])/legendScalePos.range().length;
-    				lNeg = (domNeg[1] - domNeg[0])/legendScaleNeg.range().length;
+					lPos = (domPos[1] - domPos[0])/legendScalePos.range().length;
+					lNeg = (domNeg[1] - domNeg[0])/legendScaleNeg.range().length;
 
-    				breaksPos = d3.range(0, legendScalePos.range().length).map(function(i) { return i * lPos; }).reverse();
+					breaksPos = d3.range(0, legendScalePos.range().length).map(function(i) { return i * lPos; }).reverse();
 					breaksNeg = d3.range(0, legendScaleNeg.range().length).map(function(i) { return i * lNeg; });
 					breaksPosO = breaksO.concat(breaksPos);
 					breaks = breaksPosO.concat(breaksNeg);
 					breaks2 = breaks.map(function(each_element){
-    				return Number(each_element.toFixed(1));
+					return Number(each_element.toFixed(1));
 						});
 				}
 		else if (this.props.theme ==="Von" || "Nach") {
 					 legendScale = d3.scaleQuantize<string>().domain([1, max]).range(this.colorsPos);
-					 					  dom = legendScale.domain();
-    				l = (dom[1] - dom[0])/legendScale.range().length;
-    				breaksPos = d3.range(0, legendScale.range().length).map(function(i) { return i * l; });
+										  dom = legendScale.domain();
+					l = (dom[1] - dom[0])/legendScale.range().length;
+					breaksPos = d3.range(0, legendScale.range().length).map(function(i) { return i * l; });
 					breaks = breaksO.concat(breaksPos);
 					breaks2 = breaks.map(function(each_element){
-    				return Number(each_element.toFixed(1));
+					return Number(each_element.toFixed(1));
 						});
 				}
 		else {
 					 legendScale = d3.scaleQuantize<string>().domain([max, -min]).range(this.all_colors);
-					 					  dom = legendScale.domain();
-    				l = (dom[1] - dom[0])/legendScale.range().length;
-    				breaks = d3.range(0, legendScale.range().length).map(function(i) { return i * l; });
-    				breaks2 = breaks.map(function(each_element){
-    				return Number(each_element.toFixed(1));
+										  dom = legendScale.domain();
+					l = (dom[1] - dom[0])/legendScale.range().length;
+					breaks = d3.range(0, legendScale.range().length).map(function(i) { return i * l; });
+					breaks2 = breaks.map(function(each_element){
+					return Number(each_element.toFixed(1));
 						});
 		}
 
@@ -181,24 +181,20 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 			//let mn = min;
 			//let t = "  ";
 
-			return (<svg><svg> 
-				<rect key={id} fill={c} stroke="#4d4d4d" width="24" height="24" x={x} y={y}></rect>  </svg>         
+			return (<g key={id}>
+				<rect fill={c} stroke="#4d4d4d" width="24" height="24" x={x} y={y}></rect>
 				<text
-            x={xt} y={yt}
-            fill="black"
-            fontSize="13"
-            //fontWeight="bold"
-            textAnchor="middle"
-            >
-               _ {breaks2[id]}
-          </text> 
-          </svg>);
+				x={xt} y={yt}
+				fill="black"
+				fontSize="13"
+				//fontWeight="bold"
+				textAnchor="middle"
+				>
+					_ {breaks2[id]}
+			 </text>
+			 </g>);
 		}, colors);
 		return boxes;
-
-
-
-
 	}
 
 	private createD3Map(): object[]
