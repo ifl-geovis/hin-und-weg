@@ -78,7 +78,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 					<div className="p-grid p-justify-around">
 						<div className="p-col-12">
-							<Location title="Fläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
+							<Location title="Bezugsfläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 						</div>
 						<div className="p-col-12" style={(this.state.activeTab == 2) ? {display: "none"} : {display: "block"}}>
 							<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>

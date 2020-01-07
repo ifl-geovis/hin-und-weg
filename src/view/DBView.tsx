@@ -37,6 +37,7 @@ export default class DBView extends React.Component<IDBViewProps, IDBViewState> 
             <div className="p-grid p-justify-around">
                 <div className="p-col-12"> Tabelle <b>matrices</b>:</div>
                 <div className="p-col-12"><TableView items={results} maxRows={20}/></div>
+                <div className="p-col-12"> SQL-Abfrage:</div>
                 <div className="p-col-12">
                     <InputTextarea className="p-col-12" rows={5}
                                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {

@@ -30,10 +30,7 @@ export default class GeodataView extends React.Component<IGeodataProps>
 	{
 		return (
 			<div className="p-grid">
-				<div className="p-col-4">Fläche auswählen:</div>
-				<div className="p-col-4">
-					<SelectInput options={this.props.locations} selected={this.props.selectedLocation} onSelected={this.props.onSelectLocation}/>
-				</div>
+
 				<div className="p-col-4">
 					<Checkbox inputId="showlabels" value="showlabels" onChange={this.onShowLabelsChange} checked={this.props.showLabels}></Checkbox>
 					<label htmlFor="showlabels" className="p-checkbox-label">zeige Namen</label>
