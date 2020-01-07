@@ -89,6 +89,7 @@ export class TimelineView extends React.Component<ITimelineViewProps>
 		zuzug.yAxis = valueAxis;
 		zuzug.xAxis = categoryAxis;
 		zuzug.clustered = false;
+		zuzug.fill = "#fddbc7";
 		// @ts-ignore
 		var wegzug = timeline.series.push(new am4charts.ColumnSeries());
 		wegzug.name = "Wegzug";
@@ -98,15 +99,24 @@ export class TimelineView extends React.Component<ITimelineViewProps>
 		wegzug.yAxis = valueAxis;
 		wegzug.xAxis = categoryAxis;
 		wegzug.clustered = false;
+		wegzug.fill = "#d1e5f0";
 		// @ts-ignore
 		var saldi = timeline.series.push(new am4charts.LineSeries());
 		saldi.name = "Saldi";
+		saldi.strokeWidth = 3;
+		saldi.stroke = "#000000";
 		saldi.dataFields.categoryX = "Jahr";
 		saldi.dataFields.valueY = "Saldo";
 		saldi.tooltipText = "Saldo in {Ort} für {Jahr}: [bold]{Saldo}[/]";
 		saldi.yAxis = valueAxis;
 		saldi.xAxis = categoryAxis;
 		saldi.clustered = false;
+		// @ts-ignore
+		var bullet = saldi.bullets.push(new am4charts.CircleBullet());
+		// @ts-ignore
+		timeline.cursor = new am4charts.XYCursor();
+		timeline.cursor.lineX.strokeOpacity = 0.1;
+		timeline.cursor.lineY.strokeOpacity = 0.1;
 		return timeline;
 	}
 
