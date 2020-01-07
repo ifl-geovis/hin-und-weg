@@ -15,6 +15,8 @@ export interface IGeodataProps
 	onSelectLocation: (newLocation: string) => void;
 	showLabels: boolean;
 	setShowLabels: (show: boolean) => void;
+	theme: string;
+
 }
 
 export default class GeodataView extends React.Component<IGeodataProps>
@@ -36,8 +38,11 @@ export default class GeodataView extends React.Component<IGeodataProps>
 					<label htmlFor="showlabels" className="p-checkbox-label">zeige Namen</label>
 				</div>
 				<div className="p-col-12">
-					<MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.props.showLabels} />
+					<MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.props.showLabels} theme={this.props.theme}/>
 				</div>
+				
+				<div className="p-col-1" > <svg> <rect key="area" fill="#cbf719" stroke="#4d4d4d" width="24" height="24" margin-right="15"></rect> </svg> </div>
+				<div className="p-col-3"> - ausgewählte Bezugsfläche</div>
 			</div>
 		);
 	}

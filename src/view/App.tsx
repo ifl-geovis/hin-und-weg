@@ -93,7 +93,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 						<TabPanel header="Karte" disabled={this.state.geodata == null}>
 							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} showLabels={this.state.showLabels} geoName={this.state.geoName}
 								onSelectLocation={(newLocation) => this.setState({location: newLocation})}
-								setShowLabels={(show) => this.setState({showLabels: show})}
+								setShowLabels={(show) => this.setState({showLabels: show})} theme={this.state.theme}
 							/>
 						</TabPanel>
 						<TabPanel header="Tabelle" disabled={this.state.yearsAvailable.length == 0}>
