@@ -97,7 +97,7 @@ export default class MapView extends React.Component<IMapViewProps, IMapViewStat
 			let y = id * 24;
 			let x = offset * 24;
 			let c = color as string;
-			return (<rect key={id} fill={c} width="24" height="24" x={x} y={y}></rect>);
+			return (<rect key={id} fill={c} stroke="#4d4d4d" width="24" height="24" x={x} y={y}></rect>);
 		}, colors);
 		return boxes;
 	}
