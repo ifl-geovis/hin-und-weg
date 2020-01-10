@@ -8,6 +8,7 @@ export default class SystemInfo extends React.Component<{}, {}>
 	public render(): JSX.Element
 	{
 		return (
+			<div>
 				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
 					<tbody>
 						<tr>
@@ -32,6 +33,19 @@ export default class SystemInfo extends React.Component<{}, {}>
 						</tr>
 					</tbody>
 				</table>
+				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
+					<tbody>
+						<tr>
+							<th align="right">Prozess-Typ:</th>
+							<td>{process.type}</td>
+						</tr>
+						<tr>
+							<th align="right">Fenster-ID:</th>
+							<td>{require('electron').remote.getCurrentWindow().id}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		)
 	}
 
