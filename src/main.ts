@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import path from "path";
 import Log from "./log";
 import Config from "./config";
+import MainMenu from "./menu";
 
 let mainWindow: Electron.BrowserWindow;
 
@@ -19,8 +20,8 @@ function createWindow()
 	// and load the index.html of the app.
 	mainWindow.loadFile(path.join(__dirname, "../index.html"));
 
-	// set empty menu bar (deactivates menu)
-	mainWindow.setMenu(null);
+	// set main menu
+	mainWindow.setMenu(MainMenu.getMainMenu());
 
 	// Open the DevTools.
 	if (Config.getValue("global", "devtools"))
