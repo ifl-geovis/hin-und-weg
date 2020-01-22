@@ -73,6 +73,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 		}
 		return (
 			<div className="p-grid">
+				<div className="p-col-12">
+					<p className="status">{status}</p>
+				</div>
 				<div className="p-col-2">
 					<div className="p-col-12">
 						<img src="./assets/blue_huwlogo.png" />
@@ -123,9 +126,6 @@ export default class App extends React.Component<IAppProps, IAppState>
 							<SystemInfo />
 						</TabPanel>
 					</TabView>
-				</div>
-				<div className="p-col-12">
-					<p className="status">{status}</p>
 				</div>
 			</div>
 		);
