@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
 import Log from "./log";
 import Config from "./config";
@@ -21,7 +21,7 @@ function createWindow()
 	mainWindow.loadFile(path.join(__dirname, "../index.html"));
 
 	// set main menu
-	mainWindow.setMenu(MainMenu.getMainMenu());
+	Menu.setApplicationMenu(MainMenu.getMainMenu());
 
 	// Open the DevTools.
 	if (Config.getValue("global", "devtools"))
