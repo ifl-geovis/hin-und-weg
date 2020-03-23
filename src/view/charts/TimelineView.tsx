@@ -1,5 +1,11 @@
 import React from "react";
 
+// Does not work in electronjs, so we use the @ts-ignore annotation
+// For development (hint types, autocompletion) uncomment this 2 lines below
+// import * as am4core from '@amcharts/amcharts4/core';
+// import * as am4charts from '@amcharts/amcharts4/charts';
+// import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+
 export interface ITimelineItem
 {
 	Ort: string;
