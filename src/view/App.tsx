@@ -17,8 +17,10 @@ import Location from "./Location";
 import Themes from "./Themes";
 import Years from "./Years";
 import SystemInfo from "../components/SystemInfo";
+import StatisticsView from "../components/StatisticsView";
 
 import Config from "../config";
+import Log from "../log";
 
 export interface IAppProps
 {
@@ -54,7 +56,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 			theme: "Von",
 			years: [],
 			yearsAvailable: [],
-			activeTab: 5,
+			activeTab: 6,
 		};
 	}
 
@@ -112,6 +114,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 						</TabPanel>
 						<TabPanel header="D3 Bar Chart"  disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
 							<D3ChartView items={results} theme={this.state.theme} />
+						</TabPanel>
+						<TabPanel header="Statistiken"  disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
+							<StatisticsView items={results} />
 						</TabPanel>
 						<TabPanel header="Datei">
 							<ImportView db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId}
@@ -195,7 +200,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 			}
 			return results;
 		}
-		// console.log("Query: ", query);
+		Log.debug("Query: ", query);
 		results = this.props.db(query);
 		return results;
 	}
