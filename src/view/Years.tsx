@@ -1,7 +1,8 @@
 import { Checkbox } from "primereact/checkbox";
 import { Panel } from "primereact/panel";
 import R from "ramda";
-import * as React from "react";
+import React, {MouseEvent} from "react";
+import Log from "../log";
 
 export interface IYearsProps
 {
@@ -17,6 +18,8 @@ export default class Years extends React.Component<IYearsProps>
 	{
 		super(props);
 		this.onYearsChange = this.onYearsChange.bind(this);
+		this.selectAllYears = this.selectAllYears.bind(this);
+		this.unselectAllYears = this.unselectAllYears.bind(this);
 		this.makeCheckBox = this.makeCheckBox.bind(this);
 	}
 
@@ -25,6 +28,8 @@ export default class Years extends React.Component<IYearsProps>
 		const checkboxes = R.map(this.makeCheckBox, this.props.availableYears.sort());
 		return (
 			<Panel header="Jahr(e)">
+				<button onClick={this.selectAllYears}>alle auswählen…</button>
+				<button onClick={this.unselectAllYears}>nichts auswählen…</button>
 				<div className="p-grid" style={{ margin: "10px" }}>
 					{checkboxes}
 				</div>
@@ -55,6 +60,25 @@ export default class Years extends React.Component<IYearsProps>
 			selectedYears = R.reject(R.equals(selectedYear), selectedYears);
 		}
 		this.props.setYears(R.uniq(selectedYears));
+	}
+
+	private selectAllYears(e: MouseEvent)
+	{
+		Log.debug("e: " + e);
+		e.preventDefault();
+		this.props.setYears(R.uniq(this.props.availableYears));
+	}
+
+	private unselectAllYears(e: MouseEvent)
+	{
+		Log.debug("e: " + e);
+		e.preventDefault();
+		let selectedYears : string[] = [];
+		/*for (year : selectedYears)
+		{
+			selectedYears = R.reject(R.equals(year), selectedYears);
+		}*/
+		this.props.setYears(selectedYears);
 	}
 
 }
