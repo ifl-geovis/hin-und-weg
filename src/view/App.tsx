@@ -7,6 +7,7 @@ import Geodata from "../model/Geodata";
 import { GeoJsonProperties } from "geojson";
 
 import ChartsView from "./charts/ChartsView";
+import D3ChartView from "./charts/D3ChartView";
 import { TimelineView } from "./charts/TimelineView";
 import ImportView from "./ImportView";
 import DBView from "./DBView";
@@ -53,7 +54,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 			theme: "Von",
 			years: [],
 			yearsAvailable: [],
-			activeTab: 4,
+			activeTab: 5,
 		};
 	}
 
@@ -108,6 +109,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 						</TabPanel>
 						<TabPanel header="Diagramm" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
 							<ChartsView items={results} theme={this.state.theme} />
+						</TabPanel>
+						<TabPanel header="D3 Bar Chart"  disabled={this.state.yearsAvailable.length == 0}>
+							<D3ChartView items={results} theme={this.state.theme} />
 						</TabPanel>
 						<TabPanel header="Datei">
 							<ImportView db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId}
