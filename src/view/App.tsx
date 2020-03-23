@@ -110,7 +110,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 						<TabPanel header="Diagramm" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
 							<ChartsView items={results} theme={this.state.theme} />
 						</TabPanel>
-						<TabPanel header="D3 Bar Chart"  disabled={this.state.yearsAvailable.length == 0}>
+						<TabPanel header="D3 Bar Chart"  disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
 							<D3ChartView items={results} theme={this.state.theme} />
 						</TabPanel>
 						<TabPanel header="Datei">
