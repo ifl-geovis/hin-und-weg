@@ -33,6 +33,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		let mean: number = this.calculateMean(count);
 		let variance: number = this.calculateVariance(mean, count);
 		let median: number = this.calculateMedian(count);
+		let mode: number = this.determineMode();
 		return (
 			<div>
 				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
@@ -52,6 +53,10 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						<tr>
 							<th align="right">Standardabweichung:</th>
 							<td>{Math.sqrt(variance)}</td>
+						</tr>
+						<tr>
+							<th align="right">Modus:</th>
+							<td>{mode}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -88,6 +93,38 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			sum += diff * diff;
 		}
 		return sum/count;
+	}
+
+	private determineMode(): number
+	{
+		let count: number = 0;
+		let mode: number = 0;
+		let current: number = 0;
+		let currentcount: number = 0;
+		let values: IStatisticsItem[] = R.sortBy(R.prop("Wert"), this.props.items);
+		for (let item of values)
+		{
+			if (item.Wert == current)
+			{
+				currentcount += 1;
+			}
+			else
+			{
+				if (currentcount > count)
+				{
+					count = currentcount;
+					mode = current;
+				}
+				current = item.Wert;
+				currentcount = 1;
+			}
+		}
+		if (currentcount > count)
+		{
+			count = currentcount;
+			mode = current;
+		}
+		return mode;
 	}
 
 }
