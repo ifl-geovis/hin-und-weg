@@ -27,13 +27,15 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	public render(): JSX.Element
 	{
 		return (
-			<div className="p-grid">
-				<div className="p-col-4">Ansicht wählen:</div>
-				<div className="p-col-8">
-					<ViewSelector views={this.props.views} selected={this.state.activeView} onSelectView={this.onViewSelect}/>
-				</div>
-				<div className="p-col-12">
-					<div>test123: {this.state.activeView}</div>
+			<div className="viewswitcher">
+				<div className="p-grid">
+					<div className="p-col-4">Ansicht wählen:</div>
+					<div className="p-col-8">
+						<ViewSelector views={this.props.views} selected={this.state.activeView} onSelectView={this.onViewSelect}/>
+					</div>
+					<div className="p-col-12">
+						<div>test123: {this.state.activeView}</div>
+					</div>
 				</div>
 			</div>
 		);

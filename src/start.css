@@ -28,6 +28,14 @@ div.status-failure
 	color: #ad0505;
 }
 
+div.viewswitcher
+{
+	padding: 0.5em;
+	border-width: medium;
+	border-style: solid;
+	border-color: lightgray;
+}
+
 /* Prime React */
 
 .p-tabview.p-tabview-right > div.p-tabview-panels
