@@ -18,6 +18,7 @@ import Themes from "./Themes";
 import Years from "./Years";
 import SystemInfo from "../components/SystemInfo";
 import StatisticsView from "../components/StatisticsView";
+import ViewSwitcher from "./dashboards/ViewSwitcher";
 
 import Config from "../config";
 import Log from "../log";
@@ -94,6 +95,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 							<Years availableYears={this.state.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
 						</div>
 					</div>
+				</div>
+				<div className="p-col-10">
+					<ViewSwitcher views={["Datei", "Systeminformationen", "test"]}/>
 				</div>
 				<div className="p-col-10">
 					<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.setState({activeTab: e.index})}>
