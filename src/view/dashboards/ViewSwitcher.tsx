@@ -5,10 +5,31 @@ import Log from "../../log";
 
 import ViewSelector from "./ViewSelector";
 
+import TableView from "../TableView";
+import { TimelineView, ITimelineItem } from "../charts/TimelineView";
+import ChartsView from "../charts/ChartsView";
+import D3ChartView from "../charts/D3ChartView";
+import StatisticsView from "../../components/StatisticsView";
+import DBView from "../DBView";
 import SystemInfo from "../../components/SystemInfo";
+
+
+export interface TableItem
+{
+	Von: string;
+	Nach: string;
+	Wert: number;
+	Absolutwert: number;
+}
 
 export interface IViewSwitcherProps
 {
+	db: alaSQLSpace.AlaSQL;
+	items: TableItem[];
+	timeline: ITimelineItem[];
+	location: string | null;
+	theme: string;
+	yearsAvailable: string[];
 }
 
 interface IViewSwitcherState
@@ -57,14 +78,21 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private getVisibleViews()
 	{
 		let views: any[] = [];
-		this.addView(views, "file", "Datei");
-		this.addView(views, "systeminfo", "Systeminformationen");
+		this.addView(views, "map", "Karte", (this.props.yearsAvailable.length > 0));
+		this.addView(views, "table", "Tabelle", (this.props.yearsAvailable.length > 0));
+		this.addView(views, "timeline", "Zeitreihen", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, "charts", "Diagramm", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, "d3-bar", "D3 Bar Chart", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, "statistics", "Statistiken", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, "file", "Datei", true);
+		this.addView(views, "db", "Datenbank", (this.props.yearsAvailable.length > 0));
+		this.addView(views, "systeminfo", "Systeminformationen", true);
 		return views;
 	}
 
-	private addView(views: any[], value: string, label: string)
+	private addView(views: any[], value: string, label: string, selectable: boolean)
 	{
-		if (Config.getValue("components", value) == true)
+		if ((selectable) && (Config.getValue("components", value) == true))
 		{
 			views.push({value: value, label: label});
 		}
@@ -72,10 +100,70 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 
 	private selectCurrentView(view: string)
 	{
+		if (view == "table") return this.selectTableView();
+		if (view == "timeline") return this.selectTimelineView();
+		if (view == "charts") return this.selectChartsView();
+		if (view == "d3-bar") return this.selectD3BarView();
+		if (view == "statistics") return this.selectStatisticsView();
+		if (view == "db") return this.selectDatabaseView();
 		if (view == "systeminfo") return this.selectSystemInfoView();
 		return (
 			<div className="p-col-12">
 				<div>Die Ansicht {view} ist unbekannt.</div>
+			</div>
+		);
+	}
+
+	private selectTableView()
+	{
+		return (
+			<div className="p-col-12">
+				<TableView items={this.props.items} maxRows={25}/>
+			</div>
+		);
+	}
+
+	private selectTimelineView()
+	{
+		return (
+			<div className="p-col-12">
+				<TimelineView data={this.props.timeline} />
+			</div>
+		);
+	}
+
+	private selectChartsView()
+	{
+		return (
+			<div className="p-col-12">
+				<ChartsView items={this.props.items} theme={this.props.theme} />
+			</div>
+		);
+	}
+
+	private selectD3BarView()
+	{
+		return (
+			<div className="p-col-12">
+				<D3ChartView items={this.props.items} theme={this.props.theme} />
+			</div>
+		);
+	}
+
+	private selectStatisticsView()
+	{
+		return (
+			<div className="p-col-12">
+				<StatisticsView items={this.props.items} />
+			</div>
+		);
+	}
+
+	private selectDatabaseView()
+	{
+		return (
+			<div className="p-col-12">
+				<DBView db={this.props.db} />
 			</div>
 		);
 	}

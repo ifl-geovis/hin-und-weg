@@ -35,7 +35,14 @@
 		},
 		"components":
 		{
+			"map": true,
+			"table": true,
+			"timeline": true,
+			"charts": true,
+			"d3-bar": true,
+			"statistics": true,
 			"file": true,
+			"db": true,
 			"systeminfo": false,
 		},
 		"logging":
