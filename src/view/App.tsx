@@ -97,7 +97,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 				</div>
 				<div className="p-col-10">
-					<ViewSwitcher views={["Datei", "Systeminformationen", "test"]}/>
+					<ViewSwitcher/>
 				</div>
 				<div className="p-col-10">
 					<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.setState({activeTab: e.index})}>

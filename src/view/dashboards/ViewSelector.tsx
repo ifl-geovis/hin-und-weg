@@ -1,11 +1,16 @@
+import { Dropdown } from "primereact/dropdown";
 import React from "react";
 
-import SelectInput from "../input/SelectInput";
+export interface IViewItem
+{
+	label: string;
+	value: string;
+}
 
 export interface IViewSelectorProps
 {
 	selected?: string | null;
-	views: string[];
+	views: IViewItem[];
 	onSelectView: (name: string) => void;
 }
 
@@ -15,15 +20,21 @@ export default class ViewSelector extends React.Component<IViewSelectorProps>
 	constructor(props: IViewSelectorProps)
 	{
 		super(props);
+		this.onSelected = this.onSelected.bind(this);
 	}
 
 	public render(): JSX.Element
 	{
 		return (
 			<div>
-				<SelectInput options={this.props.views} selected={this.props.selected} onSelected={this.props.onSelectView}/>
+				<Dropdown value={this.props.selected} options={this.props.views} onChange={this.onSelected} style={{ width: "100%" }} />
 			</div>
 		);
+	}
+
+	private onSelected(event: { originalEvent: Event, value: any})
+	{
+		this.props.onSelectView(event.value);
 	}
 
 }

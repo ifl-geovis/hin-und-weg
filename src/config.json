@@ -35,6 +35,7 @@
 		},
 		"components":
 		{
+			"file": true,
 			"systeminfo": false,
 		},
 		"logging":
