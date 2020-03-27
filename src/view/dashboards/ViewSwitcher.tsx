@@ -3,6 +3,8 @@ import React from "react";
 import Config from "../../config";
 import Log from "../../log";
 
+import Geodata from "../../model/Geodata";
+
 import ViewSelector from "./ViewSelector";
 
 import TableView from "../TableView";
@@ -24,9 +26,11 @@ export interface TableItem
 
 export interface IViewSwitcherProps
 {
+	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
 	timeline: ITimelineItem[];
+	locations: string[];
 	location: string | null;
 	theme: string;
 	yearsAvailable: string[];
