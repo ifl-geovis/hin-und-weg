@@ -95,8 +95,12 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 				</div>
 				<div className="p-col-10">
-					<ViewSwitcher geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.state.geoName} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
+					<ViewSwitcher geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.state.geoName} geoId={this.state.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
 						onSelectLocation={(newLocation) => this.setState({location: newLocation})}
+						setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
+						setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
+						setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }}
+						addYear={(year) => { this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) }); }}
 					/>
 				</div>
 				<div className="p-col-10">

@@ -13,6 +13,7 @@ import { TimelineView, ITimelineItem } from "../charts/TimelineView";
 import ChartsView from "../charts/ChartsView";
 import D3ChartView from "../charts/D3ChartView";
 import StatisticsView from "../../components/StatisticsView";
+import ImportView from "../ImportView";
 import DBView from "../DBView";
 import SystemInfo from "../../components/SystemInfo";
 
@@ -32,11 +33,16 @@ export interface IViewSwitcherProps
 	items: TableItem[];
 	timeline: ITimelineItem[];
 	geoName: string | null;
+	geoId: string | null;
 	locations: string[];
 	location: string | null;
 	theme: string;
 	yearsAvailable: string[];
 	onSelectLocation: (newLocation: string) => void;
+	setGeodata: (geodata: Geodata) => void;
+	setGeoName: (geoName: string) => void;
+	setGeoId: (geoId: string) => void;
+	addYear: (year: string) => void;
 }
 
 interface IViewSwitcherState
@@ -113,6 +119,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		if (view == "charts") return this.selectChartsView();
 		if (view == "d3-bar") return this.selectD3BarView();
 		if (view == "statistics") return this.selectStatisticsView();
+		if (view == "file") return this.selectImportView();
 		if (view == "db") return this.selectDatabaseView();
 		if (view == "systeminfo") return this.selectSystemInfoView();
 		return (
@@ -174,6 +181,20 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="p-col-12">
 				<StatisticsView items={this.props.items} />
+			</div>
+		);
+	}
+
+	private selectImportView()
+	{
+		return (
+			<div className="p-col-12">
+				<ImportView db={this.props.db} geodata={this.props.geodata} geoName={this.props.geoName} geoId={this.props.geoId}
+					setGeodata={this.props.setGeodata}
+					setGeoName={this.props.setGeoName}
+					setGeoId={this.props.setGeoId}
+					addYear={this.props.addYear}
+				/>
 			</div>
 		);
 	}
