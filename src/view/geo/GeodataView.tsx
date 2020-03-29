@@ -13,19 +13,25 @@ export interface IGeodataProps
 	locations: string[];
 	selectedLocation?: string | null;
 	onSelectLocation: (newLocation: string) => void;
-	showLabels: boolean;
-	setShowLabels: (show: boolean) => void;
 	theme: string;
-
 }
 
-export default class GeodataView extends React.Component<IGeodataProps>
+interface IGeodataState
+{
+	showLabels: boolean;
+}
+
+export default class GeodataView extends React.Component<IGeodataProps, IGeodataState>
 {
 
 	constructor(props: IGeodataProps)
 	{
 		super(props);
 		this.onShowLabelsChange = this.onShowLabelsChange.bind(this);
+		this.state =
+		{
+			showLabels: true,
+		};
 	}
 
 	public render(): JSX.Element
@@ -34,13 +40,13 @@ export default class GeodataView extends React.Component<IGeodataProps>
 			<div className="p-grid">
 
 				<div className="p-col-4">
-					<Checkbox inputId="showlabels" value="showlabels" onChange={this.onShowLabelsChange} checked={this.props.showLabels}></Checkbox>
+					<Checkbox inputId="showlabels" value="showlabels" onChange={this.onShowLabelsChange} checked={this.state.showLabels}></Checkbox>
 					<label htmlFor="showlabels" className="p-checkbox-label">zeige Namen</label>
 				</div>
 				<div className="p-col-12">
-					<MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.props.showLabels} theme={this.props.theme}/>
+					<MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/>
 				</div>
-				
+
 				<div className="p-col-1" > <svg> <rect key="area" fill="#cbf719" stroke="#4d4d4d" width="24" height="24" margin-right="15"></rect> </svg> </div>
 				<div className="p-col-3"> - ausgewählte Bezugsfläche</div>
 			</div>
@@ -49,7 +55,7 @@ export default class GeodataView extends React.Component<IGeodataProps>
 
 	private onShowLabelsChange(e: { originalEvent: Event, value: string, checked: boolean})
 	{
-		this.props.setShowLabels(e.checked);
+		this.setState({showLabels: e.checked});
 	}
 
 }

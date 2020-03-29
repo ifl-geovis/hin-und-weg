@@ -36,7 +36,6 @@ interface IAppState
 	yearsAvailable: string[];
 	years: string[];
 	location: string | null;
-	showLabels: boolean;
 	theme: string;
 	activeTab: number;
 }
@@ -53,7 +52,6 @@ export default class App extends React.Component<IAppProps, IAppState>
 			geoId: "OT",
 			geoName: null,
 			location: null,
-			showLabels: true,
 			theme: "Von",
 			years: [],
 			yearsAvailable: [],
@@ -102,9 +100,8 @@ export default class App extends React.Component<IAppProps, IAppState>
 				<div className="p-col-10">
 					<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.setState({activeTab: e.index})}>
 						<TabPanel header="Karte" disabled={this.state.geodata == null}>
-							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} showLabels={this.state.showLabels} geoName={this.state.geoName}
+							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} geoName={this.state.geoName} theme={this.state.theme}
 								onSelectLocation={(newLocation) => this.setState({location: newLocation})}
-								setShowLabels={(show) => this.setState({showLabels: show})} theme={this.state.theme}
 							/>
 						</TabPanel>
 						<TabPanel header="Tabelle" disabled={this.state.yearsAvailable.length == 0}>
