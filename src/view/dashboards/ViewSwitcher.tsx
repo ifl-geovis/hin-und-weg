@@ -7,6 +7,7 @@ import Geodata from "../../model/Geodata";
 
 import ViewSelector from "./ViewSelector";
 
+import GeodataView from "../geo/GeodataView";
 import TableView from "../TableView";
 import { TimelineView, ITimelineItem } from "../charts/TimelineView";
 import ChartsView from "../charts/ChartsView";
@@ -30,10 +31,12 @@ export interface IViewSwitcherProps
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
 	timeline: ITimelineItem[];
+	geoName: string | null;
 	locations: string[];
 	location: string | null;
 	theme: string;
 	yearsAvailable: string[];
+	onSelectLocation: (newLocation: string) => void;
 }
 
 interface IViewSwitcherState
@@ -104,6 +107,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 
 	private selectCurrentView(view: string)
 	{
+		if (view == "map") return this.selectMapView();
 		if (view == "table") return this.selectTableView();
 		if (view == "timeline") return this.selectTimelineView();
 		if (view == "charts") return this.selectChartsView();
@@ -114,6 +118,17 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="p-col-12">
 				<div>Die Ansicht {view} ist unbekannt.</div>
+			</div>
+		);
+	}
+
+	private selectMapView()
+	{
+		return (
+			<div className="p-col-12">
+				<GeodataView geodata={this.props.geodata} items={this.props.items} locations={this.props.locations} selectedLocation={this.props.location} geoName={this.props.geoName} theme={this.props.theme}
+					onSelectLocation={this.props.onSelectLocation}
+				/>
 			</div>
 		);
 	}

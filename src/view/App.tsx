@@ -95,7 +95,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 				</div>
 				<div className="p-col-10">
-					<ViewSwitcher geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}/>
+					<ViewSwitcher geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.state.geoName} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
+						onSelectLocation={(newLocation) => this.setState({location: newLocation})}
+					/>
 				</div>
 				<div className="p-col-10">
 					<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.setState({activeTab: e.index})}>
