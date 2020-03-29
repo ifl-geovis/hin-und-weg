@@ -6,18 +6,9 @@ import React from "react";
 import Geodata from "../model/Geodata";
 import { GeoJsonProperties } from "geojson";
 
-import ChartsView from "./charts/ChartsView";
-import D3ChartView from "./charts/D3ChartView";
-import { TimelineView } from "./charts/TimelineView";
-import ImportView from "./ImportView";
-import DBView from "./DBView";
-import GeodataView from "./geo/GeodataView";
-import TableView from "./TableView";
 import Location from "./Location";
 import Themes from "./Themes";
 import Years from "./Years";
-import SystemInfo from "../components/SystemInfo";
-import StatisticsView from "../components/StatisticsView";
 import ViewSwitcher from "./dashboards/ViewSwitcher";
 
 import Config from "../config";
@@ -102,46 +93,6 @@ export default class App extends React.Component<IAppProps, IAppState>
 						setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }}
 						addYear={(year) => { this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) }); }}
 					/>
-				</div>
-				<div className="p-col-10">
-					<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.setState({activeTab: e.index})}>
-						<TabPanel header="Karte" disabled={this.state.geodata == null}>
-							<GeodataView geodata={this.state.geodata} items={results} locations={locations} selectedLocation={this.state.location} geoName={this.state.geoName} theme={this.state.theme}
-								onSelectLocation={(newLocation) => this.setState({location: newLocation})}
-							/>
-						</TabPanel>
-						<TabPanel header="Tabelle" disabled={this.state.yearsAvailable.length == 0}>
-							<TableView items={results} maxRows={25}/>
-						</TabPanel>
-						<TabPanel header="Zeitreihen" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
-							<TimelineView data={timeline} />
-						</TabPanel>
-						<TabPanel header="Diagramm" disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
-							<ChartsView items={results} theme={this.state.theme} />
-						</TabPanel>
-						<TabPanel header="D3 Bar Chart"  disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
-							<D3ChartView items={results} theme={this.state.theme} />
-						</TabPanel>
-						<TabPanel header="Statistiken"  disabled={(this.state.yearsAvailable.length == 0) || (this.state.location == null)}>
-							<StatisticsView items={results} />
-						</TabPanel>
-						<TabPanel header="Datei">
-							<ImportView db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId}
-								addYear={(year) =>
-									{
-										this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) });
-									}}
-								setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
-								setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
-								setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }} />
-						</TabPanel>
-						<TabPanel header="Datenbank" disabled={this.state.yearsAvailable.length == 0}>
-							<DBView db={this.props.db} />
-						</TabPanel>
-						<TabPanel header="Systeminformationen" headerStyle={(systeminfo) ? {display: "block"} : {display: "none"}}>
-							<SystemInfo />
-						</TabPanel>
-					</TabView>
 				</div>
 			</div>
 		);
