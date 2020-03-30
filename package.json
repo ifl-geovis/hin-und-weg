@@ -14,7 +14,7 @@
 		"doc": "docs"
 	},
 	"scripts": {
-		"build": "tsc && sh build-extras.sh",
+		"build": "tsc && cp src/start.css dist/",
 		"watch": "tsc -w",
 		"pack": "sh pack.sh",
 		"lint": "tslint -c tslint.json -p tsconfig.json",
