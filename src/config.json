@@ -19,6 +19,7 @@
 		"components":
 		{
 			"systeminfo": true,
+			"projektinfo": true,
 		},
 		"logging":
 		{
@@ -44,6 +45,7 @@
 			"file": true,
 			"db": true,
 			"systeminfo": false,
+			"projektinfo": false,
 		},
 		"logging":
 		{
