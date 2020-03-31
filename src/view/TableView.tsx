@@ -25,14 +25,10 @@ export default class TableView extends React.Component<ITableViewProps> {
         var name;
         var id = 0
         for(name of fieldNames){
-            console.log(id + " " + name + " vor Abfrage");
             if(name.valueOf() == "Absolutwert"){
                 fieldNames.splice(id,1);
-                console.log(id + " " + name +  " in Abfrage");
             }
             id +=1;
-            
-            console.log(id + " " + name +  " nach Abfrage");
         } 
 
 
