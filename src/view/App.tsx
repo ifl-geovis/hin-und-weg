@@ -58,6 +58,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.state.geoName as string;
 		let locations: string[] = [];
+		const projektinfo = (Config.getValue("components", "projektinfo") == true);
 		const systeminfo = (Config.getValue("components", "systeminfo") == true);
 		if (this.state.geodata != null && this.state.geoName != null)
 		{
