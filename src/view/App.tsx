@@ -28,7 +28,6 @@ interface IAppState
 	years: string[];
 	location: string | null;
 	theme: string;
-	activeTab: number;
 }
 
 export default class App extends React.Component<IAppProps, IAppState>
@@ -46,7 +45,6 @@ export default class App extends React.Component<IAppProps, IAppState>
 			theme: "Von",
 			years: [],
 			yearsAvailable: [],
-			activeTab: 6,
 		};
 	}
 
@@ -78,10 +76,10 @@ export default class App extends React.Component<IAppProps, IAppState>
 						<div className="p-col-12">
 							<Location title="Bezugsfläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 						</div>
-						<div className="p-col-12" style={(this.state.activeTab == 2) ? {display: "none"} : {display: "block"}}>
+						<div className="p-col-12">
 							<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 						</div>
-						<div className="p-col-12" style={((this.state.yearsAvailable.length == 0) || (this.state.activeTab == 2)) ? {display: "none"} : {display: "block"}}>
+						<div className="p-col-12" style={(this.state.yearsAvailable.length == 0) ? {display: "none"} : {display: "block"}}>
 							<Years availableYears={this.state.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
 						</div>
 					</div>
