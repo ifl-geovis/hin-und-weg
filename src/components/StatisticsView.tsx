@@ -12,11 +12,13 @@ export interface IStatisticsItem
 	Nach: string;
 	Wert: number;
 	Absolutwert: number;
+
 }
 
 export interface IStatisticsViewProps
 {
 	items: IStatisticsItem[];
+	theme: string;
 }
 
 export default class StatisticsView extends React.Component<IStatisticsViewProps>
@@ -29,10 +31,28 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 	public render(): JSX.Element
 	{
+		let maximum: number;
+		let minimum: number;
 		let count: number = this.props.items.length;
 		let mean: number = this.calculateMean(count);
 		let variance: number = this.calculateVariance(mean, count);
 		let median: number = this.calculateMedian(count);
+		if(this.props.theme == "Von")
+		{
+			console.log("in Von IF");
+			maximum = 0;
+			minimum = this.calculateMaximum(count);
+		}else if(this.props.theme == "Nach"){
+			console.log("in Nach IF");
+			maximum = this.calculateMaximum(count);
+			minimum = 0;
+		}else{
+			console.log("in Else IF");
+			maximum = this.calculateMaximum(count);
+			minimum = Math.abs(this.calculateMinimum(count));
+		}
+
+
 		let mode: number = this.determineMode();
 		return (
 			<div>
@@ -45,6 +65,14 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						<tr>
 							<th align="right">Median:</th>
 							<td>{median}</td>
+						</tr>
+						<tr>
+							<th align="right">Hinzugezogen Maximal:</th>
+							<td>{maximum}</td>
+						</tr>
+						<tr>
+							<th align="right">Weggezogen Maximal:</th>
+							<td>{minimum}</td>
 						</tr>
 						<tr>
 							<th align="right">Varianz:</th>
@@ -72,6 +100,28 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			sum += item.Wert;
 		}
 		return sum/count;
+	}
+
+	private calculateMaximum(count: number): number
+	{ 
+		let maxwert = 0;
+		for (let item of this.props.items)
+		{
+			if(item.Wert > maxwert)
+			maxwert = item.Wert;
+		}
+		return maxwert;
+	}
+
+	private calculateMinimum(count: number): number
+	{
+		let minwert = 500;
+		for (let item of this.props.items)
+		{
+			if(item.Wert < minwert)
+			minwert = item.Wert;
+		}
+		return minwert;
 	}
 
 	private calculateMedian(count: number): number
