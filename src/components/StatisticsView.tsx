@@ -31,25 +31,22 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 	public render(): JSX.Element
 	{
-		let maximum: number;
-		let minimum: number;
+		let maximum: string;
+		let minimum: string;
 		let count: number = this.props.items.length;
 		let mean: number = this.calculateMean(count);
 		let variance: number = this.calculateVariance(mean, count);
 		let median: number = this.calculateMedian(count);
 		if(this.props.theme == "Von")
 		{
-			console.log("in Von IF");
-			maximum = 0;
-			minimum = this.calculateMaximum(count);
+			maximum = "0";
+			minimum = this.calculateMaximum(count, this.props.theme);
 		}else if(this.props.theme == "Nach"){
-			console.log("in Nach IF");
-			maximum = this.calculateMaximum(count);
-			minimum = 0;
+			maximum = this.calculateMaximum(count, this.props.theme);
+			minimum = "0";
 		}else{
-			console.log("in Else IF");
-			maximum = this.calculateMaximum(count);
-			minimum = Math.abs(this.calculateMinimum(count));
+			maximum = this.calculateMaximum(count, this.props.theme);
+			minimum = this.calculateMinimum(count);
 		}
 
 
@@ -102,26 +99,38 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		return sum/count;
 	}
 
-	private calculateMaximum(count: number): number
+	private calculateMaximum(count: number, theme: string): string
 	{ 
 		let maxwert = 0;
+		let ort = "";
 		for (let item of this.props.items)
 		{
-			if(item.Wert > maxwert)
-			maxwert = item.Wert;
+			if(item.Wert > maxwert){
+				maxwert = item.Wert;
+				if(theme == "Von"){
+					ort = " nach " + item.Nach;
+				}else{
+					ort = " von " + item.Von;
+				}
+			}
+			
 		}
-		return maxwert;
+		return Math.abs(maxwert).toString() +  ort;
 	}
 
-	private calculateMinimum(count: number): number
+	private calculateMinimum(count: number): string
 	{
-		let minwert = 500;
+		let minwert = 5000;
+		let ort = "";
 		for (let item of this.props.items)
 		{
 			if(item.Wert < minwert)
-			minwert = item.Wert;
+			{
+				minwert = item.Wert;
+				ort = " nach " + item.Von;
+			}
 		}
-		return minwert;
+		return Math.abs(minwert).toString() + ort;
 	}
 
 	private calculateMedian(count: number): number
