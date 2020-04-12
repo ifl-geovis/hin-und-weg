@@ -10,6 +10,7 @@ import Location from "./Location";
 import Themes from "./Themes";
 import Years from "./Years";
 import ViewSwitcher from "./dashboards/ViewSwitcher";
+import DashboardView from "./dashboards/DashboardView";
 
 import Config from "../config";
 import Log from "../log";
@@ -85,7 +86,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 				</div>
 				<div className="p-col-10">
-					<ViewSwitcher geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.state.geoName} geoId={this.state.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
+					<DashboardView geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.state.geoName} geoId={this.state.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
 						onSelectLocation={(newLocation) => this.setState({location: newLocation})}
 						setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
 						setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
