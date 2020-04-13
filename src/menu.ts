@@ -32,6 +32,21 @@ export default class MainMenu
 			]
 		},
 		{
+			label: 'Sichten',
+			submenu:
+			[
+				{
+					label: 'Einzelansicht'
+				},
+				{
+					label: 'oben 1 unten 1'
+				},
+				{
+					label: 'links 1 rechts 1'
+				}
+			]
+		},
+		{
 			label: 'Visualisierungen',
 			submenu:
 			[
