@@ -46,7 +46,27 @@ export default class MainMenu
 				{
 					label: 'links 1 rechts 1',
 					click(event, window, content) {MainMenu.execute("dashboard", "l1r1", event, window, content);}
-				}
+				},
+				{
+					label: 'oben 1 unten 2',
+					click(event, window, content) {MainMenu.execute("dashboard", "t1b2", event, window, content);}
+				},
+				{
+					label: 'oben 2 unten 1',
+					click(event, window, content) {MainMenu.execute("dashboard", "t2b1", event, window, content);}
+				},
+				{
+					label: 'links 1 rechts 2',
+					click(event, window, content) {MainMenu.execute("dashboard", "l1r2", event, window, content);}
+				},
+				{
+					label: '3× vertikal',
+					click(event, window, content) {MainMenu.execute("dashboard", "v3", event, window, content);}
+				},
+				{
+					label: 'Viertel',
+					click(event, window, content) {MainMenu.execute("dashboard", "l2r2", event, window, content);}
+				},
 			]
 		},
 		{

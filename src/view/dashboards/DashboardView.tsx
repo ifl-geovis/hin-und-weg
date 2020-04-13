@@ -80,6 +80,11 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 	{
 		if (view == "t1b1") return this.select_t1b1();
 		if (view == "l1r1") return this.select_l1r1();
+		if (view == "t1b2") return this.select_t1b2();
+		if (view == "t2b1") return this.select_t2b1();
+		if (view == "l1r2") return this.select_l1r2();
+		if (view == "v3") return this.select_v3();
+		if (view == "l2r2") return this.select_l2r2();
 		return this.getViewSwitcher();
 	}
 
@@ -103,6 +108,101 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+			</div>
+		);
+	}
+
+	private select_t1b2(): JSX.Element
+	{
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-12">
+					{viewswitcher}
+				</div>
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+			</div>
+		);
+	}
+
+	private select_t2b1(): JSX.Element
+	{
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+				<div className="p-col-12">
+					{viewswitcher}
+				</div>
+			</div>
+		);
+	}
+
+	private select_l1r2(): JSX.Element
+	{
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+				<div className="p-col-6">
+					<div className="p-col-12">
+						{viewswitcher}
+					</div>
+					<div className="p-col-12">
+						{viewswitcher}
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	private select_v3(): JSX.Element
+	{
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-4">
+					{viewswitcher}
+				</div>
+				<div className="p-col-4">
+					{viewswitcher}
+				</div>
+				<div className="p-col-4">
+					{viewswitcher}
+				</div>
+			</div>
+		);
+	}
+
+	private select_l2r2(): JSX.Element
+	{
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
+				<div className="p-col-6">
+					{viewswitcher}
+				</div>
 				<div className="p-col-6">
 					{viewswitcher}
 				</div>
