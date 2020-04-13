@@ -36,13 +36,16 @@ export default class MainMenu
 			submenu:
 			[
 				{
-					label: 'Einzelansicht'
+					label: 'Einzelansicht',
+					click(event, window, content) {MainMenu.execute("dashboard", "s1", event, window, content);}
 				},
 				{
-					label: 'oben 1 unten 1'
+					label: 'oben 1 unten 1',
+					click(event, window, content) {MainMenu.execute("dashboard", "t1b1", event, window, content);}
 				},
 				{
-					label: 'links 1 rechts 1'
+					label: 'links 1 rechts 1',
+					click(event, window, content) {MainMenu.execute("dashboard", "l1r1", event, window, content);}
 				}
 			]
 		},
@@ -159,6 +162,11 @@ export default class MainMenu
 	{
 		if (MainMenu.MENU) return Menu.buildFromTemplate(MainMenu.template);
 		return null;
+	}
+
+	private static execute(category: string, item: string, event: any, window: any, content: any)
+	{
+		window.webContents.send(category, item);
 	}
 
 }

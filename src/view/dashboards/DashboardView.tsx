@@ -9,6 +9,9 @@ import {ITimelineItem} from "../charts/TimelineView";
 import ViewSwitcher from "./ViewSwitcher";
 
 
+
+
+
 export interface TableItem
 {
 	Von: string;
@@ -51,6 +54,14 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		{
 			dashboard_configuration: "s1",
 		};
+		const ipc = require('electron').ipcRenderer;
+		ipc.on
+		(
+			'dashboard', (event: any, message: string) =>
+			{
+				this.setState({dashboard_configuration: message});
+			}
+		)
 	}
 
 	public render(): JSX.Element
