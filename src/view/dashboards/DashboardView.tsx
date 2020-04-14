@@ -8,10 +8,6 @@ import {ITimelineItem} from "../charts/TimelineView";
 
 import ViewSwitcher from "./ViewSwitcher";
 
-
-
-
-
 export interface TableItem
 {
 	Von: string;
@@ -22,6 +18,7 @@ export interface TableItem
 
 export interface IDashboardProps
 {
+	view:string;
 	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
@@ -39,34 +36,17 @@ export interface IDashboardProps
 	addYear: (year: string) => void;
 }
 
-interface IDashboardState
-{
-	dashboard_configuration: string;
-}
-
-export default class DashboardView extends React.Component<IDashboardProps, IDashboardState>
+export default class DashboardView extends React.Component<IDashboardProps>
 {
 
 	constructor(props: IDashboardProps)
 	{
 		super(props);
-		this.state =
-		{
-			dashboard_configuration: "s1",
-		};
-		const ipc = require('electron').ipcRenderer;
-		ipc.on
-		(
-			'dashboard', (event: any, message: string) =>
-			{
-				this.setState({dashboard_configuration: message});
-			}
-		)
 	}
 
 	public render(): JSX.Element
 	{
-		return this.selectCurrentView(this.state.dashboard_configuration);
+		return this.selectCurrentView(this.props.view);
 	}
 
 	private getViewSwitcher(): JSX.Element

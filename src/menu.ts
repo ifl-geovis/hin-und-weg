@@ -67,6 +67,10 @@ export default class MainMenu
 					label: 'Viertel',
 					click(event, window, content) {MainMenu.execute("dashboard", "l2r2", event, window, content);}
 				},
+				{
+					label: 'Vergleich',
+					click(event, window, content) {MainMenu.execute("dashboard", "cls1rs1", event, window, content);}
+				},
 			]
 		},
 		{
