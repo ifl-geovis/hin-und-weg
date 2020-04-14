@@ -32,6 +32,48 @@ export default class MainMenu
 			]
 		},
 		{
+			label: 'Sichten',
+			submenu:
+			[
+				{
+					label: 'Einzelansicht',
+					click(event, window, content) {MainMenu.execute("dashboard", "s1", event, window, content);}
+				},
+				{
+					label: 'oben 1 unten 1',
+					click(event, window, content) {MainMenu.execute("dashboard", "t1b1", event, window, content);}
+				},
+				{
+					label: 'links 1 rechts 1',
+					click(event, window, content) {MainMenu.execute("dashboard", "l1r1", event, window, content);}
+				},
+				{
+					label: 'oben 1 unten 2',
+					click(event, window, content) {MainMenu.execute("dashboard", "t1b2", event, window, content);}
+				},
+				{
+					label: 'oben 2 unten 1',
+					click(event, window, content) {MainMenu.execute("dashboard", "t2b1", event, window, content);}
+				},
+				{
+					label: 'links 1 rechts 2',
+					click(event, window, content) {MainMenu.execute("dashboard", "l1r2", event, window, content);}
+				},
+				{
+					label: '3× vertikal',
+					click(event, window, content) {MainMenu.execute("dashboard", "v3", event, window, content);}
+				},
+				{
+					label: 'Viertel',
+					click(event, window, content) {MainMenu.execute("dashboard", "l2r2", event, window, content);}
+				},
+				{
+					label: 'Vergleich',
+					click(event, window, content) {MainMenu.execute("dashboard", "cls1rs1", event, window, content);}
+				},
+			]
+		},
+		{
 			label: 'Visualisierungen',
 			submenu:
 			[
@@ -144,6 +186,11 @@ export default class MainMenu
 	{
 		if (MainMenu.MENU) return Menu.buildFromTemplate(MainMenu.template);
 		return null;
+	}
+
+	private static execute(category: string, item: string, event: any, window: any, content: any)
+	{
+		window.webContents.send(category, item);
 	}
 
 }
