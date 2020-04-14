@@ -183,7 +183,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	{
 		return (
 			<div className="p-col-12">
-				<StatisticsView items={this.props.items} />
+				<StatisticsView items={this.props.items} theme={this.props.theme}/>
 			</div>
 		);
 	}
