@@ -1,6 +1,6 @@
 {
 
-	"profile": "development",
+	"profile": "production",
 
 	"production":
 	{
@@ -19,7 +19,7 @@
 		"components":
 		{
 			"systeminfo": true,
-			"projektinfo": true,
+			"db": true,
 		},
 		"logging":
 		{
@@ -43,9 +43,9 @@
 			"d3-bar": true,
 			"statistics": true,
 			"file": true,
-			"db": true,
+			"db": false,
 			"systeminfo": false,
-			"projektinfo": false,
+			"projektinfo": true,
 		},
 		"logging":
 		{
