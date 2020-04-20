@@ -40,16 +40,14 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		if(this.props.theme == "Von")
 		{
 			maximum = "0";
-			minimum = this.calculateMaximum(count, this.props.theme);
+			minimum = this.calculateMaximum(count);
 		}else if(this.props.theme == "Nach"){
-			maximum = this.calculateMaximum(count, this.props.theme);
+			maximum = this.calculateMaximum(count);
 			minimum = "0";
 		}else{
-			maximum = this.calculateMaximum(count, this.props.theme);
+			maximum = this.calculateMaximum(count);
 			minimum = this.calculateMinimum(count);
 		}
-
-
 		let mode: number = this.determineMode();
 		return (
 			<div>
@@ -99,21 +97,20 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		return sum/count;
 	}
 
-	private calculateMaximum(count: number, theme: string): string
-	{ 
+	private calculateMaximum(count: number): string
+	{
 		let maxwert = 0;
 		let ort = "";
 		for (let item of this.props.items)
 		{
 			if(item.Wert > maxwert){
 				maxwert = item.Wert;
-				if(theme == "Von"){
+				if(this.props.theme == "Von"){
 					ort = " nach " + item.Nach;
 				}else{
 					ort = " von " + item.Von;
 				}
 			}
-			
 		}
 		return Math.abs(maxwert).toString() +  ort;
 	}
