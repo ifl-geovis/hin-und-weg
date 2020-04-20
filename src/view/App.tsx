@@ -55,6 +55,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 		const results = this.query();
 		const timeline = this.queryTimeline();
 		const status = this.getStatus();
+		const statisticPerYearAusgabe = this.queryStatistics();
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.state.geoName as string;
 		let locations: string[] = [];
@@ -87,7 +88,7 @@ export default class App extends React.Component<IAppProps, IAppState>
 					</div>
 				</div>
 				<div className="p-col-10">
-					<ViewSwitcher geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.state.geoName} geoId={this.state.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
+					<ViewSwitcher geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} statisticPerYearAusgabe={statisticPerYearAusgabe} geoName={this.state.geoName} geoId={this.state.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
 						onSelectLocation={(newLocation) => this.setState({location: newLocation})}
 						setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
 						setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
@@ -189,6 +190,122 @@ export default class App extends React.Component<IAppProps, IAppState>
 				}
 			);
 		}
+		return results;
+	}
+
+	private queryStatistics(): any[]
+	{
+
+		let letztesJahr: number = 0;
+		let zuzüge = 0;
+		let wegzüge = 0;
+		let meisteZuzüge = 0;
+		let meisteWegzüge = 0;
+		let mean = 0;
+		let indexPerYear = 0;
+		let results: any[] = [];
+
+
+
+		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.state.yearsAvailable)) )
+		{
+			return results;
+		}
+		const query_zuzug = `SELECT Von, Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' GROUP BY Jahr, Von`;
+		const results_zuzug = this.props.db(query_zuzug);
+		const query_wegzug = `SELECT Von, Nach, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' GROUP BY Jahr, Nach`;     
+		const results_wegzug = this.props.db(query_wegzug);
+
+		letztesJahr = results_zuzug[0].Jahr;
+
+		//console.log("Jahr: " + results_zuzug[0].Jahr + "; zuzug: " + results_zuzug[0].Von);
+		
+
+		for (let i = 0; i < results_zuzug.length; i++)
+		{	
+			
+			if(letztesJahr == results_zuzug[i].Jahr){
+				
+				zuzüge = zuzüge + results_zuzug[i].zuzug;
+				wegzüge = wegzüge + results_wegzug[i].wegzug;
+
+				if(meisteZuzüge < results_zuzug[i].zuzug){
+					meisteZuzüge = results_zuzug[i].zuzug;
+				}
+				if(meisteWegzüge < results_wegzug[i].wegzug){
+					meisteWegzüge = results_wegzug[i].wegzug;
+				}
+
+				indexPerYear += 1;
+
+			}else{
+
+				mean = (zuzüge - wegzüge) / indexPerYear;
+
+				const saldiItem = { Jahr: letztesJahr ,Mean: mean, Median: 0, min: meisteWegzüge, max: meisteZuzüge};
+				results = R.append(saldiItem, results);
+
+				console.log("letztesJahr: " + letztesJahr);
+				console.log("summe: " + (zuzüge - wegzüge));
+				console.log("indexperYear: " + indexPerYear);
+
+			
+				indexPerYear = 0;
+				zuzüge = 0;	
+				wegzüge = 0;	
+				meisteZuzüge = 0;	
+				meisteWegzüge = 0;
+
+
+				zuzüge = zuzüge + results_zuzug[i].zuzug;
+				wegzüge = wegzüge + results_wegzug[i].wegzug;
+
+				if(meisteZuzüge < results_zuzug[i].zuzug){
+					meisteZuzüge = results_zuzug[i].zuzug;
+				}
+				if(meisteWegzüge < results_wegzug[i].wegzug){
+					meisteWegzüge = results_wegzug[i].wegzug;
+				}
+
+				indexPerYear += 1;
+
+	
+			
+			}
+			letztesJahr = results_zuzug[i].Jahr;
+		}
+
+		console.log("letztesJahr: " + letztesJahr);
+		console.log("summe: " + (zuzüge - wegzüge));
+		console.log("indexperYear: " + indexPerYear);
+
+		mean = (zuzüge - wegzüge) / indexPerYear;
+
+		if(meisteZuzüge < results_zuzug[results_zuzug.length - 1].zuzug){
+			meisteZuzüge = results_zuzug[results_zuzug.length - 1].zuzug;
+		}
+		if(meisteWegzüge < results_wegzug[results_wegzug.length - 1].wegzug){
+			meisteWegzüge = results_wegzug[results_wegzug.length - 1].wegzug;
+		}
+
+
+		const saldiItem = { Jahr: letztesJahr ,Mean: mean, Median: 0, min: meisteWegzüge, max:  meisteZuzüge};
+		results = R.append(saldiItem, results);
+
+
+		return results;
+	}
+
+	private queryStatisticsAusgabe(): any[]
+	{
+		let results: any[] = [];
+		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.state.yearsAvailable)) )
+		{
+			return results;
+		}
+
+		const saldiItem = {}; 
+		results = R.append(saldiItem, results);
 		return results;
 	}
 

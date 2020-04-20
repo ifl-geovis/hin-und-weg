@@ -12,6 +12,17 @@ export interface IStatisticsItem
 	Nach: string;
 	Wert: number;
 	Absolutwert: number;
+	Jahr: number;
+
+}
+
+export interface IStatisticPerYearAusgabe
+{
+	Jahr: number;
+	Mean: number;
+	Median: number;
+	min: number;
+	max: number;
 
 }
 
@@ -19,10 +30,12 @@ export interface IStatisticsViewProps
 {
 	items: IStatisticsItem[];
 	theme: string;
+	statisticPerYearAusgabe: IStatisticPerYearAusgabe[];
 }
 
 export default class StatisticsView extends React.Component<IStatisticsViewProps>
 {
+	
 
 	constructor(props: IStatisticsViewProps)
 	{
@@ -48,9 +61,11 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			maximum = this.calculateMaximum(count, this.props.theme);
 			minimum = this.calculateMinimum(count);
 		}
-
-
 		let mode: number = this.determineMode();
+
+		const years = this.getYears(); 
+		
+		
 		return (
 			<div>
 				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
@@ -85,6 +100,29 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 					</tbody>
 				</table>
+
+				<br></br>
+				<br></br>
+				<br></br>
+
+				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
+					<tbody>
+					
+					<thead>Saldistatistik pro Jahr</thead>
+							
+						<tr>
+							<th>Year</th>
+							<th>Mittelwert</th>
+							<th>Median</th>
+							<th>Meiste Wegzüge</th>
+							<th>Meiste Zuzüge</th>
+						</tr>
+
+						{years}
+
+					</tbody>
+				</table>
+
 			</div>
 		)
 	}
@@ -184,6 +222,31 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			mode = current;
 		}
 		return mode;
+	}
+
+	private getYears()
+	{
+		let years = [];
+
+		for (let row of this.props.statisticPerYearAusgabe)
+		{
+			years.push(this.getYear(row));
+
+		}
+		return years;
+	}
+
+	private getYear(row: IStatisticPerYearAusgabe): JSX.Element
+	{
+		return (
+				<tr>
+					<th>{row.Jahr}</th>
+					<td>{row.Mean}</td>
+					<td>{row.Median}</td>
+					<td>{row.max}</td>
+					<td>{row.min}</td>
+				</tr>
+		);
 	}
 
 }
