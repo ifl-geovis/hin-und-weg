@@ -7,10 +7,17 @@ p.status
 	font-style: italic;
 	font-weight: 10%;
 	padding: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0em;
 	border-width: thin;
 	border-style: solid;
 	border-color: lightgray;
 	border-radius: 10px;
+}
+
+img.logo
+{
+	float: right;
 }
 
 div.status-progress

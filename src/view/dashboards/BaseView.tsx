@@ -67,13 +67,15 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		}
 		return (
 			<div className="p-grid">
-				<div className="p-col-12">
-					<p className="status">{status}</p>
+				<div className="p-col-10">
+					<p className="status">
+						{status}
+					</p>
+				</div>
+				<div className="p-col-2">
+					<img className="logo" src="./assets/blue_huwlogo.png" />
 				</div>
 				<div className={(this.props.space == "wide") ? "p-col-2" : "p-col-4"}>
-					<div className="p-col-12">
-						<img src="./assets/blue_huwlogo.png" />
-					</div>
 					<div className="p-grid p-justify-around">
 						<div className="p-col-12">
 							<Location title="Bezugsfläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
