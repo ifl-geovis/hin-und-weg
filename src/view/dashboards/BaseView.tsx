@@ -1,5 +1,3 @@
-//import { TabPanel, TabView } from "primereact/tabview";
-
 import R from "ramda";
 import React from "react";
 
@@ -19,14 +17,18 @@ export interface IBaseProps
 	db: alaSQLSpace.AlaSQL;
 	view: string;
 	space: string;
+	geodata: Geodata | null;
+	geoName: string | null;
+	geoId: string | null;
+	yearsAvailable: string[];
+	setGeodata: (geodata: Geodata) => void;
+	setGeoName: (geoName: string) => void;
+	setGeoId: (geoId: string) => void;
+	addYear: (year: string) => void;
 }
 
 interface IBaseState
 {
-	geodata: Geodata | null;
-	geoId: string | null;
-	geoName: string | null;
-	yearsAvailable: string[];
 	years: string[];
 	location: string | null;
 	theme: string;
@@ -40,13 +42,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		super(props);
 		this.state =
 		{
-			geodata: null,
-			geoId: "OT",
-			geoName: null,
 			location: null,
 			theme: "Von",
 			years: [],
-			yearsAvailable: [],
 		};
 	}
 
@@ -56,13 +54,13 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		const timeline = this.queryTimeline();
 		const status = this.getStatus();
 		let attributes: GeoJsonProperties[] = [];
-		let fieldNameLoc = this.state.geoName as string;
+		let fieldNameLoc = this.props.geoName as string;
 		let locations: string[] = [];
 		const projektinfo = (Config.getValue("components", "projektinfo") == true);
 		const systeminfo = (Config.getValue("components", "systeminfo") == true);
-		if (this.state.geodata != null && this.state.geoName != null)
+		if (this.props.geodata != null && this.props.geoName != null)
 		{
-			attributes = this.state.geodata.attributes();
+			attributes = this.props.geodata.attributes();
 			locations = R.sort((a: string, b: string) => a.localeCompare(b), R.map((item) => item![fieldNameLoc], attributes));
 		}
 		return (
@@ -83,18 +81,18 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 						<div className="p-col-12">
 							<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 						</div>
-						<div className="p-col-12" style={(this.state.yearsAvailable.length == 0) ? {display: "none"} : {display: "block"}}>
-							<Years availableYears={this.state.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
+						<div className="p-col-12" style={(this.props.yearsAvailable.length == 0) ? {display: "none"} : {display: "block"}}>
+							<Years availableYears={this.props.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
 						</div>
 					</div>
 				</div>
 				<div className={(this.props.space == "wide") ? "p-col-10" : "p-col-8"}>
-					<DashboardView view={this.props.view} geodata={this.state.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.state.geoName} geoId={this.state.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.state.yearsAvailable}
+					<DashboardView view={this.props.view} geodata={this.props.geodata} db={this.props.db} items={results} timeline={timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.props.yearsAvailable}
 						onSelectLocation={(newLocation) => this.setState({location: newLocation})}
-						setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
-						setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
-						setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }}
-						addYear={(year) => { this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) }); }}
+						setGeodata={this.props.setGeodata}
+						setGeoName={this.props.setGeoName}
+						setGeoId={this.props.setGeoId}
+						addYear={this.props.addYear}
 					/>
 				</div>
 			</div>
@@ -130,7 +128,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 	private query(): any[]
 	{
 		let results: any[] = [];
-		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.state.yearsAvailable)) )
+		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable)) )
 		{
 			return results;
 		}
@@ -169,7 +167,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 	private queryTimeline(): any[]
 	{
 		let results: any[] = [];
-		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.state.yearsAvailable)) )
+		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable)) )
 		{
 			return results;
 		}
@@ -177,7 +175,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		let results_zuzug = this.props.db(query_zuzug);
 		let query_wegzug = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
 		let results_wegzug = this.props.db(query_wegzug);
-		for (let year of this.state.yearsAvailable.sort())
+		for (let year of this.props.yearsAvailable.sort())
 		{
 			let zuzug = this.getFieldForYear(results_zuzug, year, "zuzug");
 			let wegzug = this.getFieldForYear(results_wegzug, year, "wegzug");

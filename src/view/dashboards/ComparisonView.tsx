@@ -1,4 +1,6 @@
 import React from "react";
+import R from "ramda";
+import Geodata from "../../model/Geodata";
 
 import BaseView from "./BaseView";
 
@@ -21,6 +23,10 @@ export interface IComparisonProps
 interface IComparisonState
 {
 	dashboard_configuration: string;
+	geodata: Geodata | null;
+	geoId: string | null;
+	geoName: string | null;
+	yearsAvailable: string[];
 }
 
 export default class ComparisonView extends React.Component<IComparisonProps, IComparisonState>
@@ -32,6 +38,10 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 		this.state =
 		{
 			dashboard_configuration: "s1",
+			geodata: null,
+			geoId: "OT",
+			geoName: null,
+			yearsAvailable: [],
 		};
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
@@ -57,7 +67,12 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	private getBaseView(view: string, space: string): JSX.Element
 	{
 		return (
-			<BaseView view={view} space={space} db={this.props.db}/>
+			<BaseView view={view} space={space} db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable}
+				setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
+				setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
+				setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }}
+				addYear={(year) => { this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) }); }}
+			/>
 		);
 	}
 
