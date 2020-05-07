@@ -202,10 +202,14 @@ export default class App extends React.Component<IAppProps, IAppState>
 		let meisteZuzüge = 0;
 		let meisteWegzüge = 0;
 		let mean = 0;
+		let medianZuzüge = 0;
+		let medianWegzüge = 0;
 		let meanZuzüge = 0;
 		let meanWegzüge = 0;
 		let indexPerYear = 0;
 		let results: any[] = [];
+		let medianZuzügeArray: any[] = [];
+		let medianWegzügeArray: any[] = [];
 
 
 
@@ -231,6 +235,9 @@ export default class App extends React.Component<IAppProps, IAppState>
 				zuzüge = zuzüge + results_zuzug[i].zuzug;
 				wegzüge = wegzüge + results_wegzug[i].wegzug;
 
+				medianZuzügeArray[i] = results_zuzug[i].zuzug;
+				medianWegzügeArray[i] = results_wegzug[i].wegzug;
+
 				if(meisteZuzüge < results_zuzug[i].zuzug){
 					meisteZuzüge = results_zuzug[i].zuzug;
 				}
@@ -245,9 +252,21 @@ export default class App extends React.Component<IAppProps, IAppState>
 				mean = (zuzüge - wegzüge) / indexPerYear;
 				meanZuzüge = zuzüge / indexPerYear;
 				meanWegzüge = wegzüge / indexPerYear;
+				
+				let valueszuzug = medianZuzügeArray.sort();
+				let lowerzuzug: number = valueszuzug[Math.floor(indexPerYear)];
+				let higherzuzug: number = valueszuzug[Math.ceil(indexPerYear)];
+				medianZuzüge = (lowerzuzug+higherzuzug)/2;
 
-				const saldiItem = { Jahr: letztesJahr ,Mean: mean, MeanZuzüge: meanZuzüge, MeanWegzüge: meanWegzüge, Median: 0, min: meisteWegzüge, max: meisteZuzüge};
+				let valueswegzug = medianZuzügeArray.sort();
+				let lowerwegzug: number = valueswegzug[Math.floor(indexPerYear)];
+				let higherwegzug: number = valueswegzug[Math.ceil(indexPerYear)];
+				medianZuzüge = (lowerwegzug+higherwegzug)/2;
+
+				const saldiItem = { Jahr: letztesJahr ,Mean: mean, MeanZuzüge: meanZuzüge, MeanWegzüge: meanWegzüge, MedianZuzüge: medianZuzüge, MedianWegzüge: medianWegzüge, min: meisteWegzüge, max: meisteZuzüge};
 				results = R.append(saldiItem, results);
+
+				
 
 				console.log("letztesJahr: " + letztesJahr);
 				console.log("summe: " + (zuzüge - wegzüge));
@@ -294,8 +313,18 @@ export default class App extends React.Component<IAppProps, IAppState>
 			meisteWegzüge = results_wegzug[results_wegzug.length - 1].wegzug;
 		}
 
+		let values = medianZuzügeArray.sort();
+		let lower: number = values[Math.floor(indexPerYear)];
+		let higher: number = values[Math.ceil(indexPerYear)];
+		medianZuzüge = (lower+higher)/2;
 
-		const saldiItem = { Jahr: letztesJahr ,Mean: mean, MeanZuzüge: meanZuzüge, MeanWegzüge: meanWegzüge, Median: 0, min: meisteWegzüge, max:  meisteZuzüge};
+		let valueswegzug = medianZuzügeArray.sort();
+		let lowerwegzug: number = valueswegzug[Math.floor(indexPerYear)];
+		let higherwegzug: number = valueswegzug[Math.ceil(indexPerYear)];
+		medianZuzüge = (lowerwegzug+higherwegzug)/2;
+
+
+		const saldiItem = { Jahr: letztesJahr ,Mean: mean, MeanZuzüge: meanZuzüge, MeanWegzüge: meanWegzüge, MedianZuzüge: medianZuzüge, MedianWegzüge: medianWegzüge, min: meisteWegzüge, max:  meisteZuzüge};
 		results = R.append(saldiItem, results);
 
 
