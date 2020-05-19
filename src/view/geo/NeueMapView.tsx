@@ -80,16 +80,12 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
 
   public render(): JSX.Element {
     const position = [this.state.lat, this.state.lng];
+    let geoDataJson;
 
-
-    /* GeoJson für die Map nach LeafletReact */
- /*   L.geoJSON(this.props.geodata, {
-        style: function (feature) {
-            return {color: feature.properties.color};
-        }
-    }).bindPopup(function (layer) {
-        return layer.feature.properties.description;
-    }).addTo(map); */
+    if (this.props.geodata) {
+    console.log("Geodata: " + this.props.geodata.getFeatureCollection());
+    geoDataJson = this.props.geodata.getFeatureCollection();
+}
 
     // this.calcBounds();
     return (
@@ -101,6 +97,7 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <GeoJSON data={geoDataJson} />
       </Map>
     );
   }
