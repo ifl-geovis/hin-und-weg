@@ -65,3 +65,9 @@ ul.p-tabview-nav li a
     height: 700px;
     width: 600px;
 }
+
+.leaflet-tooltip.district-label {
+	background-color: transparent;
+	border: transparent;
+	box-shadow: none;
+	}

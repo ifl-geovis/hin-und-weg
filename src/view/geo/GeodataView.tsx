@@ -37,6 +37,15 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
 	public render(): JSX.Element
 	{
+		var center_points2 = [
+			{ "type": "Feature", "properties": { "name": "1" }, "geometry": { "type": "Point", "coordinates": [ 50.02507178240552, 13.672508785052223 ] } },
+			{ "type": "Feature", "properties": { "name": "6"}, "geometry": { "type": "Point", "coordinates": [ 55.02480935075292, 13.672888247036376 ] } },
+			{ "type": "Feature", "properties": { "name": "12"}, "geometry": { "type": "Point", "coordinates": [ 60.02449372349508, 13.672615176262731 ] } },
+			{ "type": "Feature", "properties": { "name": "25"}, "geometry": { "type": "Point", "coordinates": [ 65.0240752514004, 13.673313811878423 ] } }
+		];
+
+
+
 		return (
 			<div className="p-grid">
 
@@ -46,7 +55,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</div>
 				<div className="p-col-12">
 					{/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
-					<NeueMapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/>
+					<NeueMapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme} /*centerpoints={center_points2}*//>
 				</div>
 
 				<div className="p-col-1" > <svg> <rect key="area" fill="#cbf719" stroke="#4d4d4d" width="24" height="24" margin-right="15"></rect> </svg> </div>

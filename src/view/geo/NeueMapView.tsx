@@ -1,10 +1,14 @@
 // @ts-ignore
-import { Map, TileLayer, Pane, Viewport, GeoJSON } from 'react-leaflet';
+import { Map, TileLayer, Pane, Viewport, GeoJSON, Tooltip, Marker, PointToLayer } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import * as d3 from 'd3';
-import { Feature } from 'geojson';
+import { Feature, FeatureCollection } from 'geojson';
 import R from 'ramda';
+import L, { Layer, LatLngExpression } from 'leaflet';
+import cloneDeep from 'lodash/cloneDeep';
+import * as turf from '@turf/turf';
+
 
 
 export interface INeueMapViewProps {
@@ -14,7 +18,8 @@ export interface INeueMapViewProps {
   selectedLocation?: string | null;
   onSelectLocation: (newLocation: string) => void;
   showLabels: boolean;
-  theme: string;
+  theme: string;  
+  /*centerpoints: FeatureCollection;*/
 }
 
 interface State {
@@ -81,11 +86,22 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
   public render(): JSX.Element {
     const position = [this.state.lat, this.state.lng];
     let geoDataJson;
+    let centerpoints;
+    
+    
 
     if (this.props.geodata) {
-    console.log("Geodata: " + this.props.geodata.getFeatureCollection());
+    console.log("Geodata: " , this.props.geodata.getFeatureCollection());
     geoDataJson = this.props.geodata.getFeatureCollection();
-}
+    centerpoints = this.generateCenterPoints(geoDataJson)
+    
+
+
+  // let  name = geoDataJson.features[1].properties.Name;
+    
+  }
+
+
 
     // this.calcBounds();
     return (
@@ -97,9 +113,74 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <GeoJSON data={geoDataJson} />
+        <GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} pointToLayer={this.pointToLayer}>
+            
+        </GeoJSON>
+
+        <GeoJSON data={centerpoints} pointToLayer={this.pointToLayer}>
+            
+        </GeoJSON>
+
       </Map>
     );
+  }
+
+  public generateCenterPoints(geoDataJson: FeatureCollection) {
+
+
+    let pointsGeoJson = cloneDeep(geoDataJson);
+
+    for(let i = 0; i < pointsGeoJson.features.length; i++){
+
+      // @ts-ignore
+      var center = turf.centerOfMass(pointsGeoJson.features[i]);
+
+      pointsGeoJson.features[i].geometry = center.geometry;
+
+    } 
+
+    console.log(pointsGeoJson);
+
+    return pointsGeoJson;
+
+  }
+
+
+
+  public pointToLayer(feature1: Feature, latlng: LatLngExpression) {
+
+    let label = "textTest";
+
+    if(feature1.properties)
+      label = String(feature1.properties.Name) // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+
+    return new L.CircleMarker(latlng, {
+      radius: 1,
+    }).bindTooltip(label, {permanent: true, opacity: 0.7, className:"district-label", direction: "center"}).openTooltip();
+
+  }
+
+  public onEachFeature = (feature: Feature, layer: Layer) => {
+    
+    
+    /* if (feature.properties && feature.properties.name) {
+        
+      if (feature.properties && feature.properties.name) {
+
+        let label = String(feature.properties.name);
+        let latlng =  [feature.geometry.bbox?.[0] , feature.geometry.bbox?.[1]] 
+          
+          
+      return (new L.CircleMarker(latlng, {
+        radius: 1,
+        }).bindTooltip(label , {permanent: true, opacity: 0.7}).openTooltip())
+      }
+
+
+
+    } */
+
+
   }
 
   onViewportChanged = (viewport: Viewport) => {
