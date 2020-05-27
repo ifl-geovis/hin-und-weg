@@ -11,7 +11,7 @@ import * as turf from '@turf/turf';
 
 
 
-export interface INeueMapViewProps {
+export interface ILeafletMapViewProps {
   items?: Array<{ [name: string]: any }> | null;
   geodata: Geodata | null;
   nameField?: string | null;
@@ -30,7 +30,7 @@ interface State {
   height: number;
 }
 
-export default class NeueMapView extends Component<INeueMapViewProps, State> {
+export default class LeafletMapView extends Component<ILeafletMapViewProps, State> {
     
   protected colors = ['#f7f7f7', '#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
   protected colorsPos = ['#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
@@ -70,7 +70,7 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
   private topLeft = [0, 0];
   private bottomRight = [0, 0];
 
-  constructor(props: INeueMapViewProps) {
+  constructor(props: ILeafletMapViewProps) {
     super(props);
     console.log(props);
     this.state = {
