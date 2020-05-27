@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Map, TileLayer, Pane, Viewport, GeoJSON, Tooltip, Marker, PointToLayer } from 'react-leaflet';
+import { Map, TileLayer, Pane, Viewport, GeoJSON, Tooltip, Marker, PointToLayer, Style } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import * as d3 from 'd3';
@@ -8,6 +8,7 @@ import R from 'ramda';
 import L, { Layer, LatLngExpression } from 'leaflet';
 import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
+import reduce from 'ramda/es/reduce';
 
 
 
@@ -110,10 +111,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 					{this.svgWrapper()}
 				</Pane> */}
         <TileLayer
-          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        //  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'*/
+          attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        //  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} pointToLayer={this.pointToLayer}>
+        <GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}>
             
         </GeoJSON>
 
@@ -123,6 +126,27 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
       </Map>
     );
+  }
+
+  
+  
+  public style(feature: Feature) {
+
+    /*if(this.props.items)
+      for (let item of this.props.items)
+		  {
+        
+
+
+
+
+      } */
+
+
+      return{
+        color: "#ff0000"
+      }
+
   }
 
   public generateCenterPoints(geoDataJson: FeatureCollection) {
