@@ -67,7 +67,7 @@ ul.p-tabview-nav li a
 }
 
 .leaflet-tooltip.district-label {
-	background-color: transparent;
+	background-color: white;
 	border: transparent;
 	box-shadow: none;
 	}
