@@ -9,6 +9,7 @@ import L, { Layer, LatLngExpression } from 'leaflet';
 import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
 import reduce from 'ramda/es/reduce';
+import Classification from "../../data/Classification";
 
 
 
@@ -81,6 +82,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
       height: 700,
       width: 600,
     };
+
+    this.style = this.style.bind(this);
     this.pickColor = this.pickColor.bind(this);
   }
 
@@ -89,12 +92,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
     let geoDataJson;
     let centerpoints;
     
-    
-
+ 
     if (this.props.geodata) {
-    console.log("Geodata: " , this.props.geodata.getFeatureCollection());
     geoDataJson = this.props.geodata.getFeatureCollection();
     centerpoints = this.generateCenterPoints(geoDataJson)
+    const classification = Classification.getCurrentClassification();
     
 
 
@@ -132,20 +134,70 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
   
   public style(feature: Feature) {
 
-    /*if(this.props.items)
+    let hexcolor;
+    const classification = Classification.getCurrentClassification();
+
+    if(this.props.items && this.props.items.length > 1){
+      switch(this.props.theme) {
+      case "Von":{
+
+        for (let item of this.props.items)
+		    {
+          if(feature.properties)
+            if(item.Nach === String(feature.properties.Name)){
+              hexcolor = classification.getColor(item);
+
+              return{
+                color: hexcolor
+              }
+            }
+        }
+
+        break;
+     }
+     case "Nach":{
+
       for (let item of this.props.items)
-		  {
-        
+		    {
+          if(feature.properties)
+            if(item.Von === String(feature.properties.Name)){
+              hexcolor = classification.getColor(item);
 
+              return{
+                color: hexcolor
+              }
+            }
+        }
 
+      break;
+     }
+     case "Saldi":{
 
+      for (let item of this.props.items)
+		    {
+          if(feature.properties)
+            if(item.Von === String(feature.properties.Name)){
+              hexcolor = classification.getColor(item);
 
-      } */
+              return{
+                color: hexcolor
+              }
+            }
+        }
 
+      break;
+     }
+     default: {
+       break;
+     }
 
-      return{
-        color: "#ff0000"
-      }
+      
+    }
+  }
+
+  return{
+    color: "#0099ff"
+  }
 
   }
 
