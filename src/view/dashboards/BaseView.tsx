@@ -58,6 +58,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
     const classification = Classification.getCurrentClassification();
     classification.setLocation(this.state.location);
     classification.setTheme(this.state.theme);
+    classification.calculateClassification(results);
     let attributes: GeoJsonProperties[] = [];
     let fieldNameLoc = this.props.geoName as string;
     let locations: string[] = [];
