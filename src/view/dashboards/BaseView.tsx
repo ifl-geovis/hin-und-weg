@@ -205,6 +205,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		let meisteZuzüge = 0;
 		let meisteWegzüge = 0;
 		let mean = 0;
+		let meanZuzüge = 0;
+		let meanWegzüge = 0;
 		let indexPerYear = 0;
 		let results: any[] = [];
 		if ( R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable)) )
@@ -231,7 +233,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 				indexPerYear += 1;
 			}else{
 				mean = (zuzüge - wegzüge) / indexPerYear;
-				const saldiItem = { Jahr: letztesJahr ,Mean: mean, Median: 0, min: meisteWegzüge, max: meisteZuzüge};
+				meanZuzüge = zuzüge / indexPerYear;
+				meanWegzüge = wegzüge / indexPerYear;
+				const saldiItem = { Jahr: letztesJahr ,Mean: mean, MeanZuzüge: meanZuzüge, MeanWegzüge: meanWegzüge, Median: 0, min: meisteWegzüge, max: meisteZuzüge};
 				results = R.append(saldiItem, results);
 				console.log("letztesJahr: " + letztesJahr);
 				console.log("summe: " + (zuzüge - wegzüge));
@@ -257,13 +261,15 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		console.log("summe: " + (zuzüge - wegzüge));
 		console.log("indexperYear: " + indexPerYear);
 		mean = (zuzüge - wegzüge) / indexPerYear;
+		meanZuzüge = zuzüge / indexPerYear;
+		meanWegzüge = wegzüge / indexPerYear;
 		if(meisteZuzüge < results_zuzug[results_zuzug.length - 1].zuzug){
 			meisteZuzüge = results_zuzug[results_zuzug.length - 1].zuzug;
 		}
 		if(meisteWegzüge < results_wegzug[results_wegzug.length - 1].wegzug){
 			meisteWegzüge = results_wegzug[results_wegzug.length - 1].wegzug;
 		}
-		const saldiItem = { Jahr: letztesJahr ,Mean: mean, Median: 0, min: meisteWegzüge, max:  meisteZuzüge};
+		const saldiItem = { Jahr: letztesJahr ,Mean: mean, MeanZuzüge: meanZuzüge, MeanWegzüge: meanWegzüge, Median: 0, min: meisteWegzüge, max:  meisteZuzüge};
 		results = R.append(saldiItem, results);
 		return results;
 	}

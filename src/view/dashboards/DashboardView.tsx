@@ -20,6 +20,8 @@ export interface StatisticPerYearAusgabe
 {
 	Jahr: number;
 	Mean: number;
+	MeanZuzüge: number;
+	MeanWegzüge: number;
 	Median: number;
 	min: number;
 	max: number;

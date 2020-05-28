@@ -18,6 +18,8 @@ export interface IStatisticPerYearAusgabe
 {
 	Jahr: number;
 	Mean: number;
+	MeanZuzüge: number;
+	MeanWegzüge: number;
 	Median: number;
 	min: number;
 	max: number;
@@ -101,11 +103,13 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
 					<tbody>
 
-					<thead>Saldistatistik pro Jahr</thead>
+					<thead>Statistik pro Jahr</thead>
 
 						<tr>
 							<th>Year</th>
-							<th>Mittelwert</th>
+							<th>Saldi Mittelwert</th>
+							<th>Zuzüge Mittelwert</th>
+							<th>Wegzüge Mittelwert</th>
 							<th>Median</th>
 							<th>Meiste Wegzüge</th>
 							<th>Meiste Zuzüge</th>
@@ -234,6 +238,8 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 				<tr>
 					<th>{row.Jahr}</th>
 					<td>{row.Mean}</td>
+					<td>{row.MeanZuzüge}</td>
+					<td>{row.MeanWegzüge}</td>
 					<td>{row.Median}</td>
 					<td>{row.max}</td>
 					<td>{row.min}</td>
