@@ -161,6 +161,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			if(item.Wert < minwert)
 			{
 				minwert = item.Wert;
+				if(item.Von != undefined)
 				ort = " nach " + item.Von;
 			}
 		}
