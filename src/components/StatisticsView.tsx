@@ -40,22 +40,22 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 	public render(): JSX.Element
 	{
-		let maximum: string;
-		let minimum: string;
+		let maxzuzüge: string;
+		let maxwegzüge: string;
 		let count: number = this.props.items.length;
 		let mean: number = this.calculateMean(count);
 		let variance: number = this.calculateVariance(mean, count);
 		let median: number = this.calculateMedian(count);
 		if(this.props.theme == "Von")
 		{
-			maximum = "0";
-			minimum = this.calculateMaximum(count);
+			maxzuzüge = "0";
+			maxwegzüge = this.calculateMaximum(count);
 		}else if(this.props.theme == "Nach"){
-			maximum = this.calculateMaximum(count);
-			minimum = "0";
+			maxzuzüge = this.calculateMaximum(count);
+			maxwegzüge = "0";
 		}else{
-			maximum = this.calculateMaximum(count);
-			minimum = this.calculateMinimum(count);
+			maxzuzüge = this.calculateMaximum(count);
+			maxwegzüge = this.calculateMinimum(count);
 		}
 		let mode: number = this.determineMode();
 		const years = this.getYears();
@@ -73,11 +73,11 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 						<tr>
 							<th align="right">Hinzugezogen Maximal:</th>
-							<td>{maximum}</td>
+							<td>{maxzuzüge}</td>
 						</tr>
 						<tr>
 							<th align="right">Weggezogen Maximal:</th>
-							<td>{minimum}</td>
+							<td>{maxwegzüge}</td>
 						</tr>
 						<tr>
 							<th align="right">Varianz:</th>
