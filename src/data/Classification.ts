@@ -99,4 +99,34 @@ export default class Classification
     }
   }
 
+  public getSelectedColor(): string
+  {
+    return this.selected_color;
+  }
+
+  public getNeutralColor(): string
+  {
+    return this.neutral_color;
+  }
+
+  public getNegativeColors(): string[]
+  {
+    return this.negative_colors;
+  }
+
+  public getPositiveColors(): string[]
+  {
+    return this.positive_colors;
+  }
+
+  public getNegativeScales(): number[]|null
+  {
+    return this.negative_scales;
+  }
+
+  public getPositiveScales(): number[]|null
+  {
+    return this.positive_scales;
+  }
+
 }
