@@ -13,6 +13,7 @@ import { TimelineView, ITimelineItem } from "../charts/TimelineView";
 import ChartsView from "../charts/ChartsView";
 import D3ChartView from "../charts/D3ChartView";
 import D3SankeyView from "../charts/D3SankeyView";
+import D3TimelineView from "../charts/D3TimelineView";
 import D3ChordView from "../charts/D3ChordView";
 import StatisticsView from "../../components/StatisticsView";
 import ImportView from "../ImportView";
@@ -113,6 +114,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		this.addView(views, "d3-bar", "D3 Bar Chart", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, "d3-sankey", "D3 Sankey Chart", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, "d3-chord", "D3 Chord Chart", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, "d3-timeline", "D3  Timeline", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, "statistics", "Statistiken", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, "file", "Datei", true);
 		this.addView(views, "db", "Datenbank", (this.props.yearsAvailable.length > 0));
@@ -138,6 +140,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		if (view == "d3-bar") return this.selectD3BarView();
 		if (view == "d3-sankey") return this.selectD3SankeyView();
 		if (view == "d3-chord") return this.selectD3ChordView();
+		if (view == "d3-timeline") return this.selectD3TimelineView();
 		if (view == "statistics") return this.selectStatisticsView();
 		if (view == "file") return this.selectImportView();
 		if (view == "db") return this.selectDatabaseView();
@@ -213,6 +216,19 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 				<div className="p-col-12">
 					
 					<D3ChordView items={this.props.items} theme={this.props.theme} />
+				</div>
+			);
+		}
+		
+	}
+
+	private selectD3TimelineView()
+	{
+		if (this.props.yearsAvailable.length > 0){
+			return (
+				<div className="p-col-12">
+					
+					<D3TimelineView items={this.props.timeline} />
 				</div>
 			);
 		}
