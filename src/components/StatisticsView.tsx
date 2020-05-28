@@ -19,8 +19,9 @@ export interface IStatisticPerYearAusgabe
 	Jahr: number;
 	Mean: number;
 	MeanZuzüge: number;
-	MeanWegzüge: number;
-	Median: number;
+	MeanWegzüge: number;	
+	MedianZuzüge: number;
+	MedianWegzüge: number;
 	min: number;
 	max: number;
 }
@@ -110,7 +111,8 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 							<th>Saldi Mittelwert</th>
 							<th>Zuzüge Mittelwert</th>
 							<th>Wegzüge Mittelwert</th>
-							<th>Median</th>
+							<th>Median Zuzüge</th>
+							<th>Median Wegzüge</th>
 							<th>Meiste Wegzüge</th>
 							<th>Meiste Zuzüge</th>
 						</tr>
@@ -241,7 +243,8 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 					<td>{row.Mean}</td>
 					<td>{row.MeanZuzüge}</td>
 					<td>{row.MeanWegzüge}</td>
-					<td>{row.Median}</td>
+					<td>{row.MedianZuzüge}</td>
+					<td>{row.MedianWegzüge}</td>
 					<td>{row.max}</td>
 					<td>{row.min}</td>
 				</tr>

@@ -22,7 +22,8 @@ export interface StatisticPerYearAusgabe
 	Mean: number;
 	MeanZuzüge: number;
 	MeanWegzüge: number;
-	Median: number;
+	MedianZuzüge: number;
+	MedianWegzüge: number;
 	min: number;
 	max: number;
 }
