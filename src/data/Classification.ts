@@ -38,9 +38,9 @@ export default class Classification
   public getColor(item: {[name: string]: any})
   {
     if (item == null) return this.error_color;
-    if (item.Wert == 0) return this.neutral_color;
     if ((this.theme === 'Von') && (this.location === item.Nach)) return this.selected_color;
     if ((!(this.theme === 'Von')) && (this.location === item.Von)) return this.selected_color;
+    if (item.Wert == 0) return this.neutral_color;
     if (item.Wert > 0)
     {
       if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];
