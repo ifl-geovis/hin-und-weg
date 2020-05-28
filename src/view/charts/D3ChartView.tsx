@@ -24,18 +24,16 @@ export default class ChartsView extends React.Component<ID3ChartViewProps>
 
 	public render(): JSX.Element
 	{
-        
+        console.log("this.props.items.length: " + this.props.items.length);
         
 
 		return (
 			<div className="p-grid">
-				<div className="p-col-4">Bar Chart "Von"</div>
-			
                 
 				<div id="chartDiv" className="p-col-12">
                     <ContainerDimensions>
                         { ({ width, height }) => 
-                            <D3Chart width={width} height={this.props.items.length*50} data={this.props.items} theme={this.props.theme}/>
+                            <D3Chart width={width} height={(this.props.items.length < 20 )? this.props.items.length*50 : this.props.items.length*20} data={this.props.items} theme={this.props.theme}/>
                         }
                     </ContainerDimensions>
 					
