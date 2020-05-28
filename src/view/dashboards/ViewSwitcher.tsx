@@ -27,12 +27,22 @@ export interface TableItem
 	Absolutwert: number;
 }
 
+export interface StatisticPerYearAusgabe
+{
+	Jahr: number;
+	Mean: number;
+	Median: number;
+	min: number;
+	max: number;
+}
+
 export interface IViewSwitcherProps
 {
 	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
 	timeline: ITimelineItem[];
+	statisticPerYearAusgabe: StatisticPerYearAusgabe[];
 	geoName: string | null;
 	geoId: string | null;
 	locations: string[];
@@ -183,7 +193,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	{
 		return (
 			<div className="p-col-12">
-				<StatisticsView items={this.props.items} theme={this.props.theme}/>
+				<StatisticsView items={this.props.items} theme={this.props.theme} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe}/>
 			</div>
 		);
 	}
