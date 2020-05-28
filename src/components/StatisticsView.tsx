@@ -12,13 +12,25 @@ export interface IStatisticsItem
 	Nach: string;
 	Wert: number;
 	Absolutwert: number;
+}
 
+export interface IStatisticPerYearAusgabe
+{
+	Jahr: number;
+	Mean: number;
+	MeanZuzüge: number;
+	MeanWegzüge: number;	
+	MedianZuzüge: number;
+	MedianWegzüge: number;
+	min: number;
+	max: number;
 }
 
 export interface IStatisticsViewProps
 {
 	items: IStatisticsItem[];
 	theme: string;
+	statisticPerYearAusgabe: IStatisticPerYearAusgabe[];
 }
 
 export default class StatisticsView extends React.Component<IStatisticsViewProps>
@@ -31,24 +43,25 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 	public render(): JSX.Element
 	{
-		let maximum: string;
-		let minimum: string;
+		let maxzuzüge: string;
+		let maxwegzüge: string;
 		let count: number = this.props.items.length;
 		let mean: number = this.calculateMean(count);
 		let variance: number = this.calculateVariance(mean, count);
 		let median: number = this.calculateMedian(count);
 		if(this.props.theme == "Von")
 		{
-			maximum = "0";
-			minimum = this.calculateMaximum(count);
+			maxzuzüge = "0";
+			maxwegzüge = this.calculateMaximum(count);
 		}else if(this.props.theme == "Nach"){
-			maximum = this.calculateMaximum(count);
-			minimum = "0";
+			maxzuzüge = this.calculateMaximum(count);
+			maxwegzüge = "0";
 		}else{
-			maximum = this.calculateMaximum(count);
-			minimum = this.calculateMinimum(count);
+			maxzuzüge = this.calculateMaximum(count);
+			maxwegzüge = this.calculateMinimum(count);
 		}
 		let mode: number = this.determineMode();
+		const years = this.getYears();
 		return (
 			<div>
 				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
@@ -63,11 +76,11 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 						<tr>
 							<th align="right">Hinzugezogen Maximal:</th>
-							<td>{maximum}</td>
+							<td>{maxzuzüge}</td>
 						</tr>
 						<tr>
 							<th align="right">Weggezogen Maximal:</th>
-							<td>{minimum}</td>
+							<td>{maxwegzüge}</td>
 						</tr>
 						<tr>
 							<th align="right">Varianz:</th>
@@ -83,6 +96,32 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 					</tbody>
 				</table>
+
+				<br></br>
+				<br></br>
+				<br></br>
+
+				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
+					<tbody>
+
+					<thead>Statistik pro Jahr</thead>
+
+						<tr>
+							<th>Year</th>
+							<th>Saldi Mittelwert</th>
+							<th>Zuzüge Mittelwert</th>
+							<th>Wegzüge Mittelwert</th>
+							<th>Median Zuzüge</th>
+							<th>Median Wegzüge</th>
+							<th>Meiste Wegzüge</th>
+							<th>Meiste Zuzüge</th>
+						</tr>
+
+						{years}
+
+					</tbody>
+				</table>
+
 			</div>
 		)
 	}
@@ -124,6 +163,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			if(item.Wert < minwert)
 			{
 				minwert = item.Wert;
+				if(item.Von != undefined)
 				ort = " nach " + item.Von;
 			}
 		}
@@ -181,6 +221,34 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			mode = current;
 		}
 		return mode;
+	}
+
+	private getYears()
+	{
+		let years = [];
+
+		for (let row of this.props.statisticPerYearAusgabe)
+		{
+			years.push(this.getYear(row));
+
+		}
+		return years;
+	}
+
+	private getYear(row: IStatisticPerYearAusgabe): JSX.Element
+	{
+		return (
+				<tr>
+					<th>{row.Jahr}</th>
+					<td>{row.Mean}</td>
+					<td>{row.MeanZuzüge}</td>
+					<td>{row.MeanWegzüge}</td>
+					<td>{row.MedianZuzüge}</td>
+					<td>{row.MedianWegzüge}</td>
+					<td>{row.max}</td>
+					<td>{row.min}</td>
+				</tr>
+		);
 	}
 
 }

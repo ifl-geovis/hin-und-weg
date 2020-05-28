@@ -16,6 +16,18 @@ export interface TableItem
 	Absolutwert: number;
 }
 
+export interface StatisticPerYearAusgabe
+{
+	Jahr: number;
+	Mean: number;
+	MeanZuzüge: number;
+	MeanWegzüge: number;
+	MedianZuzüge: number;
+	MedianWegzüge: number;
+	min: number;
+	max: number;
+}
+
 export interface IDashboardProps
 {
 	view:string;
@@ -23,6 +35,7 @@ export interface IDashboardProps
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
 	timeline: ITimelineItem[];
+	statisticPerYearAusgabe: StatisticPerYearAusgabe[];
 	geoName: string | null;
 	geoId: string | null;
 	locations: string[];
@@ -52,7 +65,7 @@ export default class DashboardView extends React.Component<IDashboardProps>
 	private getViewSwitcher(): JSX.Element
 	{
 		return (
-			<ViewSwitcher geodata={this.props.geodata} db={this.props.db} items={this.props.items} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} addYear={this.props.addYear} />
+			<ViewSwitcher geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} addYear={this.props.addYear} />
 		);
 	}
 
