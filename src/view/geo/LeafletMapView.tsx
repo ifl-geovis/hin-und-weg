@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Map, TileLayer, Pane, Viewport, GeoJSON, Tooltip, Marker, PointToLayer } from 'react-leaflet';
+import { Map, TileLayer, Pane, Viewport, GeoJSON, Tooltip, Marker, PointToLayer, Style } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import * as d3 from 'd3';
@@ -8,10 +8,12 @@ import R from 'ramda';
 import L, { Layer, LatLngExpression } from 'leaflet';
 import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
+import reduce from 'ramda/es/reduce';
+import Classification from "../../data/Classification";
 
 
 
-export interface INeueMapViewProps {
+export interface ILeafletMapViewProps {
   items?: Array<{ [name: string]: any }> | null;
   geodata: Geodata | null;
   nameField?: string | null;
@@ -30,7 +32,7 @@ interface State {
   height: number;
 }
 
-export default class NeueMapView extends Component<INeueMapViewProps, State> {
+export default class LeafletMapView extends Component<ILeafletMapViewProps, State> {
     
   protected colors = ['#f7f7f7', '#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
   protected colorsPos = ['#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
@@ -70,7 +72,7 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
   private topLeft = [0, 0];
   private bottomRight = [0, 0];
 
-  constructor(props: INeueMapViewProps) {
+  constructor(props: ILeafletMapViewProps) {
     super(props);
     console.log(props);
     this.state = {
@@ -80,6 +82,8 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
       height: 700,
       width: 600,
     };
+
+    this.style = this.style.bind(this);
     this.pickColor = this.pickColor.bind(this);
   }
 
@@ -88,12 +92,11 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
     let geoDataJson;
     let centerpoints;
     
-    
-
+ 
     if (this.props.geodata) {
-    console.log("Geodata: " , this.props.geodata.getFeatureCollection());
     geoDataJson = this.props.geodata.getFeatureCollection();
     centerpoints = this.generateCenterPoints(geoDataJson)
+    const classification = Classification.getCurrentClassification();
     
 
 
@@ -110,10 +113,12 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
 					{this.svgWrapper()}
 				</Pane> */}
         <TileLayer
-          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        //  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'*/
+          attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        //  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} pointToLayer={this.pointToLayer}>
+        <GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}>
             
         </GeoJSON>
 
@@ -123,6 +128,77 @@ export default class NeueMapView extends Component<INeueMapViewProps, State> {
 
       </Map>
     );
+  }
+
+  
+  
+  public style(feature: Feature) {
+
+    let hexcolor;
+    const classification = Classification.getCurrentClassification();
+
+    if(this.props.items && this.props.items.length > 1){
+      switch(this.props.theme) {
+      case "Von":{
+
+        for (let item of this.props.items)
+		    {
+          if(feature.properties)
+            if(item.Nach === String(feature.properties.Name)){
+              hexcolor = classification.getColor(item);
+
+              return{
+                color: hexcolor
+              }
+            }
+        }
+
+        break;
+     }
+     case "Nach":{
+
+      for (let item of this.props.items)
+		    {
+          if(feature.properties)
+            if(item.Von === String(feature.properties.Name)){
+              hexcolor = classification.getColor(item);
+
+              return{
+                color: hexcolor
+              }
+            }
+        }
+
+      break;
+     }
+     case "Saldi":{
+
+      for (let item of this.props.items)
+		    {
+          if(feature.properties)
+            if(item.Von === String(feature.properties.Name)){
+              hexcolor = classification.getColor(item);
+
+              return{
+                color: hexcolor
+              }
+            }
+        }
+
+      break;
+     }
+     default: {
+       break;
+     }
+
+      
+    }
+  }
+
+  return{
+    color: "#0099ff"
+  }
+
   }
 
   public generateCenterPoints(geoDataJson: FeatureCollection) {

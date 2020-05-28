@@ -3,7 +3,7 @@ import React from "react";
 import Geodata from "../../model/Geodata";
 import SelectInput from "../input/SelectInput";
 import MapView from "./MapView";
-import NeueMapView from "./NeueMapView";
+import LeafletMapView from "./LeafletMapView";
 import { Checkbox } from "primereact/checkbox";
 
 export interface IGeodataProps
@@ -55,7 +55,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</div>
 				<div className="p-col-12">
 					{/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
-					<NeueMapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme} /*centerpoints={center_points2}*//>
+					<LeafletMapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme} /*centerpoints={center_points2}*//>
 				</div>
 
 				<div className="p-col-1" > <svg> <rect key="area" fill="#cbf719" stroke="#4d4d4d" width="24" height="24" margin-right="15"></rect> </svg> </div>
