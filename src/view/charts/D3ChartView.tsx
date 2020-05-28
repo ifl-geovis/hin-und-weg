@@ -24,7 +24,6 @@ export default class ChartsView extends React.Component<ID3ChartViewProps>
 
 	public render(): JSX.Element
 	{
-        console.log("this.props.items.length: " + this.props.items.length);
         
 
 		return (
