@@ -88,17 +88,21 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
   }
 
   public render(): JSX.Element {
+
+    console.log("Render LaeletMapView");
     const position = [this.state.lat, this.state.lng];
     let geoDataJson;
-    let centerpoints;
+    let labels;
     let locationSwitch;
     
  
     if (this.props.geodata) {
     geoDataJson = this.props.geodata.getFeatureCollection();
-    centerpoints = this.generateCenterPoints(geoDataJson)
     const classification = Classification.getCurrentClassification();
-    
+
+    if(this.props.showLabels)
+    labels = this.getLabels();
+
 
 
   // let  name = geoDataJson.features[1].properties.Name;
@@ -106,9 +110,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
   }
 
 
-
     // this.calcBounds();
     return (
+
+      
       <Map center={position} zoom={this.state.zoom} onViewportChanged={this.onViewportChanged}>
         {/* <Pane name="d3" className="d3">
 					{this.svgWrapper()}
@@ -126,14 +131,32 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
             
         </GeoJSON>
 
-        <GeoJSON data={centerpoints} pointToLayer={this.pointToLayer}>
-            
-        </GeoJSON>
+        {labels}
 
       </Map>
     );
   }
 
+
+  public getLabels(){
+
+    let geoDataJson;
+    let centerpoints;
+
+    if (this.props.geodata) {
+      geoDataJson = this.props.geodata.getFeatureCollection();
+      centerpoints = this.generateCenterPoints(geoDataJson)
+    }
+
+    return(        
+    
+    <GeoJSON data={centerpoints} pointToLayer={this.pointToLayer}>
+            
+    </GeoJSON>
+    
+    )
+
+  }
   
   
   public style(feature: Feature) {
@@ -257,7 +280,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
       if(feature.properties)
         name = feature.properties.Name;
 
-      console.log("Name: ", name);
       this.props.onSelectLocation(name);
       //locationSwitch(name);
 

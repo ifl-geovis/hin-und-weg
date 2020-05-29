@@ -38,6 +38,9 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
   public render(): JSX.Element
   {
+
+    console.log("render von geodataview");
+
     var center_points2 = [
       { "type": "Feature", "properties": { "name": "1" }, "geometry": { "type": "Point", "coordinates": [ 50.02507178240552, 13.672508785052223 ] } },
       { "type": "Feature", "properties": { "name": "6"}, "geometry": { "type": "Point", "coordinates": [ 55.02480935075292, 13.672888247036376 ] } },
