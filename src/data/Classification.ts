@@ -38,9 +38,9 @@ export default class Classification
   public getColor(item: {[name: string]: any})
   {
     if (item == null) return this.error_color;
-    if (item.Wert == 0) return this.neutral_color;
     if ((this.theme === 'Von') && (this.location === item.Nach)) return this.selected_color;
     if ((!(this.theme === 'Von')) && (this.location === item.Von)) return this.selected_color;
+    if (item.Wert == 0) return this.neutral_color;
     if (item.Wert > 0)
     {
       if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];
@@ -97,6 +97,36 @@ export default class Classification
       this.negative_scales = [];
       for (let i = 1; i < numcolors; i++) this.negative_scales.push(Math.floor(i*step));
     }
+  }
+
+  public getSelectedColor(): string
+  {
+    return this.selected_color;
+  }
+
+  public getNeutralColor(): string
+  {
+    return this.neutral_color;
+  }
+
+  public getNegativeColors(): string[]
+  {
+    return this.negative_colors;
+  }
+
+  public getPositiveColors(): string[]
+  {
+    return this.positive_colors;
+  }
+
+  public getNegativeScales(): number[]|null
+  {
+    return this.negative_scales;
+  }
+
+  public getPositiveScales(): number[]|null
+  {
+    return this.positive_scales;
   }
 
 }
