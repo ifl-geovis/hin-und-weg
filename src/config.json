@@ -38,8 +38,8 @@
 		{
 			"map": true,
 			"table": true,
-			"timeline": true,
-			"charts": true,
+			"timeline": false,
+			"charts": false,
 			"d3-bar": true,
 			"d3-sankey": true,
 			"d3-chord": true,
