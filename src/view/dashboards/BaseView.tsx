@@ -54,7 +54,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 	{
 		const results = this.query();
 		const timeline = this.queryTimeline();
-		const status = this.getStatus();
+		//const status = this.getStatus();
 		const statisticPerYearAusgabe = this.queryStatistics();
 		const classification = Classification.getCurrentClassification();
 		classification.setLocation(this.state.location);
@@ -73,10 +73,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
-					<p className="status">
+					<div>
 						<img className="logo" src="./assets/blue_huwlogo.png" />
-						{status}
-					</p>
+					</div>
 				</div>
 				<div className={(this.props.space == "wide") ? "p-col-2" : "p-col-4"}>
 					<div className="p-grid p-justify-around">
