@@ -84,6 +84,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
     };
 
     this.style = this.style.bind(this);
+    this.pointToLayer = this.pointToLayer.bind(this);
   }
 
   public render(): JSX.Element {
@@ -151,7 +152,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
               hexcolor = classification.getColor(item);
 
               return{
-                color: hexcolor
+                fillColor: hexcolor,
+                color: "#585858",
+                fillOpacity: 0.75
               }
             }
         }
@@ -167,7 +170,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
               hexcolor = classification.getColor(item);
 
               return{
-                color: hexcolor
+                fillColor: hexcolor,
+                color: "#585858",
+                fillOpacity: 0.75
               }
             }
         }
@@ -183,7 +188,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
               hexcolor = classification.getColor(item);
 
               return{
-                color: hexcolor
+                fillColor: hexcolor,
+                color: "#585858",
+                fillOpacity: 0.75
               }
             }
         }
@@ -196,7 +203,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
     }
   }
   return{
-    color: "#0099ff"
+    fillColor: "#0099ff",
+    color: "#585858"
   }
 
   }
@@ -215,8 +223,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
     } 
 
-    console.log(pointsGeoJson);
-
     return pointsGeoJson;
 
   }
@@ -227,13 +233,19 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
     let label = "textTest";
 
-    if(feature1.properties)
-      label = String(feature1.properties.Name) // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+    console.log("Showlabels: ", this.props.showLabels);
 
-    return new L.CircleMarker(latlng, {
-      radius: 1,
-    }).bindTooltip(label, {permanent: true, opacity: 0.7, className:"district-label", direction: "center"}).openTooltip();
+    if(this.props.showLabels){
 
+      if(feature1.properties)
+        label = String(feature1.properties.Name) // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+
+      return new L.CircleMarker(latlng, {
+        radius: 1,
+      }).bindTooltip(label, {permanent: true, opacity: 0.7, className:"district-label", direction: "center"}).openTooltip();
+    }else{
+      return;
+    }
   }
 
   public onEachFeature = (feature: Feature, layer: Layer) => {
