@@ -1,29 +1,27 @@
 import React from "react";
-import ChartConfigView from "./ChartConfigView";
-import { D3Chart, ID3ChartItem} from "./D3Chart";
+// import ChartConfigView from "./ChartConfigView";
+import { D3Sankey, ID3SankeyItem} from "./D3Sankey";
 import ContainerDimensions from 'react-container-dimensions';
 
-export interface ID3ChartViewProps
+export interface ID3SankeyViewProps
 {
-	items: ID3ChartItem[];
+	items: ID3SankeyItem[];
 	theme: string;
 }
 
-
-
-export default class ChartsView extends React.Component<ID3ChartViewProps>
+export default class D3SankeyChartsView extends React.Component<ID3SankeyViewProps>
 {
 
-	constructor(props: ID3ChartViewProps)
+	constructor(props: ID3SankeyViewProps)
 	{
 		super(props);
 		this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
-		
     }
     
 
 	public render(): JSX.Element
 	{
+        
         
 
 		return (
@@ -32,7 +30,7 @@ export default class ChartsView extends React.Component<ID3ChartViewProps>
 				<div id="chartDiv" className="p-col-12">
                     <ContainerDimensions>
                         { ({ width, height }) => 
-                            <D3Chart width={width} height={(this.props.items.length < 20 )? this.props.items.length*50 : this.props.items.length*20} data={this.props.items} theme={this.props.theme}/>
+                            <D3Sankey width={width} height={(this.props.items.length <= 15)? 700 : 1000} data={this.props.items} theme={this.props.theme}/>
                         }
                     </ContainerDimensions>
 					
@@ -42,7 +40,6 @@ export default class ChartsView extends React.Component<ID3ChartViewProps>
 		);
     }
     
-
 	private onChartTypeSelect(selected: string)
 	{
 		this.setState({chartType: selected});

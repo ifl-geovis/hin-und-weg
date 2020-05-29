@@ -1,38 +1,34 @@
 import React from "react";
-import ChartConfigView from "./ChartConfigView";
-import { D3Chart, ID3ChartItem} from "./D3Chart";
+// import ChartConfigView from "./ChartConfigView";
+import { D3Chord, ID3ChordItem} from "./D3Chord";
 import ContainerDimensions from 'react-container-dimensions';
 
-export interface ID3ChartViewProps
+export interface ID3ChordViewProps
 {
-	items: ID3ChartItem[];
+	items: ID3ChordItem[];
 	theme: string;
 }
 
 
-
-export default class ChartsView extends React.Component<ID3ChartViewProps>
+export default class D3chordChartsView extends React.Component<ID3ChordViewProps>
 {
 
-	constructor(props: ID3ChartViewProps)
+	constructor(props: ID3ChordViewProps)
 	{
 		super(props);
 		this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
-		
     }
     
 
 	public render(): JSX.Element
 	{
-        
 
 		return (
 			<div className="p-grid">
-                
-				<div id="chartDiv" className="p-col-12">
+				<div id="chartDivChord" className="p-col-12">
                     <ContainerDimensions>
                         { ({ width, height }) => 
-                            <D3Chart width={width} height={(this.props.items.length < 20 )? this.props.items.length*50 : this.props.items.length*20} data={this.props.items} theme={this.props.theme}/>
+                            <D3Chord width={width} height={width} data={this.props.items} theme={this.props.theme}/>
                         }
                     </ContainerDimensions>
 					
