@@ -64,7 +64,6 @@
 		"geojson": "0.5.0",
 		"geotiff": "^1.0.0-beta.11",
 		"leaflet": "1.6.0",
-		"leaflet-geotiff": "^0.2.0",
 		"lodash": "4.17.15",
 		"primeflex": "1.0.0-rc.1",
 		"primeicons": "1.0.0",

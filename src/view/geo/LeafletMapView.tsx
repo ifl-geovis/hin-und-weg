@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Map, TileLayer, Pane, Viewport, GeoJSON, Tooltip, Marker, PointToLayer, Style, withLeaflet, MapLayer } from 'react-leaflet';
+import { Map, TileLayer, Pane, Viewport, GeoJSON, Tooltip, Marker, PointToLayer, Style, withLeaflet, MapLayer, ImageOverlay } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import * as d3 from 'd3';
@@ -10,12 +10,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
 import reduce from 'ramda/es/reduce';
 import Classification from "../../data/Classification";
-/*import { PlottyGeotiffLayer, VectorArrowsGeotiffLayer } from "./GeotiffLayer";
-
-import "leaflet-geotiff"
-import "leaflet-geotiff/leaflet-geotiff-plotty"
-import "leaflet-geotiff/leaflet-geotiff-vector-arrows" */
-
 
 
 
@@ -105,6 +99,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
     let geomap;
     let geotiff;
     let locationSwitch;
+    let geotiffUrl =  "file://offline/geotiff.tif"
+    
     
  
     if (this.props.geodata) {
@@ -115,10 +111,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
     labels = this.getLabels();
 
     if(this.props.showMap)
-    geomap = this.getMap(position, labels);
+    geomap = this.getMapLayer();
 
     if(this.props.showGeotiff)
-    geotiff = this.getMap(position, labels);
+    geotiff = this.getGeotiff();
+
 
     
 
@@ -128,7 +125,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
     
   }
 
-    if(this.props.showMap){
     // this.calcBounds();
     return (
       
@@ -136,15 +132,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
         {/* <Pane name="d3" className="d3">
 					{this.svgWrapper()}
 				</Pane> */}
-        <TileLayer
-          //attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='Copyright <a href="http://www.bkg.bund.de/" target="_blank" rel="noopener noreferrer">Bundesamt für Kartographie und Geodäsie</a> 2020, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
-          url="https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web_grau/default/WEBMERCATOR/{z}/{y}/{x}.png"
-        //  attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        //  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          
-        />
+
+        {geomap}
+
+        {geotiff}
+
         <GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}>
             
         </GeoJSON>
@@ -153,41 +145,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
         </Map>
       );
-      }/*else if(this.props.showGeotiff){
-
-      <Map
-        center={position} zoom={this.state.zoom} onViewportChanged={this.onViewportChanged}
-      >
-        <TileLayer
-          url="https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw"
-          attribution='<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
-          id="mapbox.streets"
-        />
-
-        <PlottyGeotiffLayer
-          layerRef={this.windSpeedRef}
-          url={windSpeedUrl}
-          options={windSpeedOptions}
-        />
-
-        <VectorArrowsGeotiffLayer
-          layerRef={this.windDirectionRef}
-          url={windDirectionUrl}
-          options={windDirectionOptions}
-        />
-      </Map>
-
-      }*/else{
-
-        return(
-        <Map center={position} zoom={this.state.zoom} onViewportChanged={this.onViewportChanged}>
-        {/* <Pane name="d3" className="d3">
-					{this.svgWrapper()}
-				</Pane> */}
-
-        </Map>
-        );
-      }
   }
 
 
@@ -211,38 +168,35 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
   }
 
-  public getMap(position: any, labels: any){
-
-    let geoDataJson;
-    let centerpoints;
-
-    if (this.props.geodata) {
-      geoDataJson = this.props.geodata.getFeatureCollection();
-      centerpoints = this.generateCenterPoints(geoDataJson)
-    }
+  public getMapLayer(){
 
     return(        
     
-      <Map center={position} zoom={this.state.zoom} onViewportChanged={this.onViewportChanged}>
-        {/* <Pane name="d3" className="d3">
-					{this.svgWrapper()}
-				</Pane> */}
-        <TileLayer
-          //attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='Copyright <a href="http://www.bkg.bund.de/" target="_blank" rel="noopener noreferrer">Bundesamt für Kartographie und Geodäsie</a> 2020, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
-          url="https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web_grau/default/WEBMERCATOR/{z}/{y}/{x}.png"
-        //  attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        //  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          
-        />
-        <GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}>
-            
-        </GeoJSON>
+      <TileLayer 
+      //attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      attribution='Copyright <a href="http://www.bkg.bund.de/" target="_blank" rel="noopener noreferrer">Bundesamt für Kartographie und Geodäsie</a> 2020, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
+      url="https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web_grau/default/WEBMERCATOR/{z}/{y}/{x}.png"
+    //  attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    //  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      
+    />
+    
+    )
 
-        {labels}
+  }
 
-      </Map>
+  public getGeotiff(){
+
+    return(        
+    
+      <ImageOverlay
+                        url="offline/leipzig.png"
+                        bounds={[
+                            [51.28, 12.29],
+                            [51.39, 12.48],
+                        ]}
+                    />
     
     )
 
