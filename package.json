@@ -41,7 +41,6 @@
 		"webpack": "4.30.0"
 	},
 	"dependencies": {
-		"@amcharts/amcharts4": "4.4.3",
 		"@turf/nearest-point-to-line": "6.0.0",
 		"@turf/point-to-line-distance": "6.0.0",
 		"@turf/turf": "5.1.6",
