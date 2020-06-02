@@ -3,5 +3,5 @@
 	"singleQuote": true,
 	"useTabs": true,
 	"quoteProps": "preserve",
-	"printWidth": 100
+	"printWidth": 150
 }
