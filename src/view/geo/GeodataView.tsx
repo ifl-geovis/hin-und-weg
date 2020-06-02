@@ -21,6 +21,8 @@ export interface IGeodataProps
 interface IGeodataState
 {
   showLabels: boolean;
+  showMap: boolean;
+  showGeotiff: boolean;
 }
 
 export default class GeodataView extends React.Component<IGeodataProps, IGeodataState>
@@ -30,9 +32,13 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
   {
     super(props);
     this.onShowLabelsChange = this.onShowLabelsChange.bind(this);
+    this.onShowMapChange = this.onShowMapChange.bind(this);
+    this.onShowGeotiffChange = this.onShowGeotiffChange.bind(this);
     this.state =
     {
       showLabels: true,
+      showMap: true,
+      showGeotiff: true,
     };
   }
 
@@ -53,13 +59,17 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
     return (
       <div className="p-grid">
 
-        <div className="p-col-4">
+        <div className="p-col-12">
           <Checkbox inputId="showlabels" value="showlabels" onChange={this.onShowLabelsChange} checked={this.state.showLabels}></Checkbox>
           <label htmlFor="showlabels" className="p-checkbox-label">zeige Namen</label>
+          <Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
+          <label htmlFor="showMap" className="p-checkbox-label">zeige GeoKarte (nur mit Internet)</label>
+          <Checkbox inputId="showGeotiff" value="showGeotiff" onChange={this.onShowGeotiffChange} checked={this.state.showGeotiff}></Checkbox>
+          <label htmlFor="showGeotiff" className="p-checkbox-label">zeige Geotiff</label>
         </div>
         <div className="p-col-12">
           {/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
-          <LeafletMapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme} />
+          <LeafletMapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} showMap={this.state.showMap} showGeotiff={this.state.showGeotiff} theme={this.props.theme} />
         </div>
         <div className="p-col-12">
           <Legend />
@@ -71,6 +81,16 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
   private onShowLabelsChange(e: { originalEvent: Event, value: string, checked: boolean})
   {
     this.setState({showLabels: e.checked});
+  }
+
+  private onShowMapChange(e: { originalEvent: Event, value: string, checked: boolean})
+  {
+    this.setState({showMap: e.checked});
+  }
+
+  private onShowGeotiffChange(e: { originalEvent: Event, value: string, checked: boolean})
+  {
+    this.setState({showGeotiff: e.checked});
   }
 
 }
