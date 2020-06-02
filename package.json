@@ -1,9 +1,9 @@
 {
 	"name": "hin-und-weg",
 	"productName": "hin-und-weg",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"description": "hin&weg",
-	"author": "Ralf Puchert, Jörgen Kosche, DELPHI IMM GmbH",
+	"author": "Ralf Puchert, Jörgen Kosche, Fabian Pellegrini, Sören Horn - DELPHI IMM GmbH and Maria Turchenko - IfL",
 	"license": "UNLICENSED",
 	"main": "./dist/main.js",
 	"repository": {
