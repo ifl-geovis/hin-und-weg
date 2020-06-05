@@ -4,13 +4,12 @@ import Config from "../../config";
 import Log from "../../log";
 
 import Geodata from "../../model/Geodata";
+import {ITimelineD3Item} from "../charts/D3Timeline";
 
 import ViewSelector from "./ViewSelector";
 
 import GeodataView from "../geo/GeodataView";
 import TableView from "../TableView";
-import { TimelineView, ITimelineItem } from "../charts/TimelineView";
-import ChartsView from "../charts/ChartsView";
 import D3ChartView from "../charts/D3ChartView";
 import D3SankeyView from "../charts/D3SankeyView";
 import D3TimelineView from "../charts/D3TimelineView";
@@ -47,7 +46,7 @@ export interface IViewSwitcherProps
   geodata: Geodata | null;
   db: alaSQLSpace.AlaSQL;
   items: TableItem[];
-  timeline: ITimelineItem[];
+  timeline: ITimelineD3Item[];
   statisticPerYearAusgabe: StatisticPerYearAusgabe[];
   geoName: string | null;
   geoId: string | null;
@@ -136,8 +135,6 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
   {
     if (view == "map") return this.selectMapView();
     if (view == "table") return this.selectTableView();
-    if (view == "timeline") return this.selectTimelineView();
-    if (view == "charts") return this.selectChartsView();
     if (view == "d3-bar") return this.selectD3BarView();
     if (view == "d3-sankey") return this.selectD3SankeyView();
     if (view == "d3-chord") return this.selectD3ChordView();
@@ -170,24 +167,6 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
     return (
       <div className="p-col-12">
         <TableView items={this.props.items} maxRows={25}/>
-      </div>
-    );
-  }
-
-  private selectTimelineView()
-  {
-    return (
-      <div className="p-col-12">
-        <TimelineView data={this.props.timeline} />
-      </div>
-    );
-  }
-
-  private selectChartsView()
-  {
-    return (
-      <div className="p-col-12">
-        <ChartsView items={this.props.items} theme={this.props.theme} />
       </div>
     );
   }

@@ -4,7 +4,7 @@ import Config from "../../config";
 import Log from "../../log";
 
 import Geodata from "../../model/Geodata";
-import {ITimelineItem} from "../charts/TimelineView";
+import {ITimelineD3Item} from "../charts/D3Timeline";
 
 import ViewSwitcher from "./ViewSwitcher";
 
@@ -34,7 +34,7 @@ export interface IDashboardProps
 	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
-	timeline: ITimelineItem[];
+	timeline: ITimelineD3Item[];
 	statisticPerYearAusgabe: StatisticPerYearAusgabe[];
 	geoName: string | null;
 	geoId: string | null;

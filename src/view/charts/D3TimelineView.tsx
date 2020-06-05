@@ -1,5 +1,4 @@
 import React from "react";
-import ChartConfigView from "./ChartConfigView";
 import { D3Timeline, ITimelineD3Item} from "./D3Timeline";
 import ContainerDimensions from 'react-container-dimensions';
 
@@ -26,12 +25,12 @@ export default class TimelineViewD3 extends React.Component<ID3TimelinrViewProps
 		// 	// chartType: ChartView.getTypes()[0],
 		// };
     }
-    
+
 
 	public render(): JSX.Element
 	{
-        
-        
+
+
 
 		return (
 			<div className="p-grid">
@@ -39,22 +38,22 @@ export default class TimelineViewD3 extends React.Component<ID3TimelinrViewProps
 				{/* <div className="p-col-8">
 					<ChartConfigView diagramTypes={ChartView.getTypes()} selected={this.state.chartType} onSelectChartType={this.onChartTypeSelect}/>
 				</div> */}
-                
-				
+
+
 
 				<div id="chartDiv" className="p-col-12">
                     <ContainerDimensions>
-                        { ({ width, height }) => 
+                        { ({ width, height }) =>
                             <D3Timeline width={width} height={width/2} data={this.props.items}/>
                         }
                     </ContainerDimensions>
-					
+
 				</div>
-				
+
 			</div>
 		);
     }
-    
+
 
 	private onChartTypeSelect(selected: string)
 	{
