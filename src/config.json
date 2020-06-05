@@ -19,7 +19,6 @@
 		"components":
 		{
 			"systeminfo": true,
-			"db": true,
 		},
 		"logging":
 		{
@@ -38,15 +37,13 @@
 		{
 			"map": true,
 			"table": true,
-			"timeline": false,
-			"charts": false,
 			"d3-bar": true,
 			"d3-sankey": true,
 			"d3-chord": true,
 			"d3-timeline": true,
 			"statistics": true,
 			"file": true,
-			"db": false,
+			"db": true,
 			"systeminfo": false,
 			"projektinfo": true,
 		},
