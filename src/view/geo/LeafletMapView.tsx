@@ -143,13 +143,16 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 	public style(feature: Feature) {
 		let hexcolor;
 		const classification = Classification.getCurrentClassification();
+		let name = 'Fehler!!!';
+		if (feature.properties) name = String(feature.properties.Name);
+		if (feature.properties && this.props.nameField) name = String(feature.properties[this.props.nameField]);
 
 		if (this.props.items && this.props.items.length > 1) {
 			switch (this.props.theme) {
 				case 'Von': {
 					for (let item of this.props.items) {
 						if (feature.properties)
-							if (item.Nach === String(feature.properties.Name)) {
+							if (item.Nach === name) {
 								hexcolor = classification.getColor(item);
 
 								return {
@@ -165,7 +168,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 				case 'Nach': {
 					for (let item of this.props.items) {
 						if (feature.properties)
-							if (item.Von === String(feature.properties.Name)) {
+							if (item.Von === name) {
 								hexcolor = classification.getColor(item);
 
 								return {
@@ -181,7 +184,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 				case 'Saldi': {
 					for (let item of this.props.items) {
 						if (feature.properties)
-							if (item.Von === String(feature.properties.Name)) {
+							if (item.Von === name) {
 								hexcolor = classification.getColor(item);
 
 								return {
@@ -224,7 +227,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		console.log('Showlabels: ', this.props.showLabels);
 
 		if (this.props.showLabels) {
-			if (feature1.properties) label = String(feature1.properties.Name); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
 
 			return new L.CircleMarker(latlng, {
 				radius: 1,
@@ -245,7 +248,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let name = '';
 
 		layer.on('click', (e) => {
-			if (feature.properties) name = feature.properties.Name;
+			if (feature.properties && this.props.nameField) name = feature.properties[this.props.nameField];
 
 			this.props.onSelectLocation(name);
 			//locationSwitch(name);
