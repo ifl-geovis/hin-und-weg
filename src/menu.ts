@@ -32,7 +32,7 @@ export default class MainMenu
 			]
 		},
 		{
-			label: 'Sichten',
+			label: 'Ansichten',
 			submenu:
 			[
 				{
