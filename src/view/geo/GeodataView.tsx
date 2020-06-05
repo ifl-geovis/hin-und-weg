@@ -3,7 +3,6 @@ import React from 'react';
 import Geodata from '../../model/Geodata';
 import SelectInput from '../input/SelectInput';
 import Legend from '../elements/Legend';
-import MapView from './MapView';
 import LeafletMapView from './LeafletMapView';
 import { Checkbox } from 'primereact/checkbox';
 
