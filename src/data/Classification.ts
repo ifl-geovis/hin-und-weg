@@ -55,7 +55,7 @@ export default class Classification
       if (this.negative_scales === null) return this.negative_colors[this.negative_colors.length - 1];
       for (let i = 0; i < this.negative_scales.length; i++)
       {
-        if (item.Wert < this.negative_scales[i]) return this.negative_colors[i];
+        if (item.Wert > this.negative_scales[i]) return this.negative_colors[i];
       }
       return this.negative_colors[this.negative_colors.length - 1];
     }
@@ -89,6 +89,7 @@ export default class Classification
       let step = max / numcolors;
       this.positive_scales = [];
       for (let i = 1; i < numcolors; i++) this.positive_scales.push(Math.ceil(i*step));
+      this.positive_scales.push(max);
     }
     if (min < 0)
     {
@@ -96,6 +97,7 @@ export default class Classification
       let step = min / numcolors;
       this.negative_scales = [];
       for (let i = 1; i < numcolors; i++) this.negative_scales.push(Math.floor(i*step));
+      this.negative_scales.push(min);
     }
   }
 
