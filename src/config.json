@@ -1,40 +1,55 @@
 {
+	"profile": "development",
 
-	"profile": "production",
-
-	"production":
-	{
-		"logging":
-		{
-			"debug": false,
-		},
+	"production": {
+		"logging": {
+			"debug": false
+		}
 	},
 
-	"development":
-	{
-		"global":
-		{
-			"devtools": true,
+	"development": {
+		"global": {
+			"devtools": true
 		},
-		"components":
-		{
-			"systeminfo": true,
+		"components": {
+			"systeminfo": true
 		},
-		"logging":
-		{
-			"trace": false,
-		},
+		"logging": {
+			"trace": false
+		}
 	},
 
-	"default":
-	{
-		"global":
-		{
+	"default": {
+		"global": {
 			"devtools": false,
-			"menu": true,
+			"menu": true
 		},
-		"components":
-		{
+		"offline": {
+			"maps": [
+				{
+					"label": "Keine",
+					"file": "",
+					"bounds": []
+				},
+				{
+					"label": "Leipzig",
+					"file": "offline/leipzig.png",
+					"bounds": [
+						[51.2070908, 12.0843612],
+						[51.4377797, 12.7505515]
+					]
+				},
+				{
+					"label": "Potsdam",
+					"file": "offline/potsdam.png",
+					"bounds": [
+						[52.3627883, 12.9794247],
+						[52.4269553, 13.1674247]
+					]
+				}
+			]
+		},
+		"components": {
 			"map": true,
 			"table": true,
 			"d3-bar": true,
@@ -45,12 +60,11 @@
 			"file": true,
 			"db": true,
 			"systeminfo": false,
-			"projektinfo": true,
+			"projektinfo": true
 		},
-		"logging":
-		{
+		"logging": {
 			"debug": true,
-			"trace": false,
-		},
-	},
+			"trace": false
+		}
+	}
 }
