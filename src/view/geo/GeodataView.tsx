@@ -17,6 +17,7 @@ export interface IGeodataProps {
 }
 
 export interface IOfflineMaps {
+	label: string;
 	file: string;
 	bounds: Array<Array<number>>;
 }
@@ -37,6 +38,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 			showLabels: true,
 			showMap: true,
 			offlineMap: {
+				label: 'Offline Map auswählen',
 				file: '',
 				bounds: [],
 			},
@@ -57,7 +59,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						optionLabel="label"
 						options={Config.getValue('offline', 'maps')}
 						onChange={this.onOfflineMapChange}
-						placeholder="Offline Karte auswählen"
+						placeholder={this.state.offlineMap.label}
 					/>
 				</div>
 				<div className="p-col-12">
@@ -92,6 +94,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	private onOfflineMapChange(e: { value: IOfflineMaps }) {
 		this.setState({
 			offlineMap: {
+				label: e.value.label,
 				file: e.value.file,
 				bounds: e.value.bounds,
 			},

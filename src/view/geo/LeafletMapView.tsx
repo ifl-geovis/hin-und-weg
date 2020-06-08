@@ -179,9 +179,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 	public pointToLayer(feature1: Feature, latlng: LatLngExpression) {
 		let label = 'textTest';
-
-		console.log('Showlabels: ', this.props.showLabels);
-
 		if (this.props.showLabels) {
 			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
 

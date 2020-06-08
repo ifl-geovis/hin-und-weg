@@ -32,11 +32,107 @@
 					"bounds": []
 				},
 				{
+					"label": "Darmstadt",
+					"file": "offline/darmstadt.png",
+					"bounds": [
+						[49.8049336, 8.4826821],
+						[49.9351448, 8.8472821]
+					]
+				},
+				{
+					"label": "Essen",
+					"file": "offline/essen.png",
+					"bounds": [
+						[51.4214914, 6.9260612],
+						[51.4844388, 7.1083612]
+					]
+				},
+				{
+					"label": "Esslingen am Neckar",
+					"file": "offline/esslingen.png",
+					"bounds": [
+						[48.68713, 9.1900155],
+						[48.78706, 9.4634655]
+					]
+				},
+				{
+					"label": "Halle (Saale)",
+					"file": "offline/halle.png",
+					"bounds": [
+						[51.4150067, 11.8113205],
+						[51.5408325, 12.1759206]
+					]
+				},
+				{
+					"label": "Heidelberg",
+					"file": "offline/heidelberg.png",
+					"bounds": [
+						[49.3331277, 8.5061529],
+						[49.4646049, 8.8707529]
+					]
+				},
+				{
+					"label": "Jena",
+					"file": "offline/jena.png",
+					"bounds": [
+						[50.8728439, 11.4660321],
+						[50.9683619, 11.739482]
+					]
+				},
+				{
+					"label": "Karlsruhe",
+					"file": "offline/karlsruhe.png",
+					"bounds": [
+						[48.9304933, 8.2327029],
+						[49.0630436, 8.5973029]
+					]
+				},
+				{
+					"label": "Landkreis Gifhorn",
+					"file": "offline/gifhorn.png",
+					"bounds": [
+						[52.3371734, 10.2469752],
+						[52.5833677, 10.9761751]
+					]
+				},
+				{
 					"label": "Leipzig",
 					"file": "offline/leipzig.png",
 					"bounds": [
-						[51.2070908, 12.0843612],
-						[51.4377797, 12.7505515]
+						[51.2294495, 12.0497128],
+						[51.4817746, 12.7789128]
+					]
+				},
+				{
+					"label": "Ludwigshafen am Rhein",
+					"file": "offline/ludwigshafen.png",
+					"bounds": [
+						[47.8109818, 9.0382276],
+						[47.8279387, 9.0838026]
+					]
+				},
+				{
+					"label": "Magdeburg",
+					"file": "offline/magdeburg.png",
+					"bounds": [
+						[52.0359183, 11.3902718],
+						[52.2219508, 11.9371718]
+					]
+				},
+				{
+					"label": "Münster",
+					"file": "offline/muenster.png",
+					"bounds": [
+						[51.8680446, 7.3694519],
+						[52.0547757, 7.9163518]
+					]
+				},
+				{
+					"label": "Offenbach",
+					"file": "offline/offenbach.png",
+					"bounds": [
+						[50.060714, 8.683937],
+						[50.1255185, 8.866237]
 					]
 				},
 				{
@@ -45,6 +141,30 @@
 					"bounds": [
 						[52.3627883, 12.9794247],
 						[52.4269553, 13.1674247]
+					]
+				},
+				{
+					"label": "Rostock",
+					"file": "offline/rostock.png",
+					"bounds": [
+						[54.0069171, 11.8093597],
+						[54.2436983, 12.5385597]
+					]
+				},
+				{
+					"label": "Stuttgart",
+					"file": "offline/stuttgart.png",
+					"bounds": [
+						[48.7225201, 9.0332661],
+						[48.8556223, 9.397866]
+					]
+				},
+				{
+					"label": "Trier",
+					"file": "offline/trier.png",
+					"bounds": [
+						[49.6846752, 6.466449],
+						[49.81521, 6.831049]
 					]
 				}
 			]
