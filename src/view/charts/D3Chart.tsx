@@ -92,10 +92,11 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
      
       const svgBarChart = select(this.svgRef!);        
 
+      let heightResponsive = (data.length <= 2 )? data.length*50 : (data.length >2 && data.length <= 5) ? data.length*35 : (data.length > 5 && data.length < 30) ? data.length* 25 : data.length*20;
       let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: 150}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
-      let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
-
+      let HEIGHT = heightResponsive - MARGIN.TOP - MARGIN.BOTTOM;
+     
       const colorsBlue = ["#92c5de", "#2166ac"]
       const colorsRed = ["#b2182b", "#f4a582"]
 
@@ -559,14 +560,14 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
   {
     let [min, max] = this.getMinMax2();
     let rangeValues: [number, number] = this.state.rangeValues;
-    let value1: number = min + (Math.abs(min) + Math.abs(max))/4;
-    let value2: number = max - (Math.abs(min) + Math.abs(max))/4;
-    if (this.state.rangeValues[0] == 0) rangeValues[0] = value1;
-    if (this.state.rangeValues[1] == 0) rangeValues[1] = value2;
-    if (this.state.rangeValues[0] < min) rangeValues[0] = value1;
-    if (this.state.rangeValues[0] > max) rangeValues[0] = value1;
-    if (this.state.rangeValues[1] < min) rangeValues[1] = value2;
-    if (this.state.rangeValues[1] > max) rangeValues[1] = value2;
+    if (this.state.rangeValues[0] == 0) rangeValues[0] = min;
+    if (this.state.rangeValues[1] == 0) rangeValues[1] = max;
+    if (this.state.rangeValues[0] < min) rangeValues[0] = min;
+    if (this.state.rangeValues[0] > max) rangeValues[0] = min;
+    if (this.state.rangeValues[1] < min) rangeValues[1] = max;
+    if (this.state.rangeValues[1] > max) rangeValues[1] = max;
+    if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max , rangeValues[0] = min;
+ 
     return rangeValues;
   }
     

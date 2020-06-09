@@ -842,14 +842,14 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     {
       let [min, max] = this.getMinMax2();
       let rangeValues: [number, number] = this.state.rangeValues;
-      let value1: number = min + (Math.abs(min) + Math.abs(max))/4;
-      let value2: number = max - (Math.abs(min) + Math.abs(max))/4;
-      if (this.state.rangeValues[0] == 0) rangeValues[0] = value1;
-      if (this.state.rangeValues[1] == 0) rangeValues[1] = value2;
-      if (this.state.rangeValues[0] < min) rangeValues[0] = value1;
-      if (this.state.rangeValues[0] > max) rangeValues[0] = value1;
-      if (this.state.rangeValues[1] < min) rangeValues[1] = value2;
-      if (this.state.rangeValues[1] > max) rangeValues[1] = value2;
+      if (this.state.rangeValues[0] == 0) rangeValues[0] = min;
+      if (this.state.rangeValues[1] == 0) rangeValues[1] = max;
+      if (this.state.rangeValues[0] < min) rangeValues[0] = min;
+      if (this.state.rangeValues[0] > max) rangeValues[0] = min;
+      if (this.state.rangeValues[1] < min) rangeValues[1] = max;
+      if (this.state.rangeValues[1] > max) rangeValues[1] = max;
+      if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max , rangeValues[0] = min;
+   
       return rangeValues;
     }
 

@@ -100,7 +100,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     
     
         public removePreviousChart(){
-          const chart = document.getElementById('chart');
+          const chart = document.getElementById('sankey');
           if (chart) {
             while(chart.hasChildNodes())
             if (chart.lastChild) {
@@ -677,19 +677,18 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 		}
 		return [min, max + 1];
   }
-
   private getInitialValuesSliderSaldi(): [number, number]
   {
     let [min, max] = this.getMinMax2();
     let rangeValues: [number, number] = this.state.rangeValues;
-    let value1: number = min + (Math.abs(min) + Math.abs(max))/4;
-    let value2: number = max - (Math.abs(min) + Math.abs(max))/4;
-    if (this.state.rangeValues[0] == 0) rangeValues[0] = value1;
-    if (this.state.rangeValues[1] == 0) rangeValues[1] = value2;
-    if (this.state.rangeValues[0] < min) rangeValues[0] = value1;
-    if (this.state.rangeValues[0] > max) rangeValues[0] = value1;
-    if (this.state.rangeValues[1] < min) rangeValues[1] = value2;
-    if (this.state.rangeValues[1] > max) rangeValues[1] = value2;
+    if (this.state.rangeValues[0] == 0) rangeValues[0] = min;
+    if (this.state.rangeValues[1] == 0) rangeValues[1] = max;
+    if (this.state.rangeValues[0] < min) rangeValues[0] = min;
+    if (this.state.rangeValues[0] > max) rangeValues[0] = min;
+    if (this.state.rangeValues[1] < min) rangeValues[1] = max;
+    if (this.state.rangeValues[1] > max) rangeValues[1] = max;
+    if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max , rangeValues[0] = min;
+ 
     return rangeValues;
   }
     
@@ -723,7 +722,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 				<div className="p-col-1">{max}</div>
 				<div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
 				<div className="p-col-12" >
-                <svg id='chart' width={width} height={height} ref={ref => (this.svgRef = ref)} />
+                <svg id='sankey' width={width} height={height} ref={ref => (this.svgRef = ref)} />
         </div>
 			</div>
         
