@@ -1,4 +1,4 @@
-import { app, Menu } from "electron";
+import { app, Menu, BrowserWindow } from "electron";
 import Config from "./config";
 
 export default class MainMenu
@@ -165,7 +165,8 @@ export default class MainMenu
 			submenu:
 			[
 				{
-					label: 'hin&&weg Webseite'
+					label: 'hin&&weg Webseite',
+					click(event, window, content) {MainMenu.website("https://hin-und-weg.online/", window);}
 				},
 				{
 					label: 'Dokumentation'
@@ -191,6 +192,19 @@ export default class MainMenu
 	private static execute(category: string, item: string, event: any, window: any, content: any)
 	{
 		window.webContents.send(category, item);
+	}
+
+	private static website(url: string, window: any)
+	{
+		var websiteWindow = new BrowserWindow(
+		{
+			height: 900,
+			width: 1000,
+			// tslint:disable-next-line: object-literal-sort-keys
+			title: "hin&weg Website",
+		});
+		websiteWindow.loadURL(url);
+		websiteWindow.setMenu(null);
 	}
 
 }
