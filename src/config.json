@@ -1,5 +1,5 @@
 {
-	"profile": "development",
+	"profile": "production",
 
 	"production": {
 		"logging": {
@@ -173,9 +173,13 @@
 			"map": true,
 			"table": true,
 			"d3-bar": true,
+			"d3-bar2": true,
 			"d3-sankey": true,
+			"d3-sankey2": true,
 			"d3-chord": true,
+			"d3-chord2": true,
 			"d3-timeline": true,
+			"d3-timeline2": true,
 			"statistics": true,
 			"file": true,
 			"db": true,

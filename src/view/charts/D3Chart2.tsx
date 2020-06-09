@@ -29,7 +29,7 @@ interface ID3ChartState
   checked: boolean 
 }
 
-export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
+export class D3Chart2 extends React.Component <ID3ChartProps, ID3ChartState> {
     private svgRef?: SVGElement | null;    
 
     constructor(props: ID3ChartProps)
@@ -78,7 +78,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
     
 
     private  removePreviousChart(){
-        const chart = document.getElementById('BarChart');
+        const chart = document.getElementById('BarChart2');
         if (chart) {
           while(chart.hasChildNodes())
           if (chart.lastChild) {
@@ -129,14 +129,14 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
         const yAxisCall = d3.axisLeft(y)
               yAxisGroup
                 .call(yAxisCall)
-                .attr("class", "axis axis--y")
+                .attr("class", "axis axis--y2")
                 .style("font-size", "12px")
 
 
         const xAxisCall = d3.axisBottom(x)
               xAxisGroup
                 .call(xAxisCall)
-                .attr("class", "axis axis--x")
+                .attr("class", "axis axis--x2")
 
         let rects = barChart.append("g")  
           .attr("class", "rects")
@@ -144,7 +144,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
           .data(data)
 
         function select_axis_label(datum: ID3ChartItem) {
-            return d3.select('.axis--y')
+            return d3.select('.axis--y2')
               .selectAll('text')
               .filter(function(x) { return x === datum.Nach; });
           }
@@ -250,16 +250,16 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
             const yAxisCall = d3.axisLeft(y)
             yAxisGroup
               .call(yAxisCall)
-              .attr("class", "axis axis--y")
+              .attr("class", "axis axis--y2")
               .style("font-size", "12px")
 
       const xAxisCall = d3.axisBottom(x)
             xAxisGroup
               .call(xAxisCall)
-              .attr("class", "axis axis--x")
+              .attr("class", "axis axis--x2")
 
       function select_axis_label(datum: ID3ChartItem) {
-          return d3.select('.axis--y')
+          return d3.select('.axis--y2')
             .selectAll('text')
             .filter(function(x) { return x === datum.Von; });
       }
@@ -372,18 +372,18 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
           const xAxisCall = d3.axisBottom(x)
               xAxisGroup.transition().duration(500)
                 .call(xAxisCall)
-                .attr("class", "axis axis--x")
+                .attr("class", "axis axis--x2")
                 
           const yAxisCall = d3.axisLeft(y)
               yAxisGroup
                 .call(yAxisCall)
-                .attr("class", "axis axis--y")
+                .attr("class", "axis axis--y2")
                 .selectAll(".tick text")
                 .style("font-size", "12px")
 
 
           function select_axis_label(datum: ID3ChartItem) {
-            return d3.select('.axis--y')
+            return d3.select('.axis--y2')
               .selectAll('text')
               .filter(function(x) { return x === datum.Von; });
           }      
@@ -600,7 +600,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
 			  	<div className="p-col-1">{max}</div>
 			    	<div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
 			    	<div className="p-col-12" >
-               <svg id='BarChart' width={width} height={height} ref={ref => (this.svgRef = ref)} />
+               <svg id='BarChart2' width={width} height={height} ref={ref => (this.svgRef = ref)} />
             </div>
           </div>
         );

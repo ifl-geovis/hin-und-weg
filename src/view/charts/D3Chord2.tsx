@@ -28,7 +28,7 @@ interface ID3ChordState
   checked: boolean 
 }
 
-export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
+export class D3Chord2 extends React.Component <ID3ChordProps, ID3ChordState> {
     private svgRef?: SVGElement | null;
     
     constructor(props: ID3ChordProps)
@@ -82,7 +82,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
       
     private removePreviousChart(){
-        const chart = document.getElementById('chartChord');
+        const chart = document.getElementById('chartChord2');
         if (chart) {
           while(chart.hasChildNodes())
           if (chart.lastChild) {
@@ -884,7 +884,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 			  	<div className="p-col-1">{max}</div>
 				  <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
 				  <div className="p-col-12" >
-                <svg id='chartChord' width={width} height={height} ref={ref => (this.svgRef = ref)} />
+                <svg id='chartChord2' width={width} height={height} ref={ref => (this.svgRef = ref)} />
           </div>
 			  </div>
         );

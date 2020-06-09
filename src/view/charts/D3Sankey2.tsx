@@ -50,7 +50,7 @@ interface DAG {
 }
 
 
-export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
+export class D3Sankey2 extends React.Component <ID3SankeyProps, ID3SankeyState> {
     private svgRef?: SVGElement | null;
 
 
@@ -100,7 +100,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     
     
         public removePreviousChart(){
-          const chart = document.getElementById('sankey');
+          const chart = document.getElementById('sankey2');
           if (chart) {
             while(chart.hasChildNodes())
             if (chart.lastChild) {
@@ -487,16 +487,6 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
               } return ar
             } 
 
-          // let negativeIdx = (ar:any[]) => { 
-          //     let idx: number[] = new Array(0)
-          //     for(let i=0;i<ar.length;i++) {
-          //       if (ar[i] < 0 ){
-          //         idx[i] = 0
-          //       } else {
-          //         idx[i] = 1
-          //       }
-          //     }return idx
-          //   } 
 
           let absValues = arrAbsolute(values)
     
@@ -677,6 +667,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 		}
 		return [min, max + 1];
   }
+
   private getInitialValuesSliderSaldi(): [number, number]
   {
     let [min, max] = this.getMinMax2();
@@ -722,7 +713,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 				<div className="p-col-1">{max}</div>
 				<div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
 				<div className="p-col-12" >
-                <svg id='sankey' width={width} height={height} ref={ref => (this.svgRef = ref)} />
+                <svg id='sankey2' width={width} height={height} ref={ref => (this.svgRef = ref)} />
         </div>
 			</div>
         
