@@ -1,10 +1,10 @@
-import R from 'ramda';
 import React from 'react';
 import Geodata from '../../model/Geodata';
-import SelectInput from '../input/SelectInput';
 import Legend from '../elements/Legend';
 import LeafletMapView from './LeafletMapView';
 import { Checkbox } from 'primereact/checkbox';
+import { Dropdown } from 'primereact/dropdown';
+import Config from '../../config';
 
 export interface IGeodataProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -16,10 +16,16 @@ export interface IGeodataProps {
 	theme: string;
 }
 
+export interface IOfflineMaps {
+	label: string;
+	file: string;
+	bounds: Array<Array<number>>;
+}
+
 interface IGeodataState {
 	showLabels: boolean;
 	showMap: boolean;
-	showGeotiff: boolean;
+	offlineMap: IOfflineMaps;
 }
 
 export default class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
@@ -27,39 +33,20 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		super(props);
 		this.onShowLabelsChange = this.onShowLabelsChange.bind(this);
 		this.onShowMapChange = this.onShowMapChange.bind(this);
-		this.onShowGeotiffChange = this.onShowGeotiffChange.bind(this);
+		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
 			showLabels: true,
 			showMap: true,
-			showGeotiff: false,
+			offlineMap: {
+				label: 'Offline Map auswählen',
+				file: '',
+				bounds: [],
+			},
 		};
 	}
 
 	public render(): JSX.Element {
-		console.log('render von geodataview');
-
-		var center_points2 = [
-			{
-				'type': 'Feature',
-				'properties': { 'name': '1' },
-				'geometry': { 'type': 'Point', 'coordinates': [50.02507178240552, 13.672508785052223] },
-			},
-			{
-				'type': 'Feature',
-				'properties': { 'name': '6' },
-				'geometry': { 'type': 'Point', 'coordinates': [55.02480935075292, 13.672888247036376] },
-			},
-			{
-				'type': 'Feature',
-				'properties': { 'name': '12' },
-				'geometry': { 'type': 'Point', 'coordinates': [60.02449372349508, 13.672615176262731] },
-			},
-			{
-				'type': 'Feature',
-				'properties': { 'name': '25' },
-				'geometry': { 'type': 'Point', 'coordinates': [65.0240752514004, 13.673313811878423] },
-			},
-		];
+		console.log('render von geodataview', Config.getValue('offline', 'maps'));
 
 		return (
 			<div className="p-grid">
@@ -68,13 +55,12 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 					<label className="p-checkbox-label chkBoxMap">zeige Namen</label>
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
-					<Checkbox
-						inputId="showGeotiff"
-						value="showGeotiff"
-						onChange={this.onShowGeotiffChange}
-						checked={this.state.showGeotiff}
-					></Checkbox>
-					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (offline)</label>
+					<Dropdown
+						optionLabel="label"
+						options={Config.getValue('offline', 'maps')}
+						onChange={this.onOfflineMapChange}
+						placeholder={this.state.offlineMap.label}
+					/>
 				</div>
 				<div className="p-col-12">
 					{/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
@@ -86,7 +72,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						onSelectLocation={this.props.onSelectLocation}
 						showLabels={this.state.showLabels}
 						showMap={this.state.showMap}
-						showGeotiff={this.state.showGeotiff}
+						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
 					/>
 				</div>
@@ -105,7 +91,13 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		this.setState({ showMap: e.checked });
 	}
 
-	private onShowGeotiffChange(e: { originalEvent: Event; value: string; checked: boolean }) {
-		this.setState({ showGeotiff: e.checked });
+	private onOfflineMapChange(e: { value: IOfflineMaps }) {
+		this.setState({
+			offlineMap: {
+				label: e.value.label,
+				file: e.value.file,
+				bounds: e.value.bounds,
+			},
+		});
 	}
 }
