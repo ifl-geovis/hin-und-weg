@@ -165,7 +165,7 @@ export default class MainMenu
 			submenu:
 			[
 				{
-					label: 'hin&weg Webseite'
+					label: 'hin&&weg Webseite'
 				},
 				{
 					label: 'Dokumentation'
