@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION=1.3.1
+VERSION=1.3.2
 ./clean.sh
 npm run build
 electron-packager --platform=win32,darwin,linux .
