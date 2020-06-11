@@ -1,5 +1,5 @@
 {
-	"profile": "production",
+	"profile": "development",
 
 	"production": {
 		"logging": {
