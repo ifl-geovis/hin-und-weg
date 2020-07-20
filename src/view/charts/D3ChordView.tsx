@@ -7,6 +7,8 @@ export interface ID3ChordViewProps
 {
 	items: ID3ChordItem[];
 	theme: string;
+	vizID: number;
+    baseViewId: number;
 }
 
 
@@ -16,7 +18,7 @@ export default class D3chordChartsView extends React.Component<ID3ChordViewProps
 	constructor(props: ID3ChordViewProps)
 	{
 		super(props);
-		this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
+		// this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
     }
     
 
@@ -28,7 +30,7 @@ export default class D3chordChartsView extends React.Component<ID3ChordViewProps
 				<div id="chartDivChord" className="p-col-12">
                     <ContainerDimensions>
                         { ({ width, height }) => 
-                            <D3Chord width={width} height={width} data={this.props.items} theme={this.props.theme}/>
+                            <D3Chord baseViewId={this.props.baseViewId} vizID={this.props.vizID}  width={width} height={width} data={this.props.items} theme={this.props.theme}/>
                         }
                     </ContainerDimensions>
 					
@@ -39,9 +41,9 @@ export default class D3chordChartsView extends React.Component<ID3ChordViewProps
     }
     
 
-	private onChartTypeSelect(selected: string)
-	{
-		this.setState({chartType: selected});
-	}
+	// private onChartTypeSelect(selected: string)
+	// {
+	// 	this.setState({chartType: selected});
+	// }
 
 }

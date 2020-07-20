@@ -20,6 +20,8 @@ export interface ID3ChartProps {
     theme: string;
     width: number;
     height: number;
+    vizID: number;
+    baseViewId: number;
 }
 interface ID3ChartState
 {
@@ -30,7 +32,9 @@ interface ID3ChartState
 }
 
 export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
-    private svgRef?: SVGElement | null;    
+    private svgRef?: SVGElement | null;  
+    private svgID?: string;
+  
 
     constructor(props: ID3ChartProps)
 	{
@@ -44,6 +48,8 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
 	}
 
     public componentDidMount() {
+      this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId)
+
       const [min, max] = this.getMinMax2();
       let data1 :ID3ChartItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] &&item.Wert >= min, this.props.data);
       let data2 :ID3ChartItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] &&item.Wert <= max, this.props.data);
@@ -71,20 +77,25 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
         let normalizedData:ID3ChartItem[] = R.filter((item) => item.Wert >= threshold, this.props.data);
         let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
 
-        this.removePreviousChart();
+        this.removePreviousChart(this.svgID);
         this.drawBarChartH(data, this.props.theme);
     }
     
-    
+    private setSvgId(vizId: number, BVId: number){
+      let svgID = 'BarChart' + vizId + BVId;
+      return svgID;
+    } 
 
-    private  removePreviousChart(){
-        const chart = document.getElementById('BarChart');
+    private  removePreviousChart(id: string | undefined){
+      if (typeof(id) === 'string') {
+        const chart = document.getElementById(id);
         if (chart) {
           while(chart.hasChildNodes())
           if (chart.lastChild) {
             chart.removeChild(chart.lastChild);
           }
         }
+      }       
     }
     
     // DRAW D3 CHART
@@ -137,6 +148,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
               xAxisGroup
                 .call(xAxisCall)
                 .attr("class", "axis axis--x")
+
 
         let rects = barChart.append("g")  
           .attr("class", "rects")
@@ -600,7 +612,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
 			  	<div className="p-col-1">{max}</div>
 			    	<div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
 			    	<div className="p-col-12" >
-               <svg id='BarChart' width={width} height={height} ref={ref => (this.svgRef = ref)} />
+               <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
             </div>
           </div>
         );

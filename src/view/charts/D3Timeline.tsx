@@ -16,12 +16,16 @@ export interface ITimelineD3Props
 {
 	data: ITimelineD3Item[];
     width: number;
-    height: number;
+	height: number;
+	vizID: number;
+    baseViewId: number;
 }
 
 export class D3Timeline extends React.Component<ITimelineD3Props>
 {
-    private svgRef?: SVGElement | null;
+	private svgRef?: SVGElement | null;
+    private svgID?: string;
+	
 
 
 	private timeline: any | null;
@@ -34,25 +38,34 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 
 	public componentDidMount()
 	{
+		this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId)
+
 		if (this.props.data){
 			this.timeline = this.createTimeline(this.props.data);
 		}
 	}
 	
 	public componentDidUpdate(){
-		this.removePreviousChart();
+		this.removePreviousChart(this.svgID);
 		this.timeline = this.createTimeline(this.props.data);
 	}
 		
-	private removePreviousChart(){
-		  const chart = document.getElementById('chartD3Timeline');
+	private setSvgId(vizId: number, BVId: number){
+		let svgID = 'D3Timeline' + vizId + BVId;
+		return svgID;
+	  } 
+  
+	  private  removePreviousChart(id: string | undefined){
+		if (typeof(id) === 'string') {
+		  const chart = document.getElementById(id);
 		  if (chart) {
-				while(chart.hasChildNodes())
-				if (chart.lastChild) {
-					chart.removeChild(chart.lastChild);
-				}
+			while(chart.hasChildNodes())
+			if (chart.lastChild) {
+			  chart.removeChild(chart.lastChild);
 			}
-	}
+		  }
+		}       
+	  }
 
 	private createTimeline(data: ITimelineD3Item[])
 	{
@@ -347,7 +360,7 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 			<div className="p-grid">
 				<ContainerDimensions>
                         { ({ width, height }) => 
-                            <svg id='chartD3Timeline' width={width} height={width} ref={ref => (this.svgRef = ref)} />
+                            <svg id={this.svgID} width={width} height={width} ref={ref => (this.svgRef = ref)} />
                         }
                     </ContainerDimensions>
 			</div>

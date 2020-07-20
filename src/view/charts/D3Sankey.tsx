@@ -21,6 +21,8 @@ export interface ID3SankeyProps {
     jahr?: string;
     width: number;
     height: number;
+    vizID: number;
+    baseViewId: number;
 }
 interface ID3SankeyState
 {
@@ -52,6 +54,8 @@ interface DAG {
 
 export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     private svgRef?: SVGElement | null;
+    private svgID?: string;
+
 
 
     constructor(props: ID3SankeyProps)
@@ -65,8 +69,10 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
   }
   
     public componentDidMount() {
+      this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId)
+      console.log("svgID DidMount:" + this.props.vizID);
+
       const [min, max] = this.getMinMax2();
-      // const [min2, max2] = this.getMinMax2();
       let normalizedData:ID3SankeyItem[] = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
       let data1 :ID3SankeyItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] &&item.Wert >= min, this.props.data);
       let data2 :ID3SankeyItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] &&item.Wert <= max, this.props.data);
@@ -85,7 +91,6 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
         
         public componentDidUpdate(){
           const [min, max] = this.getMinMax2();
-          // const [min2, max2] = this.getMinMax2();
           let normalizedData:ID3SankeyItem[] = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
           let data1 :ID3SankeyItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] &&item.Wert >= min, this.props.data);
           let data2 :ID3SankeyItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] &&item.Wert <= max, this.props.data);
@@ -94,19 +99,27 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
           let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
       
-          this.removePreviousChart();
+          this.removePreviousChart(this.svgID);
           this.drawSankeyChart(data, this.props.theme);
         }
     
     
-        public removePreviousChart(){
-          const chart = document.getElementById('sankey');
-          if (chart) {
-            while(chart.hasChildNodes())
-            if (chart.lastChild) {
-              chart.removeChild(chart.lastChild);
+        private setSvgId(vizId: number, BVId: number){
+          let svgID = 'Sankey' + vizId + BVId;
+          return svgID;
+        } 
+    
+        private  removePreviousChart(id: string | undefined){
+          if (typeof(id) === 'string') {
+            console.log("svgID DID Update: " + id);
+            const chart = document.getElementById(id);
+            if (chart) {
+              while(chart.hasChildNodes())
+              if (chart.lastChild) {
+                chart.removeChild(chart.lastChild);
+              }
             }
-          }
+          }       
         }
  
         // DRAW D3 CHART
@@ -299,7 +312,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
               .append("text")
               .attr("x", function (d: any) { return d.x0 - 6; })
               .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
-              .attr("dy", "0.35em") //0.35
+              .attr("dy", "0.35em") 
               .attr("text-anchor", "end")
               .text(function (d: any) { return d.name; })
               .filter(function (d: any) { return d.x0 < WIDTH / 2; })
@@ -695,7 +708,6 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
   public render() {
     const { width, height } = this.props;
     const [min, max] = this.getMinMax2();
-      // const [min2, max2] = this.getMinMax2();
     let threshold: number = this.calculateCurrentThreshold();
     let rangeValues: [number, number] = this.getInitialValuesSliderSaldi();
     let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
@@ -722,7 +734,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 				<div className="p-col-1">{max}</div>
 				<div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
 				<div className="p-col-12" >
-                <svg id='sankey' width={width} height={height} ref={ref => (this.svgRef = ref)} />
+                <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
         </div>
 			</div>
         
