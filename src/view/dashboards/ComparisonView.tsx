@@ -61,13 +61,13 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	private selectCurrentView(view: string): JSX.Element
 	{
 		if (view == "cls1rs1") return this.select_cls1rs1();
-		return this.getBaseView(view, "wide");
+		return this.getBaseView(view, "wide", 0);
 	}
 
-	private getBaseView(view: string, space: string): JSX.Element
+	private getBaseView(view: string, space: string, id: number): JSX.Element
 	{
 		return (
-			<BaseView view={view} space={space} db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable}
+			<BaseView baseViewId={id} view={view} space={space} db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable}
 				setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
 				setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
 				setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }}
@@ -78,8 +78,8 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 
 	private select_cls1rs1(): JSX.Element
 	{
-		let comparison1 = this.getBaseView("s1", "narrow");
-		let comparison2 = this.getBaseView("s1", "narrow");
+		let comparison1 = this.getBaseView("s1", "narrow",1);
+		let comparison2 = this.getBaseView("s1", "narrow",2);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6">

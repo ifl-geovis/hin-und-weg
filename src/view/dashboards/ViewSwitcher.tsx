@@ -11,13 +11,9 @@ import ViewSelector from "./ViewSelector";
 import GeodataView from "../geo/GeodataView";
 import TableView from "../TableView";
 import D3ChartView from "../charts/D3ChartView";
-import D3ChartView2 from "../charts/D3ChartView2";
 import D3SankeyView from "../charts/D3SankeyView";
-import D3SankeyView2 from "../charts/D3SankeyView2";
 import D3TimelineView from "../charts/D3TimelineView";
-import D3TimelineView2 from "../charts/D3TimelineView2";
 import D3ChordView from "../charts/D3ChordView";
-import D3ChordView2 from "../charts/D3ChordView2";
 
 import StatisticsView from "../../components/StatisticsView";
 import ImportView from "../ImportView";
@@ -59,11 +55,14 @@ export interface IViewSwitcherProps
   location: string | null;
   theme: string;
   yearsAvailable: string[];
+  vizID: number;
+  baseViewId: number;
   onSelectLocation: (newLocation: string) => void;
   setGeodata: (geodata: Geodata) => void;
   setGeoName: (geoName: string) => void;
   setGeoId: (geoId: string) => void;
   addYear: (year: string) => void;
+  onSwitchView: () => void;
 }
 
 interface IViewSwitcherState
@@ -107,6 +106,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
   {
     Log.debug("selected view: " + selected);
     this.setState({activeView: selected});
+    this.props.onSwitchView();
   }
 
   private getVisibleViews()
@@ -116,14 +116,10 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
     this.addView(views, "table", "Tabelle", (this.props.yearsAvailable.length > 0));
     this.addView(views, "timeline", "Zeitreihen", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
     this.addView(views, "charts", "Diagramm", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-bar", "Balkendiagramm1", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-bar2", "Balkendiagramm2", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-sankey", "Sankey-Diagramm1", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-sankey2", "Sankey-Diagramm2", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-chord", "Chord-Diagramm1", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-chord2", "Chord-Diagramm2", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-timeline", "Zeitreihen1", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-    this.addView(views, "d3-timeline2", "Zeitreihen2", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+    this.addView(views, "d3-bar", "Balkendiagramm", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+    this.addView(views, "d3-sankey", "Sankey-Diagramm", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+    this.addView(views, "d3-chord", "Chord-Diagramm", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+    this.addView(views, "d3-timeline", "Zeitreihen", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
     this.addView(views, "statistics", "Statistiken", (this.props.yearsAvailable.length > 0) && (this.props.location != null));
     this.addView(views, "file", "Datei", true);
     this.addView(views, "db", "Datenbank", (this.props.yearsAvailable.length > 0));
@@ -145,13 +141,9 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
     if (view == "map") return this.selectMapView();
     if (view == "table") return this.selectTableView();
     if (view == "d3-bar") return this.selectD3BarView();
-    if (view == "d3-bar2") return this.selectD3BarView2();
     if (view == "d3-sankey") return this.selectD3SankeyView();
-    if (view == "d3-sankey2") return this.selectD3SankeyView2();
     if (view == "d3-chord") return this.selectD3ChordView();
-    if (view == "d3-chord2") return this.selectD3ChordView2();
     if (view == "d3-timeline") return this.selectD3TimelineView();
-    if (view == "d3-timeline2") return this.selectD3TimelineView2();
     if (view == "statistics") return this.selectStatisticsView();
     if (view == "file") return this.selectImportView();
     if (view == "db") return this.selectDatabaseView();
@@ -188,16 +180,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
   {
     return (
       <div className="p-col-12">
-        <D3ChartView items={this.props.items} theme={this.props.theme} />
-      </div>
-    );
-  }
-
-  private selectD3BarView2()
-  {
-    return (
-      <div className="p-col-12">
-        <D3ChartView2 items={this.props.items} theme={this.props.theme} />
+        <D3ChartView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} />
       </div>
     );
   }
@@ -208,21 +191,9 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
      
       <div className="p-col-12">
       <div className="sankey1">
-        <D3SankeyView items={this.props.items} theme={this.props.theme} />
+        <D3SankeyView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} />
       </div>
       </div>
-    );
-  }
-
-  private selectD3SankeyView2()
-  {
-    return (
-      <div className="p-col-12">
-      <div className="sankey2">
-        <D3SankeyView2 items={this.props.items} theme={this.props.theme} />
-      </div>
-      </div>
-
     );
   }
 
@@ -231,45 +202,25 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
     if (this.props.yearsAvailable.length > 0){
       return (
         <div className="p-col-12">
-          <D3ChordView items={this.props.items} theme={this.props.theme} />
+          <D3ChordView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} />
         </div>
       );
     }
 
   }
-  private selectD3ChordView2()
-  {
-    if (this.props.yearsAvailable.length > 0){
-      return (
-        <div className="p-col-12">
-          <D3ChordView2 items={this.props.items} theme={this.props.theme} />
-        </div>
-      );
-    }
-
-  }
+  
   private selectD3TimelineView()
   {
     if (this.props.yearsAvailable.length > 0){
       return (
         <div className="p-col-12">
-          <D3TimelineView items={this.props.timeline} />
+          <D3TimelineView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.timeline} />
         </div>
       );
     }
 
   }
-  private selectD3TimelineView2()
-  {
-    if (this.props.yearsAvailable.length > 0){
-      return (
-        <div className="p-col-12">
-          <D3TimelineView2 items={this.props.timeline} />
-        </div>
-      );
-    }
 
-  }
   private selectStatisticsView()
   {
     return (

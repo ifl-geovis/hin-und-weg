@@ -4,7 +4,7 @@ import Config from "../../config";
 import Log from "../../log";
 
 import Geodata from "../../model/Geodata";
-import {ITimelineItem} from "../charts/TimelineView";
+import {ITimelineD3Item} from "../charts/D3Timeline";
 
 import ViewSwitcher from "./ViewSwitcher";
 
@@ -22,7 +22,8 @@ export interface StatisticPerYearAusgabe
 	Mean: number;
 	MeanZuzüge: number;
 	MeanWegzüge: number;
-	Median: number;
+	MedianZuzüge: number;
+	MedianWegzüge: number;
 	min: number;
 	max: number;
 }
@@ -33,7 +34,7 @@ export interface IDashboardProps
 	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
-	timeline: ITimelineItem[];
+	timeline: ITimelineD3Item[];
 	statisticPerYearAusgabe: StatisticPerYearAusgabe[];
 	geoName: string | null;
 	geoId: string | null;
@@ -41,19 +42,30 @@ export interface IDashboardProps
 	location: string | null;
 	theme: string;
 	yearsAvailable: string[];
+	baseViewId: number;
 	onSelectLocation: (newLocation: string) => void;
 	setGeodata: (geodata: Geodata) => void;
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
 }
+export interface IDashboardState 
+{
+	count: number;
+}
 
-export default class DashboardView extends React.Component<IDashboardProps>
+export default class DashboardView extends React.Component<IDashboardProps, IDashboardState>
 {
 
 	constructor(props: IDashboardProps)
 	{
 		super(props);
+		this.updateCounter = this.updateCounter.bind(this);
+
+		this.state =
+		{
+			count: 0
+		};
 	}
 
 	public render(): JSX.Element
@@ -64,8 +76,13 @@ export default class DashboardView extends React.Component<IDashboardProps>
 	private getViewSwitcher(): JSX.Element
 	{
 		return (
-			<ViewSwitcher geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} addYear={this.props.addYear} />
+			<ViewSwitcher baseViewId={this.props.baseViewId} vizID={this.state.count} onSwitchView={this.updateCounter} geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} addYear={this.props.addYear} />
 		);
+	}
+
+	private updateCounter() 
+	{
+		this.setState({count: this.state.count + 1 });
 	}
 
 	private selectCurrentView(view: string): JSX.Element
