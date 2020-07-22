@@ -17,6 +17,7 @@ export interface ILeafletMapViewProps {
 	onSelectLocation: (newLocation: string) => void;
 	showLabels: boolean;
 	showMap: boolean;
+	showArrows: boolean;
 	offlineMap: IOfflineMaps;
 	theme: string;
 }
@@ -41,12 +42,15 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let geoDataJson;
 		let labels;
 		let geomap;
+		let arrows;
 		let offlinemap;
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			centerOfMap = this.calcMapCenter(geoDataJson);
 			if (this.props.showLabels) labels = this.getLabels();
+			else if (this.props.showArrows) arrows = this.getArrows();
+
 			if (this.props.showMap) geomap = this.getMapLayer();
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 		}
@@ -56,6 +60,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 				{geomap}
 				{offlinemap}
 				<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
+				{arrows}
 				{labels}
 			</Map>
 		);
@@ -77,6 +82,21 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		}
 
 		return <GeoJSON data={centerpoints} pointToLayer={this.pointToLayer}></GeoJSON>;
+	}
+
+	public getArrows() {
+		
+		let geoDataJson;
+		let centerpoints;
+
+		if (this.props.geodata) {
+			geoDataJson = this.props.geodata.getFeatureCollection();
+			centerpoints = this.generateCenterPoints(geoDataJson);
+		}
+
+		return <GeoJSON data={centerpoints} pointToLayer={this.ArrowToLayer}></GeoJSON>;
+
+		return null;
 	}
 
 	public getMapLayer() {
@@ -184,6 +204,37 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 			return new L.CircleMarker(latlng, {
 				radius: 1,
+			})
+				.bindTooltip(label, {
+					permanent: true,
+					opacity: 0.7,
+					className: 'district-label',
+					direction: 'center',
+				})
+				.openTooltip();
+		} else {
+			return;
+		}
+	}
+
+	public ArrowToLayer(feature1: Feature, latlng: LatLngExpression) {
+
+		var greenIcon = L.icon({
+			iconUrl: 'SVG_Image.svg',
+		
+			iconSize:     [38, 95], // size of the icon
+			shadowSize:   [50, 64], // size of the shadow
+			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
+
+
+		let label = 'textTest';
+		if (this.props.showArrows) {
+			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+
+			return new L.Marker(latlng, {
+				icon: greenIcon,
 			})
 				.bindTooltip(label, {
 					permanent: true,

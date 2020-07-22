@@ -25,6 +25,7 @@ export interface IOfflineMaps {
 interface IGeodataState {
 	showLabels: boolean;
 	showMap: boolean;
+	showArrows: boolean;
 	offlineMap: IOfflineMaps;
 }
 
@@ -33,10 +34,12 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		super(props);
 		this.onShowLabelsChange = this.onShowLabelsChange.bind(this);
 		this.onShowMapChange = this.onShowMapChange.bind(this);
+		this.onShowArrowChange = this.onShowArrowChange.bind(this);
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
 			showLabels: true,
 			showMap: true,
+			showArrows: true,
 			offlineMap: {
 				label: 'Offline Map auswählen',
 				file: '',
@@ -53,8 +56,11 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				<div className="p-col-12">
 					<Checkbox inputId="showlabels" value="showlabels" onChange={this.onShowLabelsChange} checked={this.state.showLabels}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Namen</label>
+					<Checkbox inputId="showArrows" value="showArrows" onChange={this.onShowArrowChange} checked={this.state.showArrows}></Checkbox>
+					<label className="p-checkbox-label chkBoxMap">zeige Pfeile </label>
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
+					
 					<Dropdown
 						optionLabel="label"
 						options={Config.getValue('offline', 'maps')}
@@ -72,6 +78,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						onSelectLocation={this.props.onSelectLocation}
 						showLabels={this.state.showLabels}
 						showMap={this.state.showMap}
+						showArrows={this.state.showArrows}
 						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
 					/>
@@ -89,6 +96,10 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
 	private onShowMapChange(e: { originalEvent: Event; value: string; checked: boolean }) {
 		this.setState({ showMap: e.checked });
+	}
+
+	private onShowArrowChange(e: { originalEvent: Event; value: string; checked: boolean }) {
+		this.setState({ showArrows: e.checked });
 	}
 
 	private onOfflineMapChange(e: { value: IOfflineMaps }) {
