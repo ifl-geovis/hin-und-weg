@@ -8,6 +8,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
 import Classification from '../../data/Classification';
 import { IOfflineMaps } from './GeodataView';
+// @ts-ignore
+import 'leaflet-swoopy';
 
 export interface ILeafletMapViewProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -35,6 +37,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 		this.style = this.style.bind(this);
 		this.pointToLayer = this.pointToLayer.bind(this);
+		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -85,7 +88,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 	}
 
 	public getArrows() {
-		
 		let geoDataJson;
 		let centerpoints;
 
@@ -218,31 +220,20 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 	}
 
 	public ArrowToLayer(feature1: Feature, latlng: LatLngExpression) {
-
-		var greenIcon = L.icon({
-			iconUrl: 'SVG_Image.svg',
-		
-			iconSize:     [38, 95], // size of the icon
-			shadowSize:   [50, 64], // size of the shadow
-			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-		});
-
-
 		let label = 'textTest';
 		if (this.props.showArrows) {
 			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
 
-			return new L.Marker(latlng, {
-				icon: greenIcon,
-			})
-				.bindTooltip(label, {
-					permanent: true,
-					opacity: 0.7,
-					className: 'district-label',
-					direction: 'center',
-				})
-				.openTooltip();
+			// @ts-ignore
+			return new L.swoopyArrow([56, 1], [52.52, 13.4], {
+				text: 'Hi, I am a swoopy arrow.',
+				color: '#64A7D9',
+				textClassName: 'swoopy-arrow',
+				factor: 0.75,
+				weight: 7,
+				iconSize: [60, 20],
+				iconAnchor: [60, 5],
+			}).openTooltip();
 		} else {
 			return;
 		}
