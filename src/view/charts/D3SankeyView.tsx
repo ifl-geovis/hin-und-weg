@@ -7,6 +7,8 @@ export interface ID3SankeyViewProps
 {
 	items: ID3SankeyItem[];
 	theme: string;
+	vizID: number;
+    baseViewId: number;
 }
 
 export default class D3SankeyChartsView extends React.Component<ID3SankeyViewProps>
@@ -15,7 +17,7 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 	constructor(props: ID3SankeyViewProps)
 	{
 		super(props);
-		this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
+		// this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
     }
     
 
@@ -30,7 +32,7 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 				<div id="chartDiv" className="p-col-12">
                     <ContainerDimensions>
                         { ({ width, height }) => 
-                            <D3Sankey width={width} height={(this.props.items.length <= 15)? 700 : 1000} data={this.props.items} theme={this.props.theme}/>
+                            <D3Sankey baseViewId={this.props.baseViewId} vizID={this.props.vizID}  width={width} height={(this.props.items.length <= 15)? 700 : 1000} data={this.props.items} theme={this.props.theme}/>
                         }
                     </ContainerDimensions>
 					
@@ -40,9 +42,9 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 		);
     }
     
-	private onChartTypeSelect(selected: string)
-	{
-		this.setState({chartType: selected});
-	}
+	// private onChartTypeSelect(selected: string)
+	// {
+	// 	this.setState({chartType: selected});
+	// }
 
 }

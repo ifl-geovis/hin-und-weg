@@ -20,6 +20,8 @@ export interface ID3ChordProps {
     theme: string;
     width: number;
     height: number;
+    vizID: number;
+    baseViewId: number;
 }
 interface ID3ChordState
 {
@@ -30,6 +32,8 @@ interface ID3ChordState
 
 export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     private svgRef?: SVGElement | null;
+    private svgID?: string;
+
     
     constructor(props: ID3ChordProps)
 	{
@@ -42,9 +46,9 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
   }
 
     public componentDidMount() {
-
+      this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
       const [min, max] = this.getMinMax2();
-      
+
       let data1 :ID3ChordItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] &&item.Wert >= min, this.props.data);
       let data2 :ID3ChordItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] &&item.Wert <= max, this.props.data);
       let dataFilterSmall: ID3ChordItem[] = R.concat(data1, data2);
@@ -55,7 +59,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
       let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
         
-      if (data) {this.drawChordChart(data, this.props.theme) }
+      if (data) {this.drawChordChart(data, this.props.theme, this.svgID) }
        
       }
     
@@ -76,23 +80,30 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let normalizedData:ID3ChordItem[] = R.filter((item) => item.Wert >= threshold, this.props.data);
         let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
 
-      this.removePreviousChart();
-      this.drawChordChart(data, this.props.theme);
+      this.removePreviousChart(this.svgID);
+      this.drawChordChart(data, this.props.theme, this.svgID);
       }
 
       
-    private removePreviousChart(){
-        const chart = document.getElementById('chartChord');
-        if (chart) {
-          while(chart.hasChildNodes())
-          if (chart.lastChild) {
-            chart.removeChild(chart.lastChild);
+      private setSvgId(vizId: number, BVId: number){
+        let svgID = 'Chord' + vizId + BVId;
+        return svgID;
+      } 
+  
+      private  removePreviousChart(id: string | undefined){
+        if (typeof(id) === 'string') {
+          const chart = document.getElementById(id);
+          if (chart) {
+            while(chart.hasChildNodes())
+            if (chart.lastChild) {
+              chart.removeChild(chart.lastChild);
+            }
           }
-        }
+        }       
       }
 
     // DRAW D3 CHART
-    private drawChordChart (data: ID3ChordItem[], theme: string) {
+    private drawChordChart (data: ID3ChordItem[], theme: string, id: string | undefined) {
      
       const svgChord = select(this.svgRef!);        
 
@@ -149,8 +160,6 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               } 
             } 
           }
-
-
 
         let nach = data.map(d => d.Nach);
         let von = data.map(d => d.Von);
@@ -258,7 +267,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         if (theme === "Von")
         {
           //matrix used in Chord as an input
-        let arrFull =  matrixFull(arr);
+        // let arrFull =  matrixFull(arr);
 
           //matrix used in Chord when the inner flow for the selected area is filtered out
         let arrFullPlus = matrixFullPlus(arr);
@@ -274,7 +283,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .enter().append("linearGradient")
         //Create a unique gradient id per chord
         .attr("id", function(d) {
-            return "chordGradient-" + d.source.index + "-" + d.target.index; 
+            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index; 
         })
         //Instead of the object bounding box, use the entire SVG for setting locations
         //in pixel locations instead of percentages (which is more typical)
@@ -320,7 +329,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           .data(function(chords) { return chords; })
           .enter().append("path")
           .attr("d", ribbon)
-          .style("fill", function(d){ return "url(#chordGradient-" + d.source.index + "-" + d.target.index + ")";})
+          .style("fill", function(d){ return "url(#chordGradient" + id  + "-" + d.source.index + "-" + d.target.index + ")";})
           .style("stroke", function(d) { let col:any = d3.rgb(colorsBlue[0]); return col.darker(); })
           .on("mouseover", function(d) {
             ribbons
@@ -418,7 +427,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         else if (theme === "Nach")
         {
          //matrixes used in Chord as an input
-        let arrFull =  matrixFull(arr);   
+        // let arrFull =  matrixFull(arr);   
         let arrFullPlus  = matrixFullPlus(arr);
         let g = chartChord.append("g")
           .attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
@@ -431,7 +440,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .enter().append("linearGradient")
         //Create a unique gradient id per chord
         .attr("id", function(d) {
-            return "chordGradient-" + d.source.index + "-" + d.target.index; 
+            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index; 
         })
         //Instead of the object bounding box, use the entire SVG for setting locations
         //in pixel locations instead of percentages (which is more typical)
@@ -478,7 +487,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           .data(function(chords) { return chords; })
           .enter().append("path")
           .attr("d", ribbon)
-          .style("fill", function(d){ return "url(#chordGradient-" + d.source.index + "-" + d.target.index + ")";})
+          .style("fill", function(d){ return "url(#chordGradient" + id  + "-" + d.source.index + "-" + d.target.index + ")";})
           .style("stroke", function(d) { let col:any = d3.rgb(colorsRed[1]); return col.darker(); })
           .on("mouseover", function(d) {
               ribbons
@@ -627,7 +636,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .enter().append("linearGradient")
         //Create a unique gradient id per chord
         .attr("id", function(d) {
-            return "chordGradient-" + d.source.index + "-" + d.target.index; 
+            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index; 
         })
         //Instead of the object bounding box, use the entire SVG for setting locations
         //in pixel locations instead of percentages (which is more typical)
@@ -672,7 +681,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           .data(function(chords) { return chords; })
           .enter().append("path")
           .attr("d", ribbon)
-          .style("fill", function(d){ return "url(#chordGradient-" + d.source.index + "-" + d.target.index + ")";})
+          .style("fill", function(d){ return "url(#chordGradient" + id  + "-" + d.source.index + "-" + d.target.index + ")";})
           .style("stroke", function(d) { let col:any = d3.rgb(colorsBlueRed[2]); return col.darker(); })
           .on("mouseover", function(d) {
             ribbons
@@ -884,7 +893,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 			  	<div className="p-col-1">{max}</div>
 				  <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
 				  <div className="p-col-12" >
-                <svg id='chartChord' width={width} height={height} ref={ref => (this.svgRef = ref)} />
+                <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
           </div>
 			  </div>
         );

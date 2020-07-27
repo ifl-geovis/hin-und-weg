@@ -23,6 +23,7 @@ export interface IBaseProps
   geoName: string | null;
   geoId: string | null;
   yearsAvailable: string[];
+  baseViewId: number;
   setGeodata: (geodata: Geodata) => void;
   setGeoName: (geoName: string) => void;
   setGeoId: (geoId: string) => void;
@@ -83,7 +84,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
           <Years availableYears={this.props.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
         </div>
         <div className={(this.props.space == "wide") ? "p-col-10" : "p-col-8"}>
-          <DashboardView view={this.props.view} geodata={this.props.geodata} db={this.props.db} items={results} statisticPerYearAusgabe={statisticPerYearAusgabe} timeline={timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.props.yearsAvailable}
+          <DashboardView baseViewId={this.props.baseViewId}  view={this.props.view} geodata={this.props.geodata} db={this.props.db} items={results} statisticPerYearAusgabe={statisticPerYearAusgabe} timeline={timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.props.yearsAvailable}
             onSelectLocation={(newLocation) => this.setState({location: newLocation})}
             setGeodata={this.props.setGeodata}
             setGeoName={this.props.setGeoName}

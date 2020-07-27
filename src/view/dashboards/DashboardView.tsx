@@ -42,19 +42,30 @@ export interface IDashboardProps
 	location: string | null;
 	theme: string;
 	yearsAvailable: string[];
+	baseViewId: number;
 	onSelectLocation: (newLocation: string) => void;
 	setGeodata: (geodata: Geodata) => void;
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
 }
+export interface IDashboardState 
+{
+	count: number;
+}
 
-export default class DashboardView extends React.Component<IDashboardProps>
+export default class DashboardView extends React.Component<IDashboardProps, IDashboardState>
 {
 
 	constructor(props: IDashboardProps)
 	{
 		super(props);
+		this.updateCounter = this.updateCounter.bind(this);
+
+		this.state =
+		{
+			count: 0
+		};
 	}
 
 	public render(): JSX.Element
@@ -65,8 +76,13 @@ export default class DashboardView extends React.Component<IDashboardProps>
 	private getViewSwitcher(): JSX.Element
 	{
 		return (
-			<ViewSwitcher geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} addYear={this.props.addYear} />
+			<ViewSwitcher baseViewId={this.props.baseViewId} vizID={this.state.count} onSwitchView={this.updateCounter} geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} addYear={this.props.addYear} />
 		);
+	}
+
+	private updateCounter() 
+	{
+		this.setState({count: this.state.count + 1 });
 	}
 
 	private selectCurrentView(view: string): JSX.Element
