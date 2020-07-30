@@ -28,11 +28,21 @@ interface State {
 	zoom: number;
 }
 
-export default class LeafletMapView extends Component<ILeafletMapViewProps, State> {
+interface Centerpoint {
+	Center1: Array<{ [name: string]: any }> | null;
+}
+
+interface Points {}
+
+export default class LeafletMapView extends Component<ILeafletMapViewProps, State, Centerpoint> {
+	centerpoint: { Center1: Array<{ [name: string]: any }> | null };
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
 		this.state = {
 			zoom: 11,
+		};
+		this.centerpoint = {
+			Center1: number,
 		};
 
 		this.style = this.style.bind(this);
@@ -47,6 +57,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let geomap;
 		let arrows;
 		let offlinemap;
+		let featurepoints;
+
+		console.log(this.props.items);
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
@@ -95,6 +108,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			centerpoints = this.generateCenterPoints(geoDataJson);
 		}
+
+		<GeoJSON data={centerpoints} pointToLayer={this.ArrowToLayer1}></GeoJSON>;
 
 		return <GeoJSON data={centerpoints} pointToLayer={this.ArrowToLayer}></GeoJSON>;
 
@@ -219,23 +234,78 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		}
 	}
 
+	public ArrowToLayer1(feature1: Feature, latlng: LatLngExpression) {
+		let label = 'textTest';
+		let geoDataJson;
+		let centerofFeature;
+		if (feature1.properties && this.props.nameField && this.props.items && this.props.theme == 'Saldi') {
+			if (this.centerpoint.Center1?.length == null) {
+				let index = 0;
+				this.centerpoint.Center1?[index].Name = feature1.properties[this.props.nameField];
+			}
+			this.centerpoint.Center1[this.centerpoint.Center1?.length].Name = feature1.properties[this.props.nameField];
+		}
+
+
+		if (feature1.properties && this.props.nameField && this.props.items && this.props.theme == 'Saldi') {
+			//console.log('SelectedLocation: ', this.props.selectedLocation);
+			//console.log('nameField: ', feature1.properties[this.props.nameField]);
+			//			console.log(latlng.toString());
+			//			console.log(feature1.properties[this.props.nameField]);
+			for (let item of this.props.items) {
+				if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
+					console.log('Von: ', item.Von);
+					console.log('Nach: ', item.Nach);
+					console.log('Wert: ', item.Wert);
+
+					// @ts-ignore
+					centerofFeature = turf.centerOfMass(feature1);
+					console.log('Center of Feature: ', centerofFeature.geometry.coordinates.toString());
+					console.log('LatLng: ', latlng.toString());
+
+					if (this.props.showArrows) {
+						console.log('If 1 ');
+						if (feature1.properties && this.props.nameField) {
+							console.log('If 2, NameField ', feature1.properties[this.props.nameField]);
+							//if (feature1.properties[this.props.nameField] == this.props.selectedLocation) {
+							console.log('If 3 ');
+							console.log(this.props.selectedLocation);
+							console.log(latlng.toString());
+							console.log('Koordinate: ', centerofFeature.geometry.coordinates);
+							let point = new L.LatLng(centerofFeature.geometry.coordinates[0], centerofFeature.geometry.coordinates[1]);
+
+							// @ts-ignore
+							return new L.swoopyArrow(latlng, point, {
+								text: this.props.selectedLocation,
+								color: '#64A7D9',
+								textClassName: 'swoopy-arrow',
+								factor: 0.75,
+								weight: 7,
+								iconSize: [60, 20],
+								iconAnchor: [60, 5],
+							}).openTooltip();
+						}
+						//}
+					} else {
+						return;
+					}
+				}
+			}
+		}
+	}
+
 	public ArrowToLayer(feature1: Feature, latlng: LatLngExpression) {
 		let label = 'textTest';
-		if (this.props.showArrows) {
-			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+		let geoDataJson;
+		let centerofFeature;
 
-			// @ts-ignore
-			return new L.swoopyArrow([56, 1], [52.52, 13.4], {
-				text: 'Hi, I am a swoopy arrow.',
-				color: '#64A7D9',
-				textClassName: 'swoopy-arrow',
-				factor: 0.75,
-				weight: 7,
-				iconSize: [60, 20],
-				iconAnchor: [60, 5],
-			}).openTooltip();
+		if (this.centerpoint.Center1 == false) {
+			console.log('zweiter durchlauf');
+		} else if (this.centerpoint.Center1 == true) {
+			console.log('erster durchlauf');
+			this.centerpoint.Center1 = false;
 		} else {
-			return;
+			console.log('Misteriös');
 		}
 	}
 

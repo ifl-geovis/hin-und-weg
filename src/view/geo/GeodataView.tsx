@@ -60,7 +60,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 					<label className="p-checkbox-label chkBoxMap">zeige Pfeile </label>
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
-					
+
 					<Dropdown
 						optionLabel="label"
 						options={Config.getValue('offline', 'maps')}
