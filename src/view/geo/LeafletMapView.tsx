@@ -47,8 +47,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 		this.style = this.style.bind(this);
 		this.pointToLayer = this.pointToLayer.bind(this);
-		//	this.ArrowToLayer1 = this.ArrowToLayer1.bind(this);
-		this.ArrowToLayer2 = this.ArrowToLayer2.bind(this);
+		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -110,9 +109,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			centerpoints = this.generateCenterPoints(geoDataJson);
 		}
 
-		//	<GeoJSON data={centerpoints} pointToLayer={this.ArrowToLayer1}></GeoJSON>;
-
-		return <GeoJSON data={centerpoints} pointToLayer={this.ArrowToLayer2}></GeoJSON>;
+		return <GeoJSON data={centerpoints} pointToLayer={this.ArrowToLayer}></GeoJSON>;
 	}
 
 	public getMapLayer() {
@@ -241,41 +238,22 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		}
 	}
 
-	public ArrowToLayer2(feature1: Feature, latlng: LatLngExpression) {
+	public ArrowToLayer(feature1: Feature, latlng: LatLngExpression) {
 		let label = 'textTest';
 		let geoDataJson;
 		let centerofFeature;
 
-		console.log('In ArrowLayer2 Center Koordinaten: ', this.centerpoint.Center1);
+		const classification = Classification.getCurrentClassification();
 
 		if (feature1.properties && this.props.nameField && this.props.items && this.props.theme == 'Saldi') {
-			//console.log('SelectedLocation: ', this.props.selectedLocation);
-			//console.log('nameField: ', feature1.properties[this.props.nameField]);
-			//			console.log(latlng.toString());
-			//			console.log(feature1.properties[this.props.nameField]);
 			for (let item of this.props.items) {
 				if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
-					console.log('Von: ', item.Von);
-					console.log('Nach: ', item.Nach);
-					console.log('Wert: ', item.Wert);
-
-					// @ts-ignore
-					/*centerofFeature = turf.centerOfMass(feature1);
-					console.log('Center of Feature: ', centerofFeature.geometry.coordinates.toString());
-					console.log('LatLng: ', latlng.toString());*/
-
 					if (this.props.showArrows) {
-						console.log('If 1 ');
 						if (feature1.properties && this.props.nameField) {
-							console.log('If 2, NameField ', feature1.properties[this.props.nameField]);
-							console.log('If 3 ');
-							console.log('If 3: Latlng from Feature: ', latlng);
-							console.log('If 3: Latlng from Selektiertem: ', this.centerpoint.Center1);
-
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								text: this.props.selectedLocation,
-								color: '#64A7D9',
+								color: classification.getColor(item),
 								textClassName: 'swoopy-arrow',
 								factor: 0.75,
 								weight: 1,
@@ -290,28 +268,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			}
 		}
 	}
-
-	/*	public ArrowToLayer1(feature1: Feature, latlng: LatLngExpression) {
-		let label = 'textTest';
-		let geoDataJson;
-		let centerofFeature;
-
-		console.log('ArrowLayer1');
-
-		if (feature1.properties && this.props.nameField) {
-			console.log('Featuer Name', feature1.properties[this.props.nameField]);
-			console.log('Selektiertes Gebiet: ', this.props.selectedLocation);
-
-			if (feature1.properties[this.props.nameField] == this.props.selectedLocation) {
-				// @ts-ignore
-				this.centerpoint.Center1 = turf.centerOfMass(feature1);
-
-				console.log('Center Koordinaten: ', this.centerpoint.Center1);
-				console.log('Ausgewähltes Gebiet1: ', feature1.properties[this.props.nameField]);
-				console.log('Ausgewähltes Gebiet2: ', this.props.selectedLocation);
-			}
-		}
-	}*/
 
 	public onEachFeature = (feature: Feature, layer: Layer) => {
 		let name = '';
