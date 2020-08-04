@@ -245,15 +245,47 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 		const classification = Classification.getCurrentClassification();
 
-		if (feature1.properties && this.props.nameField && this.props.items && this.props.theme == 'Saldi') {
-			for (let item of this.props.items) {
-				if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
-					if (this.props.showArrows) {
+		if (this.props.showArrows && feature1.properties && this.props.nameField && this.props.items) {
+			if (this.props.theme == 'Saldi') {
+				for (let item of this.props.items) {
+					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
+							if (item.Wert > 0) {
+								// @ts-ignore
+								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
+									text: this.props.selectedLocation,
+									color: '#0000FF',
+									textClassName: 'swoopy-arrow',
+									factor: 0.75,
+									weight: 1,
+									iconSize: [60, 20],
+									iconAnchor: [60, 5],
+								}).openTooltip();
+							} else if (item.Wert < 0) {
+								// @ts-ignore
+								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
+									text: this.props.selectedLocation,
+									color: '#FF0000',
+									textClassName: 'swoopy-arrow',
+									factor: 0.75,
+									weight: 1,
+									iconSize: [60, 20],
+									iconAnchor: [60, 5],
+								}).openTooltip();
+							}
+						}
+					}
+				}
+			} else if (this.props.theme == 'Von') {
+				for (let item of this.props.items) {
+					if (item.Von == this.props.selectedLocation && item.Nach == feature1.properties[this.props.nameField]) {
+						if (feature1.properties && this.props.nameField && item.Wert > 0) {
+							console.log('Nach: ', item.Nach, 'Wert: ', item.Wert);
+
 							// @ts-ignore
-							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
+							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								text: this.props.selectedLocation,
-								color: classification.getColor(item),
+								color: '#FF0000',
 								textClassName: 'swoopy-arrow',
 								factor: 0.75,
 								weight: 1,
@@ -261,11 +293,27 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 								iconAnchor: [60, 5],
 							}).openTooltip();
 						}
-					} else {
-						return;
 					}
 				}
 			}
+			if (this.props.theme == 'Nach') {
+				for (let item of this.props.items) {
+					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
+						if (feature1.properties && this.props.nameField && item.Wert > 0) {
+							// @ts-ignore
+							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
+								text: this.props.selectedLocation,
+								color: '#0000FF',
+								textClassName: 'swoopy-arrow',
+								factor: 0.75,
+								weight: 1,
+								iconSize: [60, 20],
+								iconAnchor: [60, 5],
+							}).openTooltip();
+						}
+					}
+				}
+			} else return;
 		}
 	}
 

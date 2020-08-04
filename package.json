@@ -41,6 +41,7 @@
 		"webpack": "4.30.0"
 	},
 	"dependencies": {
+		"@material-ui/core": "^4.11.0",
 		"@turf/nearest-point-to-line": "6.0.0",
 		"@turf/point-to-line-distance": "6.0.0",
 		"@turf/turf": "5.1.6",

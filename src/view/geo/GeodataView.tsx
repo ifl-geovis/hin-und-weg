@@ -5,6 +5,7 @@ import LeafletMapView from './LeafletMapView';
 import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
 import Config from '../../config';
+import { Slider } from 'primereact/slider';
 
 export interface IGeodataProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -27,7 +28,14 @@ interface IGeodataState {
 	showMap: boolean;
 	showArrows: boolean;
 	offlineMap: IOfflineMaps;
+	threshold: number;
 }
+
+const sliderStyle: React.CSSProperties = {
+	margin: '5%',
+	position: 'relative',
+	width: '90%',
+};
 
 export default class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	constructor(props: IGeodataProps) {
@@ -40,6 +48,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 			showLabels: true,
 			showMap: true,
 			showArrows: true,
+			threshold: 0,
 			offlineMap: {
 				label: 'Offline Map auswählen',
 				file: '',
@@ -51,6 +60,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	public render(): JSX.Element {
 		console.log('render von geodataview', Config.getValue('offline', 'maps'));
 
+		const domain: number[] = [100, 500];
+
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
@@ -58,6 +69,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 					<label className="p-checkbox-label chkBoxMap">zeige Namen</label>
 					<Checkbox inputId="showArrows" value="showArrows" onChange={this.onShowArrowChange} checked={this.state.showArrows}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Pfeile </label>
+					<input type="radio" name="center" value="1" /> zeige Namen
+					<input type="radio" name="center" value="2" /> zeige Pfeile
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
 
@@ -66,6 +79,13 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						options={Config.getValue('offline', 'maps')}
 						onChange={this.onOfflineMapChange}
 						placeholder={this.state.offlineMap.label}
+					/>
+					<Slider
+						min={0}
+						max={100}
+						value={this.state.threshold}
+						orientation="horizontal"
+						onChange={(e) => this.setState({ threshold: e.value as number })}
 					/>
 				</div>
 				<div className="p-col-12">
