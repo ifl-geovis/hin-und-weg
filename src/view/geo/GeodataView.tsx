@@ -6,6 +6,8 @@ import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
 import Config from '../../config';
 import { Slider } from 'primereact/slider';
+import { Class } from 'leaflet';
+import Classification from '../../data/Classification';
 
 export interface IGeodataProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -60,7 +62,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	public render(): JSX.Element {
 		console.log('render von geodataview', Config.getValue('offline', 'maps'));
 
-		const domain: number[] = [100, 500];
+		const classification = Classification.getCurrentClassification();
 
 		return (
 			<div className="p-grid">
@@ -73,7 +75,6 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 					<input type="radio" name="center" value="2" /> zeige Pfeile
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
-
 					<Dropdown
 						optionLabel="label"
 						options={Config.getValue('offline', 'maps')}
@@ -81,12 +82,13 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						placeholder={this.state.offlineMap.label}
 					/>
 					<Slider
-						min={0}
-						max={100}
+						min={classification.getMinValue()}
+						max={classification.getMaxValue()}
 						value={this.state.threshold}
 						orientation="horizontal"
 						onChange={(e) => this.setState({ threshold: e.value as number })}
-					/>
+					/>{' '}
+					Es werden alle Pfeile mit einer bei Weg oder Zuzügen über {this.state.threshold} angezeigt
 				</div>
 				<div className="p-col-12">
 					{/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
@@ -101,6 +103,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						showArrows={this.state.showArrows}
 						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
+						threshold={this.state.threshold}
 					/>
 				</div>
 				<div className="p-col-12">

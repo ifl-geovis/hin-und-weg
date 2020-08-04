@@ -22,6 +22,7 @@ export interface ILeafletMapViewProps {
 	showArrows: boolean;
 	offlineMap: IOfflineMaps;
 	theme: string;
+	threshold: number;
 }
 
 interface State {
@@ -57,7 +58,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let geomap;
 		let arrows;
 		let offlinemap;
-		let featurepoints;
 
 		console.log(this.props.items);
 
@@ -250,7 +250,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
-							if (item.Wert > 0) {
+							if (item.Wert > 0 && item.Wert > this.props.threshold) {
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									text: this.props.selectedLocation,
@@ -261,7 +261,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 									iconSize: [60, 20],
 									iconAnchor: [60, 5],
 								}).openTooltip();
-							} else if (item.Wert < 0) {
+							} else if (item.Wert < 0 && item.Wert < this.props.threshold) {
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									text: this.props.selectedLocation,
@@ -279,7 +279,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			} else if (this.props.theme == 'Von') {
 				for (let item of this.props.items) {
 					if (item.Von == this.props.selectedLocation && item.Nach == feature1.properties[this.props.nameField]) {
-						if (feature1.properties && this.props.nameField && item.Wert > 0) {
+						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold) {
 							console.log('Nach: ', item.Nach, 'Wert: ', item.Wert);
 
 							// @ts-ignore
@@ -299,7 +299,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			if (this.props.theme == 'Nach') {
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
-						if (feature1.properties && this.props.nameField && item.Wert > 0) {
+						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold) {
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								text: this.props.selectedLocation,

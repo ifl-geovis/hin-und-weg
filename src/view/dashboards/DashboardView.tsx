@@ -1,23 +1,21 @@
-import React from "react";
+import React from 'react';
 
-import Config from "../../config";
-import Log from "../../log";
+import Config from '../../config';
+import Log from '../../log';
 
-import Geodata from "../../model/Geodata";
-import {ITimelineD3Item} from "../charts/D3Timeline";
+import Geodata from '../../model/Geodata';
+import { ITimelineD3Item } from '../charts/D3Timeline';
 
-import ViewSwitcher from "./ViewSwitcher";
+import ViewSwitcher from './ViewSwitcher';
 
-export interface TableItem
-{
+export interface TableItem {
 	Von: string;
 	Nach: string;
 	Wert: number;
 	Absolutwert: number;
 }
 
-export interface StatisticPerYearAusgabe
-{
+export interface StatisticPerYearAusgabe {
 	Jahr: number;
 	Mean: number;
 	MeanZuzüge: number;
@@ -28,9 +26,8 @@ export interface StatisticPerYearAusgabe
 	max: number;
 }
 
-export interface IDashboardProps
-{
-	view:string;
+export interface IDashboardProps {
+	view: string;
 	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
 	items: TableItem[];
@@ -49,161 +46,124 @@ export interface IDashboardProps
 	addYear: (year: string) => void;
 }
 
-export default class DashboardView extends React.Component<IDashboardProps>
-{
-
-	constructor(props: IDashboardProps)
-	{
+export default class DashboardView extends React.Component<IDashboardProps> {
+	constructor(props: IDashboardProps) {
 		super(props);
 	}
 
-	public render(): JSX.Element
-	{
+	public render(): JSX.Element {
 		return this.selectCurrentView(this.props.view);
 	}
 
-	private getViewSwitcher(): JSX.Element
-	{
+	private getViewSwitcher(): JSX.Element {
 		return (
-			<ViewSwitcher geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} addYear={this.props.addYear} />
+			<ViewSwitcher
+				geodata={this.props.geodata}
+				db={this.props.db}
+				items={this.props.items}
+				statisticPerYearAusgabe={this.props.statisticPerYearAusgabe}
+				timeline={this.props.timeline}
+				geoName={this.props.geoName}
+				geoId={this.props.geoId}
+				locations={this.props.locations}
+				location={this.props.location}
+				theme={this.props.theme}
+				yearsAvailable={this.props.yearsAvailable}
+				onSelectLocation={this.props.onSelectLocation}
+				setGeodata={this.props.setGeodata}
+				setGeoName={this.props.setGeoName}
+				setGeoId={this.props.setGeoId}
+				addYear={this.props.addYear}
+			/>
 		);
 	}
 
-	private selectCurrentView(view: string): JSX.Element
-	{
-		if (view == "t1b1") return this.select_t1b1();
-		if (view == "l1r1") return this.select_l1r1();
-		if (view == "t1b2") return this.select_t1b2();
-		if (view == "t2b1") return this.select_t2b1();
-		if (view == "l1r2") return this.select_l1r2();
-		if (view == "v3") return this.select_v3();
-		if (view == "l2r2") return this.select_l2r2();
+	private selectCurrentView(view: string): JSX.Element {
+		if (view == 't1b1') return this.select_t1b1();
+		if (view == 'l1r1') return this.select_l1r1();
+		if (view == 't1b2') return this.select_t1b2();
+		if (view == 't2b1') return this.select_t2b1();
+		if (view == 'l1r2') return this.select_l1r2();
+		if (view == 'v3') return this.select_v3();
+		if (view == 'l2r2') return this.select_l2r2();
 		return this.getViewSwitcher();
 	}
 
-	private select_t1b1(): JSX.Element
-	{
+	private select_t1b1(): JSX.Element {
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-12">
-					{viewswitcher}
-				</div>
-				<div className="p-col-12">
-					{viewswitcher}
+				<div className="p-col-12">{viewswitcher}</div>
+				<div className="p-col-12">{viewswitcher}</div>
+			</div>
+		);
+	}
+
+	private select_l1r1(): JSX.Element {
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-6">{viewswitcher}</div>
+			</div>
+		);
+	}
+
+	private select_t1b2(): JSX.Element {
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-12">{viewswitcher}</div>
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-6">{viewswitcher}</div>
+			</div>
+		);
+	}
+
+	private select_t2b1(): JSX.Element {
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-12">{viewswitcher}</div>
+			</div>
+		);
+	}
+
+	private select_l1r2(): JSX.Element {
+		let viewswitcher = this.getViewSwitcher();
+		return (
+			<div className="p-grid">
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-6">
+					<div className="p-col-12">{viewswitcher}</div>
+					<div className="p-col-12">{viewswitcher}</div>
 				</div>
 			</div>
 		);
 	}
 
-	private select_l1r1(): JSX.Element
-	{
+	private select_v3(): JSX.Element {
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
+				<div className="p-col-4">{viewswitcher}</div>
+				<div className="p-col-4">{viewswitcher}</div>
+				<div className="p-col-4">{viewswitcher}</div>
 			</div>
 		);
 	}
 
-	private select_t1b2(): JSX.Element
-	{
+	private select_l2r2(): JSX.Element {
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-12">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-6">{viewswitcher}</div>
+				<div className="p-col-6">{viewswitcher}</div>
 			</div>
 		);
 	}
-
-	private select_t2b1(): JSX.Element
-	{
-		let viewswitcher = this.getViewSwitcher();
-		return (
-			<div className="p-grid">
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-12">
-					{viewswitcher}
-				</div>
-			</div>
-		);
-	}
-
-	private select_l1r2(): JSX.Element
-	{
-		let viewswitcher = this.getViewSwitcher();
-		return (
-			<div className="p-grid">
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					<div className="p-col-12">
-						{viewswitcher}
-					</div>
-					<div className="p-col-12">
-						{viewswitcher}
-					</div>
-				</div>
-			</div>
-		);
-	}
-
-	private select_v3(): JSX.Element
-	{
-		let viewswitcher = this.getViewSwitcher();
-		return (
-			<div className="p-grid">
-				<div className="p-col-4">
-					{viewswitcher}
-				</div>
-				<div className="p-col-4">
-					{viewswitcher}
-				</div>
-				<div className="p-col-4">
-					{viewswitcher}
-				</div>
-			</div>
-		);
-	}
-
-	private select_l2r2(): JSX.Element
-	{
-		let viewswitcher = this.getViewSwitcher();
-		return (
-			<div className="p-grid">
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-				<div className="p-col-6">
-					{viewswitcher}
-				</div>
-			</div>
-		);
-	}
-
 }
