@@ -82,7 +82,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						placeholder={this.state.offlineMap.label}
 					/>
 					<Slider
-						min={classification.getMinValue()}
+						min={0}
 						max={classification.getMaxValue()}
 						value={this.state.threshold}
 						orientation="horizontal"
