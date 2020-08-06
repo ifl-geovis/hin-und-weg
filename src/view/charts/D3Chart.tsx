@@ -102,9 +102,13 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
     private drawBarChartH(data: ID3ChartItem[], theme: string) {
      
       const svgBarChart = select(this.svgRef!);        
-
+      let nach = data.map(d => d.Nach);
+      let von = data.map(d => d.Von);
+      let names = nach.concat(von);
+      let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
       let heightResponsive = (data.length <= 2 )? data.length*50 : (data.length >2 && data.length <= 5) ? data.length*35 : (data.length > 5 && data.length < 30) ? data.length* 25 : data.length*20;
-      let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: 150}
+
+      let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength*9}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
       let HEIGHT = heightResponsive - MARGIN.TOP - MARGIN.BOTTOM;
      
@@ -137,6 +141,15 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
             .range([0,HEIGHT])
             .padding(0.1)
 
+            // gridlines in x axis function
+       let   make_x_gridlines = () => {		
+        return d3.axisBottom(x)
+        }
+
+        // gridlines in y axis function
+        let make_y_gridlines = () => {		
+            return d3.axisLeft(y)
+        }
         const yAxisCall = d3.axisLeft(y)
               yAxisGroup
                 .call(yAxisCall)
@@ -149,7 +162,24 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                 .call(xAxisCall)
                 .attr("class", "axis axis--x")
 
+        // add the X gridlines
+        barChart.append("g")			
+        .classed("gridLine", true)
+        .attr("transform", "translate(0," + HEIGHT + ")")
+        .style("fill", "none" )
+        .call(make_x_gridlines()
+            .tickSize(-HEIGHT)
+            .tickFormat(() => '')
+            
+        )
 
+        // add the Y gridlines
+        barChart.append("g")			
+        .classed("gridLine", true)
+        .call(make_y_gridlines()
+            .tickSize(-WIDTH)
+            .tickFormat(() => '')
+        )
         let rects = barChart.append("g")  
           .attr("class", "rects")
           .selectAll(".bar")
@@ -259,17 +289,44 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
             .range([0,HEIGHT])
             .padding(0.1)
 
+          // gridlines in x axis function
+          let   make_x_gridlines = () => {		
+            return d3.axisBottom(x)
+            }
+
+            // gridlines in y axis function
+            let make_y_gridlines = () => {		
+                return d3.axisLeft(y)
+            }
             const yAxisCall = d3.axisLeft(y)
             yAxisGroup
               .call(yAxisCall)
               .attr("class", "axis axis--y")
               .style("font-size", "12px")
 
-      const xAxisCall = d3.axisBottom(x)
+           const xAxisCall = d3.axisBottom(x)
             xAxisGroup
               .call(xAxisCall)
               .attr("class", "axis axis--x")
 
+          // add the X gridlines
+          barChart.append("g")			
+          .classed("gridLine", true)
+          .attr("transform", "translate(0," + HEIGHT + ")")
+          .style("fill", "none" )
+          .call(make_x_gridlines()
+              .tickSize(-HEIGHT)
+              .tickFormat(() => '')
+              
+          )
+
+        // add the Y gridlines
+        barChart.append("g")			
+          .classed("gridLine", true)
+          .call(make_y_gridlines()
+              .tickSize(-WIDTH)
+              .tickFormat(() => '')
+          )
       function select_axis_label(datum: ID3ChartItem) {
           return d3.select('.axis--y')
             .selectAll('text')
@@ -381,19 +438,47 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
             .rangeRound ([0, HEIGHT])
             .padding(0.1)
 
+          // gridlines in x axis function
+          let   make_x_gridlines = () => {		
+            return d3.axisBottom(x)
+            }
+
+            // gridlines in y axis function
+            let make_y_gridlines = () => {		
+                return d3.axisLeft(y)
+            }
+
+            const yAxisCall = d3.axisLeft(y)
+            yAxisGroup
+              .call(yAxisCall)
+              .attr("class", "axis axis--y")
+              // .selectAll(".tick text")
+              .style("font-size", "12px")
+
           const xAxisCall = d3.axisBottom(x)
-              xAxisGroup.transition().duration(500)
+              xAxisGroup
+              // .transition().duration(500)
                 .call(xAxisCall)
                 .attr("class", "axis axis--x")
                 
-          const yAxisCall = d3.axisLeft(y)
-              yAxisGroup
-                .call(yAxisCall)
-                .attr("class", "axis axis--y")
-                .selectAll(".tick text")
-                .style("font-size", "12px")
+            // add the X gridlines
+            barChart.append("g")			
+            .classed("gridLine", true)
+            .attr("transform", "translate(0," + HEIGHT + ")")
+            .style("fill", "none" )
+            .call(make_x_gridlines()
+                .tickSize(-HEIGHT)
+                .tickFormat(() => '')
+                
+            )
 
-
+          // add the Y gridlines
+          barChart.append("g")			
+            .classed("gridLine", true)
+            .call(make_y_gridlines()
+                .tickSize(-WIDTH)
+                .tickFormat(() => '')
+            )
           function select_axis_label(datum: ID3ChartItem) {
             return d3.select('.axis--y')
               .selectAll('text')

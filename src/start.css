@@ -1,9 +1,7 @@
-body
-{
+body {
 }
 
-p.status
-{
+p.status {
 	font-style: italic;
 	font-weight: 10%;
 	padding: 10px;
@@ -16,28 +14,23 @@ p.status
 	min-height: 65px;
 }
 
-img.logo
-{
+img.logo {
 	float: right;
 }
 
-div.status-progress
-{
+div.status-progress {
 	color: #9e810c;
 }
 
-div.status-success
-{
+div.status-success {
 	color: #14cc1a;
 }
 
-div.status-failure
-{
+div.status-failure {
 	color: #ad0505;
 }
 
-div.viewswitcher
-{
+div.viewswitcher {
 	padding: 0.5em;
 	border-width: medium;
 	border-style: solid;
@@ -46,28 +39,35 @@ div.viewswitcher
 
 /* Prime React */
 
-.p-tabview.p-tabview-right > div.p-tabview-panels
-{
+.p-tabview.p-tabview-right > div.p-tabview-panels {
 	width: 85%;
 }
 
-.p-tabview.p-tabview-right > ul.p-tabview-nav
-{
+.p-tabview.p-tabview-right > ul.p-tabview-nav {
 	width: 15%;
 }
 
-ul.p-tabview-nav li a
-{
+ul.p-tabview-nav li a {
 	width: 100%;
 }
 
 .leaflet-container {
-    height: 700px;
-    width: 1100px;
+	height: 700px;
+	width: 100%;
 }
 
 .leaflet-tooltip.district-label {
 	background-color: white;
 	border: transparent;
 	box-shadow: none;
-	}
+}
+
+.chkBoxMap {
+	margin-right: 1em !important;
+}
+
+.gridLine path, .gridLine line{
+    fill: none;
+    shape-rendering: crispedges;
+    stroke: #d9d9d9;   
+  }

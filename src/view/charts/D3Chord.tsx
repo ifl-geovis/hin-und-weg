@@ -27,7 +27,7 @@ interface ID3ChordState
 {
   threshold: number;
   rangeValues: [number, number],
-  checked: boolean 
+  checked: boolean,
 }
 
 export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
@@ -41,7 +41,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     this.state = {
       threshold: 0,
       rangeValues: [0, 0],
-      checked: false
+      checked: false,
     }
   }
 
@@ -105,9 +105,13 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     // DRAW D3 CHART
     private drawChordChart (data: ID3ChordItem[], theme: string, id: string | undefined) {
      
-      const svgChord = select(this.svgRef!);        
+      const svgChord = select(this.svgRef!); 
+      let nach = data.map(d => d.Nach);
+      let von = data.map(d => d.Von);
+      let names = nach.concat(von);
+      let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));       
 
-      let MARGIN = {TOP: 100, RIGHT: 100, BOTTOM: 100, LEFT: 100}
+      let MARGIN = {TOP: maxNameLength*5.3, RIGHT: maxNameLength*5.3, BOTTOM: maxNameLength*5.3, LEFT: maxNameLength*5.3}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
       let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
 
@@ -874,6 +878,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             
           <div className="p-col-12">
             <Checkbox
+              name = "saldiChord"
               onChange={(e: { value: any, checked: boolean }) => this.setState({checked: e.checked})}
               checked={this.state.checked}
               disabled= {(this.props.theme === 'Saldi') ? false : true}
