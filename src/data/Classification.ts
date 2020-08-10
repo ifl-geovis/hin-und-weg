@@ -32,10 +32,15 @@ export default class Classification {
 		return Classification.current;
 	}
 
-	public getColor(item: { [name: string]: any }) {
+	public getBorderColor(item: { [name: string]: any }) {
 		if (item == null) return this.error_color;
 		if (this.theme === 'Von' && this.location === item.Nach) return this.selected_color;
 		if (!(this.theme === 'Von') && this.location === item.Von) return this.selected_color;
+		else return '#585858';
+	}
+
+	public getColor(item: { [name: string]: any }) {
+		if (item == null) return this.error_color;
 		if (item.Wert == 0) return this.neutral_color;
 		if (item.Wert > 0) {
 			if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];

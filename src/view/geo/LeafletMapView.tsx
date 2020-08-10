@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Map, TileLayer, GeoJSON, ImageOverlay, CircleMarker } from 'react-leaflet';
+import { Pane, Map, TileLayer, GeoJSON, ImageOverlay, CircleMarker } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import { Feature, FeatureCollection } from 'geojson';
@@ -50,7 +50,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		this.style = this.style.bind(this);
 		this.pointToLayer = this.pointToLayer.bind(this);
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
-		this.CenterMarkerToLayer = this.CenterMarkerToLayer.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -61,6 +60,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let arrows;
 		let offlinemap;
 		let centerMarker;
+		let selectedFeature;
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
@@ -68,6 +68,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			if (this.props.showLabels) labels = this.getLabels();
 			else if (this.props.showArrows) arrows = this.getArrows();
 			if (this.centerpoint.Center1 != null) centerMarker = this.CenterMarker();
+
+			for (let i = 0; i < geoDataJson.features.length; i++) {
+				if (geoDataJson.features[i].properties!.Name == this.props.selectedLocation) {
+					selectedFeature = geoDataJson.features[i];
+				}
+			}
 
 			if (this.props.showMap) geomap = this.getMapLayer();
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
@@ -77,9 +83,13 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 				{geomap}
 				{offlinemap}
 				<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
-				{arrows}
+				<Pane name="ArrowPane" style={{ zIndex: 800 }}>
+					{arrows}
+				</Pane>
 				{labels}
-				{centerMarker}
+				<Pane name="centerMarker" style={{ zIndex: 900 }}>
+					{centerMarker}
+				</Pane>
 			</Map>
 		);
 	}
@@ -111,8 +121,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			centerpoints = this.generateCenterPoints(geoDataJson);
 		}
 
-		return <CircleMarker center={this.centerpoint.Center1} radius={6} color={'#FFFFFF'} fillColor={'FFFFFF'}></CircleMarker>;
-		//<GeoJSON data={centerpoints} pointToLayer={this.CenterMarkerToLayer}></GeoJSON>;
+		return <CircleMarker center={this.centerpoint.Center1} radius={5} color="#ffffff" fillColor="#ffffff"></CircleMarker>;
 	}
 
 	public getArrows() {
@@ -146,24 +155,36 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 	public style(feature: Feature) {
 		let hexcolor;
+		let hexBodercolor;
 		const classification = Classification.getCurrentClassification();
 		let name = 'Fehler!!!';
 		if (feature.properties) name = String(feature.properties.Name);
+		console.log('Name: ', name);
 		if (feature.properties && this.props.nameField) name = String(feature.properties[this.props.nameField]);
 
-		if (this.props.items && this.props.items.length > 1) {
+		if (this.props.items && this.props.items.length > 0) {
 			switch (this.props.theme) {
 				case 'Von': {
 					for (let item of this.props.items) {
 						if (feature.properties)
 							if (item.Nach === name) {
+								console.log('Von drinnen: ', name);
 								hexcolor = classification.getColor(item);
+								hexBodercolor = classification.getBorderColor(item);
 
-								return {
-									fillColor: hexcolor,
-									color: '#585858',
-									fillOpacity: 0.75,
-								};
+								if (hexcolor != '#585858') {
+									return {
+										fillColor: hexcolor,
+										color: hexBodercolor,
+										fillOpacity: 0.75,
+										bringToFront: true,
+									};
+								} else
+									return {
+										fillColor: hexcolor,
+										color: hexBodercolor,
+										fillOpacity: 0.75,
+									};
 							}
 					}
 
@@ -173,11 +194,13 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 					for (let item of this.props.items) {
 						if (feature.properties)
 							if (item.Von === name) {
+								console.log('Nach drinnen: ', name);
 								hexcolor = classification.getColor(item);
+								hexBodercolor = classification.getBorderColor(item);
 
 								return {
 									fillColor: hexcolor,
-									color: '#585858',
+									color: hexBodercolor,
 									fillOpacity: 0.75,
 								};
 							}
@@ -190,6 +213,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 						if (feature.properties)
 							if (item.Von === name) {
 								hexcolor = classification.getColor(item);
+								hexBodercolor = classification.getBorderColor(item);
 
 								return {
 									fillColor: hexcolor,
@@ -249,18 +273,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		}
 	}
 
-	public CenterMarkerToLayer(feature1: Feature, latlng: LatLngExpression) {
-		const classification = Classification.getCurrentClassification();
-
-		if (this.centerpoint.Center1 != null) {
-			return new L.CircleMarker(this.centerpoint.Center1, {
-				radius: 6,
-				fillColor: classification.getSelectedColor(),
-				color: '#FFFFFF',
-			}).bringToFront();
-		} else return;
-	}
-
 	public ArrowToLayer(feature1: Feature, latlng: LatLngExpression) {
 		let label = 'textTest';
 		let geoDataJson;
@@ -278,6 +290,22 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
+								<defs>
+									<marker
+										id="arrow"
+										viewBox="0 0 10 10"
+										refX="5"
+										refY="5"
+										markerWidth="6"
+										markerHeight="6"
+										orient="auto-start-reverse"
+									>
+										<path d="M 0 0 L 10 5 L 0 10 z" />
+									</marker>
+									<marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5">
+										<circle cx="5" cy="5" r="5" fill="red" />
+									</marker>
+								</defs>;
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									text: this.props.selectedLocation,
@@ -291,6 +319,22 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 									arrowId: 'dot',
 								}).openTooltip();
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
+								<defs>
+									<marker
+										id="arrow"
+										viewBox="0 0 10 10"
+										refX="5"
+										refY="5"
+										markerWidth="6"
+										markerHeight="6"
+										orient="auto-start-reverse"
+									>
+										<path d="M 0 0 L 10 5 L 0 10 z" />
+									</marker>
+									<marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5">
+										<circle cx="5" cy="5" r="5" fill="red" />
+									</marker>
+								</defs>;
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									text: this.props.selectedLocation,
@@ -311,6 +355,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 				for (let item of this.props.items) {
 					if (item.Von == this.props.selectedLocation && item.Nach == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
+							<defs>
+								<marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+									<path d="M 0 0 L 10 5 L 0 10 z" />
+								</marker>
+								<marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5">
+									<circle cx="5" cy="5" r="5" fill="red" />
+								</marker>
+							</defs>;
 							// @ts-ignore
 							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								text: this.props.selectedLocation,
@@ -331,6 +383,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
+							<defs>
+								<marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+									<path d="M 0 0 L 10 5 L 0 10 z" />
+								</marker>
+								<marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5">
+									<circle cx="5" cy="5" r="5" fill="red" />
+								</marker>
+							</defs>;
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								text: this.props.selectedLocation,
@@ -356,6 +416,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		layer.on('click', (e) => {
 			if (feature.properties && this.props.nameField) name = feature.properties[this.props.nameField];
 			this.props.onSelectLocation(name);
+
+			console.log(e);
+			this.style(feature);
 		});
 	};
 }
