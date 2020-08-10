@@ -19,6 +19,7 @@ export interface ILeafletMapViewProps {
 	selectedLocation?: string | null;
 	onSelectLocation: (newLocation: string) => void;
 	showLabels: boolean;
+	showValues: boolean;
 	showMap: boolean;
 	showArrows: boolean;
 	offlineMap: IOfflineMaps;
@@ -257,6 +258,19 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let label = 'textTest';
 		if (this.props.showLabels) {
 			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+
+			return new L.CircleMarker(latlng, {
+				radius: 1,
+			})
+				.bindTooltip(label, {
+					permanent: true,
+					opacity: 0.7,
+					className: 'district-label',
+					direction: 'center',
+				})
+				.openTooltip();
+		} else if (this.props.showValues) {
+			if (feature1.properties && this.props.nameField) label = String(feature1.properties.Wert);
 
 			return new L.CircleMarker(latlng, {
 				radius: 1,

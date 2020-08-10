@@ -27,6 +27,7 @@ export interface IOfflineMaps {
 
 interface IGeodataState {
 	showLabels: boolean;
+	showValues: boolean;
 	showMap: boolean;
 	showArrows: boolean;
 	offlineMap: IOfflineMaps;
@@ -48,6 +49,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
 			showLabels: true,
+			showValues: true,
 			showMap: true,
 			showArrows: true,
 			threshold: 0,
@@ -99,6 +101,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						selectedLocation={this.props.selectedLocation}
 						onSelectLocation={this.props.onSelectLocation}
 						showLabels={this.state.showLabels}
+						showValues={this.state.showValues}
 						showMap={this.state.showMap}
 						showArrows={this.state.showArrows}
 						offlineMap={this.state.offlineMap}
