@@ -4,7 +4,7 @@ import Legend from '../elements/Legend';
 import LeafletMapView from './LeafletMapView';
 import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
-import Config from '../../config';
+import OfflineMaps, { IOfflineMaps } from '../../data/OfflineMaps';
 
 export interface IGeodataProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -14,12 +14,6 @@ export interface IGeodataProps {
 	selectedLocation?: string | null;
 	onSelectLocation: (newLocation: string) => void;
 	theme: string;
-}
-
-export interface IOfflineMaps {
-	label: string;
-	file: string;
-	bounds: Array<Array<number>>;
 }
 
 interface IGeodataState {
@@ -46,8 +40,6 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	}
 
 	public render(): JSX.Element {
-		console.log('render von geodataview', Config.getValue('offline', 'maps'));
-
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
@@ -57,7 +49,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
 					<Dropdown
 						optionLabel="label"
-						options={Config.getValue('offline', 'maps')}
+						options={OfflineMaps.getCurrentOfflineMaps().getData()}
 						onChange={this.onOfflineMapChange}
 						placeholder={this.state.offlineMap.label}
 					/>
