@@ -1,15 +1,17 @@
-
-import alasql from "alasql";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import AppView from "./view/App";
+import alasql from 'alasql';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import AppView from './view/App';
+import OfflineMaps from './data/OfflineMaps';
 
 function setupDB() {
-    const DB = alasql;
-    DB("CREATE DATABASE hin_und_weg");
-    DB("USE hin_und_weg");
-    DB("CREATE TABLE matrices (Nach STRING,Von STRING ,Jahr STRING ,Wert FLOAT);");
-    return DB;
+	const DB = alasql;
+	DB('CREATE DATABASE hin_und_weg');
+	DB('USE hin_und_weg');
+	DB('CREATE TABLE matrices (Nach STRING,Von STRING ,Jahr STRING ,Wert FLOAT);');
+	return DB;
 }
 
-ReactDOM.render(<AppView db={setupDB()}/>, document.getElementById("root"));
+OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
+
+ReactDOM.render(<AppView db={setupDB()} />, document.getElementById('root'));

@@ -7,7 +7,7 @@ import L, { Layer, LatLngExpression } from 'leaflet';
 import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
 import Classification from '../../data/Classification';
-import { IOfflineMaps } from './GeodataView';
+import { IOfflineMaps } from '../../data/OfflineMaps';
 
 export interface ILeafletMapViewProps {
 	items?: Array<{ [name: string]: any }> | null;
