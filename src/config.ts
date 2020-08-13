@@ -4,6 +4,7 @@ export default class Config
 {
 
 	private static profile: string = (<any>config)["profile"];
+	private static version: string = (<any>config)["version"];
 	private static def: any = (<any>config)["default"];
 	private static conf: any = (<any>config)[Config.profile];
 
@@ -23,6 +24,11 @@ export default class Config
 	public static getProfile(): string
 	{
 		return Config.profile;
+	}
+
+	public static getVersion(): string
+	{
+		return (Config.profile == 'development') ? Config.version + "-dev" :  Config.version;
 	}
 
 	public static getValue(section: string, key: string): any

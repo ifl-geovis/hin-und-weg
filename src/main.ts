@@ -14,7 +14,7 @@ function createWindow()
 			height: 960,
 			width: 1400,
 			// tslint:disable-next-line: object-literal-sort-keys
-			title: "hin&weg " + process.env.npm_package_version,
+			title: "hin&weg " + Config.getVersion(),
 		});
 
 	// and load the index.html of the app.
