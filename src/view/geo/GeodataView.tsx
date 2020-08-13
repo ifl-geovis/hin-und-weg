@@ -43,6 +43,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	constructor(props: IGeodataProps) {
 		super(props);
 		this.onShowCenterChange = this.onShowCenterChange.bind(this);
+		this.onSliderChange = this.onSliderChange.bind(this);
+		this.onShowMapChange = this.onShowMapChange.bind(this);
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
 			showCenter: '1',
@@ -64,30 +66,12 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
-					Namen anzeigen:{' '}
-					<RadioButton
-						inputId="rb1"
-						name="center"
-						value="1"
-						onChange={this.onShowCenterChange}
-						checked={this.state.showCenter === '1'}
-					></RadioButton>
-					Pfeile anzeigen:
-					<RadioButton
-						inputId="rb2"
-						name="center"
-						value="2"
-						onChange={this.onShowCenterChange}
-						checked={this.state.showCenter === '2'}
-					></RadioButton>
-					Anzahl Umzüge anzeigen:
-					<RadioButton
-						inputId="rb3"
-						name="center"
-						value="3"
-						onChange={this.onShowCenterChange}
-						checked={this.state.showCenter === '3'}
-					></RadioButton>
+					<RadioButton inputId="rb1" name="center" value="1" onChange={this.onShowCenterChange} checked={this.state.showCenter === '1'} />
+					Namen anzeigen{'		 '}
+					<RadioButton inputId="rb2" name="center" value="2" onChange={this.onShowCenterChange} checked={this.state.showCenter === '2'} />
+					Pfeile anzeigen{'		 '}
+					<RadioButton inputId="rb3" name="center" value="3" onChange={this.onShowCenterChange} checked={this.state.showCenter === '3'} />
+					Anzahl Umzüge anzeigen
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
 					<Dropdown
@@ -101,7 +85,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						max={classification.getMaxValue()}
 						value={this.state.threshold}
 						orientation="horizontal"
-						onChange={(e) => this.setState({ threshold: e.value as number })}
+						onChange={this.onSliderChange}
 					/>{' '}
 					Es werden alle Pfeile mit einer bei Weg oder Zuzügen über {this.state.threshold} angezeigt
 				</div>
@@ -129,6 +113,10 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
 	private onShowCenterChange(e: { originalEvent: Event; value: string; checked: boolean }) {
 		this.setState({ showCenter: e.value });
+	}
+
+	private onSliderChange(e: { originalEvent: Event; value: number }) {
+		this.setState({ threshold: e.value as number });
 	}
 
 	private onShowMapChange(e: { originalEvent: Event; value: string; checked: boolean }) {

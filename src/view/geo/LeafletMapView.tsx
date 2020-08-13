@@ -63,7 +63,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let centerMarker;
 		let selectedFeature;
 
+		console.log('Render Leafmapview');
+
 		if (this.props.geodata) {
+			console.log('Render Leafmapview Geodata');
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			centerOfMap = this.calcMapCenter(geoDataJson);
 			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
@@ -148,6 +151,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 	public getArrows() {
 		let geoDataJson;
 		let centerpoints;
+
+		console.log('getArrows');
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
@@ -352,7 +357,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 		const classification = Classification.getCurrentClassification();
 
-		if (this.props.showCenter === '2' && feature1.properties && this.props.nameField && this.props.items) {
+		console.log('ArrowToLayer');
+
+		if (feature1.properties && this.props.nameField && this.props.items) {
 			if (this.props.theme == 'Saldi') {
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
