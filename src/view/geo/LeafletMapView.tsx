@@ -18,10 +18,8 @@ export interface ILeafletMapViewProps {
 	nameField?: string | null;
 	selectedLocation?: string | null;
 	onSelectLocation: (newLocation: string) => void;
-	showLabels: boolean;
-	showValues: boolean;
+	showCenter: String;
 	showMap: boolean;
-	showArrows: boolean;
 	offlineMap: IOfflineMaps;
 	theme: string;
 	threshold: number;
@@ -68,9 +66,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			centerOfMap = this.calcMapCenter(geoDataJson);
-			if (this.props.showLabels) labelsNames = this.getLabelsNames();
-			else if (this.props.showArrows) arrows = this.getArrows();
-			else if (this.props.showValues) labelsValues = this.getLabelsValues();
+			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
+			else if (this.props.showCenter === '2') arrows = this.getArrows();
+			else if (this.props.showCenter === '3') labelsValues = this.getLabelsValues();
 			if (this.centerpoint.Center1 != null) centerMarker = this.CenterMarker();
 
 			for (let i = 0; i < geoDataJson.features.length; i++) {
@@ -193,19 +191,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 								hexcolor = classification.getColor(item);
 								hexBodercolor = classification.getBorderColor(item);
 
-								if (hexcolor != '#585858') {
-									return {
-										fillColor: hexcolor,
-										color: hexBodercolor,
-										fillOpacity: 0.75,
-										bringToFront: true,
-									};
-								} else
-									return {
-										fillColor: hexcolor,
-										color: hexBodercolor,
-										fillOpacity: 0.75,
-									};
+								return {
+									fillColor: hexcolor,
+									color: hexBodercolor,
+									fillOpacity: 0.75,
+								};
 							}
 					}
 
@@ -278,7 +268,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		let name = 'Fehler!!!';
 		if (feature1.properties) name = String(feature1.properties.Name);
 
-		if (this.props.showLabels) {
+		if (this.props.showCenter === '1') {
 			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
 
 			return new L.CircleMarker(latlng, {
@@ -302,7 +292,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 		if (feature1.properties) name = String(feature1.properties.Name);
 
-		if (this.props.showValues) {
+		if (this.props.showCenter === '3') {
 			if (this.props.items && this.props.items.length > 0) {
 				switch (this.props.theme) {
 					case 'Von': {
@@ -362,7 +352,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 
 		const classification = Classification.getCurrentClassification();
 
-		if (this.props.showArrows && feature1.properties && this.props.nameField && this.props.items) {
+		if (this.props.showCenter === '2' && feature1.properties && this.props.nameField && this.props.items) {
 			if (this.props.theme == 'Saldi') {
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {

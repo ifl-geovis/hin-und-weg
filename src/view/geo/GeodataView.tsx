@@ -4,6 +4,7 @@ import Legend from '../elements/Legend';
 import LeafletMapView from './LeafletMapView';
 import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
+import { RadioButton } from 'primereact/radiobutton';
 import Config from '../../config';
 import { Slider } from 'primereact/slider';
 import { Class } from 'leaflet';
@@ -26,10 +27,8 @@ export interface IOfflineMaps {
 }
 
 interface IGeodataState {
-	showLabels: boolean;
-	showValues: boolean;
+	showCenter: String;
 	showMap: boolean;
-	showArrows: boolean;
 	offlineMap: IOfflineMaps;
 	threshold: number;
 }
@@ -43,16 +42,11 @@ const sliderStyle: React.CSSProperties = {
 export default class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	constructor(props: IGeodataProps) {
 		super(props);
-		this.onShowLabelsChange = this.onShowLabelsChange.bind(this);
-		this.onShowMapChange = this.onShowMapChange.bind(this);
-		this.onShowArrowChange = this.onShowArrowChange.bind(this);
-		this.onShowValueChange = this.onShowValueChange.bind(this);
+		this.onShowCenterChange = this.onShowCenterChange.bind(this);
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
-			showLabels: true,
-			showValues: true,
+			showCenter: '1',
 			showMap: true,
-			showArrows: true,
 			threshold: 0,
 			offlineMap: {
 				label: 'Offline Map auswählen',
@@ -70,15 +64,30 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
-					<Checkbox inputId="showlabels" value="showlabels" onChange={this.onShowLabelsChange} checked={this.state.showLabels}></Checkbox>
-					<label className="p-checkbox-label chkBoxMap">zeige Namen</label>
-					<Checkbox inputId="showArrows" value="showArrows" onChange={this.onShowArrowChange} checked={this.state.showArrows}></Checkbox>
-					<label className="p-checkbox-label chkBoxMap">zeige Pfeile </label>
-					<Checkbox inputId="showValues" value="showValues" onChange={this.onShowValueChange} checked={this.state.showValues}></Checkbox>
-					<label className="p-checkbox-label chkBoxMap">zeige Anzahl Umzüge </label>
-					<input type="radio" name="center" value="1" /> zeige Namen
-					<input type="radio" name="center" value="2" /> zeige Pfeile
-					<input type="radio" name="center" value="3" /> zeige Anzahl Umzüge
+					Namen anzeigen:{' '}
+					<RadioButton
+						inputId="rb1"
+						name="center"
+						value="1"
+						onChange={this.onShowCenterChange}
+						checked={this.state.showCenter === '1'}
+					></RadioButton>
+					Pfeile anzeigen:
+					<RadioButton
+						inputId="rb2"
+						name="center"
+						value="2"
+						onChange={this.onShowCenterChange}
+						checked={this.state.showCenter === '2'}
+					></RadioButton>
+					Anzahl Umzüge anzeigen:
+					<RadioButton
+						inputId="rb3"
+						name="center"
+						value="3"
+						onChange={this.onShowCenterChange}
+						checked={this.state.showCenter === '3'}
+					></RadioButton>
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
 					<Dropdown
@@ -104,10 +113,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						items={this.props.items}
 						selectedLocation={this.props.selectedLocation}
 						onSelectLocation={this.props.onSelectLocation}
-						showLabels={this.state.showLabels}
-						showValues={this.state.showValues}
+						showCenter={this.state.showCenter}
 						showMap={this.state.showMap}
-						showArrows={this.state.showArrows}
 						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
 						threshold={this.state.threshold}
@@ -120,20 +127,12 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		);
 	}
 
-	private onShowLabelsChange(e: { originalEvent: Event; value: string; checked: boolean }) {
-		this.setState({ showLabels: e.checked });
+	private onShowCenterChange(e: { originalEvent: Event; value: string; checked: boolean }) {
+		this.setState({ showCenter: e.value });
 	}
 
 	private onShowMapChange(e: { originalEvent: Event; value: string; checked: boolean }) {
 		this.setState({ showMap: e.checked });
-	}
-
-	private onShowArrowChange(e: { originalEvent: Event; value: string; checked: boolean }) {
-		this.setState({ showArrows: e.checked });
-	}
-
-	private onShowValueChange(e: { originalEvent: Event; value: string; checked: boolean }) {
-		this.setState({ showValues: e.checked });
 	}
 
 	private onOfflineMapChange(e: { value: IOfflineMaps }) {
