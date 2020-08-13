@@ -19,7 +19,7 @@ export interface IStatisticPerYearAusgabe
 	Jahr: number;
 	Mean: number;
 	MeanZuzüge: number;
-	MeanWegzüge: number;	
+	MeanWegzüge: number;
 	MedianZuzüge: number;
 	MedianWegzüge: number;
 	min: number;
@@ -64,7 +64,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		const years = this.getYears();
 		return (
 			<div>
-				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
+				<table>
 					<tbody>
 						<tr>
 							<th align="right">Mittelwert:</th>
@@ -99,28 +99,27 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 				<br></br>
 				<br></br>
-				<br></br>
 
-				<table className="bp3-html-table .bp3-small .bp3-html-table-bordered .bp3-html-table-condensed">
-					<tbody>
+				<div className="scrollable">
+					<table>
+						<tbody>
 
-					<thead>Statistik pro Jahr</thead>
+							<tr>
+								<th>Year</th>
+								<th>Saldi Mittelwert</th>
+								<th>Zuzüge Mittelwert</th>
+								<th>Wegzüge Mittelwert</th>
+								<th>Median Zuzüge</th>
+								<th>Median Wegzüge</th>
+								<th>Meiste Wegzüge</th>
+								<th>Meiste Zuzüge</th>
+							</tr>
 
-						<tr>
-							<th>Year</th>
-							<th>Saldi Mittelwert</th>
-							<th>Zuzüge Mittelwert</th>
-							<th>Wegzüge Mittelwert</th>
-							<th>Median Zuzüge</th>
-							<th>Median Wegzüge</th>
-							<th>Meiste Wegzüge</th>
-							<th>Meiste Zuzüge</th>
-						</tr>
+							{years}
 
-						{years}
-
-					</tbody>
-				</table>
+						</tbody>
+					</table>
+				</div>
 
 			</div>
 		)
