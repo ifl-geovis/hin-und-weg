@@ -46,6 +46,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		this.onShowLabelsChange = this.onShowLabelsChange.bind(this);
 		this.onShowMapChange = this.onShowMapChange.bind(this);
 		this.onShowArrowChange = this.onShowArrowChange.bind(this);
+		this.onShowValueChange = this.onShowValueChange.bind(this);
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
 			showLabels: true,
@@ -73,8 +74,11 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 					<label className="p-checkbox-label chkBoxMap">zeige Namen</label>
 					<Checkbox inputId="showArrows" value="showArrows" onChange={this.onShowArrowChange} checked={this.state.showArrows}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Pfeile </label>
+					<Checkbox inputId="showValues" value="showValues" onChange={this.onShowValueChange} checked={this.state.showValues}></Checkbox>
+					<label className="p-checkbox-label chkBoxMap">zeige Anzahl Umzüge </label>
 					<input type="radio" name="center" value="1" /> zeige Namen
 					<input type="radio" name="center" value="2" /> zeige Pfeile
+					<input type="radio" name="center" value="3" /> zeige Anzahl Umzüge
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
 					<Dropdown
@@ -126,6 +130,10 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
 	private onShowArrowChange(e: { originalEvent: Event; value: string; checked: boolean }) {
 		this.setState({ showArrows: e.checked });
+	}
+
+	private onShowValueChange(e: { originalEvent: Event; value: string; checked: boolean }) {
+		this.setState({ showValues: e.checked });
 	}
 
 	private onOfflineMapChange(e: { value: IOfflineMaps }) {
