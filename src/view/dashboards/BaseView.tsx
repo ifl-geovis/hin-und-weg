@@ -9,6 +9,7 @@ import Classification from "../../data/Classification";
 import Location from "../Location";
 import Themes from "../Themes";
 import Years from "../Years";
+import ClassificationSelections from "../selections/ClassificationSelections";
 import DashboardView from "./DashboardView";
 
 import Config from "../../config";
@@ -82,6 +83,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 					<Location title="Bezugsfläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 					<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 					<Years availableYears={this.props.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
+					<ClassificationSelections />
 				</div>
 				<div className={(this.props.space == "wide") ? "p-col-10" : "p-col-8"}>
 					<DashboardView baseViewId={this.props.baseViewId}  view={this.props.view} geodata={this.props.geodata} db={this.props.db} items={results} statisticPerYearAusgabe={statisticPerYearAusgabe} timeline={timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.props.yearsAvailable}
