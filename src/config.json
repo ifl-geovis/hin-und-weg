@@ -10,6 +10,7 @@
 
 	"development": {
 		"global": {
+			"version-addon": "development version",
 			"devtools": true
 		},
 		"components": {

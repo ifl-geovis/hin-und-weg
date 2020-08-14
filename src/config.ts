@@ -28,7 +28,8 @@ export default class Config
 
 	public static getVersion(): string
 	{
-		return (Config.profile == 'development') ? Config.version + "-dev" :  Config.version;
+		const addon = Config.getValue("global", "version-addon");
+		return (addon) ? Config.version + " " + addon :  Config.version;
 	}
 
 	public static getValue(section: string, key: string): any
