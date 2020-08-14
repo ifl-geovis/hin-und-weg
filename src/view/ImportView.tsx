@@ -50,13 +50,12 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 			geoFieldOptions = R.map((field) => { return { label: field, value: field }; }, this.props.geodata.fields());
 		}
 		const tablesfiles = R.map((tablefile) => { return this.formatTableStatus(tablefile); }, this.state.tablefiles);
+		const shapefilebutton = this.getShapeFileButton();
 		return (
 			<div>
 				<Panel header="1. Geodaten">
 					<div className="p-grid p-justify-around">
-						<div className="p-col-12">
-							<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false}/>
-						</div>
+						{shapefilebutton}
 						<div className="p-col-3">ID-Attribut auswählen:</div>
 						<Dropdown className="p-col-3" key="geoId" value={this.props.geoId} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="ID Spalte auswählen" onChange={(e) => {this.props.setGeoId(e.value); } }/>
 						<div className="p-col-3">Namens-Attribut auswählen:</div>
@@ -71,6 +70,19 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 						{tablesfiles}
 					</div>
 				</Panel>
+			</div>
+		);
+	}
+
+	private getShapeFileButton() {
+		if (this.props.geodata) return (
+			<div className="p-col-12">
+				Shape Datei wurde bereits geladen...
+			</div>
+		);
+		return (
+			<div className="p-col-12">
+				<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false}/>
 			</div>
 		);
 	}
