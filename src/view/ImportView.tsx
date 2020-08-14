@@ -89,7 +89,9 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 
 	private onSelectGeodataFile(files: FileList)
 	{
+		Log.trace("ImportView.onSelectGeodataFile(" + files + ")");
 		Geodata.read(files[0].path, (newGeodata) => {
+			Log.trace("ImportView.onSelectGeodataFile setGeodata(" + newGeodata + ")");
 			this.props.setGeodata(newGeodata.transformToWGS84());
 		});
 	}
