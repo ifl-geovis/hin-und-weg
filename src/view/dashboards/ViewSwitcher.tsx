@@ -70,7 +70,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
 		this.state = {
-			activeView: 'file',
+			activeView: (this.props.geodata) ? 'map' : 'file',
 		};
 	}
 
