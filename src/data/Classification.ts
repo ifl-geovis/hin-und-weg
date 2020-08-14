@@ -143,4 +143,14 @@ export default class Classification
 		return this.positive_scales;
 	}
 
+	public setPositiveColors(colorScheme: string[])
+	{
+		this.positive_colors = colorScheme;
+	}
+
+	public setNegativeColors(colorScheme: string[])
+	{
+		this.negative_colors = colorScheme;
+	}
+
 }

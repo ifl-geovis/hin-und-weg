@@ -3,6 +3,7 @@ import { Accordion, AccordionTab } from 'primereact/accordion';
 
 import SelectInput from "../input/SelectInput";
 import Config from "../../config";
+import Classification from "../../data/Classification";
 
 export interface IClassificationSelectionsProps
 {
@@ -25,6 +26,8 @@ export default class ClassificationSelections extends React.Component<IClassific
 			positiveColors: "Berta1",
 			negativeColors: "Casimir1",
 		};
+		this.setPositiveColorScheme = this.setPositiveColorScheme.bind(this);
+		this.setNegativeColorScheme = this.setNegativeColorScheme.bind(this);
 	}
 
 	public render(): JSX.Element
@@ -39,13 +42,25 @@ export default class ClassificationSelections extends React.Component<IClassific
 			<Accordion activeIndex={0}>
 				<AccordionTab header="Klassifikation">
 					<div>positive Skala</div>
-					<SelectInput options={positiveColorSchemes} selected={this.state.positiveColors} onSelected={(newColor) => this.setState({positiveColors: newColor})}/>
+					<SelectInput options={positiveColorSchemes} selected={this.state.positiveColors} onSelected={this.setPositiveColorScheme}/>
 					<br /><br />
 					<div>negative Skala</div>
-					<SelectInput options={negativeColorSchemes} selected={this.state.negativeColors} onSelected={(newColor) => this.setState({negativeColors: newColor})}/>
+					<SelectInput options={negativeColorSchemes} selected={this.state.negativeColors} onSelected={this.setNegativeColorScheme}/>
 				</AccordionTab>
 			</Accordion>
 		);
+	}
+
+	private setPositiveColorScheme(newColorScheme: string)
+	{
+		this.setState({positiveColors: newColorScheme});
+		Classification.getCurrentClassification().setPositiveColors(Config.getValue("colorschemes", newColorScheme)["7"]);
+	}
+
+	private setNegativeColorScheme(newColorScheme: string)
+	{
+		this.setState({negativeColors: newColorScheme});
+		Classification.getCurrentClassification().setNegativeColors(Config.getValue("colorschemes", newColorScheme)["7"]);
 	}
 
 }
