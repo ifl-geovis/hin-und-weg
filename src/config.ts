@@ -36,10 +36,17 @@ export default class Config
 	{
 		const sec = Config.getSection(section);
 		const defsec = Config.getDefaultSection(section);
-		if (sec == null) return null;
-		if (key in sec) return sec[key];
-		if (defsec == null) return null;
-		if (key in defsec) return defsec[key];
+		if ((sec != null) && (key in sec)) return sec[key];
+		if ((defsec != null) && (key in defsec)) return defsec[key];
+		return null;
+	}
+
+	public static getKeys(section: string): any
+	{
+		const sec = Config.getSection(section);
+		const defsec = Config.getDefaultSection(section);
+		if (sec != null) return Object.keys(sec);
+		if (defsec != null) return Object.keys(defsec);
 		return null;
 	}
 
