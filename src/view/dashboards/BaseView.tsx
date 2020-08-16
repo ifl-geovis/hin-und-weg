@@ -5,7 +5,6 @@ import Geodata from "../../model/Geodata";
 import { GeoJsonProperties } from "geojson";
 
 import Classification from "../../data/Classification";
-import Query from "../../data/Query";
 
 import Location from "../Location";
 import Themes from "../Themes";
@@ -37,6 +36,8 @@ interface IBaseState
 	years: string[];
 	location: string | null;
 	theme: string;
+	positiveColors: string;
+	negativeColors: string;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState>
@@ -50,6 +51,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 			years: [],
 			location: null,
 			theme: "Von",
+			positiveColors: "rot1",
+			negativeColors: "blau1",
 		};
 	}
 
@@ -61,7 +64,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		const classification = Classification.getCurrentClassification();
 		classification.setLocation(this.state.location);
 		classification.setTheme(this.state.theme);
-		classification.calculateClassification(results);
+		classification.setQuery(results);
+		classification.setPositiveColors(Config.getValue("colorschemes", this.state.positiveColors)["7"]);
+		classification.setNegativeColors(Config.getValue("colorschemes", this.state.negativeColors)["7"]);
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.props.geoName as string;
 		let locations: string[] = [];
@@ -83,7 +88,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 					<Location title="Bezugsfläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 					<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 					<Years availableYears={this.props.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
-					<ClassificationSelections />
+					<ClassificationSelections positiveColors={this.state.positiveColors} negativeColors={this.state.negativeColors} setPositiveColorScheme={(newColorScheme) => this.setState({positiveColors: newColorScheme})} setNegativeColorScheme={(newColorScheme) => this.setState({negativeColors: newColorScheme})}/>
 				</div>
 				<div className={(this.props.space == "wide") ? "p-col-10" : "p-col-8"}>
 					<DashboardView baseViewId={this.props.baseViewId}  view={this.props.view} geodata={this.props.geodata} db={this.props.db} items={results} statisticPerYearAusgabe={statisticPerYearAusgabe} timeline={timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.props.yearsAvailable}

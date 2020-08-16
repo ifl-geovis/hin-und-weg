@@ -26,6 +26,7 @@ export default class Classification
 
 	private location: string|null = null;
 	private theme: string|null = null;
+	private query: {[name: string]: any}[] = [];
 
 	private positive_scales: number[]|null = null;
 	private negative_scales: number[]|null = null;
@@ -81,13 +82,19 @@ export default class Classification
 		this.theme = theme;
 	}
 
-	public calculateClassification(items: {[name: string]: any}[])
+	public setQuery(query: {[name: string]: any}[])
+	{
+		this.query = query;
+		this.calculateClassification();
+	}
+
+	public calculateClassification()
 	{
 		this.positive_scales = null;
 		this.negative_scales = null;
 		this.max = 0;
 		this.min = 0;
-		for (let item of items)
+		for (let item of this.query)
 		{
 			if (item.Wert > this.max) this.max = item.Wert;
 			if (item.Wert < this.min) this.min = item.Wert;
@@ -153,11 +160,13 @@ export default class Classification
 	public setPositiveColors(colorScheme: string[])
 	{
 		this.positive_colors = colorScheme;
+		this.calculateClassification();
 	}
 
 	public setNegativeColors(colorScheme: string[])
 	{
 		this.negative_colors = colorScheme;
+		this.calculateClassification();
 	}
 
 }
