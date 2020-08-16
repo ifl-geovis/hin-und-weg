@@ -5,6 +5,7 @@ import Geodata from "../../model/Geodata";
 import { GeoJsonProperties } from "geojson";
 
 import Classification from "../../data/Classification";
+import Query from "../../data/Query";
 
 import Location from "../Location";
 import Themes from "../Themes";
@@ -46,9 +47,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		super(props);
 		this.state =
 		{
+			years: [],
 			location: null,
 			theme: "Von",
-			years: [],
 		};
 	}
 
@@ -56,7 +57,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 	{
 		const results = this.query();
 		const timeline = this.queryTimeline();
-		//const status = this.getStatus();
 		const statisticPerYearAusgabe = this.queryStatistics();
 		const classification = Classification.getCurrentClassification();
 		classification.setLocation(this.state.location);
@@ -96,32 +96,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 				</div>
 			</div>
 		);
-	}
-
-	private getStatus(): string
-	{
-		let status = "";
-		if (this.state.location)
-		{
-			status = `Ort/Gebiet ${this.state.location}, `;
-		}
-		else
-		{
-			status = "Kein Ort/Gebiet, ";
-		}
-		if (this.state.theme)
-		{
-			status += ` Thema '${this.state.theme}', `;
-		}
-		if (R.not(R.isEmpty(this.state.years)))
-		{
-			status += `und Jahre: ${R.join(", ", R.sort((a, b) => a.localeCompare(b), this.state.years))}`;
-		}
-		else
-		{
-			status += "und keine Jahre";
-		}
-		return `${status} ausgewählt.`;
 	}
 
 	private query(): any[]
