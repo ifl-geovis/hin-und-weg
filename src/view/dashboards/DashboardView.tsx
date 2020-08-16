@@ -49,7 +49,7 @@ export interface IDashboardProps
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
 }
-export interface IDashboardState 
+export interface IDashboardState
 {
 	count: number;
 }
@@ -80,7 +80,7 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		);
 	}
 
-	private updateCounter() 
+	private updateCounter()
 	{
 		this.setState({count: this.state.count + 1 });
 	}

@@ -4,6 +4,10 @@ import Legend from '../elements/Legend';
 import LeafletMapView from './LeafletMapView';
 import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
+import { RadioButton } from 'primereact/radiobutton';
+import { Slider } from 'primereact/slider';
+import { Class } from 'leaflet';
+import Classification from '../../data/Classification';
 import OfflineMaps, { IOfflineMaps } from '../../data/OfflineMaps';
 
 export interface IGeodataProps {
@@ -17,20 +21,29 @@ export interface IGeodataProps {
 }
 
 interface IGeodataState {
-	showLabels: boolean;
+	showCenter: String;
 	showMap: boolean;
+	threshold: number;
 	offlineMap: IOfflineMaps;
 }
+
+const sliderStyle: React.CSSProperties = {
+	margin: '5%',
+	position: 'relative',
+	width: '90%',
+};
 
 export default class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	constructor(props: IGeodataProps) {
 		super(props);
-		this.onShowLabelsChange = this.onShowLabelsChange.bind(this);
+		this.onShowCenterChange = this.onShowCenterChange.bind(this);
+		this.onSliderChange = this.onSliderChange.bind(this);
 		this.onShowMapChange = this.onShowMapChange.bind(this);
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
-			showLabels: true,
+			showCenter: '1',
 			showMap: true,
+			threshold: 0,
 			offlineMap: {
 				label: 'Offline Map auswählen',
 				file: '',
@@ -40,11 +53,16 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	}
 
 	public render(): JSX.Element {
+		const classification = Classification.getCurrentClassification();
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
-					<Checkbox inputId="showlabels" value="showlabels" onChange={this.onShowLabelsChange} checked={this.state.showLabels}></Checkbox>
-					<label className="p-checkbox-label chkBoxMap">zeige Namen</label>
+					<RadioButton inputId="rb1" name="center" value="1" onChange={this.onShowCenterChange} checked={this.state.showCenter === '1'} />
+					Namen anzeigen{'		 '}
+					<RadioButton inputId="rb2" name="center" value="2" onChange={this.onShowCenterChange} checked={this.state.showCenter === '2'} />
+					Pfeile anzeigen{'		 '}
+					<RadioButton inputId="rb3" name="center" value="3" onChange={this.onShowCenterChange} checked={this.state.showCenter === '3'} />
+					Anzahl Umzüge anzeigen
 					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
 					<Dropdown
@@ -53,6 +71,14 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						onChange={this.onOfflineMapChange}
 						placeholder={this.state.offlineMap.label}
 					/>
+					<Slider
+						min={0}
+						max={classification.getMaxValue()}
+						value={this.state.threshold}
+						orientation="horizontal"
+						onChange={this.onSliderChange}
+					/>{' '}
+					Es werden alle Pfeile mit einer bei Weg oder Zuzügen über {this.state.threshold} angezeigt
 				</div>
 				<div className="p-col-12">
 					{/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
@@ -62,10 +88,11 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						items={this.props.items}
 						selectedLocation={this.props.selectedLocation}
 						onSelectLocation={this.props.onSelectLocation}
-						showLabels={this.state.showLabels}
+						showCenter={this.state.showCenter}
 						showMap={this.state.showMap}
 						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
+						threshold={this.state.threshold}
 					/>
 				</div>
 				<div className="p-col-12">
@@ -75,8 +102,12 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		);
 	}
 
-	private onShowLabelsChange(e: { originalEvent: Event; value: string; checked: boolean }) {
-		this.setState({ showLabels: e.checked });
+	private onShowCenterChange(e: { originalEvent: Event; value: string; checked: boolean }) {
+		this.setState({ showCenter: e.value });
+	}
+
+	private onSliderChange(e: { originalEvent: Event; value: number }) {
+		this.setState({ threshold: e.value as number });
 	}
 
 	private onShowMapChange(e: { originalEvent: Event; value: string; checked: boolean }) {
