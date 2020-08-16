@@ -38,6 +38,8 @@ interface IBaseState
 	theme: string;
 	positiveColors: string;
 	negativeColors: string;
+	positiveClasses: string;
+	negativeClasses: string;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState>
@@ -53,6 +55,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 			theme: "Von",
 			positiveColors: "rot1",
 			negativeColors: "blau1",
+			positiveClasses: "5",
+			negativeClasses: "5",
 		};
 	}
 
@@ -65,8 +69,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		classification.setLocation(this.state.location);
 		classification.setTheme(this.state.theme);
 		classification.setQuery(results);
-		classification.setPositiveColors(Config.getValue("colorschemes", this.state.positiveColors)["7"]);
-		classification.setNegativeColors(Config.getValue("colorschemes", this.state.negativeColors)["7"]);
+		classification.setPositiveColors(Config.getValue("colorschemes", this.state.positiveColors)[this.state.positiveClasses]);
+		classification.setNegativeColors(Config.getValue("colorschemes", this.state.negativeColors)[this.state.negativeClasses]);
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.props.geoName as string;
 		let locations: string[] = [];
@@ -88,7 +92,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 					<Location title="Bezugsfläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 					<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 					<Years availableYears={this.props.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
-					<ClassificationSelections positiveColors={this.state.positiveColors} negativeColors={this.state.negativeColors} setPositiveColorScheme={(newColorScheme) => this.setState({positiveColors: newColorScheme})} setNegativeColorScheme={(newColorScheme) => this.setState({negativeColors: newColorScheme})}/>
+					<ClassificationSelections positiveColors={this.state.positiveColors} negativeColors={this.state.negativeColors} positiveClasses={this.state.positiveClasses} negativeClasses={this.state.negativeClasses} setPositiveColorScheme={(newColorScheme) => this.setState({positiveColors: newColorScheme})} setNegativeColorScheme={(newColorScheme) => this.setState({negativeColors: newColorScheme})} setPositiveClasses={(classes) => this.setState({positiveClasses: classes.substring(0, 1)})} setNegativeClasses={(classes) => this.setState({negativeClasses: classes.substring(0, 1)})}/>
 				</div>
 				<div className={(this.props.space == "wide") ? "p-col-10" : "p-col-8"}>
 					<DashboardView baseViewId={this.props.baseViewId}  view={this.props.view} geodata={this.props.geodata} db={this.props.db} items={results} statisticPerYearAusgabe={statisticPerYearAusgabe} timeline={timeline} geoName={this.props.geoName} geoId={this.props.geoId} locations={locations} location={this.state.location} theme={this.state.theme} yearsAvailable={this.props.yearsAvailable}
