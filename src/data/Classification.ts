@@ -1,3 +1,5 @@
+import geostats from 'geostats';
+
 export interface Item
 {
 	Von: string;
@@ -27,6 +29,9 @@ export default class Classification
 	private location: string|null = null;
 	private theme: string|null = null;
 	private query: {[name: string]: any}[] = [];
+
+	private positive_stats: any;
+	private negative_stats: any;
 
 	private positive_scales: number[]|null = null;
 	private negative_scales: number[]|null = null;
@@ -88,8 +93,26 @@ export default class Classification
 		this.calculateClassification();
 	}
 
+	private calculateGeostats()
+	{
+		var positives = [];
+		var negatives = [];
+		for (let item of this.query)
+		{
+			if (item.Wert > 0) positives.push(item.Wert);
+			if (item.Wert < 0) negatives.push(item.Wert);
+		}
+		if (positives.length > 0) this.positive_stats = new geostats(positives);
+		else this.positive_stats = new geostats([0]);
+		if (negatives.length > 0) this.negative_stats = new geostats(negatives);
+		else this.negative_stats = new geostats([0]);
+		console.log(this.positive_stats.getClassEqInterval(this.positive_colors.length));
+		console.log(this.negative_stats.getClassEqInterval(this.negative_colors.length));
+	}
+
 	public calculateClassification()
 	{
+		this.calculateGeostats();
 		this.positive_scales = null;
 		this.negative_scales = null;
 		this.max = 0;
