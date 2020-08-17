@@ -10,7 +10,6 @@ import Classification from '../../data/Classification';
 import { IOfflineMaps } from '../../data/OfflineMaps';
 // @ts-ignore
 import 'leaflet-swoopy';
-import { color } from 'd3';
 
 export interface ILeafletMapViewProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -25,23 +24,16 @@ export interface ILeafletMapViewProps {
 	threshold: number;
 }
 
-interface State {
-	zoom: number;
-}
-
 interface Centerpoint {
 	Center1: any;
 }
 
 interface Points {}
 
-export default class LeafletMapView extends Component<ILeafletMapViewProps, State, Centerpoint> {
+export default class LeafletMapView extends Component<ILeafletMapViewProps, Centerpoint> {
 	centerpoint: { Center1: any };
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
-		this.state = {
-			zoom: 11,
-		};
 		this.centerpoint = {
 			Center1: null,
 		};
@@ -53,7 +45,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 	}
 
 	public render(): JSX.Element {
-		let centerOfMap;
+		let boundsOfGeodata: Array<Array<number>> = [];
 		let geoDataJson;
 		let labelsNames;
 		let labelsValues;
@@ -68,7 +60,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		if (this.props.geodata) {
 			console.log('Render Leafmapview Geodata');
 			geoDataJson = this.props.geodata.getFeatureCollection();
-			centerOfMap = this.calcMapCenter(geoDataJson);
+			boundsOfGeodata = this.calcGeodataBounds(geoDataJson);
 			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
 			else if (this.props.showCenter === '2') arrows = this.getArrows();
 			else if (this.props.showCenter === '3') labelsValues = this.getLabelsValues();
@@ -84,7 +76,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 		}
 		return (
-			<Map center={centerOfMap} zoom={this.state.zoom}>
+			<Map bounds={boundsOfGeodata}>
 				{geomap}
 				{offlinemap}
 				<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
@@ -104,10 +96,13 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Stat
 		);
 	}
 
-	public calcMapCenter(geojson: FeatureCollection) {
+	public calcGeodataBounds(geojson: FeatureCollection) {
 		// @ts-ignore
-		const center = turf.centerOfMass(geojson);
-		return [center.geometry.coordinates[1], center.geometry.coordinates[0]];
+		const bounds = turf.bbox(geojson);
+		return [
+			[bounds[1], bounds[0]],
+			[bounds[3], bounds[2]],
+		];
 	}
 
 	public getLabelsNames() {
