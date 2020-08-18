@@ -51,6 +51,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 			<Accordion activeIndex={0}>
 				<AccordionTab header="Klassifikation">
 					<Dropdown optionLabel="label" value={this.getSelectedAlgorithm()} options={this.algorithms} onChange={this.setAlgorithm} style={{width: "100%"}}/>
+					<br /><br />
 					<div>positive Skala</div>
 					<SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/>
 					<SelectInput options={positiveColorSchemes} selected={this.props.positiveColors} onSelected={this.props.setPositiveColorScheme}/>
