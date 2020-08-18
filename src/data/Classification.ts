@@ -35,8 +35,6 @@ export default class Classification
 
 	private positive_scales: number[]|null = null;
 	private negative_scales: number[]|null = null;
-	private min: number = 0;
-	private max: number = 0;
 
 	public static getCurrentClassification(): Classification
 	{
@@ -93,8 +91,29 @@ export default class Classification
 		this.calculateClassification();
 	}
 
-	private calculateGeostats()
+	private getRanges(stats: any, count: number): any[]
 	{
+		return stats.getClassEqInterval(count);
+	}
+
+	private fillPositiveScales()
+	{
+		this.positive_scales = [];
+		const ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
+		for (let i = 1; i < ranges.length; i++) this.positive_scales.push(ranges[i]);
+	}
+
+	private fillNegativeScales()
+	{
+		this.negative_scales = [];
+		const ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
+		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(ranges[i]);
+	}
+
+	public calculateClassification()
+	{
+		this.positive_scales = null;
+		this.negative_scales = null;
 		var positives = [];
 		var negatives = [];
 		for (let item of this.query)
@@ -102,52 +121,40 @@ export default class Classification
 			if (item.Wert > 0) positives.push(item.Wert);
 			if (item.Wert < 0) negatives.push(item.Wert);
 		}
-		if (positives.length > 0) this.positive_stats = new geostats(positives);
-		else this.positive_stats = new geostats([0]);
-		if (negatives.length > 0) this.negative_stats = new geostats(negatives);
-		else this.negative_stats = new geostats([0]);
+		if (positives.length > 0)
+		{
+			this.positive_stats = new geostats(positives);
+			this.fillPositiveScales();
+		}
+		else
+		{
+			this.positive_stats = new geostats([0]);
+		}
+		if (negatives.length > 0)
+		{
+			this.negative_stats = new geostats(negatives);
+			this.fillNegativeScales();
+		}
+		else
+		{
+			this.negative_stats = new geostats([0]);
+		}
 		console.log(this.positive_stats.getClassEqInterval(this.positive_colors.length));
+		console.log(this.getRanges(this.positive_stats, this.positive_colors.length));
+		console.log(this.positive_scales);
 		console.log(this.negative_stats.getClassEqInterval(this.negative_colors.length));
-	}
-
-	public calculateClassification()
-	{
-		this.calculateGeostats();
-		this.positive_scales = null;
-		this.negative_scales = null;
-		this.max = 0;
-		this.min = 0;
-		for (let item of this.query)
-		{
-			if (item.Wert > this.max) this.max = item.Wert;
-			if (item.Wert < this.min) this.min = item.Wert;
-		}
-		if (this.max > 0)
-		{
-			let numcolors = this.positive_colors.length
-			let step = this.max / numcolors;
-			this.positive_scales = [];
-			for (let i = 1; i < numcolors; i++) this.positive_scales.push(Math.ceil(i*step));
-			this.positive_scales.push(this.max);
-		}
-		if (this.min < 0)
-		{
-			let numcolors = this.negative_colors.length
-			let step = this.min / numcolors;
-			this.negative_scales = [];
-			for (let i = 1; i < numcolors; i++) this.negative_scales.push(Math.floor(i*step));
-			this.negative_scales.push(this.min);
-		}
+		console.log(this.getRanges(this.negative_stats, this.negative_colors.length));
+		console.log(this.negative_scales);
 	}
 
 	public getMinValue(): number
 	{
-		return this.min;
+		return this.negative_stats.min();
 	}
 
 	public getMaxValue(): number
 	{
-		return this.max;
+		return this.positive_stats.max();
 	}
 
 	public getSelectedColor(): string
