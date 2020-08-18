@@ -98,7 +98,7 @@ export default class Classification
 
 	private roundValue(num: number): number
 	{
-		return Math.round(num * 10) / 10;
+		return Math.round(num);
 	}
 
 	private fillPositiveScales()
