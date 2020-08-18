@@ -112,7 +112,7 @@ export default class Classification
 	{
 		this.negative_scales = [];
 		const ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
+		for (let i = ranges.length - 2; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
 	}
 
 	public calculateClassification()
