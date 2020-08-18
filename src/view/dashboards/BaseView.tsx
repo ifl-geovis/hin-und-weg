@@ -71,8 +71,10 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 		classification.setLocation(this.state.location);
 		classification.setTheme(this.state.theme);
 		classification.setQuery(results);
+		classification.setAlgorithm(this.state.algorithm);
 		classification.setPositiveColors(Config.getValue("colorschemes", this.state.positiveColors)[this.state.positiveClasses]);
 		classification.setNegativeColors(Config.getValue("colorschemes", this.state.negativeColors)[this.state.negativeClasses]);
+		classification.calculateClassification();
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.props.geoName as string;
 		let locations: string[] = [];

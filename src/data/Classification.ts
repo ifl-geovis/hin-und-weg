@@ -29,6 +29,7 @@ export default class Classification
 	private location: string|null = null;
 	private theme: string|null = null;
 	private query: {[name: string]: any}[] = [];
+	private algorithm: string = "equidistant";
 
 	private positive_stats: any;
 	private negative_stats: any;
@@ -88,11 +89,35 @@ export default class Classification
 	public setQuery(query: {[name: string]: any}[])
 	{
 		this.query = query;
-		this.calculateClassification();
+	}
+
+	public setAlgorithm(algorithm: string)
+	{
+		this.algorithm = algorithm;
+	}
+
+	public setPositiveColors(colorScheme: string[])
+	{
+		this.positive_colors = colorScheme;
+	}
+
+	public setNegativeColors(colorScheme: string[])
+	{
+		this.negative_colors = colorScheme;
 	}
 
 	private getRanges(stats: any, count: number): any[]
 	{
+		console.log("getRanges");
+		console.log(this.algorithm);
+		console.log(this.algorithm == "equidistant");
+		console.log(this.algorithm == "quantile");
+		if (this.algorithm == "equidistant") return stats.getClassEqInterval(count);
+		if (this.algorithm == "stddeviation") return stats.getClassStdDeviation(count);
+		if (this.algorithm == "arithmetic_progression") return stats.getClassArithmeticProgression(count);
+		if (this.algorithm == "geometric_progression") return stats.getClassGeometricProgression(count);
+		if (this.algorithm == "quantile") return stats.getClassQuantile(count);
+		if (this.algorithm == "jenks") return stats.getClassJenks2(count);
 		return stats.getClassEqInterval(count);
 	}
 
@@ -104,14 +129,14 @@ export default class Classification
 	private fillPositiveScales()
 	{
 		this.positive_scales = [];
-		const ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
+		var ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
 		for (let i = 1; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
 	}
 
 	private fillNegativeScales()
 	{
 		this.negative_scales = [];
-		const ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
+		var ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
 		for (let i = ranges.length - 2; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
 	}
 
@@ -144,6 +169,15 @@ export default class Classification
 		{
 			this.negative_stats = new geostats([0]);
 		}
+		console.log("calculateClassification");
+		console.log(this.positive_stats.getClassEqInterval(this.positive_colors.length));
+		console.log(this.positive_stats.getClassQuantile(this.positive_colors.length));
+		console.log(this.getRanges(this.positive_stats, this.positive_colors.length));
+		console.log(this.positive_scales);
+		console.log(this.negative_stats.getClassEqInterval(this.negative_colors.length));
+		console.log(this.getRanges(this.negative_stats, this.negative_colors.length));
+		console.log(this.negative_scales);
+
 	}
 
 	public getMinValue(): number
@@ -184,18 +218,6 @@ export default class Classification
 	public getPositiveScales(): number[]|null
 	{
 		return this.positive_scales;
-	}
-
-	public setPositiveColors(colorScheme: string[])
-	{
-		this.positive_colors = colorScheme;
-		this.calculateClassification();
-	}
-
-	public setNegativeColors(colorScheme: string[])
-	{
-		this.negative_colors = colorScheme;
-		this.calculateClassification();
 	}
 
 }
