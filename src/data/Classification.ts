@@ -144,12 +144,6 @@ export default class Classification
 		{
 			this.negative_stats = new geostats([0]);
 		}
-		console.log(this.positive_stats.getClassEqInterval(this.positive_colors.length));
-		console.log(this.getRanges(this.positive_stats, this.positive_colors.length));
-		console.log(this.positive_scales);
-		console.log(this.negative_stats.getClassEqInterval(this.negative_colors.length));
-		console.log(this.getRanges(this.negative_stats, this.negative_colors.length));
-		console.log(this.negative_scales);
 	}
 
 	public getMinValue(): number
