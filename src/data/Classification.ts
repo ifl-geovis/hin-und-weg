@@ -96,18 +96,23 @@ export default class Classification
 		return stats.getClassEqInterval(count);
 	}
 
+	private roundValue(num: number): number
+	{
+		return Math.round(num * 10) / 10;
+	}
+
 	private fillPositiveScales()
 	{
 		this.positive_scales = [];
 		const ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
-		for (let i = 1; i < ranges.length; i++) this.positive_scales.push(ranges[i]);
+		for (let i = 1; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
 	}
 
 	private fillNegativeScales()
 	{
 		this.negative_scales = [];
 		const ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(ranges[i]);
+		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
 	}
 
 	public calculateClassification()
