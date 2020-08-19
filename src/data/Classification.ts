@@ -1,5 +1,7 @@
 import geostats from 'geostats';
 
+import Log from "../log";
+
 export interface Item
 {
 	Von: string;
@@ -108,16 +110,21 @@ export default class Classification
 
 	private getRanges(stats: any, count: number): any[]
 	{
-		console.log("getRanges");
-		console.log(this.algorithm);
-		console.log(this.algorithm == "equidistant");
-		console.log(this.algorithm == "quantile");
-		if (this.algorithm == "equidistant") return stats.getClassEqInterval(count);
-		if (this.algorithm == "stddeviation") return stats.getClassStdDeviation(count);
-		if (this.algorithm == "arithmetic_progression") return stats.getClassArithmeticProgression(count);
-		if (this.algorithm == "geometric_progression") return stats.getClassGeometricProgression(count);
-		if (this.algorithm == "quantile") return stats.getClassQuantile(count);
-		if (this.algorithm == "jenks") return stats.getClassJenks2(count);
+		Log.debug(stats.info());
+		Log.debug(stats.sorted());
+		try
+		{
+			if (this.algorithm == "equidistant") return stats.getClassEqInterval(count);
+			if (this.algorithm == "stddeviation") return stats.getClassStdDeviation(count);
+			if (this.algorithm == "arithmetic_progression") return stats.getClassArithmeticProgression(count);
+			if (this.algorithm == "geometric_progression") return stats.getClassGeometricProgression(count);
+			if (this.algorithm == "quantile") return stats.getClassQuantile(count);
+			if (this.algorithm == "jenks") return stats.getClassJenks(count);
+		}
+		catch (e)
+		{
+			Log.debug(e);
+		}
 		return stats.getClassEqInterval(count);
 	}
 
@@ -151,6 +158,8 @@ export default class Classification
 			if (item.Wert > 0) positives.push(item.Wert);
 			if (item.Wert < 0) negatives.push(item.Wert);
 		}
+		Log.debug("positives: " + positives);
+		Log.debug("negatives: " + negatives);
 		if (positives.length > 0)
 		{
 			this.positive_stats = new geostats(positives);
@@ -169,15 +178,6 @@ export default class Classification
 		{
 			this.negative_stats = new geostats([0]);
 		}
-		console.log("calculateClassification");
-		console.log(this.positive_stats.getClassEqInterval(this.positive_colors.length));
-		console.log(this.positive_stats.getClassQuantile(this.positive_colors.length));
-		console.log(this.getRanges(this.positive_stats, this.positive_colors.length));
-		console.log(this.positive_scales);
-		console.log(this.negative_stats.getClassEqInterval(this.negative_colors.length));
-		console.log(this.getRanges(this.negative_stats, this.negative_colors.length));
-		console.log(this.negative_scales);
-
 	}
 
 	public getMinValue(): number
