@@ -25,7 +25,6 @@ export default class Legend extends React.Component<ILegendProps>
 
 	private createLegend(): JSX.Element
 	{
-		// documentation for geostats: https://github.com/simogeo/geostats
 		const classification = Classification.getCurrentClassification();
 		let i = 0;
 		const negative_scales = classification.getNegativeScales();
@@ -50,9 +49,9 @@ export default class Legend extends React.Component<ILegendProps>
 		);
 	}
 
-	private createBox(color: string, x: number, y: number): object
+	private createBox(color: string, x: number, y: number, index: string): object
 	{
-		return (<rect key={"box-"+color} fill={color} stroke={this.stroke_color} width={this.box_size} height={this.box_size} x={x} y={y}></rect>);
+		return (<rect key={"box-" + color + "-" + index} fill={color} stroke={this.stroke_color} width={this.box_size} height={this.box_size} x={x} y={y}></rect>);
 	}
 
 	private createLine(color: string, key: string, x1: number, y1: number, x2: number, y2: number): object
@@ -60,20 +59,20 @@ export default class Legend extends React.Component<ILegendProps>
 		return (<line key={key} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} />);
 	}
 
-	private createLabel(label: string, x: number, y: number): object
+	private createLabel(label: string, x: number, y: number, index: string): object
 	{
-		return (<text key={"label-"+label} x={x} y={y} style={{font: "10px sans-serif"}}>{label}</text>);
+		return (<text key={"label-" + label + "-" + index} x={x} y={y} style={{font: "10px sans-serif"}}>{label}</text>);
 	}
 
 	private createSelectedBox(color: string, x: number, y: number): object
 	{
-		const box = this.createBox(color, 100, 0);
+		const box = this.createBox(color, 100, 0, "selected");
 		return (<svg x={x} y={y}><text x={0} y={21}>Bezugsfläche:</text>{box}</svg>);
 	}
 
 	private createNeutralBox(color: string, x: number, y: number): object
 	{
-		const box = this.createBox(color, 0, 0);
+		const box = this.createBox(color, 0, 0, "neutral");
 		return (<svg x={x} y={y}><text x={10} y={this.box_size+18}>0</text>{box}</svg>);
 	}
 
@@ -81,12 +80,12 @@ export default class Legend extends React.Component<ILegendProps>
 	{
 		if (scales == null) return (<svg></svg>);
 		let boxes = [];
-		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i*this.box_size, 0));
+		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i*this.box_size, 0, "positive-" + i));
 		let lines = [];
 		let labels = [];
 		for (let i = 0; i < scales.length; i++)
 		{
-			labels.push(this.createLabel(""+scales[i], (i+1)*this.box_size-3, this.box_size+20));
+			labels.push(this.createLabel(""+scales[i], (i+1)*this.box_size-3, this.box_size+20, "positive-" + i));
 			lines.push(this.createLine(this.stroke_color, "positive-"+i, (i+1)*this.box_size, this.box_size, (i+1)*this.box_size, this.box_size+10));
 		}
 		return (<svg x={index*this.box_size+this.label_offset} y={0}>{boxes}{lines}{labels}</svg>);
@@ -96,12 +95,12 @@ export default class Legend extends React.Component<ILegendProps>
 	{
 		if (scales == null) return (<svg></svg>);
 		let boxes = [];
-		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[colors.length-i-1], i*this.box_size+this.label_offset, 0));
+		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[colors.length-i-1], i*this.box_size+this.label_offset, 0, "negative-" + i));
 		let lines = [];
 		let labels = [];
 		for (let i = 0; i < scales.length; i++)
 		{
-			labels.push(this.createLabel(""+scales[scales.length-i-1], i*this.box_size, this.box_size+20));
+			labels.push(this.createLabel(""+scales[scales.length-i-1], i*this.box_size, this.box_size+20, "negative-" + i));
 			lines.push(this.createLine(this.stroke_color, "negative-"+i, i*this.box_size+this.label_offset, this.box_size, i*this.box_size+this.label_offset, this.box_size+10));
 		}
 		return (<svg x={index*this.box_size} y={0}>{boxes}{lines}{labels}</svg>);
