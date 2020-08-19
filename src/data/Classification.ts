@@ -110,6 +110,7 @@ export default class Classification
 
 	private getRanges(stats: any, count: number): any[]
 	{
+		// documentation for geostats: https://github.com/simogeo/geostats
 		Log.debug(stats.info());
 		Log.debug(stats.sorted());
 		try
