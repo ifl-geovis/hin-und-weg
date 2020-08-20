@@ -31,7 +31,11 @@ interface Centerpoint {
 interface Points {}
 
 export default class LeafletMapView extends Component<ILeafletMapViewProps, Centerpoint> {
+
+	private static odd: boolean = true;
+
 	centerpoint: { Center1: any };
+
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
 		this.centerpoint = {
@@ -50,7 +54,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let labelsNames;
 		let labelsValues;
 		let geomap;
-		let arrows;
+		let arrows1;
+		let arrows2;
 		let offlinemap;
 		let centerMarker;
 		let selectedFeature;
@@ -60,7 +65,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			boundsOfGeodata = this.calcGeodataBounds(geoDataJson);
 			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
-			else if (this.props.showCenter === '2') arrows = this.getArrows();
+			else if (this.props.showCenter === '2') {
+				if (LeafletMapView.odd) arrows1 = this.getArrows();
+				else arrows2 = this.getArrows();
+			}
 			else if (this.props.showCenter === '3') labelsValues = this.getLabelsValues();
 			if (this.centerpoint.Center1 != null && this.props.showCenter === '2') centerMarker = this.CenterMarker();
 
@@ -73,13 +81,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (this.props.showMap) geomap = this.getMapLayer();
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 		}
+		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
 			<Map bounds={boundsOfGeodata}>
 				{geomap}
 				{offlinemap}
 				<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
-				<Pane name="ArrowPane" style={{ zIndex: 800 }}>
-					{arrows}
+				<Pane name="ArrowPane1" style={{ zIndex: 800 }}>
+					{arrows1}
 				</Pane>
 				<Pane name="NamesPane" style={{ zIndex: 800 }}>
 					{labelsNames}
@@ -89,6 +98,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				</Pane>
 				<Pane name="centerMarker" style={{ zIndex: 900 }}>
 					{centerMarker}
+				</Pane>
+				<Pane name="ArrowPane2" style={{ zIndex: 800 }}>
+					{arrows2}
 				</Pane>
 			</Map>
 		);
