@@ -1,6 +1,3 @@
-body {
-}
-
 p.status {
 	font-style: italic;
 	font-weight: 10%;
@@ -66,12 +63,19 @@ ul.p-tabview-nav li a {
 	box-shadow: none;
 }
 
+.leaflet-tooltip.district-label-grey {
+	background-color: yellowgreen;
+	border: transparent;
+	box-shadow: none;
+}
+
 .chkBoxMap {
 	margin-right: 1em !important;
 }
 
-.gridLine path, .gridLine line{
-    fill: none;
-    shape-rendering: crispedges;
-    stroke: #d9d9d9;   
-  }
+.gridLine path,
+.gridLine line {
+	fill: none;
+	shape-rendering: crispedges;
+	stroke: #d9d9d9;
+}

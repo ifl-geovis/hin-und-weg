@@ -61,7 +61,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let selectedFeature;
 
 		if (this.props.geodata) {
-			console.log('Render Leafmapview Geodata');
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			boundsOfGeodata = this.calcGeodataBounds(geoDataJson);
 			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
@@ -303,6 +302,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 
 		if (feature1.properties) name = String(feature1.properties.Name);
 
+		console.log('name:', name);
+		console.log('this.props.selectedLocation:', this.props.selectedLocation);
+
 		if (this.props.showCenter === '3') {
 			if (this.props.items && this.props.items.length > 0) {
 				switch (this.props.theme) {
@@ -337,6 +339,19 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				}
 			}
 
+			if (name === this.props.selectedLocation) {
+				return new L.CircleMarker(latlng, {
+					radius: 1,
+				})
+					.bindTooltip(label, {
+						permanent: true,
+						opacity: 0.7,
+						className: 'district-label-grey',
+						direction: 'center',
+					})
+					.openTooltip();
+			}
+
 			return new L.CircleMarker(latlng, {
 				radius: 1,
 			})
@@ -362,8 +377,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		</marker>;
 
 		const classification = Classification.getCurrentClassification();
-
-		console.log('ArrowToLayer');
 
 		if (feature1.properties && this.props.nameField && this.props.items) {
 			if (this.props.theme == 'Saldi') {
@@ -448,7 +461,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (feature.properties && this.props.nameField) name = feature.properties[this.props.nameField];
 			this.props.onSelectLocation(name);
 
-			console.log(e);
 			this.style(feature);
 		});
 	};
