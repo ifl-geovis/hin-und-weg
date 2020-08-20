@@ -96,7 +96,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState>
 					<Location title="Bezugsfläche" locations={locations} selectedLocation={this.state.location} onSelectLocation={(newLocation) => this.setState({location: newLocation})}/>
 					<Themes themes={["Von", "Nach", "Saldi"]} selected={ this.state.theme} setTheme={(newTheme) => this.setState({ theme: newTheme})}/>
 					<Years availableYears={this.props.yearsAvailable} selected={this.state.years} setYears={(newYears) => this.setState({years: newYears})}/>
-					<ClassificationSelections algorithm={this.state.algorithm} positiveColors={this.state.positiveColors} negativeColors={this.state.negativeColors} positiveClasses={this.state.positiveClasses} negativeClasses={this.state.negativeClasses}
+					<ClassificationSelections algorithm={this.state.algorithm} positiveColors={this.state.positiveColors} negativeColors={this.state.negativeColors} positiveClasses={this.state.positiveClasses} negativeClasses={this.state.negativeClasses} withNegative={this.state.theme == "Saldi"}
 						setAlgorithm={(newAlgorithm) => this.setState({algorithm: newAlgorithm})}
 						setPositiveColorScheme={(newColorScheme) => this.setState({positiveColors: newColorScheme})}
 						setNegativeColorScheme={(newColorScheme) => this.setState({negativeColors: newColorScheme})}

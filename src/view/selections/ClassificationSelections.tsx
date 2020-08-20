@@ -18,6 +18,7 @@ export interface IClassificationSelectionsProps
 	setNegativeColorScheme: (newColorScheme: string) => void;
 	setPositiveClasses: (classes: string) => void;
 	setNegativeClasses: (classes: string) => void;
+	withNegative: boolean;
 }
 
 export default class ClassificationSelections extends React.Component<IClassificationSelectionsProps>
@@ -47,6 +48,8 @@ export default class ClassificationSelections extends React.Component<IClassific
 		const indexNegative = negativeColorSchemes.indexOf(this.props.positiveColors);
 		if (indexPositive > -1) {positiveColorSchemes.splice(indexPositive, 1);}
 		if (indexNegative > -1) {negativeColorSchemes.splice(indexNegative, 1);}
+		let negativeScale;
+		if (this.props.withNegative) negativeScale = this.getNegativeScale(negativeColorSchemes);
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header="Klassifikation">
@@ -55,10 +58,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 					<div>positive Skala</div>
 					<SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/>
 					<SelectInput options={positiveColorSchemes} selected={this.props.positiveColors} onSelected={this.props.setPositiveColorScheme}/>
-					<br /><br />
-					<div>negative Skala</div>
-					<SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/>
-					<SelectInput options={negativeColorSchemes} selected={this.props.negativeColors} onSelected={this.props.setNegativeColorScheme}/>
+					{negativeScale}
 				</AccordionTab>
 			</Accordion>
 		);
@@ -75,6 +75,18 @@ export default class ClassificationSelections extends React.Component<IClassific
 
 	private setAlgorithm(event: { originalEvent: Event, value: any}) {
 		this.props.setAlgorithm(event.value.value);
+	}
+
+
+	private getNegativeScale(negativeColorSchemes: any) {
+		return (
+			<div>
+				<br /><br />
+				<div>negative Skala</div>
+				<SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/>
+				<SelectInput options={negativeColorSchemes} selected={this.props.negativeColors} onSelected={this.props.setNegativeColorScheme}/>
+			</div>
+		);
 	}
 
 }
