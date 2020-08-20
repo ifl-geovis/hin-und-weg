@@ -55,8 +55,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let centerMarker;
 		let selectedFeature;
 
-		console.log('Render Leafmapview');
-
 		if (this.props.geodata) {
 			console.log('Render Leafmapview Geodata');
 			geoDataJson = this.props.geodata.getFeatureCollection();
@@ -64,7 +62,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
 			else if (this.props.showCenter === '2') arrows = this.getArrows();
 			else if (this.props.showCenter === '3') labelsValues = this.getLabelsValues();
-			if (this.centerpoint.Center1 != null) centerMarker = this.CenterMarker();
+			if (this.centerpoint.Center1 != null && this.props.showCenter === '2') centerMarker = this.CenterMarker();
 
 			for (let i = 0; i < geoDataJson.features.length; i++) {
 				if (geoDataJson.features[i].properties!.Name == this.props.selectedLocation) {
@@ -121,8 +119,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let geoDataJson;
 		let centerpoints;
 
-		console.log('getLabelsValues');
-
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			centerpoints = this.generateCenterPoints(geoDataJson);
@@ -140,14 +136,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			centerpoints = this.generateCenterPoints(geoDataJson);
 		}
 
-		return <Circle center={this.centerpoint.Center1} radius={100} color="#0432ff" fillColor="#0432ff"></Circle>;
+		return <Circle center={this.centerpoint.Center1} radius={200} color="#c7c7c7" fillOpacity="1"></Circle>;
 	}
 
 	public getArrows() {
 		let geoDataJson;
 		let centerpoints;
-
-		console.log('getArrows');
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
