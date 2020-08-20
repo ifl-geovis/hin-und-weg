@@ -23,6 +23,8 @@ export default class Classification {
 	private neutral_color = '#f7f7f7';
 	private selected_color = '#cbf719';
 	private error_color = '#000000';
+	private positive_arrow_color = '#ff0000';
+	private negative_arrow_color = '#0432ff';
 
 	private location: string | null = null;
 	private theme: string | null = null;
@@ -181,4 +183,13 @@ export default class Classification {
 	public getPositiveScales(): number[] | null {
 		return this.positive_scales;
 	}
+
+	public getPositiveArrowColor(): string{
+		return this.positive_arrow_color;
+	}
+
+	public getNegativeArrowColor(): string{
+		return this.negative_arrow_color;
+	}
+
 }
