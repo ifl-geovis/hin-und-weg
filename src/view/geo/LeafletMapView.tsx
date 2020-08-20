@@ -31,7 +31,6 @@ interface Centerpoint {
 interface Points {}
 
 export default class LeafletMapView extends Component<ILeafletMapViewProps, Centerpoint> {
-
 	private static odd: boolean = true;
 
 	centerpoint: { Center1: any };
@@ -52,7 +51,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let boundsOfGeodata: Array<Array<number>> = [];
 		let geoDataJson;
 		let labelsNames;
-		let labelsValues;
+		let labelsValues1;
+		let labelsValues2;
 		let geomap;
 		let arrows1;
 		let arrows2;
@@ -68,8 +68,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			else if (this.props.showCenter === '2') {
 				if (LeafletMapView.odd) arrows1 = this.getArrows();
 				else arrows2 = this.getArrows();
+			} else if (this.props.showCenter === '3') {
+				if (LeafletMapView.odd) labelsValues1 = this.getLabelsValues();
+				else labelsValues2 = this.getLabelsValues();
 			}
-			else if (this.props.showCenter === '3') labelsValues = this.getLabelsValues();
 			if (this.centerpoint.Center1 != null && this.props.showCenter === '2') centerMarker = this.CenterMarker();
 
 			for (let i = 0; i < geoDataJson.features.length; i++) {
@@ -93,14 +95,17 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				<Pane name="NamesPane" style={{ zIndex: 800 }}>
 					{labelsNames}
 				</Pane>
-				<Pane name="ValuesPane" style={{ zIndex: 800 }}>
-					{labelsValues}
+				<Pane name="ValuesPane1" style={{ zIndex: 800 }}>
+					{labelsValues1}
 				</Pane>
 				<Pane name="centerMarker" style={{ zIndex: 900 }}>
 					{centerMarker}
 				</Pane>
 				<Pane name="ArrowPane2" style={{ zIndex: 800 }}>
 					{arrows2}
+				</Pane>
+				<Pane name="ValuesPane2" style={{ zIndex: 800 }}>
+					{labelsValues2}
 				</Pane>
 			</Map>
 		);
