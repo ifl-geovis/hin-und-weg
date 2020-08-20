@@ -252,7 +252,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			}
 		}
 		return {
-			fillColor: '#0099ff',
+			fillColor: '#f7f7f7',
 			color: '#585858',
 		};
 	}
