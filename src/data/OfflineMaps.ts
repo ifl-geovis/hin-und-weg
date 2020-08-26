@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 export interface IOfflineMaps {
 	label: string;
@@ -31,9 +32,7 @@ export default class OfflineMaps {
 
 	public readOfflineMapsFile() {
 		try {
-			// TODO PROD
-			// const data = fs.readFileSync(`resources/app/offline/offlineMaps.txt`, 'utf8');
-			const data = fs.readFileSync(`offline/offlineMaps.txt`, 'utf8');
+			const data = fs.readFileSync(path.resolve(__dirname, '../../offline/offlineMaps.txt'), 'utf8');
 			const lines = data.split(/\r?\n/);
 			lines.forEach((line: any) => {
 				let mapData = line.split(',');
