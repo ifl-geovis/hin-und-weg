@@ -23,15 +23,15 @@
 
 Die offlineMaps.txt enthält alle relevanten Informationen für die Nutzung von Offline-Karten, die von der Anwendung eingelesen und verarbeitet werden.
 
-Die Reihenfolge in der Dropdown-Liste in der Anwendung entspricht dier Reihenfolge in der offlineMaps.txt.
+Die Reihenfolge in der Dropdown-Liste in der Anwendung entspricht der Reihenfolge in der offlineMaps.txt.
 
 Folgende Informationen werden Komma-separiert benötigt:
 
 -   Label zur Anzeige in der Anwendung
 -   Dateiname
--   Ausdehnung Nord (EPSG:4326)
--   Ausdehnung West (EPSG:4326)
 -   Ausdehnung Süd (EPSG:4326)
+-   Ausdehnung West (EPSG:4326)
+-   Ausdehnung Nord (EPSG:4326)
 -   Ausdehnung Ost (EPSG:4326)
 
 bspw:
