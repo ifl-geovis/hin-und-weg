@@ -26,6 +26,13 @@ export default class MainMenu
 					type: 'separator'
 				},
 				{
+					label: 'Drucken',
+					click(event, window, content) {MainMenu.print(event, window, content);}
+				},
+				{
+					type: 'separator'
+				},
+				{
 					label: 'Beenden',
 					role: 'quit'
 				}
@@ -192,6 +199,11 @@ export default class MainMenu
 	private static execute(category: string, item: string, event: any, window: any, content: any)
 	{
 		window.webContents.send(category, item);
+	}
+
+	private static print(event: any, window: any, content: any)
+	{
+		window.webContents.print();
 	}
 
 	private static website(url: string, window: any)
