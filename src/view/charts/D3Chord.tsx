@@ -6,6 +6,8 @@ import { Checkbox } from 'primereact/checkbox';
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import R from "ramda";
+import Classification from '../../data/Classification';
+import Legend from "../elements/Legend";
 
 export interface ID3ChordItem
 {
@@ -28,11 +30,14 @@ interface ID3ChordState
   threshold: number;
   rangeValues: [number, number],
   checked: boolean,
+  checkedLabel: boolean,
 }
 
 export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     private svgRef?: SVGElement | null;
     private svgID?: string;
+    private checkedLabel?: boolean;
+
 
     
     constructor(props: ID3ChordProps)
@@ -42,6 +47,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       threshold: 0,
       rangeValues: [0, 0],
       checked: false,
+      checkedLabel: false,
+
     }
   }
 
@@ -65,7 +72,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     
     public shouldComponentUpdate (nextProps: ID3ChordProps, nextState: ID3ChordState) {
       
-      return nextProps.data !== this.props.data || nextProps.theme !== this.props.theme || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextState.threshold !==this.state.threshold || nextState.rangeValues !== this.state.rangeValues 
+      return nextProps.data !== this.props.data || nextProps.theme !== this.props.theme|| nextState.checkedLabel !== this.state.checkedLabel  || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextState.threshold !==this.state.threshold || nextState.rangeValues !== this.state.rangeValues 
       }
  
     public componentDidUpdate(){
@@ -104,20 +111,44 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
     // DRAW D3 CHART
     private drawChordChart (data: ID3ChordItem[], theme: string, id: string | undefined) {
-     
+      const [min, max] = this.getMinMax2();
+
+
+      this.checkedLabel = this.state.checkedLabel;     
       const svgChord = select(this.svgRef!); 
       let nach = data.map(d => d.Nach);
       let von = data.map(d => d.Von);
       let names = nach.concat(von);
       let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));       
+      let marginResponsive = this.state.checkedLabel === false ? maxNameLength*6 : (maxNameLength + 10)*6; //5.3
 
-      let MARGIN = {TOP: maxNameLength*5.3, RIGHT: maxNameLength*5.3, BOTTOM: maxNameLength*5.3, LEFT: maxNameLength*5.3}
+      let MARGIN = {TOP: marginResponsive, RIGHT: marginResponsive, BOTTOM: marginResponsive, LEFT: marginResponsive}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
       let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
 
       const colorsBlue = ["#92c5de", "#2166ac"]
       const colorsRed = ["#b2182b", "#f4a582"]
       const colorsBlueRed = ["#2166ac","#b2182b","#d0d1e6"]
+      const neutralcolor = "#f7f7f7"
+      const bordercolor = "#525252"
+
+      const classification = Classification.getCurrentClassification();
+      // let hexcolor = classification.getColor(data[1]);
+      console.log("classification: " + JSON.stringify(classification));
+      
+      let classColors = (data: ID3ChordItem[]) => { 
+        let colors = new Array(data.length);
+          colors.fill('#000000');  
+        for(let i=0;i<data.length;i++)
+        { 
+          colors[i]=classification.getColor(data[i])
+        }  return colors
+      }
+      let hexcolor:string[]  = classColors(data);
+      console.log("classification colors: " + hexcolor);
+
+      let hexcolorAdd: string[] =  classColors(data);
+        hexcolorAdd.push("#f7f7f7");
 
 
       svgChord.append("svg")
@@ -255,6 +286,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
         let colorsVon:string[] = colorsFunction(nach.length, arr.length, colorsBlue)
         let colorsNach:string[] = colorsFunction(von.length, arr.length, colorsRed)
+        let hexcolorFull: string[] = arr.length === values.length ? hexcolor : hexcolorAdd;
+
 
         let chord = d3.chord()
           .padAngle(0.05)
@@ -314,12 +347,14 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // Set the starting color (at 0%)
         grads.append("stop")
             .attr("offset", "0%")
-            .attr("stop-color", function(d){ return colorsVon[d.source.index]; });
+            .attr("stop-color", function(d){ return hexcolorFull[d.source.index]; });
+            // .attr("stop-color", function(d){ return colorsVon[d.source.index]; });
 
         //Set the ending color (at 100%)
         grads.append("stop")
             .attr("offset", "100%")
-            .attr("stop-color", function(d){ return colorsVon[d.target.index]; });
+            .attr("stop-color", function(d){ return hexcolorFull[d.target.index]; });
+            // .attr("stop-color", function(d){ return colorsVon[d.target.index]; });
 
         let group = g.append("g")
           .attr("class", "groups")
@@ -334,7 +369,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           .enter().append("path")
           .attr("d", ribbon)
           .style("fill", function(d){ return "url(#chordGradient" + id  + "-" + d.source.index + "-" + d.target.index + ")";})
-          .style("stroke", function(d) { let col:any = d3.rgb(colorsBlue[0]); return col.darker(); })
+          .style("stroke", bordercolor)
+          // .style("stroke", function(d) { let col:any = d3.rgb(colorsBlue[0]); return col.darker(); })
           .on("mouseover", function(d) {
             ribbons
               .filter(dd => dd !== d)
@@ -358,8 +394,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             
 
           const groupPath = group.append("path")
-            .style("fill", function(d) { return colorsVon[d.index]; })
-            .style("stroke", function(d) { let col:any = d3.rgb(colorsBlue[0]); return col.darker(); })
+            // .style("fill", function(d) { return colorsVon[d.index]; })
+            .style("fill", function(d) { return hexcolorFull[d.index]; })
+            .style("stroke", bordercolor)
+            // .style("stroke", function(d) { let col:any = d3.rgb(colorsBlue[0]); return col.darker(); })
             .attr("d", arc)
             .on("mouseover",  function(d, i) {
                 ribbons
@@ -401,9 +439,11 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               } 
               return t
            }) 
+           
+           let labelText:number = this.state.checkedLabel === false ? 0 :  1 ; 
 
           //Append the label names on the outside
-          group.append("text")
+          const labels = group.append("text")
             .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
             .attr("dy", ".35em")
             .attr("class", "titles")
@@ -413,9 +453,28 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               + "translate(" + (outerRadius + 10) + ")"
               + (d.angle > Math.PI ? "rotate(180)" : "");
             })
-            .style("font-size", "12px" )
-            .text(function(d, i) { return nachVar[i]; });
+            .style("font-size", "14px" )
+            .attr("font-family", "Open Sans")
+            .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.2em" :  "1.2em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2em" :  "2em" : d.angle > Math.PI ? "-3em" : "3em"; }) // 1.2em
+            .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " - " + nachVar[i] : nachVar[i] + " - "; });
+            // .text(function(d, i) { return nachVar[i]; });
+            // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
 
+          const labelsValues = group.append("text")
+            .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
+            .attr("dy", ".35em")
+            .attr("class", "titles")
+            .attr("text-anchor", function(d:any) { return d.angle > Math.PI ? "end" : null; })
+            .attr("transform", function(d:any) {
+              return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+              + "translate(" + (outerRadius + 10) + ")"
+              + (d.angle > Math.PI ? "rotate(180)" : "");
+            })
+            .style("font-size", "14px" )
+            .attr("font-family", "Open Sans")
+            .style("font-weight", "bold")
+            .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
+           
           group.append("title")
           group.select("title")
             .text(function(d, i){return vonVar[i];});
@@ -472,12 +531,14 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // Set the starting color (at 0%)
         grads.append("stop")
             .attr("offset", "0%")
-            .attr("stop-color", function(d){ return colorsNach[d.source.index]; });
+            .attr("stop-color", function(d){ return hexcolorFull[d.source.index]; });
+            // .attr("stop-color", function(d){ return colorsNach[d.source.index]; });
 
         //Set the ending color (at 100%)
         grads.append("stop")
             .attr("offset", "100%")
-            .attr("stop-color", function(d){ return colorsNach[d.target.index]; });
+            .attr("stop-color", function(d){ return hexcolorFull[d.target.index]; });
+            // .attr("stop-color", function(d){ return colorsNach[d.target.index]; });
 
         let group = g.append("g")
           .attr("class", "groups")
@@ -492,7 +553,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           .enter().append("path")
           .attr("d", ribbon)
           .style("fill", function(d){ return "url(#chordGradient" + id  + "-" + d.source.index + "-" + d.target.index + ")";})
-          .style("stroke", function(d) { let col:any = d3.rgb(colorsRed[1]); return col.darker(); })
+          .style("stroke", bordercolor)
+          // .style("stroke", function(d) { let col:any = d3.rgb(colorsRed[1]); return col.darker(); })
           .on("mouseover", function(d) {
               ribbons
                 .filter(dd => dd !== d)
@@ -515,8 +577,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
            });
  
         const groupPath = group.append("path")
-          .style("fill", function(d) { return colorsNach[d.index]; })
-          .style("stroke", function(d) { let col:any = d3.rgb(colorsRed[1]); return col.darker(); })
+        .style("fill", function(d) { return hexcolorFull[d.index]; })
+        // .style("fill", function(d) { return colorsNach[d.index]; })
+          .style("stroke", bordercolor)
+          // .style("stroke", function(d) { let col:any = d3.rgb(colorsRed[1]); return col.darker(); })
           .attr("d", arc)
           .on("mouseover",  function(d, i) {
               ribbons.filter(function(d) {
@@ -557,19 +621,41 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             return t
           }) 
 
+          let labelText:number = this.state.checkedLabel === false ? 0 :  1 ; 
+
         //Append the label names on the outside
-        group.append("text")
-          .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
-          .attr("dy", ".35em")
-          .attr("class", "titles")
-          .attr("text-anchor", function(d:any) { return d.angle > Math.PI ? "end" : null; })
-          .attr("transform", function(d:any) {
-            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-            + "translate(" + (outerRadius + 10) + ")"
-            + (d.angle > Math.PI ? "rotate(180)" : "");
-          })
-          .style("font-size", "12px" )
-          .text(function(d, i) { return vonVar[i]; });
+        const labels = group.append("text")
+        .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
+        .attr("dy", ".35em")
+        .attr("class", "titles")
+        .attr("text-anchor", function(d:any) { return d.angle > Math.PI ? "end" : null; })
+        .attr("transform", function(d:any) {
+          return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+          + "translate(" + (outerRadius + 10) + ")"
+          + (d.angle > Math.PI ? "rotate(180)" : "");
+        })
+        .style("font-size", "14px" )
+        .attr("font-family", "Open Sans")
+        .attr("dx", function(d:any) { return labelText === 0 ? "" : max < 100 ? d.angle > Math.PI ? "-1.2em" :  "1.2em" : max < 1000  && max >= 100 ? d.angle > Math.PI ? "-2em" :  "2em" : d.angle > Math.PI ? "-3em" : "3em"; }) // 1.2em
+        .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " - " + vonVar[i] : vonVar[i] + " - "; });
+        // .text(function(d, i) { return nachVar[i]; });
+        // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
+
+      const labelsValues = group.append("text")
+        .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
+        .attr("dy", ".35em")
+        .attr("class", "titles")
+        .attr("text-anchor", function(d:any) { return d.angle > Math.PI ? "end" : null; })
+        .attr("transform", function(d:any) {
+          return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+          + "translate(" + (outerRadius + 10) + ")"
+          + (d.angle > Math.PI ? "rotate(180)" : "");
+        })
+        .style("font-size", "14px" )
+        .attr("font-family", "Open Sans")
+        .style("font-weight", "bold")
+        .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
+       
 
           group.append("title")
           group.select("title")
@@ -667,11 +753,13 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // Set the starting color (at 0%)
         grads.append("stop")
             .attr("offset", "0%")
-            .attr("stop-color", function(d){ return colorsSaldi ? colorsSaldi[d.source.index] : colorsVon[d.source.index]; });
+            .attr("stop-color", function(d){ return hexcolorFull[d.source.index] });
+            // .attr("stop-color", function(d){ return colorsSaldi ? colorsSaldi[d.source.index] : colorsVon[d.source.index]; });
         //Set the ending color (at 100%)
         grads.append("stop")
             .attr("offset", "100%")
-            .attr("stop-color", function(d){ return colorsSaldi ? colorsSaldi[d.target.index] : colorsVon[d.target.index]; });
+            .attr("stop-color", function(d){ return  hexcolorFull[d.target.index] });
+            // .attr("stop-color", function(d){ return colorsSaldi ? colorsSaldi[d.target.index] : colorsVon[d.target.index]; });
 
         let group = g.append("g")
           .attr("class", "groups")
@@ -686,7 +774,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           .enter().append("path")
           .attr("d", ribbon)
           .style("fill", function(d){ return "url(#chordGradient" + id  + "-" + d.source.index + "-" + d.target.index + ")";})
-          .style("stroke", function(d) { let col:any = d3.rgb(colorsBlueRed[2]); return col.darker(); })
+          .style("stroke", bordercolor)
+          // .style("stroke", function(d) { let col:any = d3.rgb(colorsBlueRed[2]); return col.darker(); })
           .on("mouseover", function(d) {
             ribbons
               .filter(dd => dd !== d)
@@ -710,8 +799,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             
 
         const groupPath = group.append("path")
-          .style("fill", function(d) { return colorsSaldi ? colorsSaldi[d.index] : colorsVon[d.index]; })
-          .style("stroke", function(d) { let col:any = d3.rgb(colorsBlueRed[2]); return col.darker(); })
+        .style("fill", function(d) { return  hexcolorFull[d.index] })
+        // .style("fill", function(d) { return colorsSaldi ? colorsSaldi[d.index] : colorsVon[d.index]; })
+          .style("stroke", bordercolor)
+          // .style("stroke", function(d) { let col:any = d3.rgb(colorsBlueRed[2]); return col.darker(); })
           .attr("d", arc)
           .on("mouseover",  function(d, i) {
               ribbons.filter(function(d) {
@@ -750,20 +841,40 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               + ": " + (valueasSaldiVar[d.source.index] === 0 ? valueasSaldiVar[d.target.index]:valueasSaldiVar[d.source.index])
             } return t
           }) 
+          let labelText:number = this.state.checkedLabel === false ? 0 :  1 ; 
 
         //Append the label names on the outside
-        group.append("text")
-          .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
-          .attr("dy", ".35em")
-          .attr("class", "titles")
-          .attr("text-anchor", function(d:any) { return d.angle > Math.PI ? "end" : null; })
-          .attr("transform", function(d:any) {
-            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-            + "translate(" + (outerRadius + 10) + ")"
-            + (d.angle > Math.PI ? "rotate(180)" : "");
-          })
-          .style("font-size", "12px" )
-          .text(function(d, i) { return vonVar[i]; });
+        const labels = group.append("text")
+        .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
+        .attr("dy", ".35em")
+        .attr("class", "titles")
+        .attr("text-anchor", function(d:any) { return d.angle > Math.PI ? "end" : null; })
+        .attr("transform", function(d:any) {
+          return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+          + "translate(" + (outerRadius + 10) + ")"
+          + (d.angle > Math.PI ? "rotate(180)" : "");
+        })
+        .style("font-size", "14px" )
+        .attr("font-family", "Open Sans")
+        .attr("dx", function(d:any) { return labelText === 0 ? "" : max < 100 ? d.angle > Math.PI ? "-1.2em" :  "1.2em" : max < 1000  && max >= 100 ? d.angle > Math.PI ? "-2em" :  "2em" : d.angle > Math.PI ? "-3em" : "3em"; }) // 1.2em
+        .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " - " + vonVar[i] : vonVar[i] + " - "; });
+        // .text(function(d, i) { return nachVar[i]; });
+        // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
+
+      const labelsValues = group.append("text")
+        .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
+        .attr("dy", ".35em")
+        .attr("class", "titles")
+        .attr("text-anchor", function(d:any) { return d.angle > Math.PI ? "end" : null; })
+        .attr("transform", function(d:any) {
+          return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+          + "translate(" + (outerRadius + 10) + ")"
+          + (d.angle > Math.PI ? "rotate(180)" : "");
+        })
+        .style("font-size", "14px" )
+        .attr("font-family", "Open Sans")
+        .style("font-weight", "bold")
+        .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
           
         group.append("title")
         group.select("title")
@@ -878,7 +989,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             
           <div className="p-col-12">
             <Checkbox
-              name = "saldiChord"
+              name = "saldiChord" 
+              id	= "saldiChord"
               onChange={(e: { value: any, checked: boolean }) => this.setState({checked: e.checked})}
               checked={this.state.checked}
               disabled= {(this.props.theme === 'Saldi') ? false : true}
@@ -888,6 +1000,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
 			    <div className="p-col-1">{min}</div>
 			  	<div className="p-col-10">
+          <div className={`banner ${ this.props.theme == "Saldi" && this.state.checked === true ?  "slider-reversed" : ""}`}>
+
                 {
                     this.props.theme == "Saldi" ? 
                     <Slider min={min} max={max} value={this.state.rangeValues} onChange={(e) => this.setState({rangeValues: e.value as [number, number]})} range={true} style={this.state.checked === true? {background: '#1f7ed0', color: '#80CBC4'}:{}} />
@@ -895,9 +1009,20 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                     <Slider min={min} max={max} value={threshold} orientation="horizontal" onChange={(e) => this.setState({ threshold: e.value as number})}/>
                 }				
           </div>
+          </div>
 			  	<div className="p-col-1">{max}</div>
 				  <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
-				  <div className="p-col-12" >
+          <div className="p-col-12 p-md-12 p-lg-6">
+					<Legend />
+				</div>
+        <div className="p-col-12 p-md-12 p-lg-6">
+          <Checkbox id = "values" name = "values"
+            onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
+            checked={this.state.checkedLabel}
+          />
+          <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Anzahl Umzüge anzeigen</label>
+        </div>
+          <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
           </div>
 			  </div>
