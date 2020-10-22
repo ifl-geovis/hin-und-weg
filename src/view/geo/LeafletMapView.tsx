@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Pane, Map, Marker, Tooltip, TileLayer, GeoJSON, ImageOverlay, Circle } from 'react-leaflet';
+import { Pane, Map, Marker, Polygon, Tooltip, TileLayer, GeoJSON, ImageOverlay, Circle } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import { Feature, FeatureCollection } from 'geojson';
@@ -45,6 +45,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	}
 
 	public render(): JSX.Element {
+		console.log('RENDER');
+
 		let boundsOfGeodata: Array<Array<number>> = [];
 		let geoDataJson;
 		let labelsNames;
@@ -55,8 +57,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let arrows2;
 		let offlinemap;
 		let centerMarker;
-		let selectedFeature;
-		let tooltipText: string;
+		let featureBorder;
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
@@ -70,13 +71,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				else labelsValues2 = this.getLabelsValues();
 			}
 			if (this.centerpoint.Center1 != null && this.props.showCenter === '2') centerMarker = this.CenterMarker();
-
-			for (let i = 0; i < geoDataJson.features.length; i++) {
-				if (geoDataJson.features[i].properties!.Name == this.props.selectedLocation) {
-					selectedFeature = geoDataJson.features[i];
-				}
-			}
-
+			if (this.props.selectedLocation) featureBorder = this.setFeatureBorder(geoDataJson);
 			if (this.props.showMap) geomap = this.getMapLayer();
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 		}
@@ -104,8 +99,21 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				<Pane name="ValuesPane2" style={{ zIndex: 800 }}>
 					{labelsValues2}
 				</Pane>
+				<Pane name="borderSelectedFeature" style={{ zIndex: 1000 }}>
+					{featureBorder}
+				</Pane>
 			</Map>
 		);
+	}
+
+	public setFeatureBorder(geodata: any) {
+		let polygon;
+		for (let i = 0; i < geodata.features.length; i++) {
+			if (geodata.features[i].properties!.Name == this.props.selectedLocation) {
+				polygon = turf.flip(geodata.features[i]);
+			}
+		}
+		return <Polygon color="purple" fillOpacity="0" positions={polygon.geometry.coordinates} />;
 	}
 
 	public calcGeodataBounds(geojson: FeatureCollection) {
@@ -142,14 +150,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	}
 
 	public CenterMarker() {
-		let geoDataJson;
-		let centerpoints;
-
-		if (this.props.geodata) {
-			geoDataJson = this.props.geodata.getFeatureCollection();
-			centerpoints = this.generateCenterPoints(geoDataJson);
-		}
-
 		return <Circle center={this.centerpoint.Center1} radius={200} color="#c7c7c7" fillOpacity="1"></Circle>;
 	}
 
@@ -455,23 +455,35 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	public onEachFeature = (feature: Feature, layer: Layer) => {
 		let name = '';
 
-		layer.on('click', (e) => {
-			if (feature.properties && this.props.nameField) name = feature.properties[this.props.nameField];
-			this.props.onSelectLocation(name);
-
-			this.style(feature);
-		});
-
 		layer.on({
+			'click': () => {
+				if (feature.properties && this.props.nameField) name = feature.properties[this.props.nameField];
+				this.props.onSelectLocation(name);
+				this.style(feature);
+			},
 			'mouseover': (e) => {
 				let center = turf.centerOfMass(e.target.feature);
 				layer.bindTooltip(e.target.feature.properties.Name);
 				layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
 			},
-			'mouseout': (e) => {
+			'mouseout': () => {
 				layer.unbindTooltip();
 				layer.closeTooltip();
 			},
 		});
 	};
+
+	// public onEachFeatureForLabel = (feature: Feature, layer: Layer) => {
+	// 	layer.on({
+	// 		'mouseover': (e) => {
+	// 			let center = turf.centerOfMass(e.target.feature);
+	// 			layer.bindTooltip(e.target.feature.properties.Name);
+	// 			layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
+	// 		},
+	// 		'mouseout': () => {
+	// 			layer.unbindTooltip();
+	// 			layer.closeTooltip();
+	// 		},
+	// 	});
+	// };
 }
