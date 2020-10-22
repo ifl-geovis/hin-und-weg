@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Pane, Map, Marker, TileLayer, GeoJSON, ImageOverlay, Circle } from 'react-leaflet';
+import { Pane, Map, Marker, Tooltip, TileLayer, GeoJSON, ImageOverlay, Circle } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import { Feature, FeatureCollection } from 'geojson';
@@ -28,8 +28,6 @@ interface Centerpoint {
 	Center1: any;
 }
 
-interface Points {}
-
 export default class LeafletMapView extends Component<ILeafletMapViewProps, Centerpoint> {
 	private static odd: boolean = true;
 
@@ -40,7 +38,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		this.centerpoint = {
 			Center1: null,
 		};
-
 		this.style = this.style.bind(this);
 		this.pointToLayerNames = this.pointToLayerNames.bind(this);
 		this.pointToLayerValues = this.pointToLayerValues.bind(this);
@@ -59,6 +56,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let offlinemap;
 		let centerMarker;
 		let selectedFeature;
+		let tooltipText: string;
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
@@ -462,6 +460,18 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			this.props.onSelectLocation(name);
 
 			this.style(feature);
+		});
+
+		layer.on({
+			'mouseover': (e) => {
+				let center = turf.centerOfMass(e.target.feature);
+				layer.bindTooltip(e.target.feature.properties.Name);
+				layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
+			},
+			'mouseout': (e) => {
+				layer.unbindTooltip();
+				layer.closeTooltip();
+			},
 		});
 	};
 }
