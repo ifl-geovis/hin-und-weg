@@ -84,6 +84,10 @@ ul.p-tabview-nav li a {
 	z-index: 10000;
 }
 
+div.slider-reversed .p-slider .p-slider-range {
+	background-color: #c8c8c8;
+}
+
 @media print {
 	.noprint {
 		display: none;

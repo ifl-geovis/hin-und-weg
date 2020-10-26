@@ -1,10 +1,12 @@
 import * as React from "react";
 import {Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
+import Classification from '../../data/Classification';
 
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import R from "ramda";
+import Legend from "../elements/Legend";
 
 
 export interface ID3ChartItem
@@ -108,10 +110,33 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
       let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
       let heightResponsive = (data.length <= 2 )? data.length*50 : (data.length >2 && data.length <= 5) ? data.length*35 : (data.length > 5 && data.length < 30) ? data.length* 25 : data.length*20;
 
-      let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength*9}
+      // let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength*9}
+      let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength > 3 ? maxNameLength*9 : maxNameLength*15}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
       let HEIGHT = heightResponsive - MARGIN.TOP - MARGIN.BOTTOM;
-     
+      const neutralcolor = "#f7f7f7"
+      const bordercolor = "#525252"
+
+      const classification = Classification.getCurrentClassification();
+      // let hexcolor = classification.getColor(data[1]);
+      console.log("classification: " + JSON.stringify(classification));
+      
+      let classColors = (data: ID3ChartItem[]) => { 
+        let colors = new Array(data.length);
+          colors.fill('#000000');  
+        for(let i=0;i<data.length;i++)
+        { 
+          colors[i]=classification.getColor(data[i])
+        }  return colors
+      }
+      let hexcolor:string[]  = classColors(data);
+      console.log("classification colors: " + hexcolor);
+
+      let hexcolorAdd: string[] =  classColors(data);
+        hexcolorAdd.push("#f7f7f7");
+
+      // let usedcolor: string = neutralcolor;
+
       const colorsBlue = ["#92c5de", "#2166ac"]
       const colorsRed = ["#b2182b", "#f4a582"]
 
@@ -134,7 +159,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
       {
         const x = d3.scaleLinear()
             .domain([0, max])
-            .range([0, WIDTH])
+            .range([0, WIDTH - 30])
           
         const y = d3.scaleBand()
             .domain(data.map(d => d.Nach)) 
@@ -203,7 +228,10 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                 }
                 return null
               })
-              .attr("fill", colorsBlue[1])
+              .attr("fill", function (d:any, i:number){return hexcolor[i]})
+              // .attr("fill", colorsBlue[1])
+              .style("stroke", bordercolor)
+              .style("stroke-opacity", .5)
               .attr("x", 0)
                 .attr("width", d =>  (x(d.Wert)));
 
@@ -236,22 +264,29 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                 }
                 return null
               })
-              .attr("fill", colorsBlue[1])
+              // .attr("fill", colorsBlue[1])
+              .attr("fill", function (d:any, i:number){return hexcolor[i]})
+              .style("stroke", bordercolor)
+              .style("stroke-opacity", .5)
               .on('mouseover', function(d) {
                 d3.select(this)
-                .attr("fill", colorsBlue[0]);
+                .attr("fill", "#bdbdbd");
+                // .attr("fill", colorsBlue[0]);
                 values
                 .filter(dd => dd === d)
                 .attr( "font-weight", "bold")
                 .style("fill", "black");
                 select_axis_label(d).attr('style', "font-weight: bold;").style("font-size", "13px");
               })
-              .on('mouseout', function(d) {
+              .on('mouseout', function(d, i) {
                 d3.select(this)
-                .attr("fill", colorsBlue[1]);
+                // .attr("fill", colorsBlue[1]);
+                .attr("fill", function (dd:any, ii:number){return hexcolor[i]})
                 values
                 .attr( "font-weight", "regular")
-                .style("fill", (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d");
+                // .style("fill", (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d");
+                .style("fill", (d) => (x(d.Wert) - x(0)) > 30 ? "#000000" : "#3a403d");
+
                   select_axis_label(d).attr('style', "font-weight: regular;").style("font-size", "12px");
               })
               .attr("x", 0)
@@ -269,12 +304,12 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                       return null
                     })
                     .attr("dy", y.bandwidth() - 2.55)
-                    .attr("text-anchor", (d) =>(x(d.Wert) - x(0)) > 30 ? "end" : "start")
-                    .style("fill", (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d")
+                    .attr("text-anchor", "start") // (d) =>(x(d.Wert) - x(0)) > 30 ? "end" : "start")
+                    .style("fill", "#000000") // (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d")
                     .text(d => { return d["Wert"]; })
                     .style("font-size", "15px" )
                             .attr("x", (d) =>
-                                ((x(d.Wert)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1)
+                            ( x(d.Wert) + 1) // ((x(d.Wert)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1)
                               );
 
         }
@@ -282,7 +317,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
         {
           const x = d3.scaleLinear()
             .domain([0, max])
-            .range([0, WIDTH])
+            .range([0, WIDTH - 30])
           
           const y = d3.scaleBand()
             .domain(data.map(d => d.Von)) 
@@ -348,7 +383,11 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                 }
                 return null
              })
-              .attr("fill", colorsRed[0])
+             .attr("fill", function (d:any, i:number){return hexcolor[i]})
+              // .attr("fill", colorsRed[0])
+              .style("stroke", bordercolor)
+              .style("stroke-opacity", .5)
+            //  .style("stroke-width", .5)
               .attr("x", 0)
               .attr("width", d =>  (x(d.Wert)))
                       
@@ -381,19 +420,24 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                 }
                 return null
               })
-              .attr("fill", colorsRed[0])
+              .attr("fill", function (d:any, i:number){return hexcolor[i]})
+              // .attr("fill", colorsRed[0])
+              .style("stroke", bordercolor)
+              .style("stroke-opacity", .5)
+            // .style("stroke-width", .5)
               .on('mouseover', function(d) {
                 d3.select(this)
-                .attr("fill", colorsRed[1]);
+                .attr("fill", "#bdbdbd"); // colorsRed[1]);
                 values
                   .filter(dd => dd === d)
                   .attr( "font-weight", "bold")
                   .style("fill", "black")
                 select_axis_label(d).attr('style', "font-weight: bold;").style("font-size", "13px");
               })
-              .on('mouseout', function(d) {
+              .on('mouseout', function(d, i) {
                 d3.select(this)
-                .attr("fill", colorsRed[0]);
+                .attr("fill", function (dd:any, ii:number){return hexcolor[i]})
+                // .attr("fill", colorsRed[0]);
                 values
                   .attr( "font-weight", "regular")
                   .style("fill", (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d")
@@ -413,11 +457,12 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                       return null
                     })
                     .attr("dy", y.bandwidth() - 2.55)
-                    .attr("text-anchor", (d) =>(x(d.Wert) - x(0)) > 30 ? "end" : "start")
-                    .style("fill", (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d")
+                    .attr("text-anchor", "start") // (d) =>(x(d.Wert) - x(0)) > 30 ? "end" : "start")
+                    .style("fill", "#000000") // (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d")
                     .text(d => { return d["Wert"]; })
                     .style("font-size", "15px")
-                        .attr("x", (d) => ((x(d.Wert)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1));
+                        .attr("x", (d) => x(d.Wert) + 1); // ((x(d.Wert)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1));
+
 
         } 
         else if (theme == "Saldi") 
@@ -425,7 +470,7 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
 
           const x = d3.scaleLinear()
             .domain([min, max]).nice()
-            .range([0, WIDTH])
+            .range([0, WIDTH - 32])
 
             if (min > 0){
               x.domain([0,max]).nice()
@@ -500,8 +545,12 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                 }
                 return null
             })
-              .attr("fill", function(d){ return d.Wert < 0 ? colorsBlue[1]: colorsRed[0]; })
-                      .attr("x", d => {return d.Wert < 0 ? x(d["Wert"]) : x(0) })
+            .attr("fill", function(d: any, i: number){ return hexcolor[i]})
+            // .attr("fill", function(d){ return d.Wert < 0 ? colorsBlue[1]: colorsRed[0]; })
+          .style("stroke", bordercolor)
+          .style("stroke-opacity", .5)
+          .style("stroke-width", .5)
+           .attr("x", d => {return d.Wert < 0 ? x(d["Wert"]) : x(0) })
                       .attr("width", d => { return d.Wert < 0 ?  (x(d.Wert * -1) - x(0)) : x(d.Wert) -x(0) });
                         
               
@@ -537,26 +586,35 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                 }
                 return null
               })
-            .attr("fill", function(d){ return d.Wert < 0 ? colorsBlue[1]: colorsRed[0]; })
-            .on('mouseover', function(d) {
+              .attr("fill", function(d: any, i: number){ return hexcolor[i]})
+              // .attr("fill", function(d){ return d.Wert < 0 ? colorsBlue[1]: colorsRed[0]; })
+              .style("stroke", bordercolor)
+              .style("stroke-opacity", .5)
+              .style("stroke-width", .5)
+              .on('mouseover', function(d) {
                 d3.select(this)
-                  .attr("fill", function(dd){ return d.Wert < 0 ? colorsBlue[0]: colorsRed[1]; });
+                .attr("fill", function(dd){ return bordercolor});
+                  // .attr("fill", function(dd){ return d.Wert < 0 ? colorsBlue[0]: colorsRed[1]; });
                 values
                   .filter(dd => dd === d)
                   .attr( "font-weight", "bold")
                   .style("fill", "black")
                 select_axis_label(d).attr('style', "font-weight: bold; ").style("font-size", "13px");            
               })
-            .on('mouseout', function(d) {
-              d3.select(this)
-                  .attr("fill", function(){ return d.Wert < 0 ? colorsBlue[1]: colorsRed[0]; });
+              .on('mouseout', function(d:any, i:number) {
+                d3.select(this)
+                .attr("fill", function(dd:any, ii: number ){ return hexcolor[i]});
+  
+                    // .attr("fill", function(){ return d.Wert < 0 ? colorsBlue[1]: colorsRed[0]; });
                 values
                 .attr( "font-weight", "regular")
                 .style("fill", function(d){
                   if (d.Wert < 0){
-                    return (x(d.Wert * -1) - x(0)) > 30 ? "#ffffff" : "#3a403d";
+                    return (x(d.Wert * -1) - x(0)) > 30 ? "#3a403d" : "#3a403d";
+                    // return (x(d.Wert * -1) - x(0)) > 30 ? "#ffffff" : "#3a403d";
                   } else {
-                    return (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d";
+                    return (x(d.Wert) - x(0)) > 30 ? "#3a403d" : "#3a403d";
+                    // return (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d";
                   }
                   })
                 select_axis_label(d).attr('style', "font-weight: regular;").style("font-size", "12px");
@@ -587,25 +645,26 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
               .attr("dy", y.bandwidth() - 2.55)
               .attr("text-anchor", function(d){
                 if (d.Wert < 0){
-                  return (x(d.Wert * -1) - x(0)) > 30 ? "start" : "end";
+                  return "end"; // return (x(d.Wert * -1) - x(0)) > 30 ? "start" : "end";
                 } else {
-                  return (x(d.Wert) - x(0)) > 30 ? "end" : "start";
+                  return "start"; // return (x(d.Wert) - x(0)) > 30 ? "end" : "start";
                 }
                 })
-              .style("fill", function(d){
-                if (d.Wert < 0){
-                  return (x(d.Wert * -1) - x(0)) > 30 ? "#ffffff" : "#3a403d";
-                } else {
-                  return (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d";
-                }
-                })
+                .style("fill",  "#000000")
+                // .style("fill", function(d){
+                //   if (d.Wert < 0){
+                //     return (x(d.Wert * -1) - x(0)) > 30 ? "#ffffff" : "#3a403d";
+                //   } else {
+                //     return (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d";
+                //   }
+                //   })
               .style("font-size", "15px")
               .text(function(d){ return d.Wert; })
                     .attr("x", (d) => {
                       if (d.Wert < 0){
-                        return (x(d.Wert * -1) - x(0)) > 30 ? x(d.Wert) + 2 : x(d.Wert) - 1;
+                        return  x(d.Wert) - 1; // return (x(d.Wert * -1) - x(0)) > 30 ? x(d.Wert) + 2 : x(d.Wert) - 1;
                       } else {
-                        return (x(d.Wert) - x(0)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1;
+                        return  x(d.Wert) + 1;  // return (x(d.Wert) - x(0)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1;
                       }
                     });
 
@@ -655,15 +714,15 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
   }
   private getInitialValuesSliderSaldi(): [number, number]
   {
-    let [min, max] = this.getMinMax2();
+    let [min2, max2] = this.getMinMax2();
     let rangeValues: [number, number] = this.state.rangeValues;
-    if (this.state.rangeValues[0] == 0) rangeValues[0] = min;
-    if (this.state.rangeValues[1] == 0) rangeValues[1] = max;
-    if (this.state.rangeValues[0] < min) rangeValues[0] = min;
-    if (this.state.rangeValues[0] > max) rangeValues[0] = min;
-    if (this.state.rangeValues[1] < min) rangeValues[1] = max;
-    if (this.state.rangeValues[1] > max) rangeValues[1] = max;
-    if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max , rangeValues[0] = min;
+    if (this.state.rangeValues[0] == 0) rangeValues[0] = min2;
+    if (this.state.rangeValues[1] == 0) rangeValues[1] = max2;
+    if (this.state.rangeValues[0] < min2) rangeValues[0] = min2;
+    if (this.state.rangeValues[0] > max2) rangeValues[0] = min2;
+    if (this.state.rangeValues[1] < min2) rangeValues[1] = max2;
+    if (this.state.rangeValues[1] > max2) rangeValues[1] = max2;
+    if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max2 , rangeValues[0] = min2;
  
     return rangeValues;
   }
@@ -687,6 +746,8 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
              </div>
              <div className="p-col-1">{min}</div>
 			  	<div className="p-col-10">
+          <div className={`banner ${ this.props.theme == "Saldi" && this.state.checked === true ?  "slider-reversed" : ""}`}>
+
                 {
                     this.props.theme == "Saldi" ? 
                     <Slider min={min} max={max} value={this.state.rangeValues} onChange={(e) => this.setState({rangeValues: e.value as [number, number]})} range={true} style={this.state.checked === true? {background: '#1f7ed0', color: '#80CBC4'}:{}} />
@@ -694,8 +755,12 @@ export class D3Chart extends React.Component <ID3ChartProps, ID3ChartState> {
                     <Slider min={min} max={max} value={threshold} orientation="horizontal" onChange={(e) => this.setState({ threshold: e.value as number})}/>
                 }				
           </div>
+          </div>
 			  	<div className="p-col-1">{max}</div>
 			    	<div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
+			    	<div className="p-col-12" >
+            <Legend />
+			    	</div>
 			    	<div className="p-col-12" >
                <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
             </div>
