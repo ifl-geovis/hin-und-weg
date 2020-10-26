@@ -203,7 +203,8 @@ export default class MainMenu
 
 	private static print(event: any, window: any, content: any)
 	{
-		window.webContents.print();
+		const options = { landscape: true };
+		window.webContents.print(options);
 	}
 
 	private static website(url: string, window: any)

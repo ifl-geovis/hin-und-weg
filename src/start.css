@@ -83,3 +83,9 @@ ul.p-tabview-nav li a {
 .leaflet-pane .leaflet-tooltip-pane {
 	z-index: 10000;
 }
+
+@media print {
+	.noprint {
+		display: none;
+	}
+}

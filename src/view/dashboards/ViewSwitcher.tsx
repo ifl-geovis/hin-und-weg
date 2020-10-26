@@ -80,8 +80,8 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="viewswitcher">
 				<div className="p-grid">
-					<div className="p-col-4">Visualisierung wählen:</div>
-					<div className="p-col-8">
+					<div className="p-col-4 noprint">Visualisierung wählen:</div>
+					<div className="p-col-8 noprint">
 						<ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />
 					</div>
 					<div className="p-col-12">{showedView}</div>
