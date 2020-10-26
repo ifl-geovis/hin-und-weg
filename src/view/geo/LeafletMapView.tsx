@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Pane, Map, Marker, Polygon, Tooltip, TileLayer, GeoJSON, ImageOverlay, Circle } from 'react-leaflet';
+import { Pane, Map, Marker, Polygon, Tooltip, ScaleControl, TileLayer, GeoJSON, ImageOverlay, Circle } from 'react-leaflet';
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import { Feature, FeatureCollection } from 'geojson';
@@ -80,6 +80,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			<Map bounds={boundsOfGeodata}>
 				{geomap}
 				{offlinemap}
+				<ScaleControl></ScaleControl>
 				<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
 				<Pane name="ArrowPane1" style={{ zIndex: 800 }}>
 					{arrows1}
@@ -462,9 +463,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				this.style(feature);
 			},
 			'mouseover': (e) => {
-				let center = turf.centerOfMass(e.target.feature);
-				layer.bindTooltip(e.target.feature.properties.Name);
-				layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
+				if (feature.properties && this.props.nameField) {
+					let center = turf.centerOfMass(e.target.feature);
+					let label = e.target.feature.properties[this.props.nameField];
+					layer.bindTooltip(label);
+					layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
+				}
 			},
 			'mouseout': () => {
 				layer.unbindTooltip();
@@ -472,18 +476,4 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			},
 		});
 	};
-
-	// public onEachFeatureForLabel = (feature: Feature, layer: Layer) => {
-	// 	layer.on({
-	// 		'mouseover': (e) => {
-	// 			let center = turf.centerOfMass(e.target.feature);
-	// 			layer.bindTooltip(e.target.feature.properties.Name);
-	// 			layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
-	// 		},
-	// 		'mouseout': () => {
-	// 			layer.unbindTooltip();
-	// 			layer.closeTooltip();
-	// 		},
-	// 	});
-	// };
 }
