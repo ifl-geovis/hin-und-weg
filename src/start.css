@@ -79,3 +79,7 @@ ul.p-tabview-nav li a {
 	shape-rendering: crispedges;
 	stroke: #d9d9d9;
 }
+
+.leaflet-pane .leaflet-tooltip-pane {
+	z-index: 10000;
+}
