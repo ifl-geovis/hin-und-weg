@@ -48,7 +48,7 @@ export default class Legend extends React.Component<ILegendProps> {
 				key={'box-' + color + '-' + index}
 				fill={color}
 				stroke={this.stroke_color}
-				width= { index === 'neutral' ? this.box_size*0.5 : this.box_size} 
+				width= { index === 'neutral' ? this.box_size*0.5 : this.box_size}
 				height={this.box_size}
 				x={x}
 				y={y}
@@ -70,23 +70,17 @@ export default class Legend extends React.Component<ILegendProps> {
 		);
 	}
 
-	// private createSelectedBox(color: string, x: number, y: number): object
-	// {
-	// 	const box = this.createBox(color, 100, 0, "selected");
-	// 	return (<svg x={x} y={y}><text x={0} y={21}>Bezugsfläche:</text>{box}</svg>);
-	// }
-
 	private createNeutralBox(color: string, x: number, y: number): object {
-		const box = this.createBox(color, 0, 0, 'neutral'); 
+		const box = this.createBox(color, 0, 0, 'neutral');
 		const line = this.createLine(this.stroke_color,
 			'neutral',
-			this.box_size*0.25, 
+			this.box_size*0.25,
 			this.box_size,
 			this.box_size*0.25,
 			this.box_size + 10)
-		const label = this.createLabel('0' , this.box_size*0.25 - this.label_offset, this.box_size + 21, 'neutral') 
+		const label = this.createLabel('0' , this.box_size*0.25 - this.label_offset, this.box_size + 21, 'neutral')
 		return (
-			<svg x={x} y={y} width={this.box_size*0.5} height={this.box_size + 21}>  
+			<svg x={x} y={y} width={this.box_size*0.5} height={this.box_size + 21}>
 				{box}
 				{line}
 				{label}
@@ -106,7 +100,7 @@ export default class Legend extends React.Component<ILegendProps> {
 				this.createLine(
 					this.stroke_color,
 					'positive-' + i,
-					(i + 1) * this.box_size, 
+					(i + 1) * this.box_size,
 					this.box_size,
 					(i + 1) * this.box_size,
 					this.box_size + 10
@@ -151,4 +145,5 @@ export default class Legend extends React.Component<ILegendProps> {
 			</svg>
 		);
 	}
+
 }
