@@ -110,7 +110,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	public setFeatureBorder(geodata: any) {
 		let polygon;
 		for (let i = 0; i < geodata.features.length; i++) {
-			if (geodata.features[i].properties!.Name == this.props.selectedLocation) {
+			if ((this.props.nameField) && (geodata.features[i].properties) && (geodata.features[i].properties[this.props.nameField] == this.props.selectedLocation)) {
 				polygon = turf.flip(geodata.features[i]);
 			}
 		}
@@ -262,7 +262,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			// @ts-ignore
 			var center = turf.centerOfMass(pointsGeoJson.features[i]);
 
-			if (pointsGeoJson.features[i].properties!.Name == this.props.selectedLocation) {
+			// @ts-ignore
+			if ((pointsGeoJson.features[i]) && (pointsGeoJson.features[i].properties) && (this.props.nameField) && (pointsGeoJson.features[i].properties[this.props.nameField] == this.props.selectedLocation)) {
 				this.centerpoint.Center1 = new LatLng(center.geometry.coordinates[1], center.geometry.coordinates[0]);
 			}
 
@@ -276,6 +277,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let label = '';
 		let name = 'Fehler!!!';
 		if (feature1.properties) name = String(feature1.properties.Name);
+		if (feature1.properties && this.props.nameField) name = String(feature1.properties[this.props.nameField]);
 
 		if (this.props.showCenter === '1') {
 			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
@@ -300,6 +302,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let name = 'Fehler!!!';
 
 		if (feature1.properties) name = String(feature1.properties.Name);
+		if (feature1.properties && this.props.nameField) name = String(feature1.properties[this.props.nameField]);
 
 		console.log('name:', name);
 		console.log('this.props.selectedLocation:', this.props.selectedLocation);
