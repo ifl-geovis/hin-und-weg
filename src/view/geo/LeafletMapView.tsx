@@ -110,7 +110,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	public setFeatureBorder(geodata: any) {
 		let polygon;
 		for (let i = 0; i < geodata.features.length; i++) {
-			if ((this.props.nameField) && (geodata.features[i].properties) && (geodata.features[i].properties[this.props.nameField] == this.props.selectedLocation)) {
+			if (
+				this.props.nameField &&
+				geodata.features[i].properties &&
+				geodata.features[i].properties[this.props.nameField] == this.props.selectedLocation
+			) {
 				polygon = turf.flip(geodata.features[i]);
 			}
 		}
@@ -263,7 +267,13 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			var center = turf.centerOfMass(pointsGeoJson.features[i]);
 
 			// @ts-ignore
-			if ((pointsGeoJson.features[i]) && (pointsGeoJson.features[i].properties) && (this.props.nameField) && (pointsGeoJson.features[i].properties[this.props.nameField] == this.props.selectedLocation)) {
+			if (
+				pointsGeoJson.features[i] &&
+				pointsGeoJson.features[i].properties &&
+				this.props.nameField &&
+				// @ts-ignore
+				pointsGeoJson.features[i].properties[this.props.nameField] == this.props.selectedLocation
+			) {
 				this.centerpoint.Center1 = new LatLng(center.geometry.coordinates[1], center.geometry.coordinates[0]);
 			}
 
@@ -466,7 +476,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				this.style(feature);
 			},
 			'mouseover': (e) => {
-				if (feature.properties && this.props.nameField) {
+				if (feature.properties && this.props.nameField && this.props.showCenter !== '1') {
 					let center = turf.centerOfMass(e.target.feature);
 					let label = e.target.feature.properties[this.props.nameField];
 					layer.bindTooltip(label);
