@@ -3,6 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import AppView from './view/App';
 import OfflineMaps from './data/OfflineMaps';
+import Settings from './settings';
 
 function setupDB() {
 	const DB = alasql;
@@ -11,6 +12,8 @@ function setupDB() {
 	DB('CREATE TABLE matrices (Nach STRING,Von STRING ,Jahr STRING ,Wert FLOAT);');
 	return DB;
 }
+
+Settings.load();
 
 OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 

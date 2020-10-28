@@ -32,7 +32,7 @@ export default class SettingsView extends React.Component<{}, {}>
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
-					<Dropdown optionLabel="label" value='value3' options={this.test1selections} onChange={this.processTest1} style={{width: "100%"}}/>
+					<Dropdown optionLabel="label" value={'value3'} options={this.test1selections} onChange={this.processTest1} style={{width: "100%"}}/>
 				</div>
 			</div>
 		);
