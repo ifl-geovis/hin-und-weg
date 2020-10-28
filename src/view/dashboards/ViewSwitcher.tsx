@@ -15,11 +15,11 @@ import D3SankeyView from '../charts/D3SankeyView';
 import D3TimelineView from '../charts/D3TimelineView';
 import D3ChordView from '../charts/D3ChordView';
 
-import StatisticsView from '../../components/StatisticsView';
 import ImportView from '../ImportView';
 import DBView from '../DBView';
-import SystemInfo from '../../components/SystemInfo';
-import ProjektInfo from '../../components/ProjektInfo';
+import SystemInfo from '../components/SystemInfo';
+import ProjektInfo from '../components/ProjektInfo';
+import StatisticsView from '../components/StatisticsView';
 
 export interface TableItem {
 	Von: string;
