@@ -24,6 +24,7 @@ interface IGeodataState {
 	showCenter: String;
 	showMap: boolean;
 	threshold: number;
+	polygonTransparency: number;
 	offlineMap: IOfflineMaps;
 }
 
@@ -38,12 +39,14 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		super(props);
 		this.onShowCenterChange = this.onShowCenterChange.bind(this);
 		this.onSliderChange = this.onSliderChange.bind(this);
+		this.onTransparencySliderChange = this.onTransparencySliderChange.bind(this);
 		this.onShowMapChange = this.onShowMapChange.bind(this);
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
 			showCenter: '1',
 			showMap: true,
 			threshold: 0,
+			polygonTransparency: 80,
 			offlineMap: {
 				label: 'Offline Map auswählen',
 				file: '',
@@ -55,31 +58,95 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	public render(): JSX.Element {
 		const classification = Classification.getCurrentClassification();
 		return (
-			<div className="p-grid">
-				<div className="p-col-12">
-					<RadioButton inputId="rb1" name="center" value="1" onChange={this.onShowCenterChange} checked={this.state.showCenter === '1'} />
-					Namen anzeigen{'		 '}
-					<RadioButton inputId="rb2" name="center" value="2" onChange={this.onShowCenterChange} checked={this.state.showCenter === '2'} />
-					Pfeile anzeigen{'		 '}
-					<RadioButton inputId="rb3" name="center" value="3" onChange={this.onShowCenterChange} checked={this.state.showCenter === '3'} />
-					Anzahl Umzüge anzeigen
-					<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
-					<label className="p-checkbox-label chkBoxMap">zeige Hintergrundkarte (online)</label>
-					<Dropdown
-						optionLabel="label"
-						options={OfflineMaps.getCurrentOfflineMaps().getData()}
-						onChange={this.onOfflineMapChange}
-						placeholder={this.state.offlineMap.label}
-					/>
-					<Slider
-						min={0}
-						max={classification.getMaxValue()}
-						value={this.state.threshold}
-						orientation="horizontal"
-						onChange={this.onSliderChange}
-					/>{' '}
-					Es werden alle Pfeile mit einer bei Weg oder Zuzügen über {this.state.threshold} angezeigt
+			<div className="p-grid p-component">
+				<div className="p-col">
+					<div className="p-grid p-dir-col">
+						<strong className="p-col">Karteninformationen:</strong>
+						<div className="p-col rdBtnContainer">
+							<RadioButton
+								inputId="rb1"
+								name="center"
+								value="1"
+								onChange={this.onShowCenterChange}
+								checked={this.state.showCenter === '1'}
+							/>
+							<label className="p-checkbox-label pointer" htmlFor="rb1">
+								Namen anzeigen
+							</label>
+						</div>
+						<div className="p-col rdBtnContainer">
+							<RadioButton
+								inputId="rb2"
+								name="center"
+								value="2"
+								onChange={this.onShowCenterChange}
+								checked={this.state.showCenter === '2'}
+							/>
+							<label className="p-checkbox-label pointer" htmlFor="rb2">
+								Bewegung visualisieren
+							</label>
+						</div>
+						<div className="p-col rdBtnContainer">
+							<RadioButton
+								inputId="rb3"
+								name="center"
+								value="3"
+								onChange={this.onShowCenterChange}
+								checked={this.state.showCenter === '3'}
+							/>
+							<label className="p-checkbox-label pointer" htmlFor="rb3">
+								Anzahl der Umzüge anzeigen
+							</label>
+						</div>
+						<div className="p-col rdBtnContainer">
+							<label>Transparenz:</label>
+							<Slider
+								className="transparencySlider"
+								min={0}
+								max={100}
+								step={1}
+								value={this.state.polygonTransparency}
+								orientation="horizontal"
+								onChange={this.onTransparencySliderChange}
+							/>
+						</div>
+					</div>
 				</div>
+				<div className="p-col">
+					<div className="p-grid p-dir-col">
+						<strong className="p-col">Hintergrundkarte:</strong>
+						<div className="p-col rdBtnContainer">
+							<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
+							<label className="p-checkbox-label pointer" htmlFor="showMap">
+								zeige Hintergrundkarte (online)
+							</label>
+						</div>
+						<div className="p-col">
+							<Dropdown
+								optionLabel="label"
+								options={OfflineMaps.getCurrentOfflineMaps().getData()}
+								onChange={this.onOfflineMapChange}
+								placeholder={this.state.offlineMap.label}
+							/>
+						</div>
+					</div>
+				</div>
+				<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
+					<hr />
+					<div className="p-grid p-align-center">
+						<p className="p-col-4">Es werden alle Pfeile mit einer bei Weg oder Zuzügen über {this.state.threshold} angezeigt.</p>
+						<div className="p-col-8">
+							<Slider
+								min={0}
+								max={classification.getMaxValue()}
+								value={this.state.threshold}
+								orientation="horizontal"
+								onChange={this.onSliderChange}
+							/>
+						</div>
+					</div>
+				</div>
+
 				<div className="p-col-12">
 					{/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
 					<LeafletMapView
@@ -93,6 +160,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
 						threshold={this.state.threshold}
+						polygonTransparency={this.state.polygonTransparency}
 					/>
 				</div>
 				<div className="p-col-12">
@@ -108,6 +176,9 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
 	private onSliderChange(e: { originalEvent: Event; value: number }) {
 		this.setState({ threshold: e.value as number });
+	}
+	private onTransparencySliderChange(e: { originalEvent: Event; value: number }) {
+		this.setState({ polygonTransparency: e.value as number });
 	}
 
 	private onShowMapChange(e: { originalEvent: Event; value: string; checked: boolean }) {

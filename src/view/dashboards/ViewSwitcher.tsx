@@ -70,7 +70,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
 		this.state = {
-			activeView: (this.props.geodata) ? 'map' : 'file',
+			activeView: this.props.geodata ? 'map' : 'file',
 		};
 	}
 
@@ -80,7 +80,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="viewswitcher">
 				<div className="p-grid">
-					<div className="p-col-4 noprint">Visualisierung wählen:</div>
+					<div className="p-col-4 p-component noprint">Visualisierung wählen:</div>
 					<div className="p-col-8 noprint">
 						<ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />
 					</div>

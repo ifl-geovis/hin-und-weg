@@ -22,6 +22,7 @@ export interface ILeafletMapViewProps {
 	offlineMap: IOfflineMaps;
 	theme: string;
 	threshold: number;
+	polygonTransparency: number;
 }
 
 interface Centerpoint {
@@ -45,7 +46,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	}
 
 	public render(): JSX.Element {
-		console.log('RENDER');
+		// console.log('RENDER');
 
 		let boundsOfGeodata: Array<Array<number>> = [];
 		let geoDataJson;
@@ -100,7 +101,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				<Pane name="ValuesPane2" style={{ zIndex: 800 }}>
 					{labelsValues2}
 				</Pane>
-				<Pane name="borderSelectedFeature" style={{ zIndex: 1000 }}>
+				<Pane name="borderSelectedFeature" style={{ zIndex: 500 }}>
 					{featureBorder}
 				</Pane>
 			</Map>
@@ -207,7 +208,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 								return {
 									fillColor: hexcolor,
 									color: hexBodercolor,
-									fillOpacity: 0.75,
+									fillOpacity: this.props.polygonTransparency / 100,
 								};
 							}
 					}
@@ -224,7 +225,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 								return {
 									fillColor: hexcolor,
 									color: hexBodercolor,
-									fillOpacity: 0.75,
+									fillOpacity: this.props.polygonTransparency / 100,
 								};
 							}
 					}
@@ -241,7 +242,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 								return {
 									fillColor: hexcolor,
 									color: '#585858',
-									fillOpacity: 0.75,
+									fillOpacity: this.props.polygonTransparency / 100,
 								};
 							}
 					}
@@ -314,9 +315,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		if (feature1.properties) name = String(feature1.properties.Name);
 		if (feature1.properties && this.props.nameField) name = String(feature1.properties[this.props.nameField]);
 
-		console.log('name:', name);
-		console.log('this.props.selectedLocation:', this.props.selectedLocation);
-
 		if (this.props.showCenter === '3') {
 			if (this.props.items && this.props.items.length > 0) {
 				switch (this.props.theme) {
@@ -380,15 +378,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	}
 
 	public ArrowToLayer(feature1: Feature, latlng: LatLngExpression) {
-		let label = 'textTest';
-		let geoDataJson;
-		let centerofFeature;
-
 		<marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5">
 			<circle cx="5" cy="5" r="5" fill="green" />
 		</marker>;
-
-		const classification = Classification.getCurrentClassification();
 
 		if (feature1.properties && this.props.nameField && this.props.items) {
 			if (this.props.theme == 'Saldi') {
@@ -398,9 +390,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
-									text: this.props.selectedLocation,
 									color: '#0432ff',
-									textClassName: 'swoopy-arrow',
 									factor: 0.75,
 									weight: 2,
 									iconSize: [60, 20],
@@ -411,9 +401,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
-									text: this.props.selectedLocation,
 									color: '#FF0000',
-									textClassName: 'swoopy-arrow',
 									factor: 0.75,
 									weight: 2,
 									iconSize: [60, 20],
@@ -430,9 +418,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
 							// @ts-ignore
 							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
-								text: this.props.selectedLocation,
 								color: '#FF0000',
-								textClassName: 'swoopy-arrow',
 								factor: 0.75,
 								weight: 2,
 								iconSize: [60, 20],
@@ -449,9 +435,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
-								text: this.props.selectedLocation,
 								color: '#0432ff',
-								textClassName: 'swoopy-arrow',
 								factor: 0.75,
 								weight: 2,
 								iconSize: [60, 20],

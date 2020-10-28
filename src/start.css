@@ -69,10 +69,6 @@ ul.p-tabview-nav li a {
 	box-shadow: none;
 }
 
-.chkBoxMap {
-	margin-right: 1em !important;
-}
-
 .gridLine path,
 .gridLine line {
 	fill: none;
@@ -92,4 +88,28 @@ div.slider-reversed .p-slider .p-slider-range {
 	.noprint {
 		display: none;
 	}
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.rdBtnContainer {
+	padding-bottom: 0;
+	font-size: 0.9em;
+	padding-top: 0.4em;
+}
+
+.mapSlider {
+	display: none;
+}
+
+.mapSlider.show {
+	display: block;
+	font-size: 0.9em;
+}
+
+.transparencySlider {
+	margin-top: 0.5em;
+	width: 15em;
 }
