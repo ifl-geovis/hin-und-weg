@@ -1,6 +1,8 @@
 import * as React from "react";
 import {Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
+import { InputText } from 'primereact/inputtext';
+
 
 
 import * as d3 from 'd3';
@@ -28,6 +30,8 @@ export interface ID3ChordProps {
 interface ID3ChordState
 {
   threshold: number;
+  rangeValue1: number;
+  rangeValue2: number;
   rangeValues: [number, number],
   checked: boolean,
   checkedLabel: boolean,
@@ -45,6 +49,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 		super(props);
     this.state = {
       threshold: 0,
+      rangeValue1: 0,
+      rangeValue2: 0,
       rangeValues: [0, 0],
       checked: false,
       checkedLabel: false,
@@ -982,8 +988,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         const [min, max] = this.getMinMax2();
         let threshold: number = this.calculateCurrentThreshold();
         let rangeValues: [number, number] = this.getInitialValuesSliderSaldi();
-        let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
-    
+        // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
+        let rangeValue1: number =rangeValues[0];
+        let rangeValue2: number = rangeValues[1];
+        
         return (
         <div className="p-grid">
             
@@ -998,20 +1006,33 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             <label className="p-checkbox-label">Umgekehrt filtern</label>
           </div>
 
-			    <div className="p-col-1">{min}</div>
+          <div className="p-col-1" style={{ width: '3.5em' }}>{min}</div>
 			  	<div className="p-col-10">
           <div className={`banner ${ this.props.theme == "Saldi" && this.state.checked === true ?  "slider-reversed" : ""}`}>
 
                 {
                     this.props.theme == "Saldi" ? 
-                    <Slider min={min} max={max} value={this.state.rangeValues} onChange={(e) => this.setState({rangeValues: e.value as [number, number]})} range={true} style={this.state.checked === true? {background: '#1f7ed0', color: '#80CBC4'}:{}} />
+                    <Slider min={min} max={max} value={rangeValues} onChange={(e) => this.setState({rangeValues: e.value as [number, number]})} range={true} style={this.state.checked === true? {background: '#1f7ed0', color: '#80CBC4'}:{}} />
                     :
                     <Slider min={min} max={max} value={threshold} orientation="horizontal" onChange={(e) => this.setState({ threshold: e.value as number})}/>
                 }				
           </div>
           </div>
-			  	<div className="p-col-1">{max}</div>
-				  <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div>
+			  	<div className="p-col-1" style={{ width: '3.5em' }}>{max}</div>
+				  {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
+          <div className="p-col-2">{this.props.theme == "Saldi" ? 
+            'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '} 
+            </div>
+            <div className="p-col-2">{this.props.theme == "Saldi" ?
+             <InputText value={rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} /> 
+            : <InputText value={threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.setState({ threshold: e.target.value as number })} /> 
+             }
+             </div>
+            <div className="p-col-2">{this.props.theme == "Saldi" ? 
+            'bis ' : ' '} </div>
+             <div className="p-col-2"> {this.props.theme == "Saldi" ?
+             <InputText  value={rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
+             </div>
           <div className="p-col-12 p-md-12 p-lg-6">
 					<Legend />
 				</div>
