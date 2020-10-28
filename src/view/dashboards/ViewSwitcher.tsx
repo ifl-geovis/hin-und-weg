@@ -20,6 +20,7 @@ import DBView from '../DBView';
 import SystemInfo from '../components/SystemInfo';
 import ProjektInfo from '../components/ProjektInfo';
 import StatisticsView from '../components/StatisticsView';
+import SettingsView from '../components/SettingsView';
 
 export interface TableItem {
 	Von: string;
@@ -111,6 +112,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'systeminfo', 'Systeminformationen', true);
 		this.addView(views, 'projektinfo', 'ProjektInfo', true);
+		this.addView(views, 'settings', 'Einstellungen', true);
 		return views;
 	}
 
@@ -132,6 +134,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		if (view == 'db') return this.selectDatabaseView();
 		if (view == 'systeminfo') return this.selectSystemInfoView();
 		if (view == 'projektinfo') return this.selectProjektInfoView();
+		if (view == 'settings') return this.selectSettingsView();
 		return (
 			<div className="p-col-12">
 				<div>Die Ansicht {view} ist unbekannt.</div>
@@ -246,6 +249,14 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="p-col-12">
 				<ProjektInfo />
+			</div>
+		);
+	}
+
+	private selectSettingsView() {
+		return (
+			<div className="p-col-12">
+				<SettingsView />
 			</div>
 		);
 	}

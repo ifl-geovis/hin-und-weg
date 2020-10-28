@@ -37,7 +37,8 @@
 			"file": true,
 			"db": true,
 			"systeminfo": false,
-			"projektinfo": true
+			"projektinfo": true,
+			"settings": true
 		},
 		"logging": {
 			"debug": true,
