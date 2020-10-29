@@ -37,6 +37,10 @@ export default class Classification {
 	private positive_scales: number[] | null = null;
 	private negative_scales: number[] | null = null;
 
+	private positiveArrowWidthBounds: Array<number> = [];
+	private negativeArrowWidthBounds: Array<number> = [];
+	private arrowWidths: Array<number> = [1, 3, 4, 5];
+
 	public static getCurrentClassification(): Classification {
 		return Classification.current;
 	}
@@ -150,6 +154,25 @@ export default class Classification {
 		} else {
 			this.negative_stats = new geostats([0]);
 		}
+		this.calculatePositiveArrowBounds(this.positive_stats.min(), this.positive_stats.max());
+		this.calculateNegativeArrowBounds(Math.abs(this.negative_stats.max()), Math.abs(this.negative_stats.min()));
+	}
+
+	public calculatePositiveArrowBounds(min: number, max: number) {
+		this.positiveArrowWidthBounds = [];
+		let countParts = 4;
+		let parts = (max - min) / countParts;
+		for (let i = 1; i <= countParts; i++) {
+			this.positiveArrowWidthBounds.push(min + i * parts);
+		}
+	}
+	public calculateNegativeArrowBounds(min: number, max: number) {
+		this.negativeArrowWidthBounds = [];
+		let countParts = 4;
+		let parts = (max - min) / countParts;
+		for (let i = 1; i <= countParts; i++) {
+			this.negativeArrowWidthBounds.push(min + i * parts);
+		}
 	}
 
 	public getMinValue(): number {
@@ -184,12 +207,21 @@ export default class Classification {
 		return this.positive_scales;
 	}
 
-	public getPositiveArrowColor(): string{
+	public getPositiveArrowColor(): string {
 		return this.positive_arrow_color;
 	}
 
-	public getNegativeArrowColor(): string{
+	public getNegativeArrowColor(): string {
 		return this.negative_arrow_color;
 	}
 
+	public getPositiveArrowWidthBounds(): Array<number> {
+		return this.positiveArrowWidthBounds;
+	}
+	public getNegativeArrowWidthBounds(): Array<number> {
+		return this.negativeArrowWidthBounds;
+	}
+	public getArrowWidths(): Array<number> {
+		return this.arrowWidths;
+	}
 }
