@@ -30,6 +30,10 @@ export default class Settings {
 		return null;
 	}
 
+	public static getSettings(): any {
+		return Settings.settings;
+	}
+
 	public static getValue(section: string, key: string): any {
 		const sec = Settings.getSection(section);
 		if ((sec != null) && (key in sec)) return sec[key];

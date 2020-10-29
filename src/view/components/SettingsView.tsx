@@ -2,11 +2,19 @@ import * as React from "react";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 
 import Config from "../../config";
 import Settings from "../../settings";
 
-export default class SettingsView extends React.Component<{}, {}>
+export interface ISettingsProps {
+}
+
+interface ISettingsState {
+	change: boolean;
+}
+
+export default class SettingsView extends React.Component<ISettingsProps, ISettingsState>
 {
 
 	private test1selections = [
@@ -15,10 +23,14 @@ export default class SettingsView extends React.Component<{}, {}>
 		{label: "guter Wert", value: "value3"},
 	];
 
-	constructor()
+	constructor(props: any, state: any)
 	{
-		super({}, {});
+		super(props);
+		this.state = {
+			change: true,
+		};
 		this.processInput = this.processInput.bind(this);
+		this.saveSettings = this.saveSettings.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -50,6 +62,7 @@ export default class SettingsView extends React.Component<{}, {}>
 				<div className="p-col-12">
 					{textinput1}
 					{textinput2}
+					<Button label="Speichern" onClick={this.saveSettings} />
 				</div>
 			</div>
 		);
@@ -73,7 +86,7 @@ export default class SettingsView extends React.Component<{}, {}>
 					<h3>{label}</h3>
 				</div>
 				<div className="p-col-12">
-					<InputText value={Settings.getValue(section, key)} onChange={(e) => this.processInput(section, key, e)} style={{width: "100%"}}/>
+					<InputText id={section + '-' + key} value={Settings.getValue(section, key)} onChange={(e) => this.processInput(section, key, e)} style={{width: "100%"}}/>
 				</div>
 			</div>
 		);
@@ -88,6 +101,12 @@ export default class SettingsView extends React.Component<{}, {}>
 		const value = event.target.value;
 		Settings.setValue(section, key, value);
 		Settings.save();
+		this.setState({ change: (this.state.change) ? false : true });
+	}
+
+	private saveSettings() {
+		Settings.save();
+		this.setState({ change: (this.state.change) ? false : true });
 	}
 
 }
