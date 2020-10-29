@@ -48,6 +48,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 		const indexNegative = negativeColorSchemes.indexOf(this.props.positiveColors);
 		if (indexPositive > -1) {positiveColorSchemes.splice(indexPositive, 1);}
 		if (indexNegative > -1) {negativeColorSchemes.splice(indexNegative, 1);}
+		const label = (this.props.withNegative) ? 'positive Skala und Farbschema' : 'Skala und Farbschema';
 		let negativeScale;
 		if (this.props.withNegative) negativeScale = this.getNegativeScale(negativeColorSchemes);
 		return (
@@ -55,7 +56,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 				<AccordionTab header="Klassifikation">
 					<Dropdown optionLabel="label" value={this.getSelectedAlgorithm()} options={this.algorithms} onChange={this.setAlgorithm} style={{width: "100%"}}/>
 					<br /><br />
-					<div>positive Skala</div>
+					<div>{label}</div>
 					<SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/>
 					<SelectInput options={positiveColorSchemes} selected={this.props.positiveColors} onSelected={this.props.setPositiveColorScheme}/>
 					{negativeScale}
@@ -82,7 +83,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 		return (
 			<div>
 				<br /><br />
-				<div>negative Skala</div>
+				<div>negative Skala und Farbschema</div>
 				<SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/>
 				<SelectInput options={negativeColorSchemes} selected={this.props.negativeColors} onSelected={this.props.setNegativeColorScheme}/>
 			</div>
