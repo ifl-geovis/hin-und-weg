@@ -44,10 +44,6 @@ export default class ClassificationSelections extends React.Component<IClassific
 	{
 		const positiveColorSchemes = Config.getKeys("colorschemes");
 		const negativeColorSchemes = Config.getKeys("colorschemes");
-		const indexPositive = positiveColorSchemes.indexOf(this.props.negativeColors);
-		const indexNegative = negativeColorSchemes.indexOf(this.props.positiveColors);
-		if (indexPositive > -1) {positiveColorSchemes.splice(indexPositive, 1);}
-		if (indexNegative > -1) {negativeColorSchemes.splice(indexNegative, 1);}
 		const label = (this.props.withNegative) ? 'positive Skala und Farbschema' : 'Skala und Farbschema';
 		let negativeScale;
 		if (this.props.withNegative) negativeScale = this.getNegativeScale(negativeColorSchemes);
