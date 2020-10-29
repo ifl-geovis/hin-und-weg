@@ -1,8 +1,10 @@
 import * as React from "react";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Dropdown } from "primereact/dropdown";
+import { InputText } from 'primereact/inputtext';
 
 import Config from "../../config";
+import Settings from "../../settings";
 
 export default class SettingsView extends React.Component<{}, {}>
 {
@@ -12,6 +14,12 @@ export default class SettingsView extends React.Component<{}, {}>
 		{label: "schlechter Wert", value: "value2"},
 		{label: "guter Wert", value: "value3"},
 	];
+
+	constructor()
+	{
+		super({}, {});
+		this.processInput = this.processInput.bind(this);
+	}
 
 	public render(): JSX.Element {
 		const test1 = this.getTest1();
@@ -29,10 +37,19 @@ export default class SettingsView extends React.Component<{}, {}>
 	}
 
 	private getTest1() {
+		const textinput1 = this.createTextInput('Textinput 1 für Test 1', 'test1', 'textinput1');
+		const textinput2 = this.createTextInput('Textinput 2 für Test 1', 'test1', 'textinput2');
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
+					<h3>Dropdown Test 1</h3>
+				</div>
+				<div className="p-col-12">
 					<Dropdown optionLabel="label" value={'value3'} options={this.test1selections} onChange={this.processTest1} style={{width: "100%"}}/>
+				</div>
+				<div className="p-col-12">
+					{textinput1}
+					{textinput2}
 				</div>
 			</div>
 		);
@@ -48,8 +65,29 @@ export default class SettingsView extends React.Component<{}, {}>
 		);
 	}
 
+	private createTextInput(label: string, section: string, key: string)
+	{
+		return (
+			<div className="p-grid">
+				<div className="p-col-12">
+					<h3>{label}</h3>
+				</div>
+				<div className="p-col-12">
+					<InputText value={Settings.getValue(section, key)} onChange={(e) => this.processInput(section, key, e)} style={{width: "100%"}}/>
+				</div>
+			</div>
+		);
+	}
+
 	private processTest1(event: { originalEvent: Event, value: any}) {
 		//this.props.setAlgorithm(event.value.value);
+	}
+
+	private processInput(section: string, key: string, event: any) {
+		// @ts-ignore
+		const value = event.target.value;
+		Settings.setValue(section, key, value);
+		Settings.save();
 	}
 
 }
