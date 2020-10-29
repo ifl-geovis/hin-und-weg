@@ -6,7 +6,6 @@ import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
 import { RadioButton } from 'primereact/radiobutton';
 import { Slider } from 'primereact/slider';
-import { Class } from 'leaflet';
 import Classification from '../../data/Classification';
 import OfflineMaps, { IOfflineMaps } from '../../data/OfflineMaps';
 
@@ -27,12 +26,6 @@ interface IGeodataState {
 	polygonTransparency: number;
 	offlineMap: IOfflineMaps;
 }
-
-const sliderStyle: React.CSSProperties = {
-	margin: '5%',
-	position: 'relative',
-	width: '90%',
-};
 
 export default class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	constructor(props: IGeodataProps) {

@@ -45,11 +45,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		this.pointToLayerValues = this.pointToLayerValues.bind(this);
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 		this.classification = Classification.getCurrentClassification();
-		// console.log('CONSTRUCTOR LEAFLETMAPVIEW');
+		console.log('CONSTRUCTOR LEAFLETMAPVIEW');
 	}
 
 	public render(): JSX.Element {
-		// console.log('RENDER LEAFLETMAPVIEW');
+		console.log('RENDER LEAFLETMAPVIEW', this.props.items);
 		this.classification = Classification.getCurrentClassification();
 
 		// Swoopy Arrows are always added when arrows1 or arrows2 are called.
@@ -464,10 +464,30 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				this.style(feature);
 			},
 			'mouseover': (e) => {
-				if (feature.properties && this.props.nameField && this.props.showCenter !== '1') {
+				if (feature.properties && this.props.nameField && this.props.items) {
+					const name: string = e.target.feature.properties[this.props.nameField];
+					const value: any = this.props.items.find((item) => item[this.props.theme === 'Nach' ? 'Von' : 'Nach'] === name);
+					console.log(
+						'MOUSEOVER',
+						this.props.items,
+						this.props.theme,
+						name,
+						this.props.items.find((item) => item.Nach === name)
+					);
+					let label: string = '';
+					switch (this.props.showCenter) {
+						case '1':
+							label = `${value ? value.Wert : ''}`;
+							break;
+						case '2':
+							label = `${name} / ${value ? value.Wert : ''}`;
+							break;
+						case '3':
+							label = `${name}`;
+							break;
+					}
 					let center = turf.centerOfMass(e.target.feature);
-					let label = e.target.feature.properties[this.props.nameField];
-					layer.bindTooltip(label);
+					layer.bindTooltip(label, { direction: 'bottom' });
 					layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
 				}
 			},
