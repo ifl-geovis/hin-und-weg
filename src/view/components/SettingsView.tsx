@@ -49,17 +49,13 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	private getTest1() {
+		const dropdowninput1 = this.createDropdownInput('Dropdowninput 1 für Test 1', 'test1', 'dropdowninput1', this.test1selections);
 		const textinput1 = this.createTextInput('Textinput 1 für Test 1', 'test1', 'textinput1');
 		const textinput2 = this.createTextInput('Textinput 2 für Test 1', 'test1', 'textinput2');
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
-					<h3>Dropdown Test 1</h3>
-				</div>
-				<div className="p-col-12">
-					<Dropdown optionLabel="label" value={'value3'} options={this.test1selections} onChange={this.processTest1} style={{width: "100%"}}/>
-				</div>
-				<div className="p-col-12">
+					{dropdowninput1}
 					{textinput1}
 					{textinput2}
 					<Button label="Speichern" onClick={this.saveSettings} />
@@ -73,6 +69,20 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 			<div className="p-grid">
 				<div className="p-col-12">
 					<h1>Test 2</h1>
+				</div>
+			</div>
+		);
+	}
+
+	private createDropdownInput(label: string, section: string, key: string, selections: any)
+	{
+		return (
+			<div className="p-grid">
+				<div className="p-col-12">
+					<h3>{label}</h3>
+				</div>
+				<div className="p-col-12">
+					<Dropdown  id={section + '-' + key} value={Settings.getValue(section, key)} options={selections} onChange={(e) => this.processInput(section, key, e)} style={{width: "100%"}}/>
 				</div>
 			</div>
 		);
