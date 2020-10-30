@@ -3,7 +3,7 @@ import { Pane, Map, Marker, Polygon, Tooltip, ScaleControl, TileLayer, GeoJSON, 
 import React, { Component } from 'react';
 import Geodata from '../../model/Geodata';
 import { Feature, FeatureCollection } from 'geojson';
-import L, { Layer, LatLngExpression, LatLng } from 'leaflet';
+import L, { Layer, LatLngExpression, LatLng, point } from 'leaflet';
 import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
 import Classification from '../../data/Classification';
@@ -45,11 +45,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		this.pointToLayerValues = this.pointToLayerValues.bind(this);
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 		this.classification = Classification.getCurrentClassification();
-		console.log('CONSTRUCTOR LEAFLETMAPVIEW');
+		// console.log('CONSTRUCTOR LEAFLETMAPVIEW');
 	}
 
 	public render(): JSX.Element {
-		console.log('RENDER LEAFLETMAPVIEW', this.props.items);
+		// console.log('RENDER LEAFLETMAPVIEW');
 		this.classification = Classification.getCurrentClassification();
 
 		// Swoopy Arrows are always added when arrows1 or arrows2 are called.
@@ -132,7 +132,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				polygon = turf.flip(geodata.features[i]);
 			}
 		}
-		return <Polygon color="purple" fillOpacity="0" positions={polygon.geometry.coordinates} />;
+		return <Polygon color="purple" weight="5" fill="false" fillOpacity="0" positions={polygon.geometry.coordinates} />;
 	}
 
 	public calcGeodataBounds(geojson: FeatureCollection) {
@@ -455,10 +455,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	}
 
 	public onEachFeature = (feature: Feature, layer: Layer) => {
-		let name = '';
-
 		layer.on({
 			'click': () => {
+				let name: string = '';
 				if (feature.properties && this.props.nameField) name = feature.properties[this.props.nameField];
 				this.props.onSelectLocation(name);
 				this.style(feature);
@@ -466,14 +465,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			'mouseover': (e) => {
 				if (feature.properties && this.props.nameField && this.props.items) {
 					const name: string = e.target.feature.properties[this.props.nameField];
-					const value: any = this.props.items.find((item) => item[this.props.theme === 'Nach' ? 'Von' : 'Nach'] === name);
-					console.log(
-						'MOUSEOVER',
-						this.props.items,
-						this.props.theme,
-						name,
-						this.props.items.find((item) => item.Nach === name)
-					);
+					const value: any = this.props.items.find((item) => item[this.props.theme === 'Von' ? 'Nach' : 'Von'] === name);
+					// console.log(
+					// 	'MOUSEOVER',
+					// 	this.props.items,
+					// 	this.props.theme,
+					// 	name,
+					// 	this.props.items.find((item) => item.Nach === name)
+					// );
 					let label: string = '';
 					switch (this.props.showCenter) {
 						case '1':
@@ -487,8 +486,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 							break;
 					}
 					let center = turf.centerOfMass(e.target.feature);
-					layer.bindTooltip(label, { direction: 'bottom' });
-					layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
+					label && layer.bindTooltip(label, { direction: 'bottom', offset: point(0, 10), className: 'mouseOverlayTooltip' });
+					label && layer.openTooltip({ lat: center.geometry.coordinates[1], lng: center.geometry.coordinates[0] });
 				}
 			},
 			'mouseout': () => {

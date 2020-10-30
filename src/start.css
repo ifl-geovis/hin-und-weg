@@ -113,3 +113,13 @@ div.slider-reversed .p-slider .p-slider-range {
 	margin-top: 0.5em;
 	width: 15em;
 }
+
+.leaflet-tooltip.mouseOverlayTooltip {
+	background-color: lightgray;
+	border: 0;
+	opacity: 1;
+}
+.leaflet-tooltip.mouseOverlayTooltip::before {
+	border-bottom-color: lightgray;
+	opacity: 1;
+}
