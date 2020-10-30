@@ -86,7 +86,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		}
 		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
-			<Map bounds={boundsOfGeodata}>
+			<Map bounds={boundsOfGeodata} zoomDelta={0.25} zoomSnap={0}>
 				{geomap}
 				{offlinemap}
 				{arrows1}
