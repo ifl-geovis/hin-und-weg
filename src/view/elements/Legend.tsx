@@ -5,6 +5,7 @@ import Classification from '../../data/Classification';
 export interface ILegendProps {}
 
 export default class Legend extends React.Component<ILegendProps> {
+
 	private stroke_color = '#4d4d4d';
 	private box_size = 30;
 	private label_offset = 5;
@@ -33,13 +34,31 @@ export default class Legend extends React.Component<ILegendProps> {
 		// const selected = this.createSelectedBox(classification.getSelectedColor(), i*this.box_size+this.label_offset+40, 0);
 		i++;
 		return (
-			<svg key="legend" width={i * this.box_size + 150} height={this.box_size + 21}> //20
-				{negative}
-				{neutral}
-				{positive}
-				{/* {selected} */}
-			</svg>
+			<div>
+				<h4>{this.createLegendTitle(classification)}</h4>
+				<svg key="legend" width={i * this.box_size + 150} height={this.box_size + 21}> //20
+					{negative}
+					{neutral}
+					{positive}
+					{/* {selected} */}
+				</svg>
+			</div>
 		);
+	}
+
+	private createLegendTitle(classification: Classification): string {
+		let title = 'Legende';
+		const location = classification.getLocation();
+		const theme = classification.getTheme();
+		if (location && theme)
+		{
+			title += ' für ';
+			if (theme == 'Von') title += 'Wegzüge von ';
+			else if (theme == 'Nach') title += 'Zuzüge nach ';
+			else if (theme == 'Saldi') title += 'Saldi für ';
+			title += location;
+		}
+		return title;
 	}
 
 	private createBox(color: string, x: number, y: number, index: string): object {

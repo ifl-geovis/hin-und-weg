@@ -13,6 +13,7 @@ export interface Item {
 	Represents the current classification and delivers the color.
  */
 export default class Classification {
+
 	private static current: Classification = new Classification();
 
 	// Taken from http://colorbrewer2.org/
@@ -113,6 +114,14 @@ export default class Classification {
 			Log.debug(e);
 		}
 		return stats.getClassEqInterval(count);
+	}
+
+	public getTheme(): string | null {
+		return this.theme;
+	}
+
+	public getLocation(): string | null {
+		return this.location;
 	}
 
 	private roundValue(num: number): number {
