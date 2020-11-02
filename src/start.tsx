@@ -2,7 +2,6 @@ import alasql from 'alasql';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import AppView from './view/App';
-import OfflineMaps from './data/OfflineMaps';
 import Settings from './settings';
 
 function setupDB() {
@@ -14,7 +13,5 @@ function setupDB() {
 }
 
 Settings.load();
-
-OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 
 ReactDOM.render(<AppView db={setupDB()} />, document.getElementById('root'));

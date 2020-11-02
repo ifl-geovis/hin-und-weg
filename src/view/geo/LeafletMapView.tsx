@@ -88,10 +88,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		return (
 			<Map bounds={boundsOfGeodata} zoomDelta={0.25} zoomSnap={0}>
 				{geomap}
-				{offlinemap}
 				{arrows1}
 				{arrows2}
 				<ScaleControl></ScaleControl>
+				<Pane name="offlineMap" style={{ zIndex: 200 }}>
+					{offlinemap}
+				</Pane>
 				<Pane name="districts" style={{ zIndex: 300 }}>
 					<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
 				</Pane>

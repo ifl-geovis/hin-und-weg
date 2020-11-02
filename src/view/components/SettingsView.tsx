@@ -1,30 +1,25 @@
-import * as React from "react";
-import { TabPanel, TabView } from "primereact/tabview";
-import { Dropdown } from "primereact/dropdown";
+import * as React from 'react';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import Settings from '../../settings';
+import OfflineMaps from '../../data/OfflineMaps';
 
-import Config from "../../config";
-import Settings from "../../settings";
-
-export interface ISettingsProps {
-}
+export interface ISettingsProps {}
 
 interface ISettingsState {
 	change: boolean;
 }
 
-export default class SettingsView extends React.Component<ISettingsProps, ISettingsState>
-{
-
+export default class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 	private test1selections = [
-		{label: "Wert 1", value: "value1"},
-		{label: "schlechter Wert", value: "value2"},
-		{label: "guter Wert", value: "value3"},
+		{ label: 'Wert 1', value: 'value1' },
+		{ label: 'schlechter Wert', value: 'value2' },
+		{ label: 'guter Wert', value: 'value3' },
 	];
 
-	constructor(props: any, state: any)
-	{
+	constructor(props: any, state: any) {
 		super(props);
 		this.state = {
 			change: true,
@@ -36,14 +31,12 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	public render(): JSX.Element {
 		const test1 = this.getTest1();
 		const test2 = this.getTest2();
+		const map = this.getMapSettings();
 		return (
 			<TabView className="p-tabview-right" activeIndex={0}>
-				<TabPanel header="Test 1">
-					{test1}
-				</TabPanel>
-				<TabPanel header="Test 2">
-					{test2}
-				</TabPanel>
+				<TabPanel header="Test 1">{test1}</TabPanel>
+				<TabPanel header="Test 2">{test2}</TabPanel>
+				<TabPanel header="Karte">{map}</TabPanel>
 			</TabView>
 		);
 	}
@@ -74,35 +67,83 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		);
 	}
 
-	private createDropdownInput(label: string, section: string, key: string, selections: any)
-	{
+	private getMapSettings() {
+		return (
+			<div className="p-grid">
+				<div className="p-col-12">
+					<h1>Karte</h1>
+					<label style={{ marginRight: '1em' }}>Ordner für Offline Karten: {Settings.getValue('map', 'offlinePath')}</label>
+					<label htmlFor="selectDirectory" className="customSelectDirectory">
+						Ordner ändern
+					</label>
+					<input
+						style={{ marginBottom: '1em' }}
+						id="selectDirectory"
+						className="p-mb-2"
+						type="file"
+						// @ts-ignore
+						directory=""
+						// @ts-ignore
+						webkitdirectory=""
+						onChange={(e) => this.selectOfflinePath(e.target.files)}
+					/>
+					<br />
+
+					<p className={`offlineMapHint ${OfflineMaps.getCurrentOfflineMaps().getMissingOfflineTxt() && 'show'}`}>
+						Offline Karten konnten nicht geladen werden!
+					</p>
+					<Button label="Speichern" onClick={this.saveSettings} />
+				</div>
+			</div>
+		);
+	}
+
+	selectOfflinePath(files: any) {
+		const path = files[0].path;
+		Settings.setValue('map', 'offlinePath', path);
+		Settings.save();
+		this.setState({ change: this.state.change ? false : true });
+		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
+	}
+
+	private createDropdownInput(label: string, section: string, key: string, selections: any) {
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
 					<h3>{label}</h3>
 				</div>
 				<div className="p-col-12">
-					<Dropdown  id={section + '-' + key} value={Settings.getValue(section, key)} options={selections} onChange={(e) => this.processInput(section, key, e)} style={{width: "100%"}}/>
+					<Dropdown
+						id={section + '-' + key}
+						value={Settings.getValue(section, key)}
+						options={selections}
+						onChange={(e) => this.processInput(section, key, e)}
+						style={{ width: '100%' }}
+					/>
 				</div>
 			</div>
 		);
 	}
 
-	private createTextInput(label: string, section: string, key: string)
-	{
+	private createTextInput(label: string, section: string, key: string) {
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
 					<h3>{label}</h3>
 				</div>
 				<div className="p-col-12">
-					<InputText id={section + '-' + key} value={Settings.getValue(section, key)} onChange={(e) => this.processInput(section, key, e)} style={{width: "100%"}}/>
+					<InputText
+						id={section + '-' + key}
+						value={Settings.getValue(section, key)}
+						onChange={(e) => this.processInput(section, key, e)}
+						style={{ width: '100%' }}
+					/>
 				</div>
 			</div>
 		);
 	}
 
-	private processTest1(event: { originalEvent: Event, value: any}) {
+	private processTest1(event: { originalEvent: Event; value: any }) {
 		//this.props.setAlgorithm(event.value.value);
 	}
 
@@ -111,12 +152,11 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		const value = event.target.value;
 		Settings.setValue(section, key, value);
 		Settings.save();
-		this.setState({ change: (this.state.change) ? false : true });
+		this.setState({ change: this.state.change ? false : true });
 	}
 
 	private saveSettings() {
 		Settings.save();
-		this.setState({ change: (this.state.change) ? false : true });
+		this.setState({ change: this.state.change ? false : true });
 	}
-
 }
