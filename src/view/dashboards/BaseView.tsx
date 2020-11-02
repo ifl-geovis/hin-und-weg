@@ -10,6 +10,7 @@ import Location from '../Location';
 import Themes from '../Themes';
 import Years from '../Years';
 import ClassificationSelections from '../selections/ClassificationSelections';
+import ArrowColorSelections from '../selections/ArrowColorSelections';
 import DashboardView from './DashboardView';
 
 import Config from '../../config';
@@ -39,6 +40,8 @@ interface IBaseState {
 	negativeColors: string;
 	positiveClasses: string;
 	negativeClasses: string;
+	positiveArrowColor: string;
+	negativeArrowColor: string;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState> {
@@ -53,6 +56,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			negativeColors: 'blau',
 			positiveClasses: '5',
 			negativeClasses: '5',
+			positiveArrowColor: 'ff0000',
+			negativeArrowColor: '0432ff',
 		};
 	}
 
@@ -67,6 +72,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		classification.setAlgorithm(this.state.algorithm);
 		classification.setPositiveColors(Config.getValue('colorschemes', this.state.positiveColors)[this.state.positiveClasses]);
 		classification.setNegativeColors(Config.getValue('colorschemes', this.state.negativeColors)[this.state.negativeClasses]);
+		classification.setPositiveArrowColor('#' + this.state.positiveArrowColor);
+		classification.setNegativeArrowColor('#' + this.state.negativeArrowColor);
 		classification.calculateClassification();
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.props.geoName as string;
@@ -116,6 +123,13 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						setNegativeColorScheme={(newColorScheme) => this.setState({ negativeColors: newColorScheme })}
 						setPositiveClasses={(classes) => this.setState({ positiveClasses: classes.substring(0, 1) })}
 						setNegativeClasses={(classes) => this.setState({ negativeClasses: classes.substring(0, 1) })}
+					/>
+					<ArrowColorSelections
+						positiveColor={this.state.positiveArrowColor}
+						negativeColor={this.state.negativeArrowColor}
+						withNegative={this.state.theme == 'Saldi'}
+						setPositiveColor={(event) => this.setState({ positiveArrowColor: event.value })}
+						setNegativeColor={(event) => this.setState({ negativeArrowColor: event.value })}
 					/>
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-10' : 'p-col-8'}>

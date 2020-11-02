@@ -220,8 +220,16 @@ export default class Classification {
 		return this.positive_arrow_color;
 	}
 
+	public setPositiveArrowColor(color: string) {
+		this.positive_arrow_color = color;
+	}
+
 	public getNegativeArrowColor(): string {
 		return this.negative_arrow_color;
+	}
+
+	public setNegativeArrowColor(color: string) {
+		this.negative_arrow_color = color;
 	}
 
 	public getPositiveArrowWidthBounds(): Array<number> {

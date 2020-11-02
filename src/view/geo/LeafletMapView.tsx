@@ -399,7 +399,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 								const arrowWidthIdx = this.classification.getPositiveArrowWidthBounds().findIndex((value) => item.Wert <= value);
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
-									color: '#0432ff',
+									color: this.classification.getNegativeArrowColor(),
 									factor: 0.75,
 									weight: this.classification.getArrowWidths()[arrowWidthIdx],
 									hideArrowHead: true,
@@ -410,7 +410,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 									.findIndex((value) => Math.abs(item.Wert) <= value);
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
-									color: '#FF0000',
+									color: this.classification.getPositiveArrowColor(),
 									factor: 0.75,
 									weight: this.classification.getArrowWidths()[arrowWidthIdx],
 									arrowId: '#arrowHead',
@@ -426,7 +426,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 							const arrowWidthIdx = this.classification.getPositiveArrowWidthBounds().findIndex((value) => item.Wert <= value);
 							// @ts-ignore
 							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
-								color: '#FF0000',
+								color: this.classification.getPositiveArrowColor(),
 								factor: 0.75,
 								weight: this.classification.getArrowWidths()[arrowWidthIdx],
 								arrowId: '#arrowHead',
@@ -442,7 +442,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 							const arrowWidthIdx = this.classification.getPositiveArrowWidthBounds().findIndex((value) => item.Wert <= value);
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
-								color: '#0432ff',
+								color: this.classification.getNegativeArrowColor(),
 								factor: 0.75,
 								weight: this.classification.getArrowWidths()[arrowWidthIdx],
 								hideArrowHead: true,
