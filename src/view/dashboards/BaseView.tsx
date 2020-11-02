@@ -125,9 +125,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						setNegativeClasses={(classes) => this.setState({ negativeClasses: classes.substring(0, 1) })}
 					/>
 					<ArrowColorSelections
+						theme={this.state.theme}
 						positiveColor={this.state.positiveArrowColor}
 						negativeColor={this.state.negativeArrowColor}
-						withNegative={this.state.theme == 'Saldi'}
 						setPositiveColor={(event) => this.setState({ positiveArrowColor: event.value })}
 						setNegativeColor={(event) => this.setState({ negativeArrowColor: event.value })}
 					/>
