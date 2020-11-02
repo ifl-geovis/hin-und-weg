@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+import Settings from '../settings';
 
 export interface IOfflineMaps {
 	label: string;
@@ -9,6 +10,8 @@ export interface IOfflineMaps {
 
 export default class OfflineMaps {
 	private static current: OfflineMaps = new OfflineMaps();
+
+	private missingOfflineTxt: boolean = false;
 
 	private offlineMaps: Array<IOfflineMaps> = [
 		{
@@ -30,16 +33,32 @@ export default class OfflineMaps {
 		return this.offlineMaps;
 	}
 
+	public setMissingOfflineTxt(value: boolean) {
+		this.missingOfflineTxt = value;
+	}
+
+	public getMissingOfflineTxt(): boolean {
+		return this.missingOfflineTxt;
+	}
+
 	public readOfflineMapsFile() {
 		try {
-			const data = fs.readFileSync(path.resolve(__dirname, '../../offline/offlineMaps.txt'), 'utf8');
+			this.offlineMaps = [
+				{
+					'label': 'Keine',
+					'file': '',
+					'bounds': [],
+				},
+			];
+			const offlineMapsPath = Settings.getValue('map', 'offlinePath');
+			const data = fs.readFileSync(path.resolve(__dirname, `${offlineMapsPath}/offlineMaps.txt`), 'utf8');
 			const lines = data.split(/\r?\n/);
 			lines.forEach((line: any) => {
 				let mapData = line.split(',');
 				if (mapData.length > 1) {
 					this.offlineMaps.push({
 						label: mapData[0].trim(),
-						file: `offline/${mapData[1].trim()}`,
+						file: path.resolve(__dirname, `${offlineMapsPath}/${mapData[1].trim()}`),
 						bounds: [
 							[+mapData[2].trim(), +mapData[3].trim()],
 							[+mapData[4].trim(), +mapData[5].trim()],
@@ -47,8 +66,10 @@ export default class OfflineMaps {
 					});
 				}
 			});
+			this.setMissingOfflineTxt(false);
 		} catch (error) {
 			console.log(error);
+			this.setMissingOfflineTxt(true);
 		}
 	}
 }

@@ -26,6 +26,9 @@
 			"devtools": false,
 			"menu": true
 		},
+		"map": {
+			"offlinePath": "../../offline/"
+		},
 		"components": {
 			"map": true,
 			"table": true,
