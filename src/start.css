@@ -122,7 +122,9 @@ div.slider-reversed .p-slider .p-slider-range {
 }
 .customSelectDirectory {
 	border: 1px solid #007ad9;
-	display: inline-block;
+	display: inline-flex;
+	width: fit-content;
+	align-items: center;
 	padding: 6px 6px;
 	cursor: pointer;
 	border-radius: 4px;

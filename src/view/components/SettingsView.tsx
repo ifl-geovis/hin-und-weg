@@ -72,22 +72,24 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 			<div className="p-grid">
 				<div className="p-col-12">
 					<h1>Karte</h1>
-					<label style={{ marginRight: '1em' }}>Ordner für Offline Karten: {Settings.getValue('map', 'offlinePath')}</label>
-					<label htmlFor="selectDirectory" className="customSelectDirectory">
-						Ordner ändern
-					</label>
-					<input
-						style={{ marginBottom: '1em' }}
-						id="selectDirectory"
-						className="p-mb-2"
-						type="file"
-						// @ts-ignore
-						directory=""
-						// @ts-ignore
-						webkitdirectory=""
-						onChange={(e) => this.selectOfflinePath(e.target.files)}
-					/>
-					<br />
+					<div style={{ display: 'flex', alignItems: 'center' }}>
+						<label style={{ marginRight: '1em' }}>Ordner für Offline Karten: {Settings.getValue('map', 'offlinePath')}</label>
+						<label htmlFor="selectDirectory" className="customSelectDirectory">
+							<i className="pi pi-folder-open" style={{ fontSize: '1.5em' }}></i>
+							<span>Ordner ändern</span>
+						</label>
+						<input
+							style={{ marginBottom: '1em' }}
+							id="selectDirectory"
+							className="p-mb-2"
+							type="file"
+							// @ts-ignore
+							directory=""
+							// @ts-ignore
+							webkitdirectory=""
+							onChange={(e) => this.selectOfflinePath(e.target.files)}
+						/>
+					</div>
 
 					<p className={`offlineMapHint ${OfflineMaps.getCurrentOfflineMaps().getMissingOfflineTxt() && 'show'}`}>
 						Offline Karten konnten nicht geladen werden!
