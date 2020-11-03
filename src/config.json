@@ -27,7 +27,8 @@
 			"menu": true
 		},
 		"map": {
-			"offlinePath": "../../offline/"
+			"offlinePath": "../../offline/",
+			"legendPlacement": "bottom"
 		},
 		"components": {
 			"map": true,

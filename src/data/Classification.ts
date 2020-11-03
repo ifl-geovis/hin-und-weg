@@ -13,7 +13,6 @@ export interface Item {
 	Represents the current classification and delivers the color.
  */
 export default class Classification {
-
 	private static current: Classification = new Classification();
 
 	// Taken from http://colorbrewer2.org/
@@ -169,7 +168,7 @@ export default class Classification {
 
 	public calculatePositiveArrowBounds(min: number, max: number) {
 		this.positiveArrowWidthBounds = [];
-		let countParts = 4;
+		let countParts = this.arrowWidths.length;
 		let parts = (max - min) / countParts;
 		for (let i = 1; i <= countParts; i++) {
 			this.positiveArrowWidthBounds.push(min + i * parts);
@@ -177,7 +176,7 @@ export default class Classification {
 	}
 	public calculateNegativeArrowBounds(min: number, max: number) {
 		this.negativeArrowWidthBounds = [];
-		let countParts = 4;
+		let countParts = this.arrowWidths.length;
 		let parts = (max - min) / countParts;
 		for (let i = 1; i <= countParts; i++) {
 			this.negativeArrowWidthBounds.push(min + i * parts);

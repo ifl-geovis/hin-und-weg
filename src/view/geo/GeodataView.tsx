@@ -8,6 +8,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Slider } from 'primereact/slider';
 import Classification from '../../data/Classification';
 import OfflineMaps, { IOfflineMaps } from '../../data/OfflineMaps';
+import Settings from '../../settings';
 
 export interface IGeodataProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -50,6 +51,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	}
 
 	public render(): JSX.Element {
+		console.log('GeodataView render', Settings.getValue('map', 'legendPlacement'));
 		const classification = Classification.getCurrentClassification();
 		return (
 			<div className="p-grid p-component">
@@ -141,9 +143,12 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						</div>
 					</div>
 				</div>
-
+				{Settings.getValue('map', 'legendPlacement') === 'top' && (
+					<div className="p-col-12">
+						<Legend />
+					</div>
+				)}
 				<div className="p-col-12">
-					{/* <MapView geodata={this.props.geodata} nameField={this.props.geoName} items={this.props.items} selectedLocation={this.props.selectedLocation} onSelectLocation={this.props.onSelectLocation} showLabels={this.state.showLabels} theme={this.props.theme}/> */}
 					<LeafletMapView
 						geodata={this.props.geodata}
 						nameField={this.props.geoName}
@@ -158,9 +163,11 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						polygonTransparency={this.state.polygonTransparency}
 					/>
 				</div>
-				<div className="p-col-12">
-					<Legend />
-				</div>
+				{Settings.getValue('map', 'legendPlacement') === 'bottom' && (
+					<div className="p-col-12">
+						<Legend />
+					</div>
+				)}
 			</div>
 		);
 	}
