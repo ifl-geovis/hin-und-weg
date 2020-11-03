@@ -55,6 +55,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		// Swoopy Arrows are always added when arrows1 or arrows2 are called.
 		// They have to be cleared manually by following function.
 		this.clearArrows();
+		this.updateArrowHead();
 
 		let boundsOfGeodata: Array<Array<number>> = [];
 		let geoDataJson;
@@ -121,6 +122,13 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		svgArrows.forEach((svg) => {
 			if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
 		});
+	}
+
+	public updateArrowHead() {
+		const arrowHeadSVG = document.querySelector('#arrowHead path');
+		if (arrowHeadSVG) {
+			arrowHeadSVG.setAttribute('fill', this.classification.getPositiveArrowColor());
+		}
 	}
 
 	public setFeatureBorder(geodata: any) {
