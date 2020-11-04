@@ -1,6 +1,8 @@
 import geostats from 'geostats';
 
 import Log from '../log';
+import Config from "../config";
+import Settings from '../settings';
 
 export interface Item {
 	Von: string;
@@ -40,6 +42,8 @@ export default class Classification {
 	private positiveArrowWidthBounds: Array<number> = [];
 	private negativeArrowWidthBounds: Array<number> = [];
 	private arrowWidths: Array<number> = [1, 3, 4, 5];
+
+	private userDefinedColorSchemes = ['scheme1', 'scheme2'];
 
 	public static getCurrentClassification(): Classification {
 		return Classification.current;
@@ -229,6 +233,24 @@ export default class Classification {
 
 	public setNegativeArrowColor(color: string) {
 		this.negative_arrow_color = color;
+	}
+
+	public getColorScheme(colorScheme: string, classes: string) {
+		let result = [];
+		if (this.userDefinedColorSchemes.includes(colorScheme)) {
+			const number = parseInt(classes, 10);
+			let temp = Settings.getValue('user-color-schemes', colorScheme);
+			for (let i = 0; i < number; i++) result.push('#' + temp[i]);
+		} else {
+			result = Config.getValue('colorschemes', colorScheme)[classes];
+		}
+		return result;
+	}
+
+	public getColorSchemes(): string[] {
+		let colorschemes = Config.getKeys("colorschemes");
+		for (let i = 0; i < this.userDefinedColorSchemes.length; i++) colorschemes.push(this.userDefinedColorSchemes[i]);
+		return colorschemes;
 	}
 
 	public getPositiveArrowWidthBounds(): Array<number> {

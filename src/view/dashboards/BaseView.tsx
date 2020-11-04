@@ -70,8 +70,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		classification.setTheme(this.state.theme);
 		classification.setQuery(results);
 		classification.setAlgorithm(this.state.algorithm);
-		classification.setPositiveColors(Config.getValue('colorschemes', this.state.positiveColors)[this.state.positiveClasses]);
-		classification.setNegativeColors(Config.getValue('colorschemes', this.state.negativeColors)[this.state.negativeClasses]);
+		classification.setPositiveColors(classification.getColorScheme(this.state.positiveColors, this.state.positiveClasses));
+		classification.setNegativeColors(classification.getColorScheme(this.state.negativeColors, this.state.negativeClasses));
 		classification.setPositiveArrowColor('#' + this.state.positiveArrowColor);
 		classification.setNegativeArrowColor('#' + this.state.negativeArrowColor);
 		classification.calculateClassification();
@@ -118,6 +118,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						positiveClasses={this.state.positiveClasses}
 						negativeClasses={this.state.negativeClasses}
 						withNegative={this.state.theme == 'Saldi'}
+						colorSchemes={classification.getColorSchemes()}
 						setAlgorithm={(newAlgorithm) => this.setState({ algorithm: newAlgorithm })}
 						setPositiveColorScheme={(newColorScheme) => this.setState({ positiveColors: newColorScheme })}
 						setNegativeColorScheme={(newColorScheme) => this.setState({ negativeColors: newColorScheme })}

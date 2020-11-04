@@ -19,6 +19,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		{ label: 'Unter der Karte', value: 'bottom' },
 		{ label: 'Über der Karte', value: 'top' },
 	];
+	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
 
 	constructor(props: any, state: any) {
 		super(props);
@@ -93,15 +94,15 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	private getColorSchemePickers(basename: string) {
-		const color1 = this.createColorPicker('user-color-schemes', basename + '-color1');
-		const color2 = this.createColorPicker('user-color-schemes', basename + '-color2');
-		const color3 = this.createColorPicker('user-color-schemes', basename + '-color3');
-		const color4 = this.createColorPicker('user-color-schemes', basename + '-color4');
-		const color5 = this.createColorPicker('user-color-schemes', basename + '-color5');
-		const color6 = this.createColorPicker('user-color-schemes', basename + '-color6');
-		const color7 = this.createColorPicker('user-color-schemes', basename + '-color7');
-		const color8 = this.createColorPicker('user-color-schemes', basename + '-color8');
-		const color9 = this.createColorPicker('user-color-schemes', basename + '-color9');
+		const color1 = this.createColorPicker('user-color-schemes', basename, 0);
+		const color2 = this.createColorPicker('user-color-schemes', basename, 1);
+		const color3 = this.createColorPicker('user-color-schemes', basename, 2);
+		const color4 = this.createColorPicker('user-color-schemes', basename, 3);
+		const color5 = this.createColorPicker('user-color-schemes', basename, 4);
+		const color6 = this.createColorPicker('user-color-schemes', basename, 5);
+		const color7 = this.createColorPicker('user-color-schemes', basename, 6);
+		const color8 = this.createColorPicker('user-color-schemes', basename, 7);
+		const color9 = this.createColorPicker('user-color-schemes', basename, 8);
 		return (
 			<div>
 				{color1}
@@ -154,14 +155,27 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		);
 	}
 
-	private createColorPicker(section: string, key: string) {
+	private createColorPicker(section: string, key: string, index: number) {;
+		let scheme = Settings.getValue(section, key);
+		if (scheme == null) scheme = this.colorSchemeDefault;
 		return (
 			<ColorPicker
-				id={'colorpicker-' + section + '-' + key}
-				value={Settings.getValue(section, key)}
-				onChange={(e) => this.processInput(section, key, e)}
+				id={'colorpicker-' + section + '-' + key + '-color' + index}
+				value={scheme[index]}
+				onChange={(e) => this.processColorInput(section, key, e, index)}
 			/>
 		);
+	}
+
+	private processColorInput(section: string, key: string, event: any, index: number) {
+		// @ts-ignore
+		const value = event.target.value;
+		let scheme = Settings.getValue(section, key);
+		if (scheme == null) scheme = this.colorSchemeDefault;
+		scheme[index] = value;
+		Settings.setValue(section, key, scheme);
+		Settings.save();
+		this.setState({ change: this.state.change ? false : true });
 	}
 
 	private processInput(section: string, key: string, event: any) {
