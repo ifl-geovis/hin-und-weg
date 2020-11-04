@@ -81,9 +81,11 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="viewswitcher">
 				<div className="p-grid">
-					<div className="p-col-4 p-component noprint">Visualisierung wählen:</div>
+				<div className="p-col-4 p-component noprint">
+						{((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 ) ) ? "Datei-Import" : "Visualisierung oder Funktion wählen:"}</div>
 					<div className="p-col-8 noprint">
-						<ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />
+					{((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 ) ) ? <div></div> 
+					: <ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />}
 					</div>
 					<div className="p-col-12">{showedView}</div>
 				</div>
