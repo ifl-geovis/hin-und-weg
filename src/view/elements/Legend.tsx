@@ -121,12 +121,12 @@ export default class Legend extends React.Component<ILegendProps> {
 							</text>,
 							<polyline
 								key={`negArrow_${index}`}
-								points={`80,${arrowOffset * index} 120,${arrowOffset * index}`}
+								points={`130,${arrowOffset * index} 170,${arrowOffset * index}`}
 								strokeWidth={arrowWidths[index]}
 								fill="none"
 								stroke={posArrowColor}
 							/>,
-							<text key={`negArrowLabel_${index}`} x="130" y={arrowOffset * index + labelOffset} style={{ font: '11px Open Sans' }}>
+							<text key={`negArrowLabel_${index}`} x="180" y={arrowOffset * index + labelOffset} style={{ font: '11px Open Sans' }}>
 								{`≥ -${negArrowBounds[index].toFixed(0)}`}
 							</text>,
 						]);
