@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import {ColorPicker} from 'primereact/colorpicker';
+import { ColorPicker } from 'primereact/colorpicker';
 import { Button } from 'primereact/button';
 
 import Settings from '../../settings';
@@ -15,10 +15,9 @@ interface ISettingsState {
 }
 
 export default class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
-
 	private legendPlacementSelections = [
-		{ label: 'Unten', value: 'bottom' },
-		{ label: 'Oben', value: 'top' },
+		{ label: 'Unter der Karte', value: 'bottom' },
+		{ label: 'Über der Karte', value: 'top' },
 	];
 
 	constructor(props: any, state: any) {
@@ -94,15 +93,15 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	private getColorSchemePickers(basename: string) {
-		const color1 = this.createColorPicker('user-color-schemes', basename +'-color1');
-		const color2 = this.createColorPicker('user-color-schemes', basename +'-color2');
-		const color3 = this.createColorPicker('user-color-schemes', basename +'-color3');
-		const color4 = this.createColorPicker('user-color-schemes', basename +'-color4');
-		const color5 = this.createColorPicker('user-color-schemes', basename +'-color5');
-		const color6 = this.createColorPicker('user-color-schemes', basename +'-color6');
-		const color7 = this.createColorPicker('user-color-schemes', basename +'-color7');
-		const color8 = this.createColorPicker('user-color-schemes', basename +'-color8');
-		const color9 = this.createColorPicker('user-color-schemes', basename +'-color9');
+		const color1 = this.createColorPicker('user-color-schemes', basename + '-color1');
+		const color2 = this.createColorPicker('user-color-schemes', basename + '-color2');
+		const color3 = this.createColorPicker('user-color-schemes', basename + '-color3');
+		const color4 = this.createColorPicker('user-color-schemes', basename + '-color4');
+		const color5 = this.createColorPicker('user-color-schemes', basename + '-color5');
+		const color6 = this.createColorPicker('user-color-schemes', basename + '-color6');
+		const color7 = this.createColorPicker('user-color-schemes', basename + '-color7');
+		const color8 = this.createColorPicker('user-color-schemes', basename + '-color8');
+		const color9 = this.createColorPicker('user-color-schemes', basename + '-color9');
 		return (
 			<div>
 				{color1}

@@ -882,7 +882,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              <InputText  value={rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
              </div>
         <div className="p-col-12 p-md-12 p-lg-6">
-					<Legend />
+					<Legend showCenter='' />
 				</div>
         <div className="p-col-12 p-md-12 p-lg-6">
           <Checkbox

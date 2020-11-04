@@ -1,11 +1,13 @@
+import { Polyline } from 'leaflet';
 import React from 'react';
 
 import Classification from '../../data/Classification';
 
-export interface ILegendProps {}
+export interface ILegendProps {
+	showCenter: string;
+}
 
 export default class Legend extends React.Component<ILegendProps> {
-
 	private stroke_color = '#4d4d4d';
 	private box_size = 30;
 	private label_offset = 5;
@@ -32,17 +34,111 @@ export default class Legend extends React.Component<ILegendProps> {
 		const positive = this.createPositiveScale(positive_scales, positive_colors, i);
 		if (positive_scales != null) i += positive_colors.length;
 		// const selected = this.createSelectedBox(classification.getSelectedColor(), i*this.box_size+this.label_offset+40, 0);
+		const arrows = this.createArrows(
+			classification.getArrowWidths(),
+			classification.getPositiveArrowColor(),
+			classification.getNegativeArrowColor(),
+			classification.getPositiveArrowWidthBounds(),
+			classification.getNegativeArrowWidthBounds(),
+			classification.getTheme() || ''
+		);
+
 		i++;
 		return (
 			<div>
 				<h4>{this.createLegendTitle(classification)}</h4>
-				<svg key="legend" width={i * this.box_size + 150} height={this.box_size + 21}> //20
+				<svg key="legend" width={i * this.box_size + 150} height={this.box_size + 21} style={{ display: 'block' }}>
+					{' '}
+					//20
 					{negative}
 					{neutral}
 					{positive}
 					{/* {selected} */}
 				</svg>
+				{this.props.showCenter === '2' && arrows}
 			</div>
+		);
+	}
+
+	private createArrows(
+		arrowWidths: Array<number>,
+		posArrowColor: string,
+		negArrowColor: string,
+		posArrowBounds: Array<number>,
+		negArrowBounds: Array<number>,
+		theme: string
+	) {
+		let arrows: Array<any> = [];
+		let arrowOffset: number = 15;
+		let labelOffset: number = 3;
+
+		if (posArrowBounds[posArrowBounds.length - 1] || negArrowBounds[negArrowBounds.length - 1]) {
+			switch (theme) {
+				case 'Von':
+					for (let index = 0; index < arrowWidths.length; index++) {
+						arrows.push([
+							<polyline
+								key={`posArrow_${index}`}
+								points={`0,${arrowOffset * index} 40,${arrowOffset * index}`}
+								strokeWidth={arrowWidths[index]}
+								fill="none"
+								stroke={posArrowColor}
+							/>,
+							<text key={`posArrowLabel_${index}`} x="50" y={arrowOffset * index + labelOffset} style={{ font: '11px Open Sans' }}>
+								{`≤ ${posArrowBounds[index].toFixed(0)}`}
+							</text>,
+						]);
+					}
+					break;
+				case 'Nach':
+					for (let index = 0; index < arrowWidths.length; index++) {
+						arrows.push([
+							<polyline
+								key={`negArrow_${index}`}
+								points={`0,${arrowOffset * index} 40,${arrowOffset * index}`}
+								strokeWidth={arrowWidths[index]}
+								fill="none"
+								stroke={negArrowColor}
+							/>,
+							<text key={`negArrowLabel_${index}`} x="50" y={arrowOffset * index + labelOffset} style={{ font: '11px Open Sans' }}>
+								{`≤ ${posArrowBounds[index].toFixed(0)}`}
+							</text>,
+						]);
+					}
+					break;
+				case 'Saldi':
+					for (let index = 0; index < arrowWidths.length; index++) {
+						arrows.push([
+							<polyline
+								key={`posArrow_${index}`}
+								points={`0,${arrowOffset * index} 40,${arrowOffset * index}`}
+								strokeWidth={arrowWidths[index]}
+								fill="none"
+								stroke={negArrowColor}
+							/>,
+							<text key={`posArrowLabel_${index}`} x="50" y={arrowOffset * index + labelOffset} style={{ font: '11px Open Sans' }}>
+								{`≤ ${posArrowBounds[index].toFixed(0)}`}
+							</text>,
+							<polyline
+								key={`negArrow_${index}`}
+								points={`80,${arrowOffset * index} 120,${arrowOffset * index}`}
+								strokeWidth={arrowWidths[index]}
+								fill="none"
+								stroke={posArrowColor}
+							/>,
+							<text key={`negArrowLabel_${index}`} x="130" y={arrowOffset * index + labelOffset} style={{ font: '11px Open Sans' }}>
+								{`≥ -${negArrowBounds[index].toFixed(0)}`}
+							</text>,
+						]);
+					}
+					break;
+			}
+		}
+
+		return (
+			<svg key="arrowLegend" style={{ paddingTop: '1em', marginTop: '1em' }} height={arrowOffset * arrowWidths.length + arrowOffset}>
+				{arrows}
+			</svg>
 		);
 	}
 
@@ -50,8 +146,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		let title = 'Legende';
 		const location = classification.getLocation();
 		const theme = classification.getTheme();
-		if (location && theme)
-		{
+		if (location && theme) {
 			title += ' für ';
 			if (theme == 'Von') title += 'Wegzüge von ';
 			else if (theme == 'Nach') title += 'Zuzüge nach ';
@@ -67,7 +162,7 @@ export default class Legend extends React.Component<ILegendProps> {
 				key={'box-' + color + '-' + index}
 				fill={color}
 				stroke={this.stroke_color}
-				width= { index === 'neutral' ? this.box_size*0.5 : this.box_size}
+				width={index === 'neutral' ? this.box_size * 0.5 : this.box_size}
 				height={this.box_size}
 				x={x}
 				y={y}
@@ -83,7 +178,7 @@ export default class Legend extends React.Component<ILegendProps> {
 	private createLabel(label: string, x: number, y: number, index: string): object {
 		return (
 			<text key={'label-' + label + '-' + index} x={x} y={y} style={{ font: '11px Open Sans' }}>
-			{/* { font: '10px sans-serif' } */}
+				{/* { font: '10px sans-serif' } */}
 				{label}
 			</text>
 		);
@@ -91,15 +186,10 @@ export default class Legend extends React.Component<ILegendProps> {
 
 	private createNeutralBox(color: string, x: number, y: number): object {
 		const box = this.createBox(color, 0, 0, 'neutral');
-		const line = this.createLine(this.stroke_color,
-			'neutral',
-			this.box_size*0.25,
-			this.box_size,
-			this.box_size*0.25,
-			this.box_size + 10)
-		const label = this.createLabel('0' , this.box_size*0.25 - this.label_offset, this.box_size + 21, 'neutral')
+		const line = this.createLine(this.stroke_color, 'neutral', this.box_size * 0.25, this.box_size, this.box_size * 0.25, this.box_size + 10);
+		const label = this.createLabel('0', this.box_size * 0.25 - this.label_offset, this.box_size + 21, 'neutral');
 		return (
-			<svg x={x} y={y} width={this.box_size*0.5} height={this.box_size + 21}>
+			<svg x={x} y={y} width={this.box_size * 0.5} height={this.box_size + 21}>
 				{box}
 				{line}
 				{label}
@@ -128,7 +218,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		}
 		return (
 			// <svg x={index * this.box_size + this.label_offset} y={0}>
-			<svg x={index * this.box_size -  this.box_size*0.5  + this.label_offset} y={0}>
+			<svg x={index * this.box_size - this.box_size * 0.5 + this.label_offset} y={0}>
 				{boxes}
 				{lines}
 				{labels}
@@ -164,5 +254,4 @@ export default class Legend extends React.Component<ILegendProps> {
 			</svg>
 		);
 	}
-
 }

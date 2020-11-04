@@ -21,7 +21,7 @@ export interface IGeodataProps {
 }
 
 interface IGeodataState {
-	showCenter: String;
+	showCenter: string;
 	showMap: boolean;
 	threshold: number;
 	polygonTransparency: number;
@@ -51,7 +51,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	}
 
 	public render(): JSX.Element {
-		console.log('GeodataView render', Settings.getValue('map', 'legendPlacement'));
+		// console.log('GeodataView render');
 		const classification = Classification.getCurrentClassification();
 		return (
 			<div className="p-grid p-component">
@@ -145,7 +145,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'top' && (
 					<div className="p-col-12">
-						<Legend />
+						<Legend showCenter={this.state.showCenter} />
 					</div>
 				)}
 				<div className="p-col-12">
@@ -165,7 +165,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'bottom' && (
 					<div className="p-col-12">
-						<Legend />
+						<Legend showCenter={this.state.showCenter} />
 					</div>
 				)}
 			</div>
