@@ -101,7 +101,7 @@ div.slider-reversed .p-slider .p-slider-range {
 }
 
 .mapSlider,
-.offlineMapHint {
+.offlineMapHintError {
 	display: none;
 }
 
@@ -110,11 +110,16 @@ div.slider-reversed .p-slider .p-slider-range {
 	font-size: 0.9em;
 }
 
-.offlineMapHint.show {
+.offlineMapHintError.show {
 	display: block;
 	color: darkred;
 	font-style: italic;
+	font-size: 0.8em;
+}
+.offlineMapHintSuccess {
+	display: block;
 	font-size: 0.9em;
+	margin-top: 0;
 }
 
 #selectDirectory {

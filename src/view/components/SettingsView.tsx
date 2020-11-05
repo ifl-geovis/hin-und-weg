@@ -28,6 +28,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		};
 		this.processInput = this.processInput.bind(this);
 		this.saveSettings = this.saveSettings.bind(this);
+		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 	}
 
 	public render(): JSX.Element {
@@ -62,15 +63,25 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 						id="selectDirectory"
 						className="p-mb-2"
 						type="file"
-						// @ts-ignore
-						directory=""
-						// @ts-ignore
-						webkitdirectory=""
+						accept=".txt"
 						onChange={(e) => this.selectOfflinePath(e.target.files)}
 					/>
 				</div>
-				<p className={`offlineMapHint ${OfflineMaps.getCurrentOfflineMaps().getMissingOfflineTxt() && 'show'}`}>
-					Offline Karten konnten nicht geladen werden!
+				<p className="offlineMapHintSuccess">
+					Es wurden {OfflineMaps.getCurrentOfflineMaps().getData().length - 1} OfflineKarten importiert.
+				</p>
+				<p className={`offlineMapHintError ${OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().length && 'show'} }`}>
+					Fehlende Bilddateien, die in der Konfigurationsdatei angegeben sind:{' '}
+					{OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().join(', ')}
+				</p>
+				<p className={`offlineMapHintError ${OfflineMaps.getCurrentOfflineMaps().getWrongCoordinates().length && 'show'} }`}>
+					Die Koordinaten der folgenden Bilder scheinen falsch zu sein:
+					{OfflineMaps.getCurrentOfflineMaps().getWrongCoordinates().join(', ')} <br />
+					Die Koordinaten müssen in WGS84 angegeben werden.
+					<br /> Maximale Ausdehnung für Deutschland: <br />
+					Latitude: {OfflineMaps.getCurrentOfflineMaps().latBounds.min} / {OfflineMaps.getCurrentOfflineMaps().latBounds.max}
+					<br />
+					Longitude: {OfflineMaps.getCurrentOfflineMaps().lonBounds.min} / {OfflineMaps.getCurrentOfflineMaps().lonBounds.max}
 				</p>
 				{dropdownLegendPlacement}
 				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
@@ -119,8 +130,10 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	selectOfflinePath(files: any) {
-		const path = files[0].path;
+		const name = files[0].name;
+		const path = files[0].path.slice(0, -name.length);
 		Settings.setValue('map', 'offlinePath', path);
+		Settings.setValue('map', 'offlineConfigFile', name);
 		Settings.save();
 		this.setState({ change: this.state.change ? false : true });
 		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
@@ -155,7 +168,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		);
 	}
 
-	private createColorPicker(section: string, key: string, index: number) {;
+	private createColorPicker(section: string, key: string, index: number) {
 		let scheme = Settings.getValue(section, key);
 		if (scheme == null) scheme = this.colorSchemeDefault;
 		return (

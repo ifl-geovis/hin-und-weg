@@ -123,7 +123,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 								options={OfflineMaps.getCurrentOfflineMaps().getData()}
 								onChange={this.onOfflineMapChange}
 								placeholder={this.state.offlineMap.label}
-								disabled={OfflineMaps.getCurrentOfflineMaps().getMissingOfflineTxt()}
+								disabled={OfflineMaps.getCurrentOfflineMaps().getData().length - 1 === 0}
 							/>
 						</div>
 					</div>
