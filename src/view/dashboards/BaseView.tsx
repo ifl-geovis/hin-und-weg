@@ -357,7 +357,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	}
 
 	private change() {
-		console.log('Baseview.change()');
 		this.setState({ change: this.state.change ? false : true });
 	}
 

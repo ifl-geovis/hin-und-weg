@@ -280,7 +280,6 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	private saveSettings() {
 		Settings.save();
 		this.setState({ change: this.state.change ? false : true });
-		console.log("call change()");
 		this.props.change();
 	}
 }
