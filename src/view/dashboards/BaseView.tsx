@@ -42,9 +42,11 @@ interface IBaseState {
 	negativeClasses: string;
 	positiveArrowColor: string;
 	negativeArrowColor: string;
+	change: boolean;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState> {
+
 	constructor(props: IBaseProps) {
 		super(props);
 		this.state = {
@@ -58,7 +60,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			negativeClasses: '5',
 			positiveArrowColor: 'ff0000',
 			negativeArrowColor: '0432ff',
+			change: true,
 		};
+		this.change = this.change.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -153,6 +157,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						setGeoName={this.props.setGeoName}
 						setGeoId={this.props.setGeoId}
 						addYear={this.props.addYear}
+						change={this.change}
 					/>
 				</div>
 			</div>
@@ -350,4 +355,10 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		}
 		return 0;
 	}
+
+	private change() {
+		console.log('Baseview.change()');
+		this.setState({ change: this.state.change ? false : true });
+	}
+
 }

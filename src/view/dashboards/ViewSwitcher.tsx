@@ -60,6 +60,7 @@ export interface IViewSwitcherProps {
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
 	onSwitchView: () => void;
+	change: () => void;
 }
 
 interface IViewSwitcherState {
@@ -67,6 +68,7 @@ interface IViewSwitcherState {
 }
 
 export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherState> {
+
 	constructor(props: IViewSwitcherProps) {
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
@@ -84,7 +86,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 				<div className="p-col-4 p-component noprint">
 						{((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 ) ) ? "Datei-Import" : "Visualisierung oder Funktion wählen:"}</div>
 					<div className="p-col-8 noprint">
-					{((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 ) ) ? <div></div> 
+					{((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 ) ) ? <div></div>
 					: <ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />}
 					</div>
 					<div className="p-col-12">{showedView}</div>
@@ -258,7 +260,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectSettingsView() {
 		return (
 			<div className="p-col-12">
-				<SettingsView />
+				<SettingsView change={this.props.change} />
 			</div>
 		);
 	}
