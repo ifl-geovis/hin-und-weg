@@ -100,6 +100,10 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	private getColorSchemes() {
 		const scheme1 = this.getColorSchemePickers('scheme1');
 		const scheme2 = this.getColorSchemePickers('scheme2');
+		const scheme3 = this.getColorSchemePickers('scheme3');
+		const scheme4 = this.getColorSchemePickers('scheme4');
+		const scheme5 = this.getColorSchemePickers('scheme5');
+		const scheme6 = this.getColorSchemePickers('scheme6');
 		return (
 			<div>
 				<h1>benutzerdefinierte Farbschemata</h1>
@@ -107,6 +111,14 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 				{scheme1}
 				<h2>Schema 2</h2>
 				{scheme2}
+				<h2>Schema 3</h2>
+				{scheme3}
+				<h2>Schema 4</h2>
+				{scheme4}
+				<h2>Schema 5</h2>
+				{scheme5}
+				<h2>Schema 6</h2>
+				{scheme6}
 				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
 			</div>
 		);
