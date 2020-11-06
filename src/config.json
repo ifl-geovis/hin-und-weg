@@ -27,7 +27,7 @@
 			"menu": true
 		},
 		"map": {
-			"offlinePath": "../../offline/offlineMaps.txt",
+			"offlinePath": "../../offline",
 			"offlineConfigFile": "offlineMaps.txt",
 			"legendPlacement": "bottom"
 		},
