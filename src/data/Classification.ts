@@ -27,6 +27,7 @@ export default class Classification {
 	private error_color = '#000000';
 	private positive_arrow_color = '#ff0000';
 	private negative_arrow_color = '#0432ff';
+	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
 
 	private location: string | null = null;
 	private theme: string | null = null;
@@ -43,7 +44,7 @@ export default class Classification {
 	private negativeArrowWidthBounds: Array<number> = [];
 	private arrowWidths: Array<number> = [1, 3, 4, 5];
 
-	private userDefinedColorSchemes = ['scheme1', 'scheme2'];
+	private userDefinedColorSchemes = ['scheme1', 'scheme2', 'scheme3', 'scheme4', 'scheme5', 'scheme6'];
 
 	public static getCurrentClassification(): Classification {
 		return Classification.current;
@@ -240,6 +241,7 @@ export default class Classification {
 		if (this.userDefinedColorSchemes.includes(colorScheme)) {
 			const number = parseInt(classes, 10);
 			let temp = Settings.getValue('user-color-schemes', colorScheme);
+			if (!temp) temp = this.colorSchemeDefault;
 			for (let i = 0; i < number; i++) result.push('#' + temp[i]);
 		} else {
 			result = Config.getValue('colorschemes', colorScheme)[classes];
