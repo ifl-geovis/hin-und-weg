@@ -27,7 +27,6 @@ export default class Classification {
 	private error_color = '#000000';
 	private positive_arrow_color = '#ff0000';
 	private negative_arrow_color = '#0432ff';
-	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
 
 	private location: string | null = null;
 	private theme: string | null = null;
@@ -43,6 +42,10 @@ export default class Classification {
 	private positiveArrowWidthBounds: Array<number> = [];
 	private negativeArrowWidthBounds: Array<number> = [];
 	private arrowWidths: Array<number> = [1, 3, 4, 5];
+
+	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
+	private classificationPositiveDefault = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+	private classificationNegativeDefault = [-1, -2, -3, -4, -5, -6, -7, -8, -9];
 
 	private userDefinedColorSchemes = ['scheme1', 'scheme2', 'scheme3', 'scheme4', 'scheme5', 'scheme6'];
 
@@ -120,6 +123,20 @@ export default class Classification {
 		return stats.getClassEqInterval(count);
 	}
 
+	private getCustomRanges(positive: boolean, count: number): any[] {
+		let classification = Settings.getValue('classification', (positive ? 'positive' : 'negative'));
+		if (classification == null) classification = (positive ? this.classificationPositiveDefault : this.classificationNegativeDefault);
+		let ranges = [];
+		if (positive) {
+			ranges.push(0);
+			for (let i = 0; i < count; i++) ranges.push(classification[i]);
+		} else {
+			ranges.unshift(0);
+			for (let i = 0; i < count; i++) ranges.unshift(classification[i]);
+		}
+		return ranges;
+	}
+
 	public getTheme(): string | null {
 		return this.theme;
 	}
@@ -134,21 +151,25 @@ export default class Classification {
 
 	private fillPositiveScales() {
 		this.positive_scales = [];
-		var ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
+		let ranges = [];
+		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
+		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
 		for (let i = 1; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
 	}
 
 	private fillNegativeScales() {
 		this.negative_scales = [];
-		var ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
+		let ranges = [];
+		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
+		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
 		for (let i = ranges.length - 2; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
 	}
 
 	public calculateClassification() {
 		this.positive_scales = null;
 		this.negative_scales = null;
-		var positives = [];
-		var negatives = [];
+		let positives = [];
+		let negatives = [];
 		for (let item of this.query) {
 			if (item.Wert > 0) positives.push(item.Wert);
 			if (item.Wert < 0) negatives.push(item.Wert);
