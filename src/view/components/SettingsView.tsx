@@ -238,7 +238,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		if (scheme == null) scheme = this.colorSchemeDefault;
 		return (
 			<ColorPicker
-				id={'colorpicker-' + section + '-' + key + '-color' + index}
+				id={'colorpicker-' + key + '-color' + index}
 				value={scheme[index]}
 				onChange={(e) => this.processColorInput(section, key, e, index)}
 			/>
