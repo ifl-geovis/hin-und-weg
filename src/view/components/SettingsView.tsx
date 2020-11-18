@@ -285,13 +285,43 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		if (classification == null) classification = defs;
 		classification[index] = value;
 		Settings.setValue(section, key, classification);
-		Settings.save();
+		//Settings.save();
 		this.setState({ change: this.state.change ? false : true });
 	}
 
 	private saveSettings() {
+		this.checkClassificationBorders();
 		Settings.save();
 		this.setState({ change: this.state.change ? false : true });
 		this.props.change();
 	}
+
+	private checkClassificationBorders()
+	{
+		// positive
+		let positive = Settings.getValue('classification', 'positive');
+		let last = 0;
+		if (!positive) positive = this.classificationPositiveDefault;
+		for (let i = 0; i < 10; i++)
+		{
+			let current = parseFloat(positive[i]);
+			if (isNaN(current) || current <= last) current = last + 1;
+			last = current;
+			positive[i] = current;
+		}
+		Settings.setValue('classification', 'positive', positive);
+		// negative
+		let negative = Settings.getValue('classification', 'negative');
+		last = 0;
+		if (!negative) negative = this.classificationNegativeDefault;
+		for (let i = 0; i < 10; i++)
+		{
+			let current = parseFloat(negative[i]);
+			if (isNaN(current) || current >= last) current = last - 1;
+			last = current;
+			negative[i] = current;
+		}
+		Settings.setValue('classification', 'negative', negative);
+	}
+
 }
