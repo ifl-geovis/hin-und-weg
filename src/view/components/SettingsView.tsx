@@ -18,7 +18,6 @@ interface ISettingsState {
 }
 
 export default class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
-
 	private legendPlacementSelections = [
 		{ label: 'Unter der Karte', value: 'bottom' },
 		{ label: 'Über der Karte', value: 'top' },
@@ -61,7 +60,8 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 			<div>
 				<h1>Karte</h1>
 				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<h4 style={{ marginRight: '1em' }}>Ordner für Offline Karten:</h4> {Settings.getValue('map', 'offlinePath')}
+					<h4 style={{ marginRight: '1em' }}>Ordner für Offline Karten:</h4>
+					<span style={{ wordBreak: 'break-word' }}>{Settings.getValue('map', 'offlinePath')}</span>
 					<label htmlFor="selectDirectory" className="customSelectDirectory" style={{ marginLeft: '1.5em' }}>
 						<i className="pi pi-folder-open" style={{ fontSize: '1.5em' }}></i>
 						<span>Ordner ändern</span>
@@ -247,7 +247,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 
 	private createClassificationInput(section: string, key: string, index: number, positive: boolean) {
 		let classification = Settings.getValue(section, key);
-		const defs = (positive) ? this.classificationPositiveDefault : this.classificationNegativeDefault
+		const defs = positive ? this.classificationPositiveDefault : this.classificationNegativeDefault;
 		if (classification == null) classification = defs;
 		let value = classification[index];
 		return (
