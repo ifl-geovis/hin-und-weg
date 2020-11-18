@@ -93,7 +93,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		}
 		return (
 			<div className="p-grid">
-				<div className="p-col-12 noprint">
+				<div className="p-col-12">
 					<div>
 						<img className="logo" src="./assets/blue_huwlogo.png" />
 					</div>

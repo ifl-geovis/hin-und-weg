@@ -55,7 +55,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		const classification = Classification.getCurrentClassification();
 		return (
 			<div className="p-grid p-component">
-				<div className="p-col">
+				<div className="p-col noprint">
 					<div className="p-grid p-dir-col">
 						<strong className="p-col">Karteninformationen:</strong>
 						<div className="p-col rdBtnContainer">
@@ -108,7 +108,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						</div>
 					</div>
 				</div>
-				<div className="p-col">
+				<div className="p-col noprint">
 					<div className="p-grid p-dir-col">
 						<strong className="p-col">Hintergrundkarte:</strong>
 						<div className="p-col rdBtnContainer">
@@ -128,7 +128,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						</div>
 					</div>
 				</div>
-				<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
+				<div className={`p-col-12 mapSlider noprint ${this.state.showCenter === '2' && 'show'}`}>
 					<hr />
 					<div className="p-grid p-align-center">
 						<p className="p-col-4">Es werden alle Pfeile mit einer bei Weg oder Zuzügen über {this.state.threshold} angezeigt.</p>
