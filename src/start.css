@@ -1,3 +1,17 @@
+@media print {
+	.noprint {
+		display: none;
+	}
+
+	div.viewswitcher {
+		width: 100vw;
+	}
+
+	.leaflet-control-zoom {
+		display: none;
+	}
+}
+
 p.status {
 	font-style: italic;
 	font-weight: 10%;
@@ -82,12 +96,6 @@ ul.p-tabview-nav li a {
 
 div.slider-reversed .p-slider .p-slider-range {
 	background-color: #c8c8c8;
-}
-
-@media print {
-	.noprint {
-		display: none;
-	}
 }
 
 .pointer {

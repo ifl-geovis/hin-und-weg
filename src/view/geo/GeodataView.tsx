@@ -128,9 +128,9 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						</div>
 					</div>
 				</div>
-				<div className={`p-col-12 mapSlider noprint ${this.state.showCenter === '2' && 'show'}`}>
-					<hr />
-					<div className="p-grid p-align-center">
+				<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
+					<hr className={`noprint`} />
+					<div className="p-grid p-align-center noprint">
 						<p className="p-col-4">Es werden alle Pfeile mit einer bei Weg oder Zuzügen über {this.state.threshold} angezeigt.</p>
 						<div className="p-col-8">
 							<Slider
