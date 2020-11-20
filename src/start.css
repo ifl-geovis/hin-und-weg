@@ -52,6 +52,16 @@ div.scrollable {
 	overflow: auto;
 }
 
+.errormessage {
+	font-weight: bold;
+	background-color: #eeaaaa;
+}
+
+.successmessage {
+	font-weight: bold;
+	background-color: #aaeeaa;
+}
+
 /* Prime React */
 
 .p-tabview.p-tabview-right > div.p-tabview-panels {

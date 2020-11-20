@@ -26,6 +26,7 @@ export interface IImportProps
 interface IImportState
 {
 	tablefiles: TableFileStatus[];
+	shapeloadmessage: string;
 }
 
 export default class ImportView extends React.Component<IImportProps, IImportState>
@@ -39,6 +40,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		this.state =
 		{
 			tablefiles: [],
+			shapeloadmessage: "",
 		};
 	}
 
@@ -77,23 +79,34 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	private getShapeFileButton() {
 		if (this.props.geodata) return (
 			<div className="p-col-12">
-				Shape Datei wurde bereits geladen...
+				<p className="successmessage">Shape Datei wurde erfolgreich geladen...</p>
 			</div>
 		);
 		return (
 			<div className="p-col-12">
 				<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false}/>
+				<p className="errormessage">{this.state.shapeloadmessage}</p>
 			</div>
 		);
 	}
 
 	private onSelectGeodataFile(files: FileList)
 	{
-		Log.trace("ImportView.onSelectGeodataFile(" + files + ")");
-		Geodata.read(files[0].path, (newGeodata) => {
-			Log.trace("ImportView.onSelectGeodataFile setGeodata(" + newGeodata + ")");
-			this.props.setGeodata(newGeodata.transformToWGS84());
-		});
+		Log.debug("ImportView.onSelectGeodataFile(" + files + ")");
+		console.log(files);
+		console.log(files.length)
+		console.log(files[0]);
+		this.setState({ shapeloadmessage: "" });
+		if (files.length != 1) this.setState({ shapeloadmessage: "Es kann nur eine Shape-Datei geladen werden!" });
+		else if (!files[0].name.endsWith(".shp")) this.setState({ shapeloadmessage: "Die Datei " + files[0].name + " sieht nicht wie eine Shape-Datei aus." });
+		else
+		{
+			this.setState({ shapeloadmessage: "Problem beim Einlesen der Datei " + files[0].name + " aufgetreten." });
+			Geodata.read(files[0].path, (newGeodata) => {
+				Log.trace("ImportView.onSelectGeodataFile setGeodata(" + newGeodata + ")");
+				this.props.setGeodata(newGeodata.transformToWGS84());
+			});
+		}
 	}
 
 	private onSelectTabledataFiles(files: FileList)
