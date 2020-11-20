@@ -93,9 +93,6 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	private onSelectGeodataFile(files: FileList)
 	{
 		Log.debug("ImportView.onSelectGeodataFile(" + files + ")");
-		console.log(files);
-		console.log(files.length)
-		console.log(files[0]);
 		this.setState({ shapeloadmessage: "" });
 		if (files.length != 1) this.setState({ shapeloadmessage: "Es kann nur eine Shape-Datei geladen werden!" });
 		else if (!files[0].name.endsWith(".shp")) this.setState({ shapeloadmessage: "Die Datei " + files[0].name + " sieht nicht wie eine Shape-Datei aus." });
