@@ -180,21 +180,21 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		let query = '';
 		if (this.state.theme === 'Von') {
 			query =
-				`SELECT '${this.state.location}' as Von, Nach, SUM(Wert) as Wert FROM matrices ` +
+				`SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices ` +
 				`WHERE Von IN ${location} AND Jahr IN (${stringYears}) ` +
 				`GROUP BY Nach `;
 		} else if (this.state.theme === 'Nach') {
 			query =
-				`SELECT Von, '${this.state.location}' as Nach, SUM(Wert) as Wert FROM matrices ` +
+				`SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices ` +
 				`WHERE Nach IN ${location} AND Jahr IN (${stringYears}) ` +
 				`GROUP BY Von `;
 		} else if (this.state.theme === 'Saldi') {
 			const vonQuery =
-				`SELECT '${this.state.location}' as Von, Nach, SUM(Wert) as Wert FROM matrices ` +
+				`SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices ` +
 				`WHERE  Von IN ${location}  AND Jahr IN (${stringYears}) ` +
 				`GROUP BY Nach ORDER BY Nach`;
 			const nachQuery =
-				`SELECT Von, '${this.state.location}' as Nach, SUM(Wert) as Wert FROM matrices ` +
+				`SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices ` +
 				`WHERE Nach IN ${location} AND Jahr IN (${stringYears}) ` +
 				`GROUP BY Von ORDER BY Von`;
 			const vonResults = this.props.db(vonQuery);
@@ -207,6 +207,10 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		}
 		Log.debug('Query: ', query);
 		results = this.props.db(query);
+		for (let i = 0; i < results.length; i++) {
+			if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
+		}
+		Log.debug(results);
 		return results;
 	}
 
