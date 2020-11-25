@@ -210,7 +210,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		for (let i = 0; i < results.length; i++) {
 			if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
 		}
-		Log.debug(results);
+		console.log(results);
 		return results;
 	}
 
