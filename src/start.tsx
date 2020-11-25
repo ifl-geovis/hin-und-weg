@@ -14,6 +14,8 @@ function setupDB() {
 			return newAccumulator;
 		} else if(stage == 2) {
 			// for every line in the group
+			if (isNaN(accumulator)) return value;
+			if (isNaN(value)) return accumulator;
 			accumulator = accumulator + value;
 			return accumulator;
 		} else if(stage == 3) {
