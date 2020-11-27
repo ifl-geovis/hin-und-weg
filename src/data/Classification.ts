@@ -22,8 +22,6 @@ export default class Classification {
 	private positive_colors = ['#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
 	private negative_colors = ['#d1e5f0', '#92c5de', '#4393c3', '#2166ac', '#053061'];
 	//private colorsAll = ['#67001f','#b2182b','#d6604d','#f4a582','#fddbc7','#f7f7f7',"#d1e5f0", "#92c5de", "#4393c3", "#2166ac", "#053061"];
-	private neutral_color = '#f7f7f7';
-	private missing_color = '#7f7f7f';
 	private selected_color = '#cbf719';
 	private error_color = '#000000';
 	private positive_arrow_color = '#ff0000';
@@ -65,8 +63,8 @@ export default class Classification {
 		if (item == null) return this.error_color;
 		//if ((this.theme === 'Von') && (this.location === item.Nach)) return this.selected_color;
 		//if ((!(this.theme === 'Von')) && (this.location === item.Von)) return this.selected_color;
-		if (isNaN(item.Wert)) return this.missing_color;
-		if (item.Wert == 0) return this.neutral_color;
+		if (isNaN(item.Wert)) return this.getMissingColor();
+		if (item.Wert == 0) return this.getNeutralColor();
 		if (item.Wert > 0) {
 			if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];
 			for (let i = 0; i < this.positive_scales.length; i++) {
@@ -294,7 +292,11 @@ export default class Classification {
 	}
 
 	public getNeutralColor(): string {
-		return this.neutral_color;
+		return '#' + Settings.getValue('user-colors', 'neutral-color');
+	}
+
+	public getMissingColor(): string {
+		return '#' + Settings.getValue('user-colors', 'missing-color');
 	}
 
 	public getNegativeColors(): string[] {
