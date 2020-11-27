@@ -104,9 +104,28 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		const scheme4 = this.getColorSchemePickers('scheme4');
 		const scheme5 = this.getColorSchemePickers('scheme5');
 		const scheme6 = this.getColorSchemePickers('scheme6');
+		const neutralcolor = Settings.getValue('user-colors', 'neutral-color');
+		const missingcolor = Settings.getValue('user-colors', 'missing-color');
 		return (
 			<div>
-				<h1>benutzerdefinierte Farbschemata</h1>
+				<h1>benutzerdefinierte Farben</h1>
+				<h2>Spezialfarben</h2>
+				<div>
+					<ColorPicker
+						id={'colorpicker-neutral'}
+						value={neutralcolor}
+						onChange={(e) => this.processSpecialColorInput('user-colors', 'neutral-color', e)}
+					/>
+					&nbsp;neutrale Farbe (0)
+				</div>
+				<div>
+					<ColorPicker
+						id={'colorpicker-missing'}
+						value={missingcolor}
+						onChange={(e) => this.processSpecialColorInput('user-colors', 'missing-color', e)}
+					/>
+					&nbsp;Farbe für fehlende oder anonymisierte Werte (NaN)
+				</div>
 				<h2>Schema 1</h2>
 				{scheme1}
 				<h2>Schema 2</h2>
@@ -274,6 +293,14 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		if (scheme == null) scheme = this.colorSchemeDefault;
 		scheme[index] = value;
 		Settings.setValue(section, key, scheme);
+		Settings.save();
+		this.setState({ change: this.state.change ? false : true });
+	}
+
+	private processSpecialColorInput(section: string, key: string, event: any) {
+		// @ts-ignore
+		const value = event.target.value;
+		Settings.setValue(section, key, value);
 		Settings.save();
 		this.setState({ change: this.state.change ? false : true });
 	}
