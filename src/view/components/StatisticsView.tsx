@@ -48,6 +48,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		let count: number = this.props.items.length;
 		let mean: number = this.calculateMean(count);
 		let variance: number = this.calculateVariance(mean, count);
+		let stddev: number = this.calculateStandardDeviation(mean, count);
 		let median: number = this.calculateMedian(count);
 		if(this.props.theme == "Von")
 		{
@@ -68,7 +69,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 					<tbody>
 						<tr>
 							<th align="right">Mittelwert:</th>
-							<td>{mean}</td>
+							<td>{this.standardizeOutput(mean)}</td>
 						</tr>
 						<tr>
 							<th align="right">Median:</th>
@@ -84,11 +85,11 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 						<tr>
 							<th align="right">Varianz:</th>
-							<td>{variance}</td>
+							<td>{this.standardizeOutput(variance)}</td>
 						</tr>
 						<tr>
 							<th align="right">Standardabweichung:</th>
-							<td>{Math.sqrt(variance)}</td>
+							<td>{this.standardizeOutput(stddev)}</td>
 						</tr>
 						<tr>
 							<th align="right">Modus:</th>
@@ -123,6 +124,11 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 			</div>
 		)
+	}
+
+	private standardizeOutput(value: number): string
+	{
+		return value.toFixed(3);
 	}
 
 	private calculateMean(count: number): number
@@ -190,6 +196,11 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		return sum/count;
 	}
 
+	private calculateStandardDeviation(mean: number, count: number): number
+	{
+		return Math.sqrt(this.calculateVariance(mean, count));
+	}
+
 	private determineMode(): number
 	{
 		let count: number = 0;
@@ -239,9 +250,9 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		return (
 				<tr>
 					<th>{row.Jahr}</th>
-					<td>{row.Mean}</td>
-					<td>{row.MeanZuzüge}</td>
-					<td>{row.MeanWegzüge}</td>
+					<td>{this.standardizeOutput(row.Mean)}</td>
+					<td>{this.standardizeOutput(row.MeanZuzüge)}</td>
+					<td>{this.standardizeOutput(row.MeanWegzüge)}</td>
 					<td>{row.MedianZuzüge}</td>
 					<td>{row.MedianWegzüge}</td>
 					<td>{row.max}</td>
