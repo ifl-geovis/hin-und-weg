@@ -27,12 +27,12 @@ export default class ClassificationSelections extends React.Component<IClassific
 
 	private algorithms = [
 		{label: "abstandsgetreu", value: "equidistant"},
-		{label: "Standardabweichung", value: "stddeviation"},
 		{label: "arithmetische Reihe", value: "arithmetic_progression"},
-		{label: "geometrische Reihe", value: "geometric_progression"},
-		{label: "Quantile", value: "quantile"},
-		{label: "Brüche nach Jenks", value: "jenks"},
 		{label: "benutzerdefiniert", value: "custom"},
+		{label: "Brüche nach Jenks", value: "jenks"},
+		{label: "geometrische Reihe", value: "geometric_progression"},
+		{label: "Standardabweichung", value: "stddeviation"},
+		{label: "Quantile", value: "quantile"},
 	];
 	private classes : string[] = ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"];
 
