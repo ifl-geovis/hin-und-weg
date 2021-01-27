@@ -248,7 +248,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 	private getYear(row: IStatisticPerYearAusgabe): JSX.Element
 	{
 		return (
-				<tr>
+				<tr key={"row_" + row.Jahr}>
 					<th>{row.Jahr}</th>
 					<td>{this.standardizeOutput(row.Mean)}</td>
 					<td>{this.standardizeOutput(row.MeanZuzüge)}</td>
