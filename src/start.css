@@ -1,4 +1,5 @@
 @media print {
+
 	.noprint {
 		display: none;
 	}
@@ -10,6 +11,22 @@
 	.leaflet-control-zoom {
 		display: none;
 	}
+
+	div.viewswitcher {
+		border-style: none;
+	}
+
+}
+
+@media screen {
+
+	div.viewswitcher {
+		padding: 0.5em;
+		border-width: medium;
+		border-style: solid;
+		border-color: lightgray;
+	}
+
 }
 
 p.status {
@@ -39,13 +56,6 @@ div.status-success {
 
 div.status-failure {
 	color: #ad0505;
-}
-
-div.viewswitcher {
-	padding: 0.5em;
-	border-width: medium;
-	border-style: solid;
-	border-color: lightgray;
 }
 
 div.scrollable {
