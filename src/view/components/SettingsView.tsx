@@ -15,6 +15,7 @@ export interface ISettingsProps {
 
 interface ISettingsState {
 	change: boolean;
+	activeTab: number;
 }
 
 export default class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
@@ -30,9 +31,11 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		super(props);
 		this.state = {
 			change: true,
+			activeTab: 0,
 		};
 		this.processInput = this.processInput.bind(this);
 		this.saveSettings = this.saveSettings.bind(this);
+		this.refreshOfflineMapsCheck = this.refreshOfflineMapsCheck.bind(this);
 		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 	}
 
@@ -41,7 +44,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		const colorschemes = this.getColorSchemes();
 		const classification = this.getClassification();
 		return (
-			<TabView className="p-tabview-right" activeIndex={0}>
+			<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.tabChanged(e)}>
 				<TabPanel header="Karte">{map}</TabPanel>
 				<TabPanel header="Farben">{colorschemes}</TabPanel>
 				<TabPanel header="Klassen">{classification}</TabPanel>
@@ -49,7 +52,15 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		);
 	}
 
+	// Da nun onTabChange definiert ist, werden die jeweiligen Start-Funtkionen (bspw. this.getMapSettings()) der einzelnen Tabs
+	// beim Wechsel aufgerufen
+	private tabChanged(e: any) {
+		// console.log('tabChanged', e);
+		this.setState({ activeTab: e.index });
+	}
+
 	private getMapSettings() {
+		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 		const dropdownLegendPlacement = this.createDropdownInput(
 			'Platzierung der Legende: ',
 			'map',
@@ -78,11 +89,21 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 				<p className="offlineMapHintSuccess">
 					Es wurden {OfflineMaps.getCurrentOfflineMaps().getData().length - 1} OfflineKarten importiert.
 				</p>
-				<p className={`offlineMapHintError ${OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().length && 'show'} }`}>
-					Fehlende Bilddateien, die in der Konfigurationsdatei angegeben sind:{' '}
-					{OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().join(', ')}
-				</p>
-				<p className={`offlineMapHintError ${OfflineMaps.getCurrentOfflineMaps().getWrongCoordinates().length && 'show'} }`}>
+				<div className={`offlineMapHintError ${OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().length && 'show'} }`}>
+					<p>
+						Fehlende Bilddateien, die in der Konfigurationsdatei angegeben sind:{' '}
+						{OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().join(', ')}
+					</p>
+
+					<Button
+						label="Ordner erneut prüfen ..."
+						onClick={this.refreshOfflineMapsCheck}
+						className="p-button-danger p-button-rounded p-button-sm btnRefreshOfflineMaps"
+					/>
+				</div>
+				<hr style={{ margin: '2em 0' }} />
+
+				{/* <p className={`offlineMapHintError ${OfflineMaps.getCurrentOfflineMaps().getWrongCoordinates().length && 'show'} }`}>
 					Die Koordinaten der folgenden Bilder scheinen falsch zu sein:
 					{OfflineMaps.getCurrentOfflineMaps().getWrongCoordinates().join(', ')} <br />
 					Die Koordinaten müssen in WGS84 angegeben werden.
@@ -90,7 +111,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 					Latitude: {OfflineMaps.getCurrentOfflineMaps().latBounds.min} / {OfflineMaps.getCurrentOfflineMaps().latBounds.max}
 					<br />
 					Longitude: {OfflineMaps.getCurrentOfflineMaps().lonBounds.min} / {OfflineMaps.getCurrentOfflineMaps().lonBounds.max}
-				</p>
+				</p> */}
 				{dropdownLegendPlacement}
 				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
 			</div>
@@ -213,12 +234,17 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		);
 	}
 
-	selectOfflinePath(files: any) {
+	private selectOfflinePath(files: any) {
 		const name = files[0].name;
 		const path = files[0].path.slice(0, -name.length);
 		Settings.setValue('map', 'offlinePath', path);
 		Settings.setValue('map', 'offlineConfigFile', name);
 		Settings.save();
+		this.setState({ change: this.state.change ? false : true });
+		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
+	}
+
+	private refreshOfflineMapsCheck() {
 		this.setState({ change: this.state.change ? false : true });
 		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 	}
@@ -323,14 +349,12 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		this.props.change();
 	}
 
-	private checkClassificationBorders()
-	{
+	private checkClassificationBorders() {
 		// positive
 		let positive = Settings.getValue('classification', 'positive');
 		let last = 0;
 		if (!positive) positive = this.classificationPositiveDefault;
-		for (let i = 0; i < 10; i++)
-		{
+		for (let i = 0; i < 10; i++) {
 			let current = parseFloat(positive[i]);
 			if (isNaN(current) || current <= last) current = last + 1;
 			last = current;
@@ -341,8 +365,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		let negative = Settings.getValue('classification', 'negative');
 		last = 0;
 		if (!negative) negative = this.classificationNegativeDefault;
-		for (let i = 0; i < 10; i++)
-		{
+		for (let i = 0; i < 10; i++) {
 			let current = parseFloat(negative[i]);
 			if (isNaN(current) || current >= last) current = last - 1;
 			last = current;
@@ -350,5 +373,4 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		}
 		Settings.setValue('classification', 'negative', negative);
 	}
-
 }

@@ -12,7 +12,7 @@ export default class OfflineMaps {
 	private static current: OfflineMaps = new OfflineMaps();
 
 	private missingImageFiles: Array<string> = [];
-	private wrongCoordinates: Array<any> = [];
+	// private wrongCoordinates: Array<any> = [];
 
 	private offlineMaps: Array<IOfflineMaps> = [
 		{
@@ -43,32 +43,32 @@ export default class OfflineMaps {
 		return this.missingImageFiles;
 	}
 
-	public getWrongCoordinates(): Array<any> {
-		return this.wrongCoordinates;
-	}
+	// public getWrongCoordinates(): Array<any> {
+	// 	return this.wrongCoordinates;
+	// }
 
-	private checkCoordsFromBounds(name: string, lon: Array<number>, lat: Array<number>): boolean {
-		let errorTrigger: boolean = false;
+	// private checkCoordsFromBounds(name: string, lon: Array<number>, lat: Array<number>): boolean {
+	// 	let errorTrigger: boolean = false;
 
-		for (let index = 0; index < lon.length; index++) {
-			const lonCoord = lon[index];
-			if (lonCoord < this.lonBounds.min || lonCoord > this.lonBounds.max) {
-				errorTrigger = true;
-				break;
-			}
-		}
-		for (let index = 0; index < lat.length; index++) {
-			const latCoord = lat[index];
-			if (latCoord < this.latBounds.min || latCoord > this.latBounds.max) {
-				errorTrigger = true;
-				break;
-			}
-		}
+	// 	for (let index = 0; index < lon.length; index++) {
+	// 		const lonCoord = lon[index];
+	// 		if (lonCoord < this.lonBounds.min || lonCoord > this.lonBounds.max) {
+	// 			errorTrigger = true;
+	// 			break;
+	// 		}
+	// 	}
+	// 	for (let index = 0; index < lat.length; index++) {
+	// 		const latCoord = lat[index];
+	// 		if (latCoord < this.latBounds.min || latCoord > this.latBounds.max) {
+	// 			errorTrigger = true;
+	// 			break;
+	// 		}
+	// 	}
 
-		errorTrigger && this.wrongCoordinates.push(`${name} (${lon[0]},${lat[0]},${lon[1]},${lat[1]})`);
+	// 	errorTrigger && this.wrongCoordinates.push(`${name} (${lon[0]},${lat[0]},${lon[1]},${lat[1]})`);
 
-		return !errorTrigger;
-	}
+	// 	return !errorTrigger;
+	// }
 
 	public readOfflineMapsFile() {
 		try {
@@ -80,7 +80,7 @@ export default class OfflineMaps {
 				},
 			];
 			this.missingImageFiles = [];
-			this.wrongCoordinates = [];
+			// this.wrongCoordinates = [];
 			const offlineMapsPath = Settings.getValue('map', 'offlinePath');
 			const offlineMapsConfigFile = Settings.getValue('map', 'offlineConfigFile');
 			const data = fs.readFileSync(path.resolve(__dirname, `${offlineMapsPath}/${offlineMapsConfigFile}`), 'utf8');
@@ -91,12 +91,13 @@ export default class OfflineMaps {
 					try {
 						const file = path.resolve(__dirname, `${offlineMapsPath}/${mapData[1].trim()}`);
 						if (
-							fs.existsSync(file) &&
-							this.checkCoordsFromBounds(
-								mapData[0].trim(),
-								[+mapData[2].trim(), +mapData[4].trim()],
-								[+mapData[3].trim(), +mapData[5].trim()]
-							)
+							fs.existsSync(file)
+							// &&
+							// this.checkCoordsFromBounds(
+							// 	mapData[0].trim(),
+							// 	[+mapData[2].trim(), +mapData[4].trim()],
+							// 	[+mapData[3].trim(), +mapData[5].trim()]
+							// )
 						) {
 							this.offlineMaps.push({
 								label: mapData[0].trim(),
