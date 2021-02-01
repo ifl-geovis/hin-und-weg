@@ -5,6 +5,7 @@ import Classification from '../../data/Classification';
 
 export interface ILegendProps {
 	showCenter: string;
+	yearsSelected: string[];
 }
 
 export default class Legend extends React.Component<ILegendProps> {
@@ -172,6 +173,7 @@ export default class Legend extends React.Component<ILegendProps> {
 			else if (theme == 'Nach') title += 'Zuzüge nach ';
 			else if (theme == 'Saldi') title += 'Saldi für ';
 			title += location;
+			title += " (" + this.props.yearsSelected + ")";
 		}
 		return title;
 	}

@@ -23,6 +23,7 @@ export interface ID3ChartProps {
 	height: number;
 	vizID: number;
 	baseViewId: number;
+	yearsSelected: string[];
 }
 interface ID3ChartState {
 	threshold: number;
@@ -845,7 +846,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					)}
 				</div>
 				<div className="p-col-12">
-					<Legend showCenter="" />
+					<Legend showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>
 				<div className="p-col-12">
 					<svg id={this.svgID} width={width} height={height} ref={(ref) => (this.svgRef = ref)} />

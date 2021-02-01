@@ -16,6 +16,7 @@ export interface IGeodataProps {
 	geoName: string | null;
 	locations: string[];
 	selectedLocation?: string | null;
+	yearsSelected: string[];
 	onSelectLocation: (newLocation: string) => void;
 	theme: string;
 }
@@ -145,7 +146,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'top' && (
 					<div className="p-col-12">
-						<Legend showCenter={this.state.showCenter} />
+						<Legend showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
 					</div>
 				)}
 				<div className="p-col-12">
@@ -165,7 +166,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'bottom' && (
 					<div className="p-col-12">
-						<Legend showCenter={this.state.showCenter} />
+						<Legend showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
 					</div>
 				)}
 			</div>

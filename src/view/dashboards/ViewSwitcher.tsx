@@ -155,6 +155,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 					items={this.props.items}
 					locations={this.props.locations}
 					selectedLocation={this.props.location}
+					yearsSelected={this.props.yearsSelected}
 					geoName={this.props.geoName}
 					theme={this.props.theme}
 					onSelectLocation={this.props.onSelectLocation}
@@ -174,7 +175,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectD3BarView() {
 		return (
 			<div className="p-col-12">
-				<D3ChartView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} />
+				<D3ChartView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
 			</div>
 		);
 	}
@@ -183,7 +184,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="p-col-12">
 				<div className="sankey1">
-					<D3SankeyView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} />
+					<D3SankeyView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
 				</div>
 			</div>
 		);
@@ -193,7 +194,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		if (this.props.yearsAvailable.length > 0) {
 			return (
 				<div className="p-col-12">
-					<D3ChordView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} />
+					<D3ChordView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
 				</div>
 			);
 		}

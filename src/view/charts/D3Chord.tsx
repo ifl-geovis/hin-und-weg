@@ -13,19 +13,20 @@ import Legend from "../elements/Legend";
 
 export interface ID3ChordItem
 {
-	Von: string;
-	Nach: string;
-	Wert: number;
+   Von: string;
+   Nach: string;
+   Wert: number;
   Absolutwert: number;
 }
 
 export interface ID3ChordProps {
-	data: ID3ChordItem[];
+   data: ID3ChordItem[];
     theme: string;
     width: number;
     height: number;
     vizID: number;
     baseViewId: number;
+   yearsSelected: string[];
 }
 interface ID3ChordState
 {
@@ -43,10 +44,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     private checkedLabel?: boolean;
 
 
-    
+
     constructor(props: ID3ChordProps)
-	{
-		super(props);
+   {
+      super(props);
     this.state = {
       threshold: 0,
       rangeValue1: 0,
@@ -71,16 +72,16 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let normalizedData:ID3ChordItem[] = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
 
       let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
-        
+
       if (data) {this.drawChordChart(data, this.props.theme, this.svgID) }
-       
+
       }
-    
+
     public shouldComponentUpdate (nextProps: ID3ChordProps, nextState: ID3ChordState) {
-      
-      return nextProps.data !== this.props.data || nextProps.theme !== this.props.theme|| nextState.checkedLabel !== this.state.checkedLabel  || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextState.threshold !==this.state.threshold || nextState.rangeValues !== this.state.rangeValues 
+
+      return nextProps.data !== this.props.data || nextProps.theme !== this.props.theme|| nextState.checkedLabel !== this.state.checkedLabel  || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextState.threshold !==this.state.threshold || nextState.rangeValues !== this.state.rangeValues
       }
- 
+
     public componentDidUpdate(){
         const [min, max] = this.getMinMax2();
         let threshold: number = this.calculateCurrentThreshold();
@@ -97,12 +98,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       this.drawChordChart(data, this.props.theme, this.svgID);
       }
 
-      
+
       private setSvgId(vizId: number, BVId: number){
         let svgID = 'Chord' + vizId + BVId;
         return svgID;
-      } 
-  
+      }
+
       private  removePreviousChart(id: string | undefined){
         if (typeof(id) === 'string') {
           const chart = document.getElementById(id);
@@ -112,7 +113,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               chart.removeChild(chart.lastChild);
             }
           }
-        }       
+        }
       }
 
     // DRAW D3 CHART
@@ -120,12 +121,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       const [min, max] = this.getMinMax2();
 
 
-      this.checkedLabel = this.state.checkedLabel;     
-      const svgChord = select(this.svgRef!); 
+      this.checkedLabel = this.state.checkedLabel;
+      const svgChord = select(this.svgRef!);
       let nach = data.map(d => d.Nach);
       let von = data.map(d => d.Von);
       let names = nach.concat(von);
-      let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));       
+      let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
       let marginResponsive = this.state.checkedLabel === false ? maxNameLength*6 : (maxNameLength + 10)*6; //5.3
 
       let MARGIN = {TOP: marginResponsive, RIGHT: marginResponsive, BOTTOM: marginResponsive, LEFT: marginResponsive}
@@ -141,12 +142,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       const classification = Classification.getCurrentClassification();
       // let hexcolor = classification.getColor(data[1]);
       console.log("classification: " + JSON.stringify(classification));
-      
-      let classColors = (data: ID3ChordItem[]) => { 
+
+      let classColors = (data: ID3ChordItem[]) => {
         let colors = new Array(data.length);
-          colors.fill('#000000');  
+          colors.fill('#000000');
         for(let i=0;i<data.length;i++)
-        { 
+        {
           colors[i]=classification.getColor(data[i])
         }  return colors
       }
@@ -160,7 +161,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       svgChord.append("svg")
       .attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
       .attr("height", HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-      
+
 
       let chartChord = svgChord.append("g")
           .attr("transform", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
@@ -177,29 +178,29 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .attr("width", WIDTH)
         .text("Die Ansicht ist zu klein für dieses Diagramm. Bitte vergrößern Sie das Fenster.");
       } else {
-      // creates input matrix with 0 values 
+      // creates input matrix with 0 values
         function Matrix(r:any, c:any, v:any[], n:any[], value:number) {
-          if (!value) value = 0;  
+          if (!value) value = 0;
           let x:number = (indx === undefined? r+1 : r);
           let y:number = (indx === undefined? c+1 : c);
           let arr = new Array(y);
-          arr.fill(value);       
-          return arr.map(row);  
+          arr.fill(value);
+          return arr.map(row);
           function row() {
             let subArr = new Array(x);
             subArr.fill(value);
-            return subArr;  
+            return subArr;
            }
           }
 
             //check index of the same name in names Von and Nach
         let checkIndx = (ar1:string[], ar2:string[]) => { let n:number; for(let i=0;i<ar1.length;i++)
-            { 
+            {
               if (ar1[i] === ar2[i] ){
                 n=i;
                 return n
-              } 
-            } 
+              }
+            }
           }
 
         let nach = data.map(d => d.Nach);
@@ -209,7 +210,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let arr = Matrix(nach.length,nach.length,von, nach, 0);
         let valuesPlus :number[] = new Array(values.length + 1);
         valuesPlus.fill(0);
-        let fillValuesPlus = () => { 
+        let fillValuesPlus = () => {
           for(let i=0;i<values.length;i++){
               valuesPlus[i]=values[i]
             } return valuesPlus
@@ -219,7 +220,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
         let nachPlus :string[] = new Array(nach.length + 1);
         nachPlus.fill(theme === "Nach" || "Saldi" ? nach[0]:von[0]);
-        let fillNachPlus = () => { 
+        let fillNachPlus = () => {
           for(let i=0;i<nach.length;i++){
               nachPlus[i]=nach[i]
             } return nachPlus
@@ -228,7 +229,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
         let vonPlus :string[] = new Array(von.length + 1);
         vonPlus.fill(theme === "Von"? von[0]:nach[0]);
-          let fillVonPlus = () => { 
+          let fillVonPlus = () => {
             for(let i=0;i<von.length;i++){
             vonPlus[i]=von[i]
             } return vonPlus
@@ -239,12 +240,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let vonVar = arr.length === von.length? von : vonPlus;
 
         // creates input matrix filled with values
-        let matrixFull = (ar:any[][]) => { 
-          for(let j=0;j<ar[0].length;j++){ 
-            for(let i=0;i<ar.length;i++){ 
+        let matrixFull = (ar:any[][]) => {
+          for(let j=0;j<ar[0].length;j++){
+            for(let i=0;i<ar.length;i++){
               if (von[i] === nach[i] ){
                   ar[i] = values
-                } else{ 
+                } else{
                   if (typeof(indx) === "number"){
                     ar[i][indx] = values[i]
                   }
@@ -253,8 +254,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             } return ar
           }
 
-        let matrixFullPlus = (ar:any[][]) => { 
-          if(ar.length === values.length){ 
+        let matrixFullPlus = (ar:any[][]) => {
+          if(ar.length === values.length){
             for(let j=0;j<ar[0].length;j++)
             { for(let i=0;i<ar.length;i++)
               { if (von[i] === nach[i] ){
@@ -267,8 +268,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                }
               }
             } else if (ar.length === valuesPlus.length ){
-              for(let j=0;j<ar[0].length;j++) { 
-                for(let i=0;i<ar.length;i++){ 
+              for(let j=0;j<ar[0].length;j++) {
+                for(let i=0;i<ar.length;i++){
                   if ( i === ar.length-1){
                     ar[i] =valuesPlus;
                   } else {
@@ -282,12 +283,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         //Set colors: darker/lighter for source/target
         let colorsFunction = (x:number, y:number, clrs:string[] )=> {
             let ac = new Array(y);
-            ac.fill(clrs[0]); 
+            ac.fill(clrs[0]);
             if (typeof(indx) === "number"){
               ac[indx] =clrs[1]
-            } else if (!indx){ 
+            } else if (!indx){
               ac[y-1] = clrs[1]
-            } return ac 
+            } return ac
           }
 
         let colorsVon:string[] = colorsFunction(nach.length, arr.length, colorsBlue)
@@ -326,28 +327,28 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .enter().append("linearGradient")
         //Create a unique gradient id per chord
         .attr("id", function(d) {
-            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index; 
+            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index;
         })
         //Instead of the object bounding box, use the entire SVG for setting locations
         //in pixel locations instead of percentages (which is more typical)
         .attr("gradientUnits", "userSpaceOnUse")
-        //The full mathematical formula to find the x and y locations 
+        //The full mathematical formula to find the x and y locations
         //of the Avenger's source chord
         .attr("x1", function(d,i) {
             return innerRadius*Math.cos((d.source.endAngle-d.source.startAngle)/2 +
             d.source.startAngle-Math.PI/2);
         })
         .attr("y1", function(d,i) {
-            return innerRadius*Math.sin((d.source.endAngle-d.source.startAngle)/2 + 
+            return innerRadius*Math.sin((d.source.endAngle-d.source.startAngle)/2 +
             d.source.startAngle-Math.PI/2);
         })
         //Find the location of the target Avenger's chord
         .attr("x2", function(d,i) {
-            return innerRadius*Math.cos((d.target.endAngle-d.target.startAngle)/2 + 
+            return innerRadius*Math.cos((d.target.endAngle-d.target.startAngle)/2 +
             d.target.startAngle-Math.PI/2);
         })
         .attr("y2", function(d,i) {
-            return innerRadius*Math.sin((d.target.endAngle-d.target.startAngle)/2 + 
+            return innerRadius*Math.sin((d.target.endAngle-d.target.startAngle)/2 +
             d.target.startAngle-Math.PI/2);
         })
         // Set the starting color (at 0%)
@@ -397,7 +398,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                 .transition()
                 .style("opacity", 1);
               });
-            
+
 
           const groupPath = group.append("path")
             // .style("fill", function(d) { return colorsVon[d.index]; })
@@ -442,11 +443,11 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                 t = vonVar[d.source.index]
                 + " → " + nachVar[d.source.index]
                 + ": " + d.source.value
-              } 
+              }
               return t
-           }) 
-           
-           let labelText:number = this.state.checkedLabel === false ? 0 :  1 ; 
+           })
+
+           let labelText:number = this.state.checkedLabel === false ? 0 :  1 ;
 
           //Append the label names on the outside
           const labels = group.append("text")
@@ -480,7 +481,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             .attr("font-family", "Open Sans")
             .style("font-weight", "bold")
             .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
-           
+
           group.append("title")
           group.select("title")
             .text(function(d, i){return vonVar[i];});
@@ -490,13 +491,13 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
            .transition()
               .duration(1500)
               .attr("opacity", 0)
-              .remove(); 
-      
+              .remove();
+
         }
         else if (theme === "Nach")
         {
          //matrixes used in Chord as an input
-        // let arrFull =  matrixFull(arr);   
+        // let arrFull =  matrixFull(arr);
         let arrFullPlus  = matrixFullPlus(arr);
         let g = chartChord.append("g")
           .attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
@@ -509,28 +510,28 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .enter().append("linearGradient")
         //Create a unique gradient id per chord
         .attr("id", function(d) {
-            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index; 
+            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index;
         })
         //Instead of the object bounding box, use the entire SVG for setting locations
         //in pixel locations instead of percentages (which is more typical)
         .attr("gradientUnits", "userSpaceOnUse")
-        //The full mathematical formula to find the x and y locations 
+        //The full mathematical formula to find the x and y locations
         //of the Avenger's source chord
         .attr("x1", function(d,i) {
             return innerRadius*Math.cos((d.source.endAngle-d.source.startAngle)/2 +
             d.source.startAngle-Math.PI/2);
         })
         .attr("y1", function(d,i) {
-            return innerRadius*Math.sin((d.source.endAngle-d.source.startAngle)/2 + 
+            return innerRadius*Math.sin((d.source.endAngle-d.source.startAngle)/2 +
             d.source.startAngle-Math.PI/2);
         })
         //Find the location of the target Avenger's chord
         .attr("x2", function(d,i) {
-            return innerRadius*Math.cos((d.target.endAngle-d.target.startAngle)/2 + 
+            return innerRadius*Math.cos((d.target.endAngle-d.target.startAngle)/2 +
             d.target.startAngle-Math.PI/2);
         })
         .attr("y2", function(d,i) {
-            return innerRadius*Math.sin((d.target.endAngle-d.target.startAngle)/2 + 
+            return innerRadius*Math.sin((d.target.endAngle-d.target.startAngle)/2 +
             d.target.startAngle-Math.PI/2);
         })
 
@@ -581,7 +582,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                 .transition()
                 .style("opacity", 1);
            });
- 
+
         const groupPath = group.append("path")
         .style("fill", function(d) { return hexcolorFull[d.index]; })
         // .style("fill", function(d) { return colorsNach[d.index]; })
@@ -623,11 +624,11 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               t = vonVar[d.target.index]
               + " → " + nachVar[d.source.index]
               + ": " + d.target.value
-            } 
+            }
             return t
-          }) 
+          })
 
-          let labelText:number = this.state.checkedLabel === false ? 0 :  1 ; 
+          let labelText:number = this.state.checkedLabel === false ? 0 :  1 ;
 
         //Append the label names on the outside
         const labels = group.append("text")
@@ -661,26 +662,26 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
         .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
-       
+
 
           group.append("title")
           group.select("title")
            .text(function(d, i){return vonVar[i];});
 
-    
+
         svgChord.exit()
           .transition()
             .duration(1500)
             .attr("opacity", 0)
             .remove();
 
-        } 
+        }
         else if (theme == "Saldi") {
 
         let values =data.map(d=> +d.Wert);
         let valuesPlus :number[] = new Array(values.length + 1);
         valuesPlus.fill(0);
-        let fillValuesPlus = () => { 
+        let fillValuesPlus = () => {
           for(let i=0;i<values.length;i++){
             valuesPlus[i]=values[i]
           } return valuesPlus
@@ -689,14 +690,14 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         valuesPlus = fillValuesPlus();
 
         //matrix used in Chord as an input
-        let arrFull =  matrixFullPlus(arr);  
+        let arrFull =  matrixFullPlus(arr);
 
-        let arrAbsolute = (ar:any[][]) => { 
-          for(let j=0;j<ar[0].length;j++) { 
+        let arrAbsolute = (ar:any[][]) => {
+          for(let j=0;j<ar[0].length;j++) {
             for(let i=0;i<ar.length;i++) {
               if (ar[i][j] < 0 ){
                 ar[i][j] = Math.abs(ar[i][j])
-              } 
+              }
             }
           } return ar
         }
@@ -704,23 +705,23 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
         let valueasSaldiVar = arr.length === values.length? values : valuesPlus;
 
-        let colorsSaldiFunctionNEW = (clrs:string[], ar:number[]) => { 
+        let colorsSaldiFunctionNEW = (clrs:string[], ar:number[]) => {
           let ar2 = new Array(ar.length);
-          ar2.fill(clrs[2]); 
+          ar2.fill(clrs[2]);
           let indx2 = (typeof(indx) === "number") ? indx : (ar2.length-1)
           for(let i=0;i<ar.length;i++){
             if (ar[i] < 0 ){
-                ar2[i] = clrs[0] 
+                ar2[i] = clrs[0]
               } else if (ar[i]>0){
                 ar2[i] = clrs[1]
               } else if (ar[i] === 0 || i == indx2){
                 ar2[i] = clrs[2]
-              }     
+              }
             } return ar2
           }
 
         let colorsSaldi = colorsSaldiFunctionNEW(colorsBlueRed, valueasSaldiVar);
-  
+
         let g = chartChord.append("g")
           .attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
           .datum(chord(arrSaldi));
@@ -732,28 +733,28 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .enter().append("linearGradient")
         //Create a unique gradient id per chord
         .attr("id", function(d) {
-            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index; 
+            return "chordGradient" + id  + "-" + d.source.index + "-" + d.target.index;
         })
         //Instead of the object bounding box, use the entire SVG for setting locations
         //in pixel locations instead of percentages (which is more typical)
         .attr("gradientUnits", "userSpaceOnUse")
-        //The full mathematical formula to find the x and y locations 
+        //The full mathematical formula to find the x and y locations
         //of the Avenger's source chord
         .attr("x1", function(d,i) {
             return innerRadius*Math.cos((d.source.endAngle-d.source.startAngle)/2 +
             d.source.startAngle-Math.PI/2);
         })
         .attr("y1", function(d,i) {
-            return innerRadius*Math.sin((d.source.endAngle-d.source.startAngle)/2 + 
+            return innerRadius*Math.sin((d.source.endAngle-d.source.startAngle)/2 +
             d.source.startAngle-Math.PI/2);
         })
         //Find the location of the target Avenger's chord
         .attr("x2", function(d,i) {
-            return innerRadius*Math.cos((d.target.endAngle-d.target.startAngle)/2 + 
+            return innerRadius*Math.cos((d.target.endAngle-d.target.startAngle)/2 +
             d.target.startAngle-Math.PI/2);
         })
         .attr("y2", function(d,i) {
-            return innerRadius*Math.sin((d.target.endAngle-d.target.startAngle)/2 + 
+            return innerRadius*Math.sin((d.target.endAngle-d.target.startAngle)/2 +
             d.target.startAngle-Math.PI/2);
         })
         // Set the starting color (at 0%)
@@ -802,7 +803,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                 .transition()
                   .style("opacity", 1);
               });
-            
+
 
         const groupPath = group.append("path")
         .style("fill", function(d) { return  hexcolorFull[d.index] })
@@ -846,8 +847,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               + " → " + nachVar[d.source.index]
               + ": " + (valueasSaldiVar[d.source.index] === 0 ? valueasSaldiVar[d.target.index]:valueasSaldiVar[d.source.index])
             } return t
-          }) 
-          let labelText:number = this.state.checkedLabel === false ? 0 :  1 ; 
+          })
+          let labelText:number = this.state.checkedLabel === false ? 0 :  1 ;
 
         //Append the label names on the outside
         const labels = group.append("text")
@@ -881,7 +882,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
         .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
-          
+
         group.append("title")
         group.select("title")
           .text(function(d, i){return vonVar[i];});
@@ -896,7 +897,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       }
 
 
-    
+
     private calculateCurrentThreshold(): number
     {
       const [min, max] = this.getMinMax2();
@@ -979,7 +980,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       if (this.state.rangeValues[1] < min) rangeValues[1] = max;
       if (this.state.rangeValues[1] > max) rangeValues[1] = max;
       if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max , rangeValues[0] = min;
-   
+
       return rangeValues;
     }
 
@@ -991,13 +992,13 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
         let rangeValue1: number =rangeValues[0];
         let rangeValue2: number = rangeValues[1];
-        
+
         return (
         <div className="p-grid">
-            
+
           <div className="p-col-12">
             <Checkbox
-              name = "saldiChord" 
+              name = "saldiChord"
               id	= "saldiChord"
               onChange={(e: { value: any, checked: boolean }) => this.setState({checked: e.checked})}
               checked={this.state.checked}
@@ -1007,35 +1008,35 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           </div>
 
           <div className="p-col-1" style={{ width: '3.5em' }}>{min}</div>
-			  	<div className="p-col-10">
+            <div className="p-col-10">
           <div className={`banner ${ this.props.theme == "Saldi" && this.state.checked === true ?  "slider-reversed" : ""}`}>
 
                 {
-                    this.props.theme == "Saldi" ? 
+                    this.props.theme == "Saldi" ?
                     <Slider min={min} max={max} value={rangeValues} onChange={(e) => this.setState({rangeValues: e.value as [number, number]})} range={true} style={this.state.checked === true? {background: '#1f7ed0', color: '#80CBC4'}:{}} />
                     :
                     <Slider min={min} max={max} value={threshold} orientation="horizontal" onChange={(e) => this.setState({ threshold: e.value as number})}/>
-                }				
+                }
           </div>
           </div>
-			  	<div className="p-col-1" style={{ width: '3.5em' }}>{max}</div>
-				  {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-          <div className="p-col-2">{this.props.theme == "Saldi" ? 
-            'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '} 
+            <div className="p-col-1" style={{ width: '3.5em' }}>{max}</div>
+              {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
+          <div className="p-col-2">{this.props.theme == "Saldi" ?
+            'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
             </div>
             <div className="p-col-2">{this.props.theme == "Saldi" ?
-             <InputText value={rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} /> 
-            : <InputText value={threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.setState({ threshold: e.target.value as number })} /> 
+             <InputText value={rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
+            : <InputText value={threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.setState({ threshold: e.target.value as number })} />
              }
              </div>
-            <div className="p-col-2">{this.props.theme == "Saldi" ? 
+            <div className="p-col-2">{this.props.theme == "Saldi" ?
             'bis ' : ' '} </div>
              <div className="p-col-2"> {this.props.theme == "Saldi" ?
              <InputText  value={rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
              </div>
           <div className="p-col-12 p-md-12 p-lg-6">
-					<Legend showCenter='' />
-				</div>
+               <Legend showCenter='' yearsSelected={this.props.yearsSelected} />
+            </div>
         <div className="p-col-12 p-md-12 p-lg-6">
           <Checkbox id = "values" name = "values"
             onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
@@ -1046,7 +1047,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
           </div>
-			  </div>
+           </div>
         );
       }
 
