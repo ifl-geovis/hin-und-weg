@@ -29,7 +29,9 @@ export interface IStatisticPerYearAusgabe
 export interface IStatisticsViewProps
 {
 	items: IStatisticsItem[];
+	location: string | null;
 	theme: string;
+	yearsSelected: string[];
 	statisticPerYearAusgabe: IStatisticPerYearAusgabe[];
 }
 
@@ -62,9 +64,14 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			maxwegzüge = this.calculateMinimum(count);
 		}
 		let mode: number = this.determineMode();
+		let title_text = "Statistik für";
+		if (this.props.theme) title_text += " " + this.props.theme;
+		if (this.props.location) title_text += " " + this.props.location;
+		if (this.props.yearsSelected) title_text += " in den Jahren " + this.props.yearsSelected;
 		const years = this.getYears();
 		return (
 			<div>
+				<h3>{title_text}</h3> <hr/>
 				<table>
 					<tbody>
 						<tr>

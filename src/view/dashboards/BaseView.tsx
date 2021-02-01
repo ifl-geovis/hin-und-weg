@@ -152,6 +152,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						location={this.state.location}
 						theme={this.state.theme}
 						yearsAvailable={this.props.yearsAvailable}
+						yearsSelected={this.state.years}
 						onSelectLocation={(newLocation) => this.setState({ location: newLocation })}
 						setGeodata={this.props.setGeodata}
 						setGeoName={this.props.setGeoName}

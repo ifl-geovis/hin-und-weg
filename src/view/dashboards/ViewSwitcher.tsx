@@ -52,6 +52,7 @@ export interface IViewSwitcherProps {
 	location: string | null;
 	theme: string;
 	yearsAvailable: string[];
+	yearsSelected: string[];
 	vizID: number;
 	baseViewId: number;
 	onSelectLocation: (newLocation: string) => void;
@@ -105,13 +106,13 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		let views: any[] = [];
 		this.addView(views, 'map', 'Karte', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'table', 'Tabelle', this.props.yearsAvailable.length > 0);
-		this.addView(views, 'timeline', 'Zeitreihen', this.props.yearsAvailable.length > 0 && this.props.location != null);
-		this.addView(views, 'charts', 'Diagramm', this.props.yearsAvailable.length > 0 && this.props.location != null);
-		this.addView(views, 'd3-bar', 'Balkendiagramm', this.props.yearsAvailable.length > 0 && this.props.location != null);
-		this.addView(views, 'd3-sankey', 'Sankey-Diagramm', this.props.yearsAvailable.length > 0 && this.props.location != null);
-		this.addView(views, 'd3-chord', 'Chord-Diagramm', this.props.yearsAvailable.length > 0 && this.props.location != null);
-		this.addView(views, 'd3-timeline', 'Zeitreihen', this.props.yearsAvailable.length > 0 && this.props.location != null);
-		this.addView(views, 'statistics', 'Statistiken', this.props.yearsAvailable.length > 0 && this.props.location != null);
+		this.addView(views, 'timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'charts', 'Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'd3-bar', 'Balkendiagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'd3-sankey', 'Sankey-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'd3-chord', 'Chord-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'd3-timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'statistics', 'Statistiken', (this.props.yearsSelected.length > 0) && (this.props.location != null));
 		this.addView(views, 'file', 'Datei', true);
 		this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'systeminfo', 'Systeminformationen', true);
@@ -211,7 +212,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectStatisticsView() {
 		return (
 			<div className="p-col-12">
-				<StatisticsView items={this.omitNaN(this.props.items)} theme={this.props.theme} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} />
+				<StatisticsView items={this.omitNaN(this.props.items)} theme={this.props.theme} location={this.props.location} yearsSelected={this.props.yearsSelected} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} />
 			</div>
 		);
 	}
