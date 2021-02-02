@@ -76,6 +76,14 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		this.state = {
 			activeView: this.props.geodata ? 'map' : 'file',
 		};
+		const ipc = require('electron').ipcRenderer;
+		ipc.on
+		(
+			'viewswitcher', (event: any, message: string) =>
+			{
+				this.setState({activeView: message});
+			}
+		)
 	}
 
 	public render(): JSX.Element {
@@ -106,8 +114,6 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		let views: any[] = [];
 		this.addView(views, 'map', 'Karte', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'table', 'Tabelle', this.props.yearsAvailable.length > 0);
-		this.addView(views, 'timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		this.addView(views, 'charts', 'Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-bar', 'Balkendiagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-sankey', 'Sankey-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-chord', 'Chord-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
@@ -117,7 +123,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'systeminfo', 'Systeminformationen', true);
 		this.addView(views, 'projektinfo', 'ProjektInfo', true);
-		this.addView(views, 'settings', 'Einstellungen', true);
+		//this.addView(views, 'settings', 'Einstellungen', true);
 		return views;
 	}
 

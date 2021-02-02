@@ -85,26 +85,32 @@ export default class MainMenu
 			submenu:
 			[
 				{
-					label: 'Karte'
+					label: 'Karte',
+					click(event, window, content) {MainMenu.execute("viewswitcher", "map", event, window, content);},
 				},
 				{
-					label: 'Tabelle'
+					label: 'Tabelle',
+					click(event, window, content) {MainMenu.execute("viewswitcher", "table", event, window, content);},
 				},
 				{
-					label: 'Zeitreihen'
+					label: 'Zeitreihen',
+					click(event, window, content) {MainMenu.execute("viewswitcher", "d3-timeline", event, window, content);},
 				},
 				{
 					label: 'Diagramm',
 					submenu:
 					[
 						{
-							label: 'Chord'
+							label: 'Chord',
+							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-chord", event, window, content);},
 						},
 						{
-							label: 'Sankey'
+							label: 'Sankey',
+							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-sankey", event, window, content);},
 						},
 						{
-							label: 'Balken'
+							label: 'Balken',
+							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-bar", event, window, content);},
 						},
 					]
 				}
@@ -116,21 +122,7 @@ export default class MainMenu
 			[
 				{
 					label: 'Statistiken',
-					submenu:
-					[
-						{
-							label: 'Mittelwert'
-						},
-						{
-							label: 'Median'
-						},
-						{
-							label: 'Standardabweichung'
-						},
-						{
-							label: 'Mode'
-						}
-					]
+					click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
 				},
 				{
 					label: 'räumliche Aggregation',
@@ -151,21 +143,14 @@ export default class MainMenu
 					]
 				},
 				{
-					label: 'Datenbank'
+					label: 'Datenbank',
+					click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
 				}
 			]
 		},
 		{
 			label: 'Einstellungen',
-			submenu:
-			[
-				{
-					label: 'Farbschema'
-				},
-				{
-					label: 'Klassifikation'
-				}
-			]
+			click(event, window, content) {MainMenu.execute("viewswitcher", "settings", event, window, content);},
 		},
 		{
 			label: 'Hilfe',
@@ -183,7 +168,18 @@ export default class MainMenu
 				},
 				{
 					label: 'Kontexthilfe'
-				}
+				},
+				{
+					type: 'separator'
+				},
+				{
+					label: 'Projektinfo',
+					click(event, window, content) {MainMenu.execute("viewswitcher", "projektinfo", event, window, content);},
+				},
+				{
+					label: 'Systeminfo',
+					click(event, window, content) {MainMenu.execute("viewswitcher", "systeminfo", event, window, content);},
+				},
 			]
 		}
 	]
