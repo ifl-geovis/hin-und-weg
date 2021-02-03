@@ -19,6 +19,7 @@ import ImportView from '../ImportView';
 import DBView from '../DBView';
 import SystemInfo from '../components/SystemInfo';
 import ProjektInfo from '../components/ProjektInfo';
+import IndexView from '../components/IndexView';
 import StatisticsView from '../components/StatisticsView';
 import SettingsView from '../components/SettingsView';
 
@@ -118,6 +119,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		this.addView(views, 'd3-sankey', 'Sankey-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-chord', 'Chord-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'index', 'Indexwerte', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'statistics', 'Statistiken', (this.props.yearsSelected.length > 0) && (this.props.location != null));
 		this.addView(views, 'file', 'Datei', true);
 		this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
@@ -140,6 +142,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		if (view == 'd3-sankey') return this.selectD3SankeyView();
 		if (view == 'd3-chord') return this.selectD3ChordView();
 		if (view == 'd3-timeline') return this.selectD3TimelineView();
+		if (view == 'index') return this.selectIndexView();
 		if (view == 'statistics') return this.selectStatisticsView();
 		if (view == 'file') return this.selectImportView();
 		if (view == 'db') return this.selectDatabaseView();
@@ -214,6 +217,14 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 				</div>
 			);
 		}
+	}
+
+	private selectIndexView() {
+		return (
+			<div className="p-col-12">
+				<IndexView />
+			</div>
+		);
 	}
 
 	private selectStatisticsView() {

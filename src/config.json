@@ -14,7 +14,8 @@
 			"devtools": true
 		},
 		"components": {
-			"systeminfo": true
+			"systeminfo": true,
+			"index": true,
 		},
 		"logging": {
 			"trace": false
@@ -38,6 +39,7 @@
 			"d3-sankey": true,
 			"d3-chord": true,
 			"d3-timeline": true,
+			"index": false,
 			"statistics": true,
 			"file": true,
 			"db": true,
