@@ -63,6 +63,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			change: true,
 		};
 		this.change = this.change.bind(this);
+		this.addYear = this.addYear.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -157,7 +158,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						setGeodata={this.props.setGeodata}
 						setGeoName={this.props.setGeoName}
 						setGeoId={this.props.setGeoId}
-						addYear={this.props.addYear}
+						addYear={this.addYear}
 						change={this.change}
 					/>
 				</div>
@@ -369,6 +370,11 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private change() {
 		this.setState({ change: this.state.change ? false : true });
+	}
+
+	private addYear(year: string) {
+		this.props.addYear(year);
+		if (this.state.years.length === 0) this.setState({ years: [year]});
 	}
 
 }
