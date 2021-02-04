@@ -64,6 +64,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		};
 		this.change = this.change.bind(this);
 		this.addYear = this.addYear.bind(this);
+		this.setGeoName = this.setGeoName.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -156,7 +157,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						yearsSelected={this.state.years}
 						onSelectLocation={(newLocation) => this.setState({ location: newLocation })}
 						setGeodata={this.props.setGeodata}
-						setGeoName={this.props.setGeoName}
+						setGeoName={this.setGeoName}
 						setGeoId={this.props.setGeoId}
 						addYear={this.addYear}
 						change={this.change}
@@ -375,6 +376,25 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	private addYear(year: string) {
 		this.props.addYear(year);
 		if (this.state.years.length === 0) this.setState({ years: [year]});
+	}
+
+	private setGeoName(geoName: string) {
+		this.props.setGeoName(geoName);
+		this.setFirstLocation(geoName);
+	}
+
+	private setFirstLocation(geoName: string)
+	{
+		let locations: string[] = [];
+		if (this.props.geodata != null && geoName != null) {
+			let attributes: GeoJsonProperties[] = [];
+			attributes = this.props.geodata.attributes();
+			locations = R.sort(
+				(a: string, b: string) => a.localeCompare(b),
+				R.map((item) => item![geoName], attributes)
+			);
+		}
+		if (locations.length > 0) this.setState({ location: locations[0] })
 	}
 
 }
