@@ -42,8 +42,8 @@ export interface StatisticPerYearAusgabe {
 }
 
 export interface IViewSwitcherProps {
-	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
+	geodata: Geodata | null;
 	items: TableItem[];
 	timeline: ITimelineD3Item[];
 	statisticPerYearAusgabe: StatisticPerYearAusgabe[];
@@ -222,7 +222,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectIndexView() {
 		return (
 			<div className="p-col-12">
-				<IndexView />
+				<IndexView db={this.props.db} />
 			</div>
 		);
 	}
