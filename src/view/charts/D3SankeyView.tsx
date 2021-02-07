@@ -36,9 +36,9 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 
 		return (
 			<div className="p-grid">
-				<div className="p-col-4"> <RadioButton inputId='rb1' value='width100' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">Skalierung 100%</label> </div>
-				<div className="p-col-4"> <RadioButton inputId='rb2' value='width75' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width75'} /> <label className="p-checkbox-label">Skalierung 75%</label>  </div>
-				<div className="p-col-4"> <RadioButton inputId='rb3' value='width50' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width50'} /> <label className="p-checkbox-label">Skalierung 50%</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">Skalierung 100%</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='rb2' value='width75' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width75'} /> <label className="p-checkbox-label">Skalierung 75%</label>  </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='rb3' value='width50' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width50'} /> <label className="p-checkbox-label">Skalierung 50%</label> </div>
 				{/* <div className="p-col-3"> <RadioButton inputId='rb4' value='width25' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width25'} /> <label className="p-checkbox-label">Skalierung 25%</label> </div> */}
 
 

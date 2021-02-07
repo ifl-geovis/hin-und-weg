@@ -776,7 +776,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 		return (
 			<div className="p-grid">
-				<div className="p-col-12">
+				<div className="p-col-12 noprint">
 					<Checkbox
 						onChange={(e: { value: any; checked: boolean }) => this.setState({ checked: e.checked })}
 						checked={this.state.checked}
@@ -784,10 +784,10 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					/>
 					<label className="p-checkbox-label">Umgekehrt filtern</label>
 				</div>
-				<div className="p-col-1" style={{ width: '3.5em' }}>
+				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
 					{min}
 				</div>
-				<div className="p-col-10">
+				<div className="p-col-10 noprint">
 					<div className={`banner ${this.props.theme == 'Saldi' && this.state.checked === true ? 'slider-reversed' : ''}`}>
 						{this.props.theme == 'Saldi' ? (
 							<Slider
@@ -809,7 +809,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 						)}
 					</div>
 				</div>
-				<div className="p-col-1" style={{ width: '3.5em' }}>
+				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
 					{max}
 				</div>
 				{/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
