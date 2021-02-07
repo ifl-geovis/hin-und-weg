@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import ContainerDimensions from 'react-container-dimensions';
 import Classification from '../../data/Classification';
-import Legend from "../elements/Legend";
+import LegendTimeline from "../elements/LegendTimeline";
 
 export interface ITimelineD3Item
 {
@@ -20,7 +20,9 @@ export interface ITimelineD3Props
     width: number;
 	height: number;
 	vizID: number;
-    baseViewId: number;
+	baseViewId: number;
+	yearsSelected: string[];
+
 }
 
 export class D3Timeline extends React.Component<ITimelineD3Props>
@@ -393,6 +395,9 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 	{
 		return (
 			<div className="p-grid">
+				<div className="p-col-12">
+					<LegendTimeline  yearsSelected={this.props.yearsSelected} />
+				</div>
 				<ContainerDimensions>
                         { ({ width, height }) => 
                             <svg id={this.svgID} width={width} height={width} ref={ref => (this.svgRef = ref)} />

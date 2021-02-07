@@ -6,7 +6,8 @@ export interface ID3TimelinrViewProps
 {
 	items: ITimelineD3Item[];
 	vizID: number;
-    baseViewId: number;
+	baseViewId: number;
+	yearsSelected: string[];
 	// theme: string;
 }
 
@@ -45,7 +46,7 @@ export default class TimelineViewD3 extends React.Component<ID3TimelinrViewProps
 				<div id="chartDiv" className="p-col-12">
                     <ContainerDimensions>
                         { ({ width, height }) =>
-                            <D3Timeline baseViewId={this.props.baseViewId} vizID={this.props.vizID}  width={width} height={width/2} data={this.props.items}/>
+                            <D3Timeline yearsSelected={this.props.yearsSelected} baseViewId={this.props.baseViewId} vizID={this.props.vizID}  width={width} height={width/2} data={this.props.items}/>
                         }
                     </ContainerDimensions>
 

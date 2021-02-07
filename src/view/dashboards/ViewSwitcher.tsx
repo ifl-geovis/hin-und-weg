@@ -213,7 +213,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		if (this.props.yearsAvailable.length > 0) {
 			return (
 				<div className="p-col-12">
-					<D3TimelineView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.timeline} />
+					<D3TimelineView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.timeline} yearsSelected={this.props.yearsSelected}  />
 				</div>
 			);
 		}
