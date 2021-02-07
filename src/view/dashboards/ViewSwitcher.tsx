@@ -222,7 +222,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectIndexView() {
 		return (
 			<div className="p-col-12">
-				<IndexView db={this.props.db} theme={this.props.theme} location={this.props.location} yearsAvailable={this.props.yearsAvailable} />
+				<IndexView db={this.props.db} theme={this.props.theme} location={this.props.location} locations={this.props.locations} yearsAvailable={this.props.yearsAvailable} />
 			</div>
 		);
 	}
