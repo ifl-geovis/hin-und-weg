@@ -222,9 +222,15 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private queryTimeline(): any[] {
 		let results: any[] = [];
+		let resultsFiltered : any[] = [];
 		if (R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable))) {
 			return results;
 		}
+		const years = this.state.years;
+		const stringYears = R.join(
+			', ',
+			R.map((year) => `'${year}'`, years)
+		);
 		let query_zuzug = `SELECT Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
 		let results_zuzug = this.props.db(query_zuzug);
 		let query_wegzug = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
@@ -240,7 +246,14 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				'Saldo': zuzug - wegzug,
 			});
 		}
-		return results;
+		for(let item of results ){
+			if (R.contains(item.Jahr, stringYears)){
+				resultsFiltered.push(item);
+			}
+			
+
+		}
+		return resultsFiltered;
 	}
 
 	private queryStatistics(): any[] {
