@@ -178,3 +178,21 @@ div.slider-reversed .p-slider .p-slider-range {
 	border-bottom-color: lightgray;
 	opacity: 1;
 }
+
+table.indexvalues {
+	border-width: 2px;
+	border-style: solid;
+}
+
+table.indexvalues > tr {
+	border-width: 2px;
+	border-style: solid;
+}
+
+table.indexvalues th {
+	background-color: #eeeeee;
+}
+
+table.indexvalues tr.selected td {
+	background-color: #eae08c;
+}

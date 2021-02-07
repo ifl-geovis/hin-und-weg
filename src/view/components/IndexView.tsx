@@ -45,19 +45,22 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 	public render(): JSX.Element
 	{
 		let data = this.queryIndex();
-		log.debug("index value data: ", data);
+		Log.debug("index value data: ", data);
 		let selector = null;
 		if (this.state.type === "year") selector = this.createYearSelector();
 		else if (this.state.type === "location") selector = this.createRegionSelector();
 		else selector = this.createYearSelector();
+		let view = this.createView(data);
 		return (
 			<div>
 				<h3>Indexwerte</h3>
-				Indexwerte bezogen auf
+				Die Indexwerte bezogen auf
 				&nbsp;
 				<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
 				&nbsp;
 				{selector}
+				<hr />
+				{view}
 			</div>
 		);
 	}
@@ -79,6 +82,47 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 		const selected = { value: this.state.referenceLocation, label: this.state.referenceLocation};
 		return (
 			<Dropdown optionLabel="label" value={selected} options={options} onChange={this.setLocation} style={{ width: "15em" }} />
+		);
+	}
+
+	private createView(data: any[])
+	{
+		return this.createTableView(data);
+	}
+
+	private createTableView(data: any[])
+	{
+		let rows = [];
+		for (let item of data)
+		{
+			rows.push(this.createTableRow(item));
+		}
+		let label = "Beschriftung";
+		if (this.state.type === "year") label = "Jahr";
+		if (this.state.type === "location") label = "Region";
+		return (
+			<table className="indexvalues">
+				<tr>
+					<th>{label}</th>
+					<th>Wert</th>
+					<th>Indexwert</th>
+				</tr>
+				{rows}
+			</table>
+		);
+	}
+
+	private createTableRow(item: any)
+	{
+		let indexvalue = item.index.toFixed(3);
+		let selected = "standard";
+		if ((item.label === this.state.referenceYear) || (item.label === this.state.referenceLocation)) selected = "selected";
+		return (
+			<tr key={item.label} className={selected}>
+				<th>{item.label}</th>
+				<td>{item.result}</td>
+				<td>{indexvalue}</td>
+			</tr>
 		);
 	}
 
