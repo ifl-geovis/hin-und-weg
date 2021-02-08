@@ -184,7 +184,7 @@ table.indexvalues {
 	border-style: solid;
 }
 
-table.indexvalues > tr {
+table.indexvalues tr {
 	border-width: 2px;
 	border-style: solid;
 }

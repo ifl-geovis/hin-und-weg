@@ -17,6 +17,7 @@ interface IIndexViewState {
 	type: string;
 	referenceYear: string;
 	referenceLocation: string;
+	view: string;
 }
 
 export default class IndexView extends React.Component<IIndexViewProps, IIndexViewState>
@@ -25,6 +26,11 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 	private types = [
 		{label: "das Jahr", value: "year"},
 		{label: "die Region", value: "location"},
+	];
+
+	private views = [
+		{label: "Tabelle", value: "table"},
+		{label: "Diagramm", value: "chart"},
 	];
 
 	constructor(props: IIndexViewProps)
@@ -36,10 +42,12 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 			type: 'year',
 			referenceYear: this.props.yearsAvailable[0],
 			referenceLocation: this.props.locations[0],
+			view: "table",
 		};
 		this.setType = this.setType.bind(this);
 		this.setYear = this.setYear.bind(this);
 		this.setLocation = this.setLocation.bind(this);
+		this.setView = this.setView.bind(this);
 	}
 
 	public render(): JSX.Element
@@ -59,6 +67,11 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 				<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
 				&nbsp;
 				{selector}
+				werden als
+				&nbsp;
+				<Dropdown optionLabel="label" value={this.getView()} options={this.views} onChange={this.setView} />
+				&nbsp;
+				angezeigt.
 				<hr />
 				{view}
 			</div>
@@ -87,6 +100,8 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 
 	private createView(data: any[])
 	{
+		if (this.state.view === "table") return this.createTableView(data);
+		if (this.state.view === "chart") return this.createChartView(data);
 		return this.createTableView(data);
 	}
 
@@ -102,12 +117,16 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 		if (this.state.type === "location") label = "Region";
 		return (
 			<table className="indexvalues">
-				<tr>
-					<th>{label}</th>
-					<th>Wert</th>
-					<th>Indexwert</th>
-				</tr>
-				{rows}
+				<thead>
+					<tr>
+						<th>{label}</th>
+						<th>Wert</th>
+						<th>Indexwert</th>
+					</tr>
+				</thead>
+				<tbody>
+					{rows}
+				</tbody>
 			</table>
 		);
 	}
@@ -123,6 +142,15 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 				<td>{item.result}</td>
 				<td>{indexvalue}</td>
 			</tr>
+		);
+	}
+
+	private createChartView(data: any[])
+	{
+		return (
+			<div>
+				To be done!
+			</div>
 		);
 	}
 
@@ -233,6 +261,20 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 	{
 		console.log(event);
 		this.setState({ referenceLocation: event.value.value });
+	}
+
+	private setView(event: { originalEvent: Event, value: any})
+	{
+		this.setState({ view: event.value.value });
+	}
+
+	private getView()
+	{
+		for (let view of this.views)
+		{
+			if (view.value === this.state.view) return view;
+		}
+		return this.views[0];
 	}
 
 }
