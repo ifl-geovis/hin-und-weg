@@ -237,8 +237,8 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 		{
 			let value = item.result;
 			if (reference == 0) item.index = value;
-			if ((reference > 0) && (value >= 0)) item.index = value / reference;
-			if ((reference > 0) && (value < 0)) item.index = -1 * (reference - value) / reference;
+			if ((reference > 0) && (value >= 0)) item.index = (value - reference) / reference;
+			if ((reference > 0) && (value < 0)) item.index = (value - reference) / reference;
 			if ((reference < 0) && (value < 0)) item.index = (reference - value) / reference;
 			if ((reference < 0) && (value >= 0)) item.index = (reference - value) / reference;
 		}
