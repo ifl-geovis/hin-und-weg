@@ -67,6 +67,7 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 				<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
 				&nbsp;
 				{selector}
+				&nbsp;
 				werden als
 				&nbsp;
 				<Dropdown optionLabel="label" value={this.getView()} options={this.views} onChange={this.setView} />
@@ -147,9 +148,29 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 
 	private createChartView(data: any[])
 	{
+		let bars = [];
+		for (let item of data)
+		{
+			bars.push(this.createBar(item));
+		}
 		return (
 			<div>
-				To be done!
+				{bars}
+			</div>
+		);
+	}
+
+	private createBar(item: any)
+	{
+		let indexvalue = item.index.toFixed(3);
+		let classname = "indexbar";
+		if ((item.label === this.state.referenceYear) || (item.label === this.state.referenceLocation)) classname = "indexbar-selected";
+		return (
+			<div>
+				<span>{item.label}</span>
+				<div className={classname}>
+					{indexvalue}
+				</div>
 			</div>
 		);
 	}

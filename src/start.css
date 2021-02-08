@@ -196,3 +196,11 @@ table.indexvalues th {
 table.indexvalues tr.selected td {
 	background-color: #eae08c;
 }
+
+div.indexbar {
+	background-color: #1879fc;
+}
+
+div.indexbar-selected {
+	background-color: #eae08c;
+}
