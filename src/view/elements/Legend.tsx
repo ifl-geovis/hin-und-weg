@@ -121,34 +121,34 @@ export default class Legend extends React.Component<ILegendProps> {
 					for (let index = 0; index < arrowWidths.length; index++) {
 						arrows.push([
 							<polyline
-								key={`posArrow_${index}`}
-								points={`0,${arrowOffset * (index + 1)} 40,${arrowOffset * (index + 1)}`}
-								strokeWidth={arrowWidths[index]}
-								fill="none"
-								stroke={negArrowColor}
-							/>,
-							<text
-								key={`posArrowLabel_${index}`}
-								x="50"
-								y={arrowOffset * (index + 1) + labelOffset}
-								style={{ font: '11px Open Sans' }}
-							>
-								{`≤ ${posArrowBounds[index].toFixed(0)}`}
-							</text>,
-							<polyline
 								key={`negArrow_${index}`}
-								points={`130,${arrowOffset * (index + 1)} 170,${arrowOffset * (index + 1)}`}
+								points={`0,${arrowOffset * (index + 1)} 40,${arrowOffset * (index + 1)}`}
 								strokeWidth={arrowWidths[index]}
 								fill="none"
 								stroke={posArrowColor}
 							/>,
 							<text
 								key={`negArrowLabel_${index}`}
-								x="180"
+								x="50"
 								y={arrowOffset * (index + 1) + labelOffset}
 								style={{ font: '11px Open Sans' }}
 							>
 								{`≥ -${negArrowBounds[index].toFixed(0)}`}
+							</text>,
+							<polyline
+								key={`posArrow_${index}`}
+								points={`130,${arrowOffset * (index + 1)} 170,${arrowOffset * (index + 1)}`}
+								strokeWidth={arrowWidths[index]}
+								fill="none"
+								stroke={negArrowColor}
+							/>,
+							<text
+								key={`posArrowLabel_${index}`}
+								x="180"
+								y={arrowOffset * (index + 1) + labelOffset}
+								style={{ font: '11px Open Sans' }}
+							>
+								{`≤ ${posArrowBounds[index].toFixed(0)}`}
 							</text>,
 						]);
 					}
