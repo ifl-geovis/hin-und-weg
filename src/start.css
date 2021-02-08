@@ -204,3 +204,8 @@ div.indexbar {
 div.indexbar-selected {
 	background-color: #eae08c;
 }
+
+div.negativebar {
+	float: right;
+	text-align: right;
+}

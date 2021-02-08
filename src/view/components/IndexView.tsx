@@ -149,29 +149,77 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 	private createChartView(data: any[])
 	{
 		let bars = [];
+		let min = 0;
+		let max = 0;
 		for (let item of data)
 		{
-			bars.push(this.createBar(item));
+			if (item.index > max) max = item.index;
+			if (item.index < min) min = item.index;
+		}
+		for (let item of data)
+		{
+			bars.push(this.createBar(item, min, max));
 		}
 		return (
-			<div>
-				{bars}
-			</div>
+			<table style={{ width: "100%" }}>
+				<tbody>
+					{bars}
+				</tbody>
+			</table>
 		);
 	}
 
-	private createBar(item: any)
+	private createBar(item: any, min: number, max: number)
 	{
-		let indexvalue = item.index.toFixed(3);
 		let classname = "indexbar";
 		if ((item.label === this.state.referenceYear) || (item.label === this.state.referenceLocation)) classname = "indexbar-selected";
+		let negative = null;
+		if (min < 0) negative = this.createNegativeBar(item, min, classname);
+		let positive = this.createPositiveBar(item, max, classname);
 		return (
-			<div>
-				<span>{item.label}</span>
-				<div className={classname}>
+			<tr key={item.label}>
+				{negative}
+				<th style={{ width: "5%" }}>{item.label}</th>
+				{positive}
+			</tr>
+		);
+	}
+
+	private createPositiveBar(item: any, max: number, classname: string)
+	{
+		if (item.index < 0)
+		{
+			return (
+				<td></td>
+			);
+		}
+		let widthvalue = "" + (item.index * 100 / max) + "%";
+		let indexvalue = item.index.toFixed(3);
+		return (
+			<td>
+				<div className={classname + " positivebar"} style={{ width: widthvalue }}>
 					{indexvalue}
 				</div>
-			</div>
+			</td>
+		);
+	}
+
+	private createNegativeBar(item: any, min: number, classname: string)
+	{
+		if (item.index >= 0)
+		{
+			return (
+				<td></td>
+			);
+		}
+		let widthvalue = "" + (item.index * 100 / min) + "%";
+		let indexvalue = item.index.toFixed(3);
+		return (
+			<td>
+				<div className={classname + " negativebar"} style={{ width: widthvalue }}>
+					{indexvalue}
+				</div>
+			</td>
 		);
 	}
 
