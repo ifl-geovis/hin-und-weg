@@ -58,8 +58,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			negativeColors: 'blau',
 			positiveClasses: '5',
 			negativeClasses: '5',
-			positiveArrowColor: 'ff0000',
-			negativeArrowColor: '0432ff',
+			positiveArrowColor: '0432ff',
+			negativeArrowColor: 'ff0000',
 			change: true,
 		};
 		this.change = this.change.bind(this);
@@ -250,7 +250,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			if (R.contains(item.Jahr, stringYears)){
 				resultsFiltered.push(item);
 			}
-			
+
 
 		}
 		return resultsFiltered;
