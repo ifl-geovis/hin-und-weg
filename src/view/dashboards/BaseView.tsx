@@ -204,8 +204,11 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			const nachResults = this.props.db(nachQuery);
 			for (let i = 0; i < nachResults.length; i++) {
 				let value = nachResults[i].Wert - vonResults[i].Wert;
-				if (isNaN(nachResults[i])) value = 0 - vonResults[i].Wert;
-				if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
+				if (isNaN(value))
+				{
+					if (isNaN(nachResults[i].Wert)) value = 0 - vonResults[i].Wert;
+					if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
+				}
 				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: value };
 				results = R.append(saldiItem, results);
 			}
