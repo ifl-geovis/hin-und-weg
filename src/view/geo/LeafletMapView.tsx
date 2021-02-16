@@ -197,10 +197,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	public getMapLayer() {
 		return (
 			<TileLayer
-				//attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-				//url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-				attribution='Copyright <a href="http://www.bkg.bund.de/" target="_blank" rel="noopener noreferrer">Bundesamt für Kartographie und Geodäsie</a> 2020, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
-				url="https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web_grau/default/WEBMERCATOR/{z}/{y}/{x}.png"
+				attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				// attribution='Copyright <a href="http://www.bkg.bund.de/" target="_blank" rel="noopener noreferrer">Bundesamt für Kartographie und Geodäsie</a> 2020, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
+				// url="https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web_grau/default/WEBMERCATOR/{z}/{y}/{x}.png"
 				//  attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 				//  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 			/>
