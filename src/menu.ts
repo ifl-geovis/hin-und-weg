@@ -150,7 +150,13 @@ export default class MainMenu
 		},
 		{
 			label: 'Einstellungen',
-			click(event, window, content) {MainMenu.execute("viewswitcher", "settings", event, window, content);},
+			submenu:
+			[
+				{
+					label: 'Einstellungen',
+					click(event, window, content) {MainMenu.execute("viewswitcher", "settings", event, window, content);},
+				},
+			],
 		},
 		{
 			label: 'Hilfe',
