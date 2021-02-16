@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION=1.6.0
+VERSION=1.6.1
 ./clean.sh
 npm run build
 # create installations
