@@ -241,8 +241,11 @@ export default class Classification {
 		let positives = [];
 		let negatives = [];
 		for (let item of this.query) {
-			if (item.Wert > 0) positives.push(item.Wert);
-			if (item.Wert < 0) negatives.push(item.Wert);
+			if (!isNaN(item.Wert))
+			{
+				if (item.Wert > 0) positives.push(item.Wert);
+				if (item.Wert < 0) negatives.push(item.Wert);
+			}
 		}
 		Log.debug('positives: ' + positives);
 		Log.debug('negatives: ' + negatives);
