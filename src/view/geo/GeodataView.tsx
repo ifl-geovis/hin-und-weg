@@ -136,7 +136,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						<div className="p-col-8">
 							<Slider
 								min={0}
-								max={classification.getMaxValue()}
+								max={classification.getAbsoluteMaxValue()}
 								value={this.state.threshold}
 								orientation="horizontal"
 								onChange={this.onSliderChange}

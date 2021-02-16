@@ -1,7 +1,7 @@
 import geostats from 'geostats';
 
 import Log from '../log';
-import Config from "../config";
+import Config from '../config';
 import Settings from '../settings';
 
 export interface Item {
@@ -85,35 +85,35 @@ export default class Classification {
 	public getZeitreihenPositiveColors() {
 		let positiveColorBright = this.error_color;
 		let positiveColorDark = this.error_color;
-		if (this.positive_colors.length === 1){
+		if (this.positive_colors.length === 1) {
 			positiveColorBright = this.positive_colors[0];
-			positiveColorDark =  this.positive_colors[0];
+			positiveColorDark = this.positive_colors[0];
 		} else if (this.positive_colors.length === 2) {
 			positiveColorBright = this.positive_colors[0];
-			positiveColorDark =  this.positive_colors[1];
+			positiveColorDark = this.positive_colors[1];
 		} else if (this.positive_colors.length === 3) {
 			positiveColorBright = this.positive_colors[1];
-			positiveColorDark =  this.positive_colors[2];
+			positiveColorDark = this.positive_colors[2];
 		} else if (this.positive_colors.length === 4) {
 			positiveColorBright = this.positive_colors[2];
-			positiveColorDark =  this.positive_colors[3];
+			positiveColorDark = this.positive_colors[3];
 		} else if (this.positive_colors.length === 5) {
 			positiveColorBright = this.positive_colors[2];
-			positiveColorDark =  this.positive_colors[4];
+			positiveColorDark = this.positive_colors[4];
 		} else if (this.positive_colors.length === 6) {
 			positiveColorBright = this.positive_colors[3];
-			positiveColorDark =  this.positive_colors[5];
-		}else if (this.positive_colors.length === 7) {
+			positiveColorDark = this.positive_colors[5];
+		} else if (this.positive_colors.length === 7) {
 			positiveColorBright = this.positive_colors[3];
-			positiveColorDark =  this.positive_colors[6];
-		}else if (this.positive_colors.length === 8) {
+			positiveColorDark = this.positive_colors[6];
+		} else if (this.positive_colors.length === 8) {
 			positiveColorBright = this.positive_colors[3];
-			positiveColorDark =  this.positive_colors[7];
+			positiveColorDark = this.positive_colors[7];
 		} else if (this.positive_colors.length === 9) {
 			positiveColorBright = this.positive_colors[3];
-			positiveColorDark =  this.positive_colors[7];
+			positiveColorDark = this.positive_colors[7];
 		}
-		return [positiveColorBright, positiveColorDark]
+		return [positiveColorBright, positiveColorDark];
 	}
 
 	public getZeitreihenNegativeColors() {
@@ -121,35 +121,35 @@ export default class Classification {
 		let positiveColorDark = this.error_color;
 		let negativeColorBright = this.error_color;
 		let negativeColorDark = this.error_color;
-		if  (this.negative_colors.length === 1){
+		if (this.negative_colors.length === 1) {
 			negativeColorBright = this.negative_colors[0];
-			negativeColorDark =  this.negative_colors[0];
+			negativeColorDark = this.negative_colors[0];
 		} else if (this.negative_colors.length === 2) {
 			negativeColorBright = this.negative_colors[0];
-			negativeColorDark =  this.negative_colors[1];
+			negativeColorDark = this.negative_colors[1];
 		} else if (this.negative_colors.length === 3) {
 			negativeColorBright = this.negative_colors[1];
-			negativeColorDark =  this.negative_colors[2];
+			negativeColorDark = this.negative_colors[2];
 		} else if (this.negative_colors.length === 4) {
 			negativeColorBright = this.negative_colors[2];
-			negativeColorDark =  this.negative_colors[3];
+			negativeColorDark = this.negative_colors[3];
 		} else if (this.negative_colors.length === 5) {
 			negativeColorBright = this.negative_colors[2];
-			negativeColorDark =  this.negative_colors[4];
+			negativeColorDark = this.negative_colors[4];
 		} else if (this.negative_colors.length === 6) {
 			negativeColorBright = this.negative_colors[3];
-			negativeColorDark =  this.negative_colors[5];
-		}else if (this.negative_colors.length === 7) {
+			negativeColorDark = this.negative_colors[5];
+		} else if (this.negative_colors.length === 7) {
 			negativeColorBright = this.negative_colors[3];
-			negativeColorDark =  this.negative_colors[6];
-		}else if (this.negative_colors.length === 8) {
+			negativeColorDark = this.negative_colors[6];
+		} else if (this.negative_colors.length === 8) {
 			negativeColorBright = this.negative_colors[3];
-			negativeColorDark =  this.negative_colors[7];
+			negativeColorDark = this.negative_colors[7];
 		} else if (this.negative_colors.length === 9) {
 			negativeColorBright = this.negative_colors[3];
-			negativeColorDark =  this.negative_colors[7];
+			negativeColorDark = this.negative_colors[7];
 		}
-		return [negativeColorBright, negativeColorDark]
+		return [negativeColorBright, negativeColorDark];
 	}
 
 	public setLocation(location: string | null) {
@@ -194,8 +194,8 @@ export default class Classification {
 	}
 
 	private getCustomRanges(positive: boolean, count: number): any[] {
-		let classification = Settings.getValue('classification', (positive ? 'positive' : 'negative'));
-		if (classification == null) classification = (positive ? this.classificationPositiveDefault : this.classificationNegativeDefault);
+		let classification = Settings.getValue('classification', positive ? 'positive' : 'negative');
+		if (classification == null) classification = positive ? this.classificationPositiveDefault : this.classificationNegativeDefault;
 		let ranges = [];
 		if (positive) {
 			ranges.push(0);
@@ -287,6 +287,12 @@ export default class Classification {
 		return this.positive_stats.max();
 	}
 
+	public getAbsoluteMaxValue(): number {
+		const minAbsoluteValue: number = Math.abs(this.getMinValue());
+		const maxAbsoluteValue: number = Math.abs(this.getMaxValue());
+		return minAbsoluteValue > maxAbsoluteValue ? minAbsoluteValue : maxAbsoluteValue;
+	}
+
 	public getSelectedColor(): string {
 		return this.selected_color;
 	}
@@ -345,7 +351,7 @@ export default class Classification {
 	}
 
 	public getColorSchemes(): string[] {
-		let colorschemes = Config.getKeys("colorschemes");
+		let colorschemes = Config.getKeys('colorschemes');
 		for (let i = 0; i < this.userDefinedColorSchemes.length; i++) colorschemes.push(this.userDefinedColorSchemes[i]);
 		return colorschemes;
 	}
