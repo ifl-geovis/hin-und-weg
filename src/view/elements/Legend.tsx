@@ -10,7 +10,7 @@ export interface ILegendProps {
 
 export default class Legend extends React.Component<ILegendProps> {
 	private stroke_color = '#4d4d4d';
-	private box_size = 30;
+	private box_size = 50;
 	private label_offset = 5;
 
 	constructor(props: ILegendProps) {
