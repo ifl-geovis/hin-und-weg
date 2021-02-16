@@ -86,15 +86,15 @@ export default class MainMenu
 			[
 				{
 					label: 'Karte',
-					click(event, window, content) {MainMenu.execute("viewswitcher", "map", event, window, content);},
+					//click(event, window, content) {MainMenu.execute("viewswitcher", "map", event, window, content);},
 				},
 				{
 					label: 'Tabelle',
-					click(event, window, content) {MainMenu.execute("viewswitcher", "table", event, window, content);},
+					//click(event, window, content) {MainMenu.execute("viewswitcher", "table", event, window, content);},
 				},
 				{
 					label: 'Zeitreihen',
-					click(event, window, content) {MainMenu.execute("viewswitcher", "d3-timeline", event, window, content);},
+					//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-timeline", event, window, content);},
 				},
 				{
 					label: 'Diagramm',
@@ -102,15 +102,15 @@ export default class MainMenu
 					[
 						{
 							label: 'Chord',
-							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-chord", event, window, content);},
+							//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-chord", event, window, content);},
 						},
 						{
 							label: 'Sankey',
-							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-sankey", event, window, content);},
+							//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-sankey", event, window, content);},
 						},
 						{
 							label: 'Balken',
-							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-bar", event, window, content);},
+							//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-bar", event, window, content);},
 						},
 					]
 				}
@@ -122,7 +122,7 @@ export default class MainMenu
 			[
 				{
 					label: 'Statistiken',
-					click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
+					//click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
 				},
 				{
 					label: 'räumliche Aggregation',
@@ -144,7 +144,7 @@ export default class MainMenu
 				},
 				{
 					label: 'Datenbank',
-					click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
+					//click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
 				}
 			]
 		},
@@ -180,11 +180,11 @@ export default class MainMenu
 				},
 				{
 					label: 'Projektinfo',
-					click(event, window, content) {MainMenu.execute("viewswitcher", "projektinfo", event, window, content);},
+					//click(event, window, content) {MainMenu.execute("viewswitcher", "projektinfo", event, window, content);},
 				},
 				{
 					label: 'Systeminfo',
-					click(event, window, content) {MainMenu.execute("viewswitcher", "systeminfo", event, window, content);},
+					//click(event, window, content) {MainMenu.execute("viewswitcher", "systeminfo", event, window, content);},
 				},
 			]
 		}

@@ -82,7 +82,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		(
 			'viewswitcher', (event: any, message: string) =>
 			{
-				this.setState({activeView: message});
+				this.switchView(message);
 			}
 		)
 	}
@@ -90,13 +90,14 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	public render(): JSX.Element {
 		let views = this.getVisibleViews();
 		let showedView = this.selectCurrentView(this.state.activeView);
+		let onlyFile = (((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 )) && (this.state.activeView === 'file') );
 		return (
 			<div className="viewswitcher">
 				<div className="p-grid">
 				<div className="p-col-4 p-component noprint">
-						{((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 ) ) ? "Datei-Import" : "Visualisierung oder Funktion wählen:"}</div>
+						{onlyFile ? "Datei-Import" : "Visualisierung oder Funktion wählen:"}</div>
 					<div className="p-col-8 noprint">
-					{((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 ) ) ? <div></div>
+					{onlyFile ? <div></div>
 					: <ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />}
 					</div>
 					<div className="p-col-12">{showedView}</div>
@@ -106,9 +107,21 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	}
 
 	private onViewSelect(selected: string) {
-		Log.debug('selected view: ' + selected);
-		this.setState({ activeView: selected });
-		this.props.onSwitchView();
+		this.switchView(selected);
+	}
+
+	private switchView(newview: string) {
+		Log.debug('selected view: ' + newview);
+		let views = this.getVisibleViews();
+		let isvisible = false;
+		if (newview === 'settings') isvisible = true;
+		for (let view of views) {
+			if (view.value === newview) isvisible = true;
+		}
+		if (isvisible) {
+			this.setState({ activeView: newview });
+			this.props.onSwitchView();
+		}
 	}
 
 	private getVisibleViews() {
