@@ -1,39 +1,42 @@
 import * as React from "react";
-import { Dropdown } from "primereact/dropdown";
 
-import Config from "../../config";
+import { Dropdown } from "primereact/dropdown";
+import * as d3 from 'd3';
+
+import { D3IndexValuesChart} from "./D3IndexValuesChart";
+import ContainerDimensions from 'react-container-dimensions';
+
 import Log from '../../log';
 
-export interface IIndexViewProps {
+
+
+export interface ID3IndexViewProps {
 	db: alaSQLSpace.AlaSQL;
 	location: string | null;
 	theme: string;
 	yearsAvailable: string[];
 	locations: string[];
+	vizID: number;
+	 baseViewId: number;
 }
 
-interface IIndexViewState {
+interface ID3IndexViewState {
 	indexValue: number;
 	type: string;
 	referenceYear: string;
 	referenceLocation: string;
-	view: string;
 }
 
-export default class IndexView extends React.Component<IIndexViewProps, IIndexViewState>
+export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3IndexViewState>
 {
 
 	private types = [
-		{label: "das Jahr", value: "year"},
-		{label: "die Region", value: "location"},
+		{label: "Jahr", value: "year"},
+		{label: "Raumeinheit", value: "location"},
 	];
 
-	private views = [
-		{label: "Tabelle", value: "table"},
-		{label: "Diagramm", value: "chart"},
-	];
 
-	constructor(props: IIndexViewProps)
+	constructor(props: ID3IndexViewProps)
 	{
 		super(props);
 		this.state =
@@ -42,42 +45,40 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 			type: 'year',
 			referenceYear: this.props.yearsAvailable[0],
 			referenceLocation: this.props.locations[0],
-			view: "table",
 		};
 		this.setType = this.setType.bind(this);
 		this.setYear = this.setYear.bind(this);
 		this.setLocation = this.setLocation.bind(this);
-		this.setView = this.setView.bind(this);
 	}
 
 	public render(): JSX.Element
 	{
 		let data = this.queryIndex();
+	
 		Log.debug("index value data: ", data);
 		let selector = null;
 		if (this.state.type === "year") selector = this.createYearSelector();
 		else if (this.state.type === "location") selector = this.createRegionSelector();
 		else selector = this.createYearSelector();
 		let view = this.createView(data);
+		let refText : string = this.state.type === "location" ? this.state.referenceLocation : " Jahr " + this.state.referenceYear;
+		let themeTitel = this.props.theme === "Von" ? "Wegzüge" : this.props.theme === "Nach" ? "Zuzüge" : this.props.theme === "Saldi" ? "Saldi" : "";
 		return (
 			<div>
-				<h3>Indexwerte</h3>
-				Die Indexwerte bezogen auf
+				<h3>{themeTitel} aus {this.props.location}, Indexwert (100%): {refText} </h3>
+				Auswahl Indexwert:
 				&nbsp;
 				<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
 				&nbsp;
 				{selector}
 				&nbsp;
-				werden als
-				&nbsp;
-				<Dropdown optionLabel="label" value={this.getView()} options={this.views} onChange={this.setView} />
-				&nbsp;
-				angezeigt.
 				<hr />
 				{view}
 			</div>
 		);
 	}
+
+
 
 	private createYearSelector() {
 		const options = this.props.yearsAvailable.map((option: string) => {
@@ -101,127 +102,42 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 
 	private createView(data: any[])
 	{
-		if (this.state.view === "table") return this.createTableView(data);
-		if (this.state.view === "chart") return this.createChartView(data);
-		return this.createTableView(data);
+		return this.createD3ChartView(data);
 	}
 
-	private createTableView(data: any[])
+	
+	private createD3ChartView(data: any[])
 	{
-		let rows = [];
-		for (let item of data)
-		{
-			rows.push(this.createTableRow(item));
-		}
-		let label = "Beschriftung";
-		if (this.state.type === "year") label = "Jahr";
-		if (this.state.type === "location") label = "Region";
-		return (
-			<table className="indexvalues">
-				<thead>
-					<tr>
-						<th>{label}</th>
-						<th>Wert</th>
-						<th>Indexwert</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rows}
-				</tbody>
-			</table>
-		);
-	}
 
-	private createTableRow(item: any)
-	{
-		let indexvalue = item.index.toFixed(3);
-		let selected = "standard";
-		if ((item.label === this.state.referenceYear) || (item.label === this.state.referenceLocation)) selected = "selected";
 		return (
-			<tr key={item.label} className={selected}>
-				<th>{item.label}</th>
-				<td>{item.result}</td>
-				<td>{indexvalue}</td>
-			</tr>
-		);
-	}
+			<div className="p-grid">
+				
+				<div id="chartDiv" className="p-col-12">
+						  <ContainerDimensions>
+								{ ({ width, height }) =>
+							<D3IndexValuesChart 
+							db={this.props.db}
+							theme={this.props.theme}
+							location={this.props.location} locations={this.props.locations} 
+							yearsAvailable={this.props.yearsAvailable} 
+							baseViewId={this.props.baseViewId} vizID={this.props.vizID}
+							width={ width}
+							height={(data.length < 20 )? data.length*50 : data.length*20}
+							data={data} 
+							referenceYear={this.state.referenceYear}
+							referenceLocation={this.state.referenceLocation}
+							type = {this.state.type}/>
+								}
+						  </ContainerDimensions>
 
-	private createChartView(data: any[])
-	{
-		let bars = [];
-		let min = 0;
-		let max = 0;
-		for (let item of data)
-		{
-			if (item.index > max) max = item.index;
-			if (item.index < min) min = item.index;
-		}
-		for (let item of data)
-		{
-			bars.push(this.createBar(item, min, max));
-		}
-		return (
-			<table style={{ width: "100%" }}>
-				<tbody>
-					{bars}
-				</tbody>
-			</table>
-		);
-	}
 
-	private createBar(item: any, min: number, max: number)
-	{
-		let classname = "indexbar";
-		if ((item.label === this.state.referenceYear) || (item.label === this.state.referenceLocation)) classname = "indexbar-selected";
-		let negative = null;
-		if (min < 0) negative = this.createNegativeBar(item, min, classname);
-		let positive = this.createPositiveBar(item, max, classname);
-		return (
-			<tr key={item.label}>
-				{negative}
-				<th style={{ width: "5%" }}>{item.label}</th>
-				{positive}
-			</tr>
-		);
-	}
-
-	private createPositiveBar(item: any, max: number, classname: string)
-	{
-		if (item.index < 0)
-		{
-			return (
-				<td></td>
-			);
-		}
-		let widthvalue = "" + (item.index * 100 / max) + "%";
-		let indexvalue = item.index.toFixed(3);
-		return (
-			<td>
-				<div className={classname + " positivebar"} style={{ width: widthvalue }}>
-					{indexvalue}
 				</div>
-			</td>
+				
+			</div>
+			
 		);
 	}
-
-	private createNegativeBar(item: any, min: number, classname: string)
-	{
-		if (item.index >= 0)
-		{
-			return (
-				<td></td>
-			);
-		}
-		let widthvalue = "" + (item.index * 100 / min) + "%";
-		let indexvalue = item.index.toFixed(3);
-		return (
-			<td>
-				<div className={classname + " negativebar"} style={{ width: widthvalue }}>
-					{indexvalue}
-				</div>
-			</td>
-		);
-	}
+	
 
 	private constructQuery(type: string, theme: string)
 	{
@@ -254,6 +170,9 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 		}
 		let query = this.constructQuery(this.state.type, this.props.theme);
 		let results = this.props.db(query);
+		Log.debug("results in queryIndex : ", results);
+
+		
 		return this.calculateIndexValue(results);
 	}
 
@@ -290,6 +209,7 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 			if ((reference < 0) && (value < 0)) item.index = 1 + (reference - value) / reference;
 			if ((reference < 0) && (value >= 0)) item.index = 1 + (reference - value) / reference;
 		}
+
 		return results;
 	}
 
@@ -310,6 +230,7 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 	{
 		this.setState({ type: event.value.value });
 	}
+	
 
 	private getType()
 	{
@@ -332,18 +253,7 @@ export default class IndexView extends React.Component<IIndexViewProps, IIndexVi
 		this.setState({ referenceLocation: event.value.value });
 	}
 
-	private setView(event: { originalEvent: Event, value: any})
-	{
-		this.setState({ view: event.value.value });
-	}
 
-	private getView()
-	{
-		for (let view of this.views)
-		{
-			if (view.value === this.state.view) return view;
-		}
-		return this.views[0];
-	}
+	
 
 }
