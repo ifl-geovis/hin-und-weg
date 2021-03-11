@@ -14,12 +14,13 @@ import D3ChartView from '../charts/D3ChartView';
 import D3SankeyView from '../charts/D3SankeyView';
 import D3TimelineView from '../charts/D3TimelineView';
 import D3ChordView from '../charts/D3ChordView';
+import D3IndexView from '../charts/D3IndexView';
+
 
 import ImportView from '../ImportView';
 import DBView from '../DBView';
 import SystemInfo from '../components/SystemInfo';
 import ProjektInfo from '../components/ProjektInfo';
-import IndexView from '../components/IndexView';
 import StatisticsView from '../components/StatisticsView';
 import SettingsView from '../components/SettingsView';
 
@@ -132,7 +133,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		this.addView(views, 'd3-sankey', 'Sankey-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-chord', 'Chord-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		this.addView(views, 'index', 'Indexwerte', this.props.yearsAvailable.length > 0);
+		this.addView(views, 'index', 'Indexwert', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'statistics', 'Statistiken', (this.props.yearsSelected.length > 0) && (this.props.location != null));
 		this.addView(views, 'file', 'Datei', true);
 		this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
@@ -235,7 +236,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectIndexView() {
 		return (
 			<div className="p-col-12">
-				<IndexView db={this.props.db} theme={this.props.theme} location={this.props.location} locations={this.props.locations} yearsAvailable={this.props.yearsAvailable} />
+				<D3IndexView baseViewId={this.props.baseViewId} vizID={this.props.vizID} db={this.props.db} theme={this.props.theme} location={this.props.location} locations={this.props.locations} yearsAvailable={this.props.yearsAvailable} />
 			</div>
 		);
 	}
