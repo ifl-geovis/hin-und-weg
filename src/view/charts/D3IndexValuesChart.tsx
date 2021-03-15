@@ -30,7 +30,7 @@ interface ID3IndexValuesChartState {
 }
 
 export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3IndexValuesChartState> {
-	private svgRef?: SVGElement | null; 
+	private svgRef?: SVGElement | null;
 	private svgID?: string;
 
 	constructor(props: ID3IndexValuesChartProps) {
@@ -43,8 +43,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 	public componentDidMount() {
 		this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
-		
-		let data = this.props.data;		  
+
+		let data = this.props.data;
 		let dataSorted =  this.sortData(data);
 
 		if (data) {
@@ -58,7 +58,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			nextProps.referenceLocation !== this.props.referenceLocation ||
 			nextProps.theme !== this.props.theme ||
 			nextProps.width !== this.props.width ||
-			nextProps.height !== this.props.height 
+			nextProps.height !== this.props.height
 		);
 	}
 
@@ -76,18 +76,18 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	}
 
 	private sortData(data: ID3IndexValuesChartItem[]) {
-		
+
 		function compareStrings(a:string, b:string) {
 			a = a.toLowerCase();
 			b = b.toLowerCase();
-		  
+
 			return (a < b) ? -1 : (a > b) ? 1 : 0;
 		  }
-		  
+
 		  data.sort(function(a, b) {
 			return compareStrings(a.label, b.label);
 		  })
-		 
+
 	}
 
 	private removePreviousChart(id: string | undefined) {
@@ -106,7 +106,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	// DRAW D3 CHART
 	private drawIndxValChart(data: ID3IndexValuesChartItem[], theme: string) {
 		const svgIndxValChart = select(this.svgRef!);
-	
+
 		let heightResponsive = data.length <= 10 ? data.length*50 : data.length * 25;
 		let MARGIN = { TOP: 75, RIGHT: 15, BOTTOM: 50, LEFT: 80 };
 		let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
@@ -129,15 +129,15 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const labels = data.map((d) => d.label);
 		const indexValues = data.map((d) => d.index);
 
-		let checkRef = (ar1:string[], ref1:string, ref2:string) => { 
+		let checkRef = (ar1:string[], ref1:string, ref2:string) => {
 			let n:number | null = null;
 			 for(let i=0;i<ar1.length;i++)
-            {
-              if (ar1[i] === ref1 || ar1[i] === ref2 ){
+				{
+				  if (ar1[i] === ref1 || ar1[i] === ref2 ){
 				n=i;
-                return n
-              }
-            }
+					 return n
+				  }
+				}
 		  }
 		const refLabelIndx = checkRef(labels, this.props.referenceYear , this.props.referenceLocation  );
 		const calculateIfPercentage: any = () =>  {if (typeof(refLabelIndx) === "number"){ return indexValues[refLabelIndx] === 0 ? false : true}};
@@ -147,8 +147,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			return d.index
 		});
 		const maxIndexOrValue: any = (maxIndex:any) =>  {if (typeof(refLabelIndx) === "number"){return indexValues[refLabelIndx] === 0 ? maxIndex : maxIndex*100}};
-        const maxIndex2: number = maxIndexOrValue(maxIndex);
-        
+		  const maxIndex2: number = maxIndexOrValue(maxIndex);
+
 		const minIndex: any = d3.min(data, (d) => {
 			return d.index
 		});
@@ -158,38 +158,38 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const warnText = "Achtung, der gewählte Indexwert ist gleich 0. ";
 		const warnText2 = "Es kann kein prozentualer Bezug hergestellt werden. ";
 		const warnText3 = "Dargestellt sind absolute Werte!";
-		
-        let textWidth = 0;
+
+		  let textWidth = 0;
 
 		let warningText = indxValChart.append("text")
-				.attr("x", (10))             
+				.attr("x", (10))
 				.attr("y", 0 - (MARGIN.TOP / 4))
 				.attr("width", WIDTH)
-				.attr("text-anchor", "start")  
-				.style("font-size", "16px") 
-				.attr("font-weight", 800) // between 100 - 900			
+				.attr("text-anchor", "start")
+				.style("font-size", "16px")
+				.attr("font-weight", 800) // between 100 - 900
 				.text( percentage === true ? " ": (warnText + warnText2 + warnText3) );
-				
+
 		let warningText2 = indxValChart.append("text")
-				.attr("x", (10))             
+				.attr("x", (10))
 				.attr("y", 0 - (MARGIN.TOP / 4)) //0 - (MARGIN.TOP / 3)
-				.attr("text-anchor", "start")  
-				.style("font-size", "16px") 
-				.attr("font-weight", 800) // between 100 - 900			
-                .text( " " );
-        
-        let warningText3 = indxValChart.append("text")
-				.attr("x", (10))             
+				.attr("text-anchor", "start")
+				.style("font-size", "16px")
+				.attr("font-weight", 800) // between 100 - 900
+					 .text( " " );
+
+		  let warningText3 = indxValChart.append("text")
+				.attr("x", (10))
 				.attr("y", 0 - (MARGIN.TOP / 4)) //0 - (MARGIN.TOP / 3)
-				.attr("text-anchor", "start")  
-				.style("font-size", "16px") 
-				.attr("font-weight", 800) // between 100 - 900			
+				.attr("text-anchor", "start")
+				.style("font-size", "16px")
+				.attr("font-weight", 800) // between 100 - 900
 				.text( " " );
 				if (warningText !== null && warnText2 !== null && warnText3 !== null && percentage === false) {
 					let		bboxt =  warningText.node()
 					let bbox;
 					if (bboxt !== null){
-                        bbox = bboxt.getBBox();
+								bbox = bboxt.getBBox();
 						 let rect = indxValChart.insert('rect','text')
 						.attr('x', bbox.x  )
 						.attr('y', bbox.y -25 - 25)
@@ -197,21 +197,21 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						.attr('height', bbox.height +25 + 25)
 						.style("fill", "#f78928");
 					textWidth = bbox.width;
-                    }
+						  }
 
 					warningText.text(  WIDTH >= textWidth ? ( warnText + warnText2 + warnText3) : WIDTH >= 670 ?  warnText + warnText2 : warnText  )
 					.attr("y", (WIDTH >= textWidth ? 0 - (MARGIN.TOP / 4) :WIDTH > 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)*3));
 
-                    warningText2.text(WIDTH < 670 ?  warnText2 : " " )
+						  warningText2.text(WIDTH < 670 ?  warnText2 : " " )
 					.attr("y", (WIDTH < 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)));
 
-                    warningText3.text(WIDTH < textWidth ?  warnText3 :" ");
-				
+						  warningText3.text(WIDTH < textWidth ?  warnText3 :" ");
+
 				}
 
-		
+
 		if (theme === 'Von') {
-		
+
 			const domain = data.map(d => d.label);
 			let offsetDomain = (maxIndex2 - minIndex2)/ data.length;
 
@@ -219,15 +219,15 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.domain(domain.sort(d3.ascending))
 			.range([0, WIDTH])
 			.padding(0.25);
- 
+
 			const y = d3
 				.scaleLinear()
 				.domain([maxIndex2 + offsetDomain, minIndex2 - offsetDomain])
 				.range([0, HEIGHT]);
-			
 
-			
-			
+
+
+
 				// gridlines in x axis function
 			let make_x_gridlines = () => {
 				return d3.axisBottom(x);
@@ -242,7 +242,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 			const xAxisCall = d3.axisBottom(x);
 			xAxisGroup.call(xAxisCall).attr('class', 'axis axis--x')
-			.selectAll("text")	
+			.selectAll("text")
 			.style("text-anchor", "end")
 			.attr("dx", "-.8em")
 			.attr("dy", 0)
@@ -267,7 +267,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("x",0 - (HEIGHT / 2))
 				.attr("dy", "1em")
 				.style("text-anchor", "middle")
-				.text(percentage === true ? "%" : "Wert"); 
+				.text(percentage === true ? "%" : "Wert");
 
 			// add the X gridlines
 			indxValChart
@@ -306,30 +306,30 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
 			.datum(data);
 
-            let linegraph1 = indxValChart.append("path")
-            .datum(data);
+				let linegraph1 = indxValChart.append("path")
+				.datum(data);
 
-            let stopPoint = y(100)*100/HEIGHT + "%";
-            let linearGradient = g.append("linearGradient")
-            .attr("id", "line-gradient")
-            .attr("gradientUnits", "userSpaceOnUse")
-            .attr("x1", 0)
-            .attr("y1", y(maxIndex2 + offsetDomain))
-            .attr("x2", 0)
-            .attr("y2", y(minIndex2 - offsetDomain));
+				let stopPoint = y(100)*100/HEIGHT + "%";
+				let linearGradient = g.append("linearGradient")
+				.attr("id", "line-gradient")
+				.attr("gradientUnits", "userSpaceOnUse")
+				.attr("x1", 0)
+				.attr("y1", y(maxIndex2 + offsetDomain))
+				.attr("x2", 0)
+				.attr("y2", y(minIndex2 - offsetDomain));
 
-            linearGradient.selectAll("stop")						
-            .data([								
-                {offset: "0%", color: positiveColor},		
-                {offset: stopPoint, color: positiveColor},	
-                {offset:  stopPoint, color: negativeColor},	
-                {offset: "100%", color: negativeColor}	
-            ])					
-            .enter().append("stop")			
-            .attr("offset", function(d) { return d.offset; })	
-            .attr("stop-color", function(d) { return d.color; });
+				linearGradient.selectAll("stop")
+				.data([
+					 {offset: "0%", color: positiveColor},
+					 {offset: stopPoint, color: positiveColor},
+					 {offset:  stopPoint, color: negativeColor},
+					 {offset: "100%", color: negativeColor}
+				])
+				.enter().append("stop")
+				.attr("offset", function(d) { return d.offset; })
+				.attr("stop-color", function(d) { return d.color; });
 
-		    linegraph1
+			 linegraph1
 			.attr("d", lineGenerator)
 			.attr("stroke", "url(#line-gradient)")
 			.attr("stroke-width", 2.5)
@@ -346,14 +346,14 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			//Enter
 			linegraph1
 			.enter()
-            .append("path")
-            .attr("d", lineGenerator)
-            .attr("fill", "none")
-            .attr("stroke", "url(#line-gradient)")
-            .attr("stroke-width", 1)
+				.append("path")
+				.attr("d", lineGenerator)
+				.attr("fill", "none")
+				.attr("stroke", "url(#line-gradient)")
+				.attr("stroke-width", 1)
 
-	 
-	        indxValChart.append("line")
+
+			  indxValChart.append("line")
 				.attr("x1", 0)
 				.attr("x2", WIDTH )
 				.attr("stroke", "#3a403d")
@@ -361,7 +361,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("y1", y(100))
 				.attr("y2", y(100));
 
-		    const circlesGraph = indxValChart.selectAll('circle')
+			 const circlesGraph = indxValChart.selectAll('circle')
 				.data(data)
 				.enter()
 				.append('circle');
@@ -378,7 +378,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr('cy', d => y(  percentage === false ? d.index : d.index*100))
 				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
-			
+
 
 			const formatRound =d3.format(".2f");
 			circlesGraph.append("title")
@@ -388,9 +388,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
 					+ "\n" + "Wert: " + d.result
 					return t
-				}) 
+				})
 
-	
+
 		} else if (theme === 'Nach') {
 			const domain = data.map(d => d.label);
 			let offsetDomain = (maxIndex2 - minIndex2)/ data.length;
@@ -399,13 +399,13 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.domain(domain.sort(d3.ascending))
 			.range([0, WIDTH])
 			.padding(0.25);
- 
+
 			const y = d3
 				.scaleLinear()
 				.domain([maxIndex2 + offsetDomain, minIndex2 - offsetDomain])
 				.range([0, HEIGHT]);
-			                
-			
+
+
 				// gridlines in x axis function
 			let make_x_gridlines = () => {
 				return d3.axisBottom(x);
@@ -420,7 +420,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 			const xAxisCall = d3.axisBottom(x);
 			xAxisGroup.call(xAxisCall).attr('class', 'axis axis--x')
-			.selectAll("text")	
+			.selectAll("text")
 			.style("text-anchor", "end")
 			.attr("dx", "-.8em")
 			.attr("dy", 0)
@@ -445,7 +445,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("x",0 - (HEIGHT / 2))
 				.attr("dy", "1em")
 				.style("text-anchor", "middle")
-				.text(percentage === true ? "%" : "Wert"); 
+				.text(percentage === true ? "%" : "Wert");
 
 			// add the X gridlines
 			indxValChart
@@ -484,30 +484,30 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
 			.datum(data);
 
-            let linegraph1 = indxValChart.append("path")
-            .datum(data);
+				let linegraph1 = indxValChart.append("path")
+				.datum(data);
 
-            let stopPoint = y(100)*100/HEIGHT + "%";
-            let linearGradient = g.append("linearGradient")
-            .attr("id", "line-gradient")
-            .attr("gradientUnits", "userSpaceOnUse")
-            .attr("x1", 0)
-            .attr("y1", y(maxIndex2 + offsetDomain))
-            .attr("x2", 0)
-            .attr("y2", y(minIndex2 - offsetDomain));
+				let stopPoint = y(100)*100/HEIGHT + "%";
+				let linearGradient = g.append("linearGradient")
+				.attr("id", "line-gradient")
+				.attr("gradientUnits", "userSpaceOnUse")
+				.attr("x1", 0)
+				.attr("y1", y(maxIndex2 + offsetDomain))
+				.attr("x2", 0)
+				.attr("y2", y(minIndex2 - offsetDomain));
 
-            linearGradient.selectAll("stop")						
-            .data([								
-                {offset: "0%", color: positiveColor},		
-                {offset: stopPoint, color: positiveColor},	
-                {offset:  stopPoint, color: negativeColor},	
-                {offset: "100%", color: negativeColor}	
-            ])					
-            .enter().append("stop")			
-            .attr("offset", function(d) { return d.offset; })	
-            .attr("stop-color", function(d) { return d.color; });
+				linearGradient.selectAll("stop")
+				.data([
+					 {offset: "0%", color: positiveColor},
+					 {offset: stopPoint, color: positiveColor},
+					 {offset:  stopPoint, color: negativeColor},
+					 {offset: "100%", color: negativeColor}
+				])
+				.enter().append("stop")
+				.attr("offset", function(d) { return d.offset; })
+				.attr("stop-color", function(d) { return d.color; });
 
-            linegraph1
+				linegraph1
 			.attr("d", lineGenerator)
 			.attr("stroke", "url(#line-gradient)")
 			.attr("stroke-width", 2.5)
@@ -524,14 +524,14 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			//Enter
 			linegraph1
 			.enter()
-            .append("path")
-            .attr("d", lineGenerator)
-            .attr("fill", "none")
-            .attr("stroke", "url(#line-gradient)")
-            .attr("stroke-width", 1)
+				.append("path")
+				.attr("d", lineGenerator)
+				.attr("fill", "none")
+				.attr("stroke", "url(#line-gradient)")
+				.attr("stroke-width", 1)
 
-	 
-	         indxValChart.append("line")
+
+				indxValChart.append("line")
 				.attr("x1", 0)
 				.attr("x2", WIDTH )
 				.attr("stroke", "#3a403d")
@@ -539,7 +539,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("y1", y(100))
 				.attr("y2", y(100));
 
-		    const circlesGraph = indxValChart.selectAll('circle')
+			 const circlesGraph = indxValChart.selectAll('circle')
 				.data(data)
 				.enter()
 				.append('circle');
@@ -550,25 +550,25 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					const xCoordinate = x(d.label)
 				if (xCoordinate) {
 					return xCoordinate + x.bandwidth()/2
- 
+
 				}
 				return 0
 				})
-				
+
 				.attr('cy', d => y(  percentage === false ? d.index : d.index*100))
 				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
-			
 
-                const formatRound =d3.format(".2f");
-                circlesGraph.append("title")
-                circlesGraph.select("title")
-                        .text(function(d, i) {
-                        let t:string
-                        t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
-                        + "\n" + "Wert: " + d.result
-                        return t
-                    }) 
+
+					 const formatRound =d3.format(".2f");
+					 circlesGraph.append("title")
+					 circlesGraph.select("title")
+								.text(function(d, i) {
+								let t:string
+								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
+								+ "\n" + "Wert: " + d.result
+								return t
+						  })
 
 
 		} else if (theme == 'Saldi') {
@@ -579,12 +579,12 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.domain(domain.sort(d3.ascending))
 			.range([0, WIDTH])
 			.padding(0.25);
- 
+
 			const y = d3
 				.scaleLinear()
 				.domain([maxIndex2 + offsetDomain, minIndex2 - offsetDomain])
 				.range([0, HEIGHT]);
-			
+
 				// gridlines in x axis function
 			let make_x_gridlines = () => {
 				return d3.axisBottom(x);
@@ -599,7 +599,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 			const xAxisCall = d3.axisBottom(x);
 			xAxisGroup.call(xAxisCall).attr('class', 'axis axis--x')
-			.selectAll("text")	
+			.selectAll("text")
 			.style("text-anchor", "end")
 			.attr("dx", "-.8em")
 			.attr("dy", 0)
@@ -624,7 +624,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("x",0 - (HEIGHT / 2))
 				.attr("dy", "1em")
 				.style("text-anchor", "middle")
-				.text(percentage === true ? "%" : "Wert"); 
+				.text(percentage === true ? "%" : "Wert");
 
 			// add the X gridlines
 			indxValChart
@@ -659,38 +659,38 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				}
 				return 0
 				})
-			// .x(function(d, i) { return x(i); }) 
+			// .x(function(d, i) { return x(i); })
 			.y( d => y(  percentage === false ? d.index : d.index*100));
 
-			
+
 			let g = indxValChart.append("g")
 			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
 			.datum(data);
 
-            let linegraph1 = indxValChart.append("path")
-            .datum(data);
+				let linegraph1 = indxValChart.append("path")
+				.datum(data);
 
-            let stopPoint = y(100)*100/HEIGHT + "%";
-            let linearGradient = g.append("linearGradient")
-            .attr("id", "line-gradient")
-            .attr("gradientUnits", "userSpaceOnUse")
-            .attr("x1", 0)
-            .attr("y1", y(maxIndex2 + offsetDomain))
-            .attr("x2", 0)
-            .attr("y2", y(minIndex2 - offsetDomain));
+				let stopPoint = y(100)*100/HEIGHT + "%";
+				let linearGradient = g.append("linearGradient")
+				.attr("id", "line-gradient")
+				.attr("gradientUnits", "userSpaceOnUse")
+				.attr("x1", 0)
+				.attr("y1", y(maxIndex2 + offsetDomain))
+				.attr("x2", 0)
+				.attr("y2", y(minIndex2 - offsetDomain));
 
-            linearGradient.selectAll("stop")						
-            .data([								
-                {offset: "0%", color: positiveColor},		
-                {offset: stopPoint, color: positiveColor},	
-                {offset:  stopPoint, color: negativeColor},	
-                {offset: "100%", color: negativeColor}	
-            ])					
-            .enter().append("stop")			
-            .attr("offset", function(d) { return d.offset; })	
-            .attr("stop-color", function(d) { return d.color; });
+				linearGradient.selectAll("stop")
+				.data([
+					 {offset: "0%", color: positiveColor},
+					 {offset: stopPoint, color: positiveColor},
+					 {offset:  stopPoint, color: negativeColor},
+					 {offset: "100%", color: negativeColor}
+				])
+				.enter().append("stop")
+				.attr("offset", function(d) { return d.offset; })
+				.attr("stop-color", function(d) { return d.color; });
 
-		    linegraph1
+			 linegraph1
 			.attr("d", lineGenerator)
 			.attr("stroke", "url(#line-gradient)")
 			.attr("stroke-width", 2.5)
@@ -707,14 +707,14 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			//Enter
 			linegraph1
 			.enter()
-            .append("path")
-            .attr("d", lineGenerator)
-            .attr("fill", "none")
-            .attr("stroke", "url(#line-gradient)")
-            .attr("stroke-width", 1)
+				.append("path")
+				.attr("d", lineGenerator)
+				.attr("fill", "none")
+				.attr("stroke", "url(#line-gradient)")
+				.attr("stroke-width", 1)
 
-	 
-	        indxValChart.append("line")
+
+			  indxValChart.append("line")
 				.attr("x1", 0)
 				.attr("x2", WIDTH )
 				.attr("stroke", "#3a403d")
@@ -722,7 +722,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("y1", y(100))
 				.attr("y2", y(100));
 
-	    	const circlesGraph = indxValChart.selectAll('circle')
+			const circlesGraph = indxValChart.selectAll('circle')
 				.data(data)
 				.enter()
 				.append('circle');
@@ -733,36 +733,36 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					const xCoordinate = x(d.label)
 				if (xCoordinate) {
 					return xCoordinate + x.bandwidth()/2
- 
+
 				}
 				return 0
 				})
-				
+
 				.attr('cy', d => y(  percentage === false ? d.index : d.index*100))
 				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
-			
 
-                const formatRound =d3.format(".2f");
-                circlesGraph.append("title")
-                circlesGraph.select("title")
-                        .text(function(d, i) {
-                        let t:string
-                        t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
-                        + "\n" + "Wert: " + d.result
-                        return t
-                    }) 
+
+					 const formatRound =d3.format(".2f");
+					 circlesGraph.append("title")
+					 circlesGraph.select("title")
+								.text(function(d, i) {
+								let t:string
+								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
+								+ "\n" + "Wert: " + d.result
+								return t
+						  })
 		}
 	}
 
-	
+
 
 	public render() {
-		const { width, height } = this.props;		
+		const { width, height } = this.props;
 
 		return (
 			<div className="p-grid">
-				
+
 				<div className="p-col-12">
 				</div>
 				<div className="p-col-12">
