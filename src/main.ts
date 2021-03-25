@@ -14,6 +14,7 @@ function createWindow() {
 		title: 'hin&weg ' + Config.getVersion(),
 		webPreferences: {
 			nodeIntegration: true,
+			enableRemoteModule: true
 		},
 	});
 

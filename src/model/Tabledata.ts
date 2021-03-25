@@ -19,13 +19,14 @@ export default class Tabledata {
     public static read(path: string, callback: (data: Tabledata) => void): void {
         assert(notNilOrEmpty(path), "path should not be nil or undefined");
         fs.exists(path, (exists) => assert(exists, `File with path ${path} should exists`));
-        fs.readFile(path, {encoding: "UTF-8"}, R.pipe(Tabledata.createTabledataFromCSV, callback));
+        //@ts-ignore
+        fs.readFile(path, {encoding: "utf-8"}, R.pipe(Tabledata.createTabledataFromCSV, callback));
     }
 
     public static readSync(path: string): Tabledata {
         assert(notNilOrEmpty(path), "path should not be nil or undefined");
         fs.exists(path, (exists) => assert(exists, `File with path ${path} should exists`));
-        return Tabledata.createTabledataFromCSV( {} as Error, fs.readFileSync(path, {encoding: "UTF-8"}));
+        return Tabledata.createTabledataFromCSV( {} as Error, fs.readFileSync(path, {encoding: "utf-8"}));
     }
 
     private static createTabledataFromCSV(err: NodeJS.ErrnoException, data: string): Tabledata {
