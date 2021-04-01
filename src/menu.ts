@@ -125,24 +125,6 @@ export default class MainMenu
 					//click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
 				},
 				{
-					label: 'räumliche Aggregation',
-					submenu:
-					[
-						{
-							label: 'Flächen auswählen'
-						},
-						{
-							label: 'Aggregation'
-						},
-						{
-							label: 'Aggregation zurücknehmen'
-						},
-						{
-							label: 'Aggregation als CSV exportieren'
-						}
-					]
-				},
-				{
 					label: 'Datenbank',
 					//click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
 				}
