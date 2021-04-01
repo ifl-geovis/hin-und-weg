@@ -14,6 +14,8 @@ function createWindow() {
 		title: 'hin&weg ' + Config.getVersion(),
 		webPreferences: {
 			nodeIntegration: true,
+			contextIsolation: false,
+			enableRemoteModule: true
 		},
 	});
 
