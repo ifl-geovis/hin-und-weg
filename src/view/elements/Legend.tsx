@@ -12,7 +12,8 @@ export default class Legend extends React.Component<ILegendProps> {
 	private stroke_color = '#4d4d4d';
 	private box_width = 50;
 	private box_height = 20;
-	private label_offset = 5;
+	private label_char_width = 6;
+	private label_offset = 5 * this.label_char_width;
 
 	constructor(props: ILegendProps) {
 		super(props);
@@ -197,11 +198,10 @@ export default class Legend extends React.Component<ILegendProps> {
 		return <line key={key} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} />;
 	}
 
-	// Open Sans - font as in other elements
 	private createLabel(label: string, x: number, y: number, index: string): object {
+		let offset = label.length * this.label_char_width * 0.5;
 		return (
-			<text key={'label-' + label + '-' + index} x={x} y={y} style={{ font: '11px Open Sans' }}>
-				{/* { font: '10px sans-serif' } */}
+			<text key={'label-' + label + '-' + index} x={x - offset} y={y} style={{ font: '11px Open Sans' }}>
 				{label}
 			</text>
 		);
@@ -210,7 +210,7 @@ export default class Legend extends React.Component<ILegendProps> {
 	private createNeutralBox(color: string, x: number, y: number): object {
 		const box = this.createBox(color, 0, 0, 'neutral');
 		const line = this.createLine(this.stroke_color, 'neutral', this.box_width * 0.25, this.box_height, this.box_width * 0.25, this.box_height + 10);
-		const label = this.createLabel('0', this.box_width * 0.25 - this.label_offset, this.box_height + 21, 'neutral');
+		const label = this.createLabel('0', this.box_width * 0.25, this.box_height + 21, 'neutral');
 		return (
 			<svg x={x} y={y} width={this.box_width * 0.5} height={this.box_height + 21}>
 				{box}
@@ -227,7 +227,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		let lines = [];
 		let labels = [];
 		for (let i = 0; i < scales.length; i++) {
-			labels.push(this.createLabel('' + scales[i], (i + 1) * this.box_width - this.label_offset, this.box_height + 21, 'positive-' + i)); //  + 20
+			labels.push(this.createLabel('' + scales[i], (i + 1) * this.box_width, this.box_height + 21, 'positive-' + i)); //  + 20
 			lines.push(
 				this.createLine(
 					this.stroke_color,
@@ -256,7 +256,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		let lines = [];
 		let labels = [];
 		for (let i = 0; i < scales.length; i++) {
-			labels.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width, this.box_height + 20, 'negative-' + i));
+			labels.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width + this.label_offset, this.box_height + 20, 'negative-' + i));
 			lines.push(
 				this.createLine(
 					this.stroke_color,
