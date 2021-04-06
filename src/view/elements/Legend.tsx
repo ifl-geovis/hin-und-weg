@@ -10,7 +10,8 @@ export interface ILegendProps {
 
 export default class Legend extends React.Component<ILegendProps> {
 	private stroke_color = '#4d4d4d';
-	private box_size = 50;
+	private box_width = 50;
+	private box_height = 20;
 	private label_offset = 5;
 
 	constructor(props: ILegendProps) {
@@ -28,13 +29,13 @@ export default class Legend extends React.Component<ILegendProps> {
 		const negative_colors = classification.getNegativeColors();
 		const negative = this.createNegativeScale(negative_scales, negative_colors, i);
 		if (negative_scales != null) i += negative_colors.length;
-		const neutral = this.createNeutralBox(classification.getNeutralColor(), i * this.box_size + this.label_offset, 0);
+		const neutral = this.createNeutralBox(classification.getNeutralColor(), i * this.box_width + this.label_offset, 0);
 		i++;
 		const positive_scales = classification.getPositiveScales();
 		const positive_colors = classification.getPositiveColors();
 		const positive = this.createPositiveScale(positive_scales, positive_colors, i);
 		if (positive_scales != null) i += positive_colors.length;
-		// const selected = this.createSelectedBox(classification.getSelectedColor(), i*this.box_size+this.label_offset+40, 0);
+		// const selected = this.createSelectedBox(classification.getSelectedColor(), i*this.box_width+this.label_offset+40, 0);
 		const arrows = this.createArrows(
 			classification.getArrowWidths(),
 			classification.getPositiveArrowColor(),
@@ -48,7 +49,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		return (
 			<div>
 				<h4>{this.createLegendTitle(classification)}</h4>
-				<svg key="legend" width={i * this.box_size + 150} height={this.box_size + 21} style={{ display: 'block' }}>
+				<svg key="legend" width={i * this.box_width + 150} height={this.box_height + 21} style={{ display: 'block' }}>
 					{' '}
 					//20
 					{negative}
@@ -184,8 +185,8 @@ export default class Legend extends React.Component<ILegendProps> {
 				key={'box-' + color + '-' + index}
 				fill={color}
 				stroke={this.stroke_color}
-				width={index === 'neutral' ? this.box_size * 0.5 : this.box_size}
-				height={this.box_size}
+				width={index === 'neutral' ? this.box_width * 0.5 : this.box_width}
+				height={this.box_height}
 				x={x}
 				y={y}
 			></rect>
@@ -208,10 +209,10 @@ export default class Legend extends React.Component<ILegendProps> {
 
 	private createNeutralBox(color: string, x: number, y: number): object {
 		const box = this.createBox(color, 0, 0, 'neutral');
-		const line = this.createLine(this.stroke_color, 'neutral', this.box_size * 0.25, this.box_size, this.box_size * 0.25, this.box_size + 10);
-		const label = this.createLabel('0', this.box_size * 0.25 - this.label_offset, this.box_size + 21, 'neutral');
+		const line = this.createLine(this.stroke_color, 'neutral', this.box_width * 0.25, this.box_height, this.box_width * 0.25, this.box_height + 10);
+		const label = this.createLabel('0', this.box_width * 0.25 - this.label_offset, this.box_height + 21, 'neutral');
 		return (
-			<svg x={x} y={y} width={this.box_size * 0.5} height={this.box_size + 21}>
+			<svg x={x} y={y} width={this.box_width * 0.5} height={this.box_height + 21}>
 				{box}
 				{line}
 				{label}
@@ -222,25 +223,24 @@ export default class Legend extends React.Component<ILegendProps> {
 	private createPositiveScale(scales: number[] | null, colors: string[], index: number): object {
 		if (scales == null) return <svg></svg>;
 		let boxes = [];
-		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i * this.box_size, 0, 'positive-' + i));
+		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i * this.box_width, 0, 'positive-' + i));
 		let lines = [];
 		let labels = [];
 		for (let i = 0; i < scales.length; i++) {
-			labels.push(this.createLabel('' + scales[i], (i + 1) * this.box_size - 3, this.box_size + 21, 'positive-' + i)); //  + 20
+			labels.push(this.createLabel('' + scales[i], (i + 1) * this.box_width - this.label_offset, this.box_height + 21, 'positive-' + i)); //  + 20
 			lines.push(
 				this.createLine(
 					this.stroke_color,
 					'positive-' + i,
-					(i + 1) * this.box_size,
-					this.box_size,
-					(i + 1) * this.box_size,
-					this.box_size + 10
+					(i + 1) * this.box_width,
+					this.box_height,
+					(i + 1) * this.box_width,
+					this.box_height + 10
 				)
 			);
 		}
 		return (
-			// <svg x={index * this.box_size + this.label_offset} y={0}>
-			<svg x={index * this.box_size - this.box_size * 0.5 + this.label_offset} y={0}>
+			<svg x={index * this.box_width - this.box_width * 0.5 + this.label_offset} y={0}>
 				{boxes}
 				{lines}
 				{labels}
@@ -252,24 +252,24 @@ export default class Legend extends React.Component<ILegendProps> {
 		if (scales == null) return <svg></svg>;
 		let boxes = [];
 		for (let i = 0; i < colors.length; i++)
-			boxes.push(this.createBox(colors[colors.length - i - 1], i * this.box_size + this.label_offset, 0, 'negative-' + i));
+			boxes.push(this.createBox(colors[colors.length - i - 1], i * this.box_width + this.label_offset, 0, 'negative-' + i));
 		let lines = [];
 		let labels = [];
 		for (let i = 0; i < scales.length; i++) {
-			labels.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_size, this.box_size + 20, 'negative-' + i));
+			labels.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width, this.box_height + 20, 'negative-' + i));
 			lines.push(
 				this.createLine(
 					this.stroke_color,
 					'negative-' + i,
-					i * this.box_size + this.label_offset,
-					this.box_size,
-					i * this.box_size + this.label_offset,
-					this.box_size + 10
+					i * this.box_width + this.label_offset,
+					this.box_height,
+					i * this.box_width + this.label_offset,
+					this.box_height + 10
 				)
 			);
 		}
 		return (
-			<svg x={index * this.box_size} y={0}>
+			<svg x={index * this.box_width} y={0}>
 				{boxes}
 				{lines}
 				{labels}
