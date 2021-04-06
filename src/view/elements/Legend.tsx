@@ -30,12 +30,12 @@ export default class Legend extends React.Component<ILegendProps> {
 		const negative_colors = classification.getNegativeColors();
 		const negative = this.createNegativeScale(negative_scales, negative_colors, i);
 		if (negative_scales != null) i += negative_colors.length;
-		const neutral = this.createNeutralBox(classification.hasZeroValues(), classification.getNeutralColor(), i * this.box_width + this.label_offset, 0);
+		let neutral_offset = i * this.box_width + this.label_offset;
+		const neutral = this.createNeutralBox(classification.hasZeroValues(), classification.getNeutralColor(), neutral_offset, 0);
 		const positive_scales = classification.getPositiveScales();
 		const positive_colors = classification.getPositiveColors();
-		let positive_offset = i * this.box_width;
-		if (classification.hasZeroValues()) positive_offset -= this.box_width * 0.5;
-		else positive_offset += this.label_offset
+		let positive_offset = neutral_offset;
+		if (classification.hasZeroValues()) positive_offset += this.box_width * 0.5;
 		const positive = this.createPositiveScale(positive_scales, positive_colors, positive_offset);
 		if (positive_scales != null) i += positive_colors.length;
 		const arrows = this.createArrows(
