@@ -35,6 +35,8 @@ export default class Classification {
 	private positive_stats: any;
 	private negative_stats: any;
 
+	private zero_values: boolean = false;
+
 	private positive_scales: number[] | null = null;
 	private negative_scales: number[] | null = null;
 
@@ -176,6 +178,10 @@ export default class Classification {
 		this.negative_colors = colorScheme;
 	}
 
+	public hasZeroValues(): boolean {
+		return this.zero_values;
+	}
+
 	private getRanges(stats: any, count: number): any[] {
 		// documentation for geostats: https://github.com/simogeo/geostats
 		Log.debug(stats.info());
@@ -238,6 +244,7 @@ export default class Classification {
 	public calculateClassification() {
 		this.positive_scales = null;
 		this.negative_scales = null;
+		this.zero_values = false;
 		let positives = [];
 		let negatives = [];
 		for (let item of this.query) {
@@ -245,6 +252,7 @@ export default class Classification {
 			{
 				if (item.Wert > 0) positives.push(item.Wert);
 				if (item.Wert < 0) negatives.push(item.Wert);
+				if (item.Wert == 0) this.zero_values = true;
 			}
 		}
 		Log.debug('positives: ' + positives);
