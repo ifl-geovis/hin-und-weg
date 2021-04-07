@@ -246,7 +246,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		let lines = [];
 		let labels = [];
 		labels.push(this.createLeftLabel('' + scales[0], 5, this.box_height + 31, 'positive-0'));
-		lines.push(this.createLine(this.stroke_color, 'positive-0', 2, this.box_height, 0, this.box_height + 35));
+		//lines.push(this.createLine(this.stroke_color, 'positive-0', 2, this.box_height, 0, this.box_height + 35));
 		for (let i = 0; i < scales.length; i++) {
 			if (i != 0) labels.push(this.createLabel('' + scales[i], i * this.box_width, this.box_height + ((i % 2 == 0) ? 31 : 21), 'positive-' + i));
 			lines.push(
@@ -278,7 +278,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		let lines = [];
 		let labels = [];
 		labels.push(this.createRightLabel('' + scales[0], (scales.length - 1) * this.box_width + this.label_offset -3, this.box_height + 31, 'negative-right'));
-		lines.push(this.createLine(this.stroke_color, 'negative-right', (scales.length - 1) * this.box_width + this.label_offset, this.box_height, (scales.length - 1) * this.box_width + this.label_offset, this.box_height + 35));
+		//lines.push(this.createLine(this.stroke_color, 'negative-right', (scales.length - 1) * this.box_width + this.label_offset, this.box_height, (scales.length - 1) * this.box_width + this.label_offset, this.box_height + 35));
 		for (let i = 0; i < scales.length; i++) {
 			if (i != (scales.length - 1)) labels.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width + this.label_offset, this.box_height + (((scales.length - i - 1) % 2 == 0) ? 31 : 21), 'negative-' + i));
 			lines.push(
