@@ -15,8 +15,6 @@ import D3SankeyView from '../charts/D3SankeyView';
 import D3TimelineView from '../charts/D3TimelineView';
 import D3ChordView from '../charts/D3ChordView';
 import D3IndexView from '../charts/D3IndexView';
-
-
 import ImportView from '../ImportView';
 import DBView from '../DBView';
 import SystemInfo from '../components/SystemInfo';
@@ -146,6 +144,9 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private addView(views: any[], value: string, label: string, selectable: boolean) {
 		if (selectable && Config.getValue('components', value) == true) {
 			views.push({ value: value, label: label });
+			Log.debug('viewswitcher sends message:', value);
+			const ipc = require('electron').ipcRenderer;
+			ipc.send('menuenable', value);
 		}
 	}
 

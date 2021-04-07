@@ -1,5 +1,7 @@
 import { app, Menu, BrowserWindow } from "electron";
+
 import Config from "./config";
+import Log from './log';
 
 export default class MainMenu
 {
@@ -89,16 +91,19 @@ export default class MainMenu
 			submenu:
 			[
 				{
+					id: 'map',
 					label: 'Karte',
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "map", event, window, content);},
 				},
 				{
+					id: 'table',
 					label: 'Tabelle',
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "table", event, window, content);},
 				},
 				{
+					id: 'd3-timeline',
 					label: 'Zeitreihen',
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "d3-timeline", event, window, content);},
@@ -108,16 +113,19 @@ export default class MainMenu
 					submenu:
 					[
 						{
+							id: 'd3-chord',
 							label: 'Chord',
 							enabled: false,
 							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-chord", event, window, content);},
 						},
 						{
+							id: 'd3-sankey',
 							label: 'Sankey',
 							enabled: false,
 							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-sankey", event, window, content);},
 						},
 						{
+							id: 'd3-bar',
 							label: 'Balken',
 							enabled: false,
 							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-bar", event, window, content);},
@@ -131,11 +139,13 @@ export default class MainMenu
 			submenu:
 			[
 				{
+					id: 'statistics',
 					label: 'Statistiken',
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
 				},
 				{
+					id: 'db',
 					label: 'Datenbank',
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
@@ -176,11 +186,15 @@ export default class MainMenu
 					type: 'separator'
 				},
 				{
+					id: 'projektinfo',
 					label: 'Projektinfo',
+					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "projektinfo", event, window, content);},
 				},
 				{
+					id: 'systeminfo',
 					label: 'Systeminfo',
+					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "systeminfo", event, window, content);},
 				},
 			]
@@ -220,3 +234,14 @@ export default class MainMenu
 	}
 
 }
+
+const ipc = require('electron').ipcMain;
+ipc.on
+(
+	'menuenable', (event: any, message: string) =>
+	{
+		// @ts-ignore
+		const menuitem = Menu.getApplicationMenu().getMenuItemById(message);
+		if (menuitem) menuitem.enabled = true;
+	}
+)
