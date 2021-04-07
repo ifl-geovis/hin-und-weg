@@ -209,3 +209,11 @@ div.negativebar {
 	float: right;
 	text-align: right;
 }
+
+.btnMapExtent {
+	z-index: 1000;
+	top: 70px;
+	left: 10px;
+	max-width: 26px;
+	height: 26px;
+}

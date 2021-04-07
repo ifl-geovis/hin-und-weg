@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Pane, Map, Marker, Polygon, Tooltip, ScaleControl, TileLayer, GeoJSON, ImageOverlay, Circle, Viewport } from 'react-leaflet';
-import React, { Component } from 'react';
+import React, { createRef, Component } from 'react';
+import { Button } from 'primereact/button';
 import Geodata from '../../model/Geodata';
 import { Feature, FeatureCollection } from 'geojson';
 import L, { Layer, LatLngExpression, LatLng, point } from 'leaflet';
@@ -34,6 +35,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 
 	centerpoint: { Center1: any };
 	classification: Classification;
+	mapRef: React.RefObject<any>;
 
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
@@ -45,6 +47,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		this.pointToLayerValues = this.pointToLayerValues.bind(this);
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 		this.classification = Classification.getCurrentClassification();
+		this.extentMap = this.extentMap.bind(this);
+		this.mapRef = createRef();
 		// console.log('CONSTRUCTOR LEAFLETMAPVIEW');
 	}
 
@@ -87,7 +91,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		}
 		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
-			<Map bounds={boundsOfGeodata} zoomDelta={0.25} zoomSnap={0}>
+			<Map bounds={boundsOfGeodata} ref={this.mapRef} zoomDelta={0.25} zoomSnap={0}>
 				{geomap}
 				{arrows1}
 				{arrows2}
@@ -113,8 +117,18 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				<Pane name="borderSelectedFeature" style={{ zIndex: 350 }}>
 					{featureBorder}
 				</Pane>
+				<Button className="p-button-raised btnMapExtent" icon="pi pi-home" onClick={this.extentMap} />
 			</Map>
 		);
+	}
+
+	public extentMap() {
+		const map = this.mapRef.current.leafletElement;
+		if (this.props.geodata) {
+			const geoDataJson = this.props.geodata.getFeatureCollection();
+			const boundsOfGeodata = this.calcGeodataBounds(geoDataJson);
+			map.fitBounds(boundsOfGeodata);
+		}
 	}
 
 	public clearArrows() {
