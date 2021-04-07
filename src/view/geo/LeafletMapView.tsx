@@ -142,7 +142,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				polygon = turf.flip(geodata.features[i]);
 			}
 		}
-		return <Polygon color="purple" weight="5" fill="false" fillOpacity="0" positions={polygon.geometry.coordinates} />;
+		return <Polygon color="purple" weight="3" fill="false" fillOpacity="0" positions={polygon.geometry.coordinates} />;
 	}
 
 	public calcGeodataBounds(geojson: FeatureCollection) {
@@ -214,6 +214,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	public style(feature: Feature) {
 		let hexcolor;
 		let hexBodercolor;
+		let borderWidth: number = 1;
 		// const classification = Classification.getCurrentClassification();
 		let name = 'Fehler!!!';
 		if (feature.properties) name = String(feature.properties.Name);
@@ -232,6 +233,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 									fillColor: hexcolor,
 									color: hexBodercolor,
 									fillOpacity: this.props.polygonTransparency / 100,
+									weight: borderWidth,
 								};
 							}
 					}
@@ -249,6 +251,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 									fillColor: hexcolor,
 									color: hexBodercolor,
 									fillOpacity: this.props.polygonTransparency / 100,
+									weight: borderWidth,
 								};
 							}
 					}
@@ -266,6 +269,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 									fillColor: hexcolor,
 									color: '#585858',
 									fillOpacity: this.props.polygonTransparency / 100,
+									weight: borderWidth,
 								};
 							}
 					}
@@ -279,6 +283,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		return {
 			fillColor: '#f7f7f7',
 			color: '#585858',
+			weight: borderWidth,
 		};
 	}
 
