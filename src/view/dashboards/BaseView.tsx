@@ -253,8 +253,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			if (R.contains(item.Jahr, stringYears)){
 				resultsFiltered.push(item);
 			}
-
-
 		}
 		return resultsFiltered;
 	}
