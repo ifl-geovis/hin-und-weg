@@ -70,14 +70,14 @@ export default class Classification {
 		if (item.Wert > 0) {
 			if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];
 			for (let i = 0; i < this.positive_scales.length; i++) {
-				if (item.Wert < this.positive_scales[i]) return this.positive_colors[i];
+				if (item.Wert < this.positive_scales[i]) return this.positive_colors[i - 1];
 			}
 			return this.positive_colors[this.positive_colors.length - 1];
 		}
 		if (item.Wert < 0) {
 			if (this.negative_scales === null) return this.negative_colors[this.negative_colors.length - 1];
 			for (let i = 0; i < this.negative_scales.length; i++) {
-				if (item.Wert > this.negative_scales[i]) return this.negative_colors[i];
+				if (item.Wert > this.negative_scales[i]) return this.negative_colors[i - 1];
 			}
 			return this.negative_colors[this.negative_colors.length - 1];
 		}
@@ -230,7 +230,7 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
-		for (let i = 1; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
+		for (let i = 0; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
 	}
 
 	private fillNegativeScales() {
@@ -238,7 +238,7 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		for (let i = ranges.length - 2; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
+		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
 	}
 
 	public calculateClassification() {
