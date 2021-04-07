@@ -11,16 +11,20 @@ export default class MainMenu
 			submenu:
 			[
 				{
-					label: 'Projekt öffnen'
+					label: 'Projekt öffnen',
+					enabled: false,
 				},
 				{
-					label: 'Projekt speichern'
+					label: 'Projekt speichern',
+					enabled: false,
 				},
 				{
-					label: 'Import'
+					label: 'Import',
+					enabled: false,
 				},
 				{
-					label: 'Export'
+					label: 'Export',
+					enabled: false,
 				},
 				{
 					type: 'separator'
@@ -86,15 +90,18 @@ export default class MainMenu
 			[
 				{
 					label: 'Karte',
-					//click(event, window, content) {MainMenu.execute("viewswitcher", "map", event, window, content);},
+					enabled: false,
+					click(event, window, content) {MainMenu.execute("viewswitcher", "map", event, window, content);},
 				},
 				{
 					label: 'Tabelle',
-					//click(event, window, content) {MainMenu.execute("viewswitcher", "table", event, window, content);},
+					enabled: false,
+					click(event, window, content) {MainMenu.execute("viewswitcher", "table", event, window, content);},
 				},
 				{
 					label: 'Zeitreihen',
-					//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-timeline", event, window, content);},
+					enabled: false,
+					click(event, window, content) {MainMenu.execute("viewswitcher", "d3-timeline", event, window, content);},
 				},
 				{
 					label: 'Diagramm',
@@ -102,15 +109,18 @@ export default class MainMenu
 					[
 						{
 							label: 'Chord',
-							//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-chord", event, window, content);},
+							enabled: false,
+							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-chord", event, window, content);},
 						},
 						{
 							label: 'Sankey',
-							//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-sankey", event, window, content);},
+							enabled: false,
+							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-sankey", event, window, content);},
 						},
 						{
 							label: 'Balken',
-							//click(event, window, content) {MainMenu.execute("viewswitcher", "d3-bar", event, window, content);},
+							enabled: false,
+							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-bar", event, window, content);},
 						},
 					]
 				}
@@ -122,11 +132,13 @@ export default class MainMenu
 			[
 				{
 					label: 'Statistiken',
-					//click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
+					enabled: false,
+					click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
 				},
 				{
 					label: 'Datenbank',
-					//click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
+					enabled: false,
+					click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
 				}
 			]
 		},
@@ -149,24 +161,27 @@ export default class MainMenu
 					click(event, window, content) {MainMenu.website("https://hin-und-weg.online/", window);}
 				},
 				{
-					label: 'Dokumentation'
+					label: 'Dokumentation',
+					enabled: false,
 				},
 				{
-					label: 'Tutorials'
+					label: 'Tutorials',
+					enabled: false,
 				},
 				{
-					label: 'Kontexthilfe'
+					label: 'Kontexthilfe',
+					enabled: false,
 				},
 				{
 					type: 'separator'
 				},
 				{
 					label: 'Projektinfo',
-					//click(event, window, content) {MainMenu.execute("viewswitcher", "projektinfo", event, window, content);},
+					click(event, window, content) {MainMenu.execute("viewswitcher", "projektinfo", event, window, content);},
 				},
 				{
 					label: 'Systeminfo',
-					//click(event, window, content) {MainMenu.execute("viewswitcher", "systeminfo", event, window, content);},
+					click(event, window, content) {MainMenu.execute("viewswitcher", "systeminfo", event, window, content);},
 				},
 			]
 		}
