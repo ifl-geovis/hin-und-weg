@@ -207,6 +207,23 @@ export default class Legend extends React.Component<ILegendProps> {
 		);
 	}
 
+	private createLeftLabel(label: string, x: number, y: number, index: string): object {
+		return (
+			<text key={'label-' + label + '-' + index} x={x} y={y} style={{ font: '11px Open Sans' }}>
+				{label}
+			</text>
+		);
+	}
+
+	private createRightLabel(label: string, x: number, y: number, index: string): object {
+		let offset = label.length * this.label_char_width;
+		return (
+			<text key={'label-' + label + '-' + index} x={x - offset} y={y} style={{ font: '11px Open Sans' }}>
+				{label}
+			</text>
+		);
+	}
+
 	private createNeutralBox(has_zero: boolean, color: string, x: number, y: number): object {
 		if (!has_zero) return <svg></svg>;
 		const box = this.createBox(color, 0, 0, 'neutral');
@@ -228,8 +245,10 @@ export default class Legend extends React.Component<ILegendProps> {
 		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i * this.box_width, 0, 'positive-' + i));
 		let lines = [];
 		let labels = [];
+		labels.push(this.createLeftLabel('' + scales[0], 5, this.box_height + 31, 'positive-0'));
+		lines.push(this.createLine(this.stroke_color, 'positive-0', 2, this.box_height, 0, this.box_height + 35));
 		for (let i = 0; i < scales.length; i++) {
-			labels.push(this.createLabel('' + scales[i], i * this.box_width, this.box_height + ((i % 2 == 0) ? 31 : 21), 'positive-' + i));
+			if (i != 0) labels.push(this.createLabel('' + scales[i], i * this.box_width, this.box_height + ((i % 2 == 0) ? 31 : 21), 'positive-' + i));
 			lines.push(
 				this.createLine(
 					this.stroke_color,
@@ -258,8 +277,10 @@ export default class Legend extends React.Component<ILegendProps> {
 			boxes.push(this.createBox(colors[colors.length - i - 1], i * this.box_width + this.label_offset, 0, 'negative-' + i));
 		let lines = [];
 		let labels = [];
+		labels.push(this.createRightLabel('' + scales[0], (scales.length - 1) * this.box_width + this.label_offset -3, this.box_height + 31, 'negative-right'));
+		lines.push(this.createLine(this.stroke_color, 'negative-right', (scales.length - 1) * this.box_width + this.label_offset, this.box_height, (scales.length - 1) * this.box_width + this.label_offset, this.box_height + 35));
 		for (let i = 0; i < scales.length; i++) {
-			labels.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width + this.label_offset, this.box_height + (((scales.length - i - 1) % 2 == 0) ? 31 : 21), 'negative-' + i));
+			if (i != (scales.length - 1)) labels.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width + this.label_offset, this.box_height + (((scales.length - i - 1) % 2 == 0) ? 31 : 21), 'negative-' + i));
 			lines.push(
 				this.createLine(
 					this.stroke_color,
