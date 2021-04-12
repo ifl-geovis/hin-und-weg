@@ -279,7 +279,7 @@ export default class Classification {
 		if (stats == null) return 1;
 		let number = stats.pop();
 		if (number < 1) return 1;
-		return 1 + 3.3 * Math.log10(number);
+		return Math.round(1 + 3.3 * Math.log10(number));
 	}
 
 	public calculatePositiveArrowBounds(min: number, max: number) {
