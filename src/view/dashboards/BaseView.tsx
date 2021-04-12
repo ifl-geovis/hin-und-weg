@@ -9,6 +9,7 @@ import Classification from '../../data/Classification';
 import Location from '../Location';
 import Themes from '../Themes';
 import Years from '../Years';
+import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
 import ArrowColorSelections from '../selections/ArrowColorSelections';
 import DashboardView from './DashboardView';
@@ -99,6 +100,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 					<div>
 						<img className="logo" src="./assets/blue_huwlogo.png" />
 					</div>
+				</div>
+				<div className="p-col-12">
+					<Messages change={this.change} />
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-2 noprint' : 'p-col-4 noprint'}>
 					<Location
