@@ -273,6 +273,15 @@ export default class Classification {
 		this.calculateNegativeArrowBounds(Math.abs(this.negative_stats.max()), Math.abs(this.negative_stats.min()));
 	}
 
+	// https://accendoreliability.com/sturges-rule-method-selecting-number-bins-histogram/
+	public calculateSturgesRule(positive: boolean): number {
+		let stats = positive ? this.positive_stats : this.negative_stats;
+		if (stats == null) return 1;
+		let number = stats.pop();
+		if (number < 1) return 1;
+		return 1 + 3.3 * Math.log10(number);
+	}
+
 	public calculatePositiveArrowBounds(min: number, max: number) {
 		this.positiveArrowWidthBounds = [];
 		let countParts = this.arrowWidths.length;
