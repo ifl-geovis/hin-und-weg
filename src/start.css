@@ -42,6 +42,34 @@ img.logo {
 	float: right;
 }
 
+div.message-notice,
+div.message-success,
+div.message-error,
+div.message-warning {
+	border-style: solid;
+	border-radius: 5px;
+	border-color: grey;
+	border-width: 1px;
+	padding: 3px;
+	margin: 0px 0px 5px 0px;
+}
+
+div.message-notice {
+	background-color: #aaaaff;
+}
+
+div.message-success {
+	background-color: #aaffaa;
+}
+
+div.message-error {
+	background-color: #ffaaaa;
+}
+
+div.message-warning {
+	background-color: #ffffaa;
+}
+
 div.status-progress {
 	color: #9e810c;
 }
