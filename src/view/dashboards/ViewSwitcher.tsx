@@ -144,7 +144,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private addView(views: any[], value: string, label: string, selectable: boolean) {
 		if (selectable && Config.getValue('components', value) == true) {
 			views.push({ value: value, label: label });
-			Log.debug('viewswitcher sends message:', value);
+			Log.trace('viewswitcher sends message:', value);
 			const ipc = require('electron').ipcRenderer;
 			ipc.send('menuenable', value);
 		}
