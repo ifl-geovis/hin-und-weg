@@ -3,9 +3,12 @@
 		display: none;
 	}
 
+	div.scrollable {
+		overflow: none;
+	}
+
 	div.viewswitcher {
 		width: 100vw;
-		border-style: none;
 	}
 
 	.leaflet-control-zoom {
@@ -16,11 +19,15 @@
 		display: block;
 	}
 
-
-	div.p-col-6, div.p-col-4{
+	div.p-col-6, div.p-col-4, div.p-col-12{
 		width: 100%;
+	}
+
+	div.pb{
 		page-break-after: always;
 	}
+
+
 }
 
 @media screen {

@@ -105,10 +105,10 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-12">
+				<div className="p-col-12 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-12">
+				<div className="p-col-12 pb">
 					{viewswitcher}
 				</div>
 			</div>
@@ -120,10 +120,10 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
 			</div>
@@ -135,13 +135,13 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-12">
+				<div className="p-col-12 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
 			</div>
@@ -153,13 +153,13 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-12">
+				<div className="p-col-12 pb">
 					{viewswitcher}
 				</div>
 			</div>
@@ -171,14 +171,14 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
 				<div className="p-col-6">
-					<div className="p-col-12">
+					<div className="p-col-12 pb">
 						{viewswitcher}
 					</div>
-					<div className="p-col-12">
+					<div className="p-col-12 pb">
 						{viewswitcher}
 					</div>
 				</div>
@@ -191,13 +191,13 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-4">
+				<div className="p-col-4 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-4">
+				<div className="p-col-4 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-4">
+				<div className="p-col-4 pb">
 					{viewswitcher}
 				</div>
 			</div>
@@ -209,16 +209,16 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		let viewswitcher = this.getViewSwitcher();
 		return (
 			<div className="p-grid">
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
-				<div className="p-col-6">
+				<div className="p-col-6 pb">
 					{viewswitcher}
 				</div>
 			</div>
