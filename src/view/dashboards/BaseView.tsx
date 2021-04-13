@@ -5,6 +5,7 @@ import Geodata from '../../model/Geodata';
 import { GeoJsonProperties } from 'geojson';
 
 import Classification from '../../data/Classification';
+import MessageList from '../../data/MessageList';
 
 import Location from '../Location';
 import Themes from '../Themes';
@@ -44,6 +45,7 @@ interface IBaseState {
 	positiveArrowColor: string;
 	negativeArrowColor: string;
 	change: boolean;
+	classcountset: boolean;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState> {
@@ -62,10 +64,12 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			positiveArrowColor: '0432ff',
 			negativeArrowColor: 'ff0000',
 			change: true,
+			classcountset: false,
 		};
 		this.change = this.change.bind(this);
 		this.addYear = this.addYear.bind(this);
 		this.setGeoName = this.setGeoName.bind(this);
+		this.setClassCount = this.setClassCount.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -132,8 +136,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						setAlgorithm={(newAlgorithm) => this.setState({ algorithm: newAlgorithm })}
 						setPositiveColorScheme={(newColorScheme) => this.setState({ positiveColors: newColorScheme })}
 						setNegativeColorScheme={(newColorScheme) => this.setState({ negativeColors: newColorScheme })}
-						setPositiveClasses={(classes) => this.setState({ positiveClasses: classes.substring(0, 1) })}
-						setNegativeClasses={(classes) => this.setState({ negativeClasses: classes.substring(0, 1) })}
+						setPositiveClasses={(classes) => this.setClassCount(true, classes) }
+						setNegativeClasses={(classes) => this.setClassCount(false, classes) }
 					/>
 					<ArrowColorSelections
 						theme={this.state.theme}
@@ -399,6 +403,16 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	private setGeoName(geoName: string) {
 		this.props.setGeoName(geoName);
 		this.setFirstLocation(geoName);
+	}
+
+	private setClassCount(positive: boolean, count: string)
+	{
+		let optimal = Classification.getCurrentClassification().calculateSturgesRule(positive);
+		let result = count.substring(0, 1);
+		if ((this.props.geodata != null) && (this.state.years.length > 0) && (optimal != parseInt(result, 10))) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen entsprechend der Regel nach Sturges ist ' + optimal + '.', 'warning');
+		this.setState({ classcountset: true });
+		if (positive) this.setState({ positiveClasses: result });
+		else this.setState({ negativeClasses: result });
 	}
 
 	private setFirstLocation(geoName: string)

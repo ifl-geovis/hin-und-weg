@@ -46,7 +46,7 @@ export default class Messages extends React.Component<IMessagesProps> {
 	private createRemoveButton(visible: boolean) {
 		if (!visible) return (<span></span>);
 		return (
-			<Button label="Benachrichtigungen entfernen" onClick={this.removeMessages} />
+			<Button label="Benachrichtigungen entfernen" onClick={this.removeMessages} className="p-button-link p-button-sm" />
 		);
 	}
 
