@@ -46,6 +46,7 @@ interface IBaseState {
 	negativeArrowColor: string;
 	change: boolean;
 	classcountset: boolean;
+	updateclasscount: boolean;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState> {
@@ -65,11 +66,15 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			negativeArrowColor: 'ff0000',
 			change: true,
 			classcountset: false,
+			updateclasscount: false,
 		};
 		this.change = this.change.bind(this);
 		this.addYear = this.addYear.bind(this);
 		this.setGeoName = this.setGeoName.bind(this);
 		this.setClassCount = this.setClassCount.bind(this);
+		this.setLocation = this.setLocation.bind(this);
+		this.setTheme = this.setTheme.bind(this);
+		this.setYears = this.setYears.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -86,6 +91,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		classification.setPositiveArrowColor('#' + this.state.positiveArrowColor);
 		classification.setNegativeArrowColor('#' + this.state.negativeArrowColor);
 		classification.calculateClassification();
+		this.setRecommendedClassCount();
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.props.geoName as string;
 		let locations: string[] = [];
@@ -113,17 +119,17 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						title="Bezugsfläche"
 						locations={locations}
 						selectedLocation={this.state.location}
-						onSelectLocation={(newLocation) => this.setState({ location: newLocation })}
+						onSelectLocation={(newLocation) => this.setLocation(newLocation) }
 					/>
 					<Themes
 						themes={['Von', 'Nach', 'Saldi']}
 						selected={this.state.theme}
-						setTheme={(newTheme) => this.setState({ theme: newTheme })}
+						setTheme={(newTheme) => this.setTheme(newTheme) }
 					/>
 					<Years
 						availableYears={this.props.yearsAvailable}
 						selected={this.state.years}
-						setYears={(newYears) => this.setState({ years: newYears })}
+						setYears={(newYears) => this.setYears(newYears) }
 					/>
 					<ClassificationSelections
 						algorithm={this.state.algorithm}
@@ -398,6 +404,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	private addYear(year: string) {
 		this.props.addYear(year);
 		if (this.state.years.length === 0) this.setState({ years: [year]});
+		this.setState({ updateclasscount: true });
 	}
 
 	private setGeoName(geoName: string) {
@@ -426,7 +433,36 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				R.map((item) => item![geoName], attributes)
 			);
 		}
-		if (locations.length > 0) this.setState({ location: locations[0] })
+		if (locations.length > 0) this.setState({ location: locations[0] });
+		this.setState({ updateclasscount: true });
+	}
+
+	private setLocation(newLocation: string) {
+		this.setState({ location: newLocation });
+		this.setState({ updateclasscount: true });
+	}
+
+	private setTheme(newTheme: string) {
+		this.setState({ theme: newTheme });
+		this.setState({ updateclasscount: true });
+	}
+
+	private setYears(newYears: string[]) {
+		this.setState({ years: newYears });
+		this.setState({ updateclasscount: true });
+	}
+
+	private setRecommendedClassCount() {
+		if (!this.state.updateclasscount) return;
+		this.setState({ updateclasscount: false });
+		if (this.state.classcountset) return;
+		const classification = Classification.getCurrentClassification();
+		let positiveClassCount = '' + classification.calculateSturgesRule(true);
+		Log.debug('positiveClassCount:', positiveClassCount);
+		this.setState({ positiveClasses: positiveClassCount });
+		let negativeClassCount = '' + classification.calculateSturgesRule(false);
+		Log.debug('negativeClassCount:', negativeClassCount);
+		this.setState({ negativeClasses: negativeClassCount });
 	}
 
 }
