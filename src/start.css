@@ -5,14 +5,21 @@
 
 	div.viewswitcher {
 		width: 100vw;
+		border-style: none;
 	}
 
 	.leaflet-control-zoom {
 		display: none;
 	}
 
-	div.viewswitcher {
-		border-style: none;
+	div.p-grid{
+		display: block;
+	}
+
+
+	div.p-col-6, div.p-col-4{
+		width: 100%;
+		page-break-after: always;
 	}
 }
 
