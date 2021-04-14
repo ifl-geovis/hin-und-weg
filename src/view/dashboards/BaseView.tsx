@@ -289,13 +289,13 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		if (R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable))) {
 			return results;
 		}
-		Log.debug("Statistik!!!");
 		const query_zuzug = `SELECT Von, Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' GROUP BY Jahr, Von ORDER BY Jahr asc`;
 		const results_zuzug = this.props.db(query_zuzug);
-		Log.debug(results_zuzug);
+		Log.debug('queryStatistics()→results_zuzug', results_zuzug);
 		const query_wegzug = `SELECT Von, Nach, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' GROUP BY Jahr, Nach ORDER BY Jahr asc`;
 		const results_wegzug = this.props.db(query_wegzug);
-		Log.debug(results_wegzug);
+		if ((results_zuzug == null) || (results_wegzug == null)) return results;
+		Log.debug('queryStatistics()→results_wegzug', results_wegzug);
 		letztesJahr = results_zuzug[0].Jahr;
 		//console.log("Jahr: " + results_zuzug[0].Jahr + "; zuzug: " + results_zuzug[0].Von);
 		for (let i = 0; i < results_zuzug.length; i++) {
