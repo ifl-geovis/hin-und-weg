@@ -40,6 +40,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		super(props);
 		this.onSelectGeodataFile = this.onSelectGeodataFile.bind(this);
 		this.onSelectTabledataFiles = this.onSelectTabledataFiles.bind(this);
+		this.generateSummaryMessage = this.generateSummaryMessage.bind(this);
 		this.state =
 		{
 			tablefiles: [],
@@ -162,6 +163,9 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	{
 		const columnHeaders = R.slice(1, tabledata.getColumnCount(), tabledata.getRowAt(2));
 		const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
+		Log.debug('columnHeaders:', columnHeaders);
+		Log.debug('rowHeaders:', rowHeaders);
+		if (columnHeaders != rowHeaders) filestatus.failure("Spalten und Zeilenindices stimmen nicht überein.");
 		const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
 		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
 		const geocount = this.props.geodata!.count();
