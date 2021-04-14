@@ -87,28 +87,9 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 		const bordercolor = "#525252"
 
 		const classification = Classification.getCurrentClassification();
-		// console.log("classification: " + JSON.stringify(classification));
-
-		
-		// let colors = (data: ITimelineD3Item[]) => { 
-		//   let colors = new Array(data.length);
-		// 	colors.fill(neutralcolor);  
-		//   for(let i=0;i<data.length;i++)
-		//   { 
-		// 	colors[i]=classification.getZeitreihenColor(data[i])
-		//   }  return colors
-		// }
-		// let hexcolor:string[]  = colors(data);
-		// console.log("classification colors: " + hexcolor);
 
 		let timelinePositiveColors = classification.getZeitreihenPositiveColors();
 		let timelineNegativeColors = classification.getZeitreihenNegativeColors();
-
-		console.log("positive colors: " + timelinePositiveColors);
-		console.log("negative colors: " + timelineNegativeColors);
-
-		// let hexcolorAdd: string[] =  classColors(data);
-		//   hexcolorAdd.push("#f7f7f7");
 
 		svg.append("svg")
 		.attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
@@ -152,7 +133,7 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 		const x = d3.scaleBand()
 			.domain(domain)
 			.range([0, WIDTH])
-			.padding(0.25);
+			.padding(domain.length < 2 ? 0.7 : domain.length < 4 ? 0.5 : domain.length < 6 ? 0.35 : 0.25);
 
 		const xAxisGroup = chart.append('g')
 			.attr('class', 'x-axis')
@@ -182,10 +163,8 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 			.attr("height", d => (y(0) - y(d.Zuzug)))
 			.attr("width", x.bandwidth())
 			.attr('fill', timelinePositiveColors[0])
-			// .attr('fill', colorsBlueRed[1])
 			.style("fill-opacity",1)
 			.attr("stroke", function(d) { let col:any = d3.rgb(timelinePositiveColors[0]); return col.darker(); })
-			// .attr("stroke", function(d) { let col:any = d3.rgb(colorsBlueRed[1]); return col.darker(); })
 			.attr("stroke-width", 1)
 			.on("mouseover",  function(d, i) {
 				rectsZuzug
@@ -338,8 +317,8 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 				.append('circle');
 
 			circlesGraph
-				.attr('r', (WIDTH/data.length)/8)
-				.attr('cx', d => {
+			.attr('r', (WIDTH/data.length)/16 < 2 ? 2 : (WIDTH/data.length)/16 > 10 ? 10 : (WIDTH/data.length)/16)
+			.attr('cx', d => {
 					const xCoordinate = x(d.Jahr)
 					if (xCoordinate) {
 						return xCoordinate + x.bandwidth()/2
