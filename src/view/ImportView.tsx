@@ -10,6 +10,7 @@ import FileInput from "./input/FileInput";
 import Geodata from "../model/Geodata";
 import Tabledata from "../model/Tabledata";
 import TableFileStatus from "../data/TableFileStatus";
+import MessageList from '../data/MessageList';
 
 export interface IImportProps
 {
@@ -28,6 +29,7 @@ interface IImportState
 {
 	tablefiles: TableFileStatus[];
 	shapeloadmessage: string;
+	newtableloading: boolean;
 }
 
 export default class ImportView extends React.Component<IImportProps, IImportState>
@@ -42,6 +44,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		{
 			tablefiles: [],
 			shapeloadmessage: "",
+			newtableloading: false,
 		};
 	}
 
@@ -94,21 +97,23 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	private onSelectGeodataFile(files: FileList)
 	{
 		Log.debug("ImportView.onSelectGeodataFile(" + files + ")");
-		this.setState({ shapeloadmessage: "" });
-		if (files.length != 1) this.setState({ shapeloadmessage: "Es kann nur eine Shape-Datei geladen werden!" });
-		else if (!files[0].name.endsWith(".shp")) this.setState({ shapeloadmessage: "Die Datei " + files[0].name + " sieht nicht wie eine Shape-Datei aus." });
+		if (files.length != 1) MessageList.getMessageList().addMessage('Es kann nur eine Shape-Datei geladen werden!', 'error');
+		else if (!files[0].name.endsWith(".shp")) MessageList.getMessageList().addMessage('Die Datei ' + files[0].name + ' sieht nicht wie eine Shape-Datei aus.', 'error');
 		else
 		{
 			this.setState({ shapeloadmessage: "Problem beim Einlesen der Datei " + files[0].name + " aufgetreten." });
 			Geodata.read(files[0].path, (newGeodata) => {
 				Log.trace("ImportView.onSelectGeodataFile setGeodata(" + newGeodata + ")");
+				MessageList.getMessageList().addMessage('Shape Datei wurde erfolgreich geladen.', 'success');
 				this.props.setGeodata(newGeodata.transformToWGS84());
 			});
 		}
+		this.props.change();
 	}
 
 	private onSelectTabledataFiles(files: FileList)
 	{
+		this.setState({ newtableloading: true });
 		let newTablefiles = [] as TableFileStatus[];
 		for (let i=0;i<files.length; i++)
 		{
@@ -128,8 +133,8 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 			}
 			newTablefiles = R.append(status, newTablefiles);
 		}
-		this.props.change();
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
+		this.generateSummaryMessage();
 	}
 
 	private getNameForId(id: string): string|null
@@ -198,9 +203,33 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 				}
 				filestatus.success("Datei erfolgreich geladen");
 				this.props.addYear(year);
+				this.generateSummaryMessage();
 			}
+			this.generateSummaryMessage();
 			this.setState({ tablefiles: this.state.tablefiles });
 		});
+	}
+
+	private generateSummaryMessage() {
+		if (this.state.newtableloading == false) return;
+		let successcount = 0;
+		let errorcount = 0;
+		for (let status of this.state.tablefiles) {
+			if (status.getStatus() === 'running') return;
+			else if (status.getStatus() === 'success') successcount++;
+			else errorcount++;
+		}
+		if ((successcount == 0) && (errorcount == 0)) return;
+		let summarystatus = 'notice';
+		if ((errorcount > 0) && (successcount > 0)) summarystatus = 'warning';
+		if ((errorcount > 0) && (successcount == 0)) summarystatus = 'error';
+		if ((errorcount == 0) && (successcount > 0)) summarystatus = 'success';
+		let summary = 'Laden der Tabellendateien abgeschlossen. ';
+		if (successcount > 0) summary += 'Es wurden ' + successcount + ' Tabellendateien erfolgreich geladen. ';
+		if (errorcount > 0) summary += errorcount + ' Tabellendateien hatten Fehler beim Einladen.';
+		MessageList.getMessageList().addMessage(summary, summarystatus);
+		this.setState({ newtableloading: false });
+		this.props.change();
 	}
 
 	private formatTableStatus(tablefile: TableFileStatus)

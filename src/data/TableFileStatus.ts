@@ -44,7 +44,7 @@ export default class TableFileStatus
 
 	public failure(message: string)
 	{
-		MessageList.getMessageList().addMessage('Fehler beim Laden von ' + this.path + ': ' + message, 'error');
+		//MessageList.getMessageList().addMessage('Fehler beim Laden von ' + this.path + ': ' + message, 'error');
 		this.status = "failure"
 		this.message = message;
 	}
