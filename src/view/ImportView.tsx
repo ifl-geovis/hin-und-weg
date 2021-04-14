@@ -165,7 +165,11 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
 		Log.debug('columnHeaders:', columnHeaders);
 		Log.debug('rowHeaders:', rowHeaders);
-		if (columnHeaders != rowHeaders) filestatus.failure("Spalten und Zeilenindices stimmen nicht überein.");
+		if (columnHeaders.length != rowHeaders.length) filestatus.failure("Anzahl der Zeilen und Spalten stimmt nicht überein.");
+		else for (let i in columnHeaders)
+		{
+			if (columnHeaders[i] != rowHeaders[i]) filestatus.failure("Spaltenindex " + columnHeaders[i] + " stimmt nicht mit Zeilenindex " + rowHeaders[i] + " überein.");
+		}
 		const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
 		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
 		const geocount = this.props.geodata!.count();
