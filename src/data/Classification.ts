@@ -38,8 +38,11 @@ export default class Classification {
 	private zero_values: boolean = false;
 
 	private positive_scales: number[] | null = null;
+	private positive_scales_d3labels: number[] | null = null;
+	
 	private negative_scales: number[] | null = null;
-
+	private negative_scales_d3labels: number[] | null = null;
+	
 	private positiveArrowWidthBounds: Array<number> = [];
 	private negativeArrowWidthBounds: Array<number> = [];
 	private arrowWidths: Array<number> = [1, 3, 4, 5];
@@ -220,7 +223,9 @@ export default class Classification {
 	public getLocation(): string | null {
 		return this.location;
 	}
-
+	public getAlgorithm(): string | null {
+		return this.algorithm;
+	}
 	private roundValue(num: number): number {
 		return Math.round(num);
 	}
@@ -232,7 +237,13 @@ export default class Classification {
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
 		for (let i = 0; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
 	}
-
+	private fillPositiveScalesD3Labels() {
+		this.positive_scales_d3labels = [];
+		let ranges = [];
+		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
+		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
+		for (let i = 0; i < ranges.length; i++) this.positive_scales_d3labels.push(this.roundValue(ranges[i]));
+	}
 	private fillNegativeScales() {
 		this.negative_scales = [];
 		let ranges = [];
@@ -240,10 +251,19 @@ export default class Classification {
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
 		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
 	}
-
+	private fillNegativeScalesD3Labels() {
+		this.negative_scales_d3labels = [];
+		let ranges = [];
+		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.negative_colors.length);
+		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
+		for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValue(ranges[i]));
+	}
 	public calculateClassification() {
 		this.positive_scales = null;
 		this.negative_scales = null;
+		this.positive_scales_d3labels = null;
+		this.negative_scales_d3labels = null;
+		
 		this.zero_values = false;
 		let positives = [];
 		let negatives = [];
@@ -260,12 +280,14 @@ export default class Classification {
 		if (positives.length > 0) {
 			this.positive_stats = new geostats(positives);
 			this.fillPositiveScales();
+			this.fillPositiveScalesD3Labels();
 		} else {
 			this.positive_stats = new geostats([0]);
 		}
 		if (negatives.length > 0) {
 			this.negative_stats = new geostats(negatives);
 			this.fillNegativeScales();
+			this.fillNegativeScalesD3Labels();
 		} else {
 			this.negative_stats = new geostats([0]);
 		}
@@ -341,6 +363,13 @@ export default class Classification {
 		return this.positive_scales;
 	}
 
+	public getPositiveScalesD3Labels(): number[] | null {
+		return this.positive_scales_d3labels;
+	}
+
+	public getNegativeScalesD3Labels(): number[] | null {
+		return this.negative_scales_d3labels;
+	}
 	public getPositiveArrowColor(): string {
 		return this.positive_arrow_color;
 	}
@@ -384,5 +413,11 @@ export default class Classification {
 	}
 	public getArrowWidths(): Array<number> {
 		return this.arrowWidths;
+	}
+	public getPositiveStatsSerie(): any {
+		return this.positive_stats.serie;
+	}
+	public getNegativeStatsSerie(): any {
+		return this.negative_stats.serie;
 	}
 }

@@ -245,7 +245,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectStatisticsView() {
 		return (
 			<div className="p-col-12">
-				<StatisticsView items={this.omitNaN(this.props.items)} theme={this.props.theme} location={this.props.location} yearsSelected={this.props.yearsSelected} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} />
+				<StatisticsView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.omitNaN(this.props.items)} theme={this.props.theme} location={this.props.location} yearsSelected={this.props.yearsSelected} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} />
 			</div>
 		);
 	}

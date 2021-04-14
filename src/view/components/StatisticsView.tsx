@@ -1,5 +1,7 @@
 import React from "react";
 import R from "ramda";
+import D3HistogramView from '../charts/D3HistogramView';
+
 
 // Does not work in electronjs, so we use the @ts-ignore annotation
 // For development (hint types, autocompletion) uncomment this 2 lines below
@@ -33,6 +35,8 @@ export interface IStatisticsViewProps
 	theme: string;
 	yearsSelected: string[];
 	statisticPerYearAusgabe: IStatisticPerYearAusgabe[];
+	vizID: number;
+	baseViewId: number;
 }
 
 export default class StatisticsView extends React.Component<IStatisticsViewProps>
@@ -70,9 +74,11 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		if (this.props.yearsSelected) title_text += " in den Jahren " + this.props.yearsSelected;
 		const years = this.getYears();
 		return (
-			<div>
+			<div className="p-grid">
+				<div className="p-col-12">
 				<h3>{title_text}</h3> <hr/>
-				<table>
+				</div>
+				<table className="p-col-4">
 					<tbody>
 						<tr>
 							<th align="right">Mittelwert:</th>
@@ -104,11 +110,14 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 					</tbody>
 				</table>
+				<div className="p-col-8">
+				<D3HistogramView  baseViewId={this.props.baseViewId} vizID={this.props.vizID} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
+				</div>
 
 				<br></br>
 				<br></br>
 
-				<div className="scrollable">
+				<div className="scrollable p-col-12">
 					<table>
 						<tbody>
 
