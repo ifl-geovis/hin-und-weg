@@ -163,7 +163,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		for (let i in columnNames)
 		{
 			const colnum = parseInt(i, 10) + 2;
-			if (columnNames[i] == null) filestatus.failure("Index '" + columnHeaders[i] + "' (Spalte" + colnum + ") nicht in den Geodaten gefunden");
+			if (columnNames[i] == null) filestatus.failure("Index '" + columnHeaders[i] + "' (Spalte " + colnum + ") nicht in den Geodaten gefunden");
 		}
 		for (let j in rowNames)
 		{
