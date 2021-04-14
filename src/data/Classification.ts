@@ -255,8 +255,8 @@ export default class Classification {
 				if (item.Wert == 0) this.zero_values = true;
 			}
 		}
-		Log.debug('positives: ' + positives);
-		Log.debug('negatives: ' + negatives);
+		Log.trace('positives: ' + positives);
+		Log.trace('negatives: ' + negatives);
 		if (positives.length > 0) {
 			this.positive_stats = new geostats(positives);
 			this.fillPositiveScales();
