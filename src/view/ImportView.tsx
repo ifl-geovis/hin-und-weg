@@ -21,6 +21,7 @@ export interface IImportProps
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
+	change: () => void;
 }
 
 interface IImportState
@@ -127,6 +128,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 			}
 			newTablefiles = R.append(status, newTablefiles);
 		}
+		this.props.change();
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
 	}
 

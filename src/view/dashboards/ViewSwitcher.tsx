@@ -271,6 +271,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 					setGeoName={this.props.setGeoName}
 					setGeoId={this.props.setGeoId}
 					addYear={this.props.addYear}
+					change={this.props.change}
 				/>
 			</div>
 		);

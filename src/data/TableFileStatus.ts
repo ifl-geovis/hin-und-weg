@@ -1,5 +1,7 @@
 import assert from "assert";
 
+import MessageList from './MessageList';
+
 /**
  * Represents the Tablefiles to load and their status.
  */
@@ -42,6 +44,7 @@ export default class TableFileStatus
 
 	public failure(message: string)
 	{
+		MessageList.getMessageList().addMessage('Fehler beim Laden von ' + this.path + ': ' + message, 'error');
 		this.status = "failure"
 		this.message = message;
 	}
