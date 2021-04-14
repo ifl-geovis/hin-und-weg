@@ -21,7 +21,7 @@ export default class Messages extends React.Component<IMessagesProps> {
 		let types = MessageList.getMessageList().getTypes();
 		let widgets = [];
 		for (let index in messages) {
-			widgets.push(this.createMessageWidget(messages[index], types[index]));
+			widgets.push(this.createMessageWidget(index, messages[index], types[index]));
 		}
 		let remove = this.createRemoveButton(widgets.length > 0);
 		return (
@@ -32,9 +32,9 @@ export default class Messages extends React.Component<IMessagesProps> {
 		);
 	}
 
-	private createMessageWidget(message: string, type: string) {
+	private createMessageWidget(index: string, message: string, type: string) {
 		return (
-			<Message message={message} type={type} />
+			<Message key={"message-" + index} message={message} type={type} />
 		);
 	}
 
@@ -46,7 +46,7 @@ export default class Messages extends React.Component<IMessagesProps> {
 	private createRemoveButton(visible: boolean) {
 		if (!visible) return (<span></span>);
 		return (
-			<Button label="Benachrichtigungen entfernen" onClick={this.removeMessages} className="p-button-link p-button-sm" />
+			<Button key="message-remove-button" label="Benachrichtigungen entfernen" onClick={this.removeMessages} className="p-button-link p-button-sm" />
 		);
 	}
 
