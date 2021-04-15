@@ -35,7 +35,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		const positive_colors = classification.getPositiveColors();
 		const positive = this.createPositiveScale(positive_scales, positive_colors, (i > 0) ? i * this.box_width + this.label_offset : 0);
 		if (positive_scales != null) i += positive_colors.length;
-		const neutral = this.createNeutralBox(classification.hasZeroValues(), classification.getNeutralColor(), this.label_offset, 6);
+		const neutral = this.createNeutralBox(classification.hasZeroValues(), classification.getNeutralColor(), classification.hasNanValues(), classification.getMissingColor(), this.label_offset, 6);
 		const arrows = this.createArrows(
 			classification.getArrowWidths(),
 			classification.getPositiveArrowColor(),
@@ -220,14 +220,19 @@ export default class Legend extends React.Component<ILegendProps> {
 		);
 	}
 
-	private createNeutralBox(has_zero: boolean, color: string, x: number, y: number): object {
-		if (!has_zero) return <svg width="0" height="0"></svg>;
-		const box = this.createBox(color, x, y, 'neutral');
-		const label = this.createLabel('0', this.box_width + this.label_char_width * 3 + x, this.box_height - 6 + y, 'neutral');
+	private createNeutralBox(has_zero: boolean, zero_color: string, has_nan: boolean, nan_color: string, x: number, y: number): object {
+		if ((!has_zero) && (!has_nan)) return <svg width="0" height="0"></svg>;
+		const zero_box = (has_zero) ? this.createBox(zero_color, x, y, 'neutral') : <svg></svg>;
+		const zero_label = (has_zero) ? this.createLabel('0', this.box_width + this.label_char_width * 3 + x, this.box_height - 6 + y, 'neutral') : <svg></svg>;
+		const offset = has_zero ? this.box_width + this.label_char_width * 7 + x : 0;
+		const nan_box = (has_nan) ? this.createBox(nan_color, offset + x, y, 'neutral') : <svg></svg>;
+		const nan_label = (has_nan) ? this.createLabel('NaN', offset + this.box_width + this.label_char_width * 3 + x, this.box_height - 6 + y, 'nan') : <svg></svg>;
 		return (
-			<svg x={0} y={0} width={this.box_width + this.label_char_width * 5 + x} height={this.box_height + y}>
-				{box}
-				{label}
+			<svg x={0} y={0} width={offset + this.box_width + this.label_char_width * 10 + x} height={this.box_height + y}>
+				{zero_box}
+				{zero_label}
+				{nan_box}
+				{nan_label}
 			</svg>
 		);
 	}

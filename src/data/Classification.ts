@@ -36,13 +36,14 @@ export default class Classification {
 	private negative_stats: any;
 
 	private zero_values: boolean = false;
+	private nan_values: boolean = false;
 
 	private positive_scales: number[] | null = null;
 	private positive_scales_d3labels: number[] | null = null;
-	
+
 	private negative_scales: number[] | null = null;
 	private negative_scales_d3labels: number[] | null = null;
-	
+
 	private positiveArrowWidthBounds: Array<number> = [];
 	private negativeArrowWidthBounds: Array<number> = [];
 	private arrowWidths: Array<number> = [1, 3, 4, 5];
@@ -185,6 +186,10 @@ export default class Classification {
 		return this.zero_values;
 	}
 
+	public hasNanValues(): boolean {
+		return this.nan_values;
+	}
+
 	private getRanges(stats: any, count: number): any[] {
 		// documentation for geostats: https://github.com/simogeo/geostats
 		Log.debug(stats.info());
@@ -223,9 +228,11 @@ export default class Classification {
 	public getLocation(): string | null {
 		return this.location;
 	}
+
 	public getAlgorithm(): string | null {
 		return this.algorithm;
 	}
+
 	private roundValue(num: number): number {
 		return Math.round(num);
 	}
@@ -237,6 +244,7 @@ export default class Classification {
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
 		for (let i = 0; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
 	}
+
 	private fillPositiveScalesD3Labels() {
 		this.positive_scales_d3labels = [];
 		let ranges = [];
@@ -244,6 +252,7 @@ export default class Classification {
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
 		for (let i = 0; i < ranges.length; i++) this.positive_scales_d3labels.push(this.roundValue(ranges[i]));
 	}
+
 	private fillNegativeScales() {
 		this.negative_scales = [];
 		let ranges = [];
@@ -251,6 +260,7 @@ export default class Classification {
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
 		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
 	}
+
 	private fillNegativeScalesD3Labels() {
 		this.negative_scales_d3labels = [];
 		let ranges = [];
@@ -258,22 +268,23 @@ export default class Classification {
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
 		for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValue(ranges[i]));
 	}
+
 	public calculateClassification() {
 		this.positive_scales = null;
 		this.negative_scales = null;
 		this.positive_scales_d3labels = null;
 		this.negative_scales_d3labels = null;
-		
 		this.zero_values = false;
+		this.nan_values = false;
 		let positives = [];
 		let negatives = [];
 		for (let item of this.query) {
-			if (!isNaN(item.Wert))
-			{
+			if (!isNaN(item.Wert)) {
 				if (item.Wert > 0) positives.push(item.Wert);
 				if (item.Wert < 0) negatives.push(item.Wert);
 				if (item.Wert == 0) this.zero_values = true;
 			}
+			else this.nan_values = true;
 		}
 		Log.trace('positives: ' + positives);
 		Log.trace('negatives: ' + negatives);
