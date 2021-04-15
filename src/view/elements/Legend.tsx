@@ -36,14 +36,6 @@ export default class Legend extends React.Component<ILegendProps> {
 		const positive = this.createPositiveScale(positive_scales, positive_colors, (i > 0) ? i * this.box_width + this.label_offset : 0, this.props.showCenter === '2');
 		if (positive_scales != null) i += positive_colors.length;
 		const neutral = this.createNeutralBox(classification.hasZeroValues(), classification.getNeutralColor(), classification.hasNanValues(), classification.getMissingColor(), this.label_offset, 6);
-		const arrows = this.createArrows(
-			classification.getArrowWidths(),
-			classification.getPositiveArrowColor(),
-			classification.getNegativeArrowColor(),
-			classification.getPositiveArrowWidthBounds(),
-			classification.getNegativeArrowWidthBounds(),
-			classification.getTheme() || ''
-		);
 		i++;
 		return (
 			<div>
@@ -54,110 +46,7 @@ export default class Legend extends React.Component<ILegendProps> {
 					{positive}
 				</svg>
 				{neutral}
-				{this.props.showCenter === '2' && arrows}
 			</div>
-		);
-	}
-
-	private createArrows(
-		arrowWidths: Array<number>,
-		posArrowColor: string,
-		negArrowColor: string,
-		posArrowBounds: Array<number>,
-		negArrowBounds: Array<number>,
-		theme: string
-	) {
-		let arrows: Array<any> = [];
-		let arrowOffset: number = 15;
-		let labelOffset: number = 3;
-
-		if (posArrowBounds[posArrowBounds.length - 1] || negArrowBounds[negArrowBounds.length - 1]) {
-			switch (theme) {
-				case 'Von':
-					for (let index = 0; index < arrowWidths.length; index++) {
-						arrows.push([
-							<polyline
-								key={`posArrow_${index}`}
-								points={`0,${arrowOffset * (index + 1)} 40,${arrowOffset * (index + 1)}`}
-								strokeWidth={arrowWidths[index]}
-								fill="none"
-								stroke={posArrowColor}
-							/>,
-							<text
-								key={`posArrowLabel_${index}`}
-								x="50"
-								y={arrowOffset * (index + 1) + labelOffset}
-								style={{ font: '11px Open Sans' }}
-							>
-								{`≤ ${posArrowBounds[index].toFixed(0)}`}
-							</text>,
-						]);
-					}
-					break;
-				case 'Nach':
-					for (let index = 0; index < arrowWidths.length; index++) {
-						arrows.push([
-							<polyline
-								key={`negArrow_${index}`}
-								points={`0,${arrowOffset * (index + 1)} 40,${arrowOffset * (index + 1)}`}
-								strokeWidth={arrowWidths[index]}
-								fill="none"
-								stroke={negArrowColor}
-							/>,
-							<text
-								key={`negArrowLabel_${index}`}
-								x="50"
-								y={arrowOffset * (index + 1) + labelOffset}
-								style={{ font: '11px Open Sans' }}
-							>
-								{`≤ ${posArrowBounds[index].toFixed(0)}`}
-							</text>,
-						]);
-					}
-					break;
-				case 'Saldi':
-					for (let index = 0; index < arrowWidths.length; index++) {
-						arrows.push([
-							<polyline
-								key={`negArrow_${index}`}
-								points={`0,${arrowOffset * (index + 1)} 40,${arrowOffset * (index + 1)}`}
-								strokeWidth={arrowWidths[index]}
-								fill="none"
-								stroke={posArrowColor}
-							/>,
-							<text
-								key={`negArrowLabel_${index}`}
-								x="50"
-								y={arrowOffset * (index + 1) + labelOffset}
-								style={{ font: '11px Open Sans' }}
-							>
-								{`≥ -${negArrowBounds[index].toFixed(0)}`}
-							</text>,
-							<polyline
-								key={`posArrow_${index}`}
-								points={`130,${arrowOffset * (index + 1)} 170,${arrowOffset * (index + 1)}`}
-								strokeWidth={arrowWidths[index]}
-								fill="none"
-								stroke={negArrowColor}
-							/>,
-							<text
-								key={`posArrowLabel_${index}`}
-								x="180"
-								y={arrowOffset * (index + 1) + labelOffset}
-								style={{ font: '11px Open Sans' }}
-							>
-								{`≤ ${posArrowBounds[index].toFixed(0)}`}
-							</text>,
-						]);
-					}
-					break;
-			}
-		}
-
-		return (
-			<svg key="arrowLegend" height={arrowOffset * arrowWidths.length + arrowOffset}>
-				{arrows}
-			</svg>
 		);
 	}
 

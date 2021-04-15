@@ -45,9 +45,6 @@ export default class Classification {
 	private negative_scales: number[] | null = null;
 	private negative_scales_d3labels: number[] | null = null;
 
-	private positiveArrowWidthBounds: Array<number> = [];
-	private negativeArrowWidthBounds: Array<number> = [];
-	private arrowWidths: Array<number> = [1, 3, 4, 5];
 	private arrow_max_width = 6;
 
 	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
@@ -300,8 +297,6 @@ export default class Classification {
 		} else {
 			this.negative_stats = new geostats([0]);
 		}
-		this.calculatePositiveArrowBounds(this.positive_stats.min(), this.positive_stats.max());
-		this.calculateNegativeArrowBounds(Math.abs(this.negative_stats.max()), Math.abs(this.negative_stats.min()));
 	}
 
 	// https://accendoreliability.com/sturges-rule-method-selecting-number-bins-histogram/
@@ -311,23 +306,6 @@ export default class Classification {
 		let number = stats.pop();
 		if (number < 1) return 1;
 		return Math.round(1 + 3.3 * Math.log10(number));
-	}
-
-	public calculatePositiveArrowBounds(min: number, max: number) {
-		this.positiveArrowWidthBounds = [];
-		let countParts = this.arrowWidths.length;
-		let parts = (max - min) / countParts;
-		for (let i = 1; i <= countParts; i++) {
-			this.positiveArrowWidthBounds.push(min + i * parts);
-		}
-	}
-	public calculateNegativeArrowBounds(min: number, max: number) {
-		this.negativeArrowWidthBounds = [];
-		let countParts = this.arrowWidths.length;
-		let parts = (max - min) / countParts;
-		for (let i = 1; i <= countParts; i++) {
-			this.negativeArrowWidthBounds.push(min + i * parts);
-		}
 	}
 
 	public getMinValue(): number {
@@ -413,18 +391,6 @@ export default class Classification {
 		let colorschemes = Config.getKeys('colorschemes');
 		for (let i = 0; i < this.userDefinedColorSchemes.length; i++) colorschemes.push(this.userDefinedColorSchemes[i]);
 		return colorschemes;
-	}
-
-	public getPositiveArrowWidthBounds(): Array<number> {
-		return this.positiveArrowWidthBounds;
-	}
-
-	public getNegativeArrowWidthBounds(): Array<number> {
-		return this.negativeArrowWidthBounds;
-	}
-
-	public getArrowWidths(): Array<number> {
-		return this.arrowWidths;
 	}
 
 	public getArrowWidth(value: number): number {
