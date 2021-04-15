@@ -96,6 +96,18 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 							</label>
 						</div>
 						<div className="p-col rdBtnContainer">
+							<RadioButton
+								inputId="rb4"
+								name="center"
+								value="4"
+								onChange={this.onShowCenterChange}
+								checked={this.state.showCenter === '4'}
+							/>
+							<label className="p-checkbox-label pointer" htmlFor="rb4">
+								Beschriftungen ausschalten
+							</label>
+						</div>
+						<div className="p-col rdBtnContainer">
 							<label>Transparenz:</label>
 							<Slider
 								className="transparencySlider"

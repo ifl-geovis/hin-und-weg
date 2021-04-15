@@ -508,6 +508,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 						case '3':
 							label = `${name}`;
 							break;
+						case '4':
+							label = `${name} / ${value ? value.Wert : ''}`;
+							break;
 					}
 					let center = turf.centerOfMass(e.target.feature);
 					label && layer.bindTooltip(label, { direction: 'bottom', offset: point(0, 10), className: 'mouseOverlayTooltip' });
