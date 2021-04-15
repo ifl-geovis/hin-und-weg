@@ -15,6 +15,7 @@ export interface Item {
 	Represents the current classification and delivers the color.
  */
 export default class Classification {
+
 	private static current: Classification = new Classification();
 
 	// Taken from http://colorbrewer2.org/
@@ -47,6 +48,7 @@ export default class Classification {
 	private positiveArrowWidthBounds: Array<number> = [];
 	private negativeArrowWidthBounds: Array<number> = [];
 	private arrowWidths: Array<number> = [1, 3, 4, 5];
+	private arrow_max_width = 6;
 
 	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
 	private classificationPositiveDefault = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -60,15 +62,11 @@ export default class Classification {
 
 	public getBorderColor(item: { [name: string]: any }) {
 		if (item == null) return this.error_color;
-		//	if (this.theme === 'Von' && this.location === item.Nach) return this.selected_color;
-		//	if (!(this.theme === 'Von') && this.location === item.Von) return this.selected_color;
 		else return '#585858';
 	}
 
 	public getColor(item: { [name: string]: any }) {
 		if (item == null) return this.error_color;
-		//if ((this.theme === 'Von') && (this.location === item.Nach)) return this.selected_color;
-		//if ((!(this.theme === 'Von')) && (this.location === item.Von)) return this.selected_color;
 		if (isNaN(item.Wert)) return this.getMissingColor();
 		if (item.Wert == 0) return this.getNeutralColor();
 		if (item.Wert > 0) {
@@ -381,6 +379,7 @@ export default class Classification {
 	public getNegativeScalesD3Labels(): number[] | null {
 		return this.negative_scales_d3labels;
 	}
+
 	public getPositiveArrowColor(): string {
 		return this.positive_arrow_color;
 	}
@@ -419,16 +418,45 @@ export default class Classification {
 	public getPositiveArrowWidthBounds(): Array<number> {
 		return this.positiveArrowWidthBounds;
 	}
+
 	public getNegativeArrowWidthBounds(): Array<number> {
 		return this.negativeArrowWidthBounds;
 	}
+
 	public getArrowWidths(): Array<number> {
 		return this.arrowWidths;
 	}
+
+	public getArrowWidth(value: number): number {
+		if (isNaN(value) || (value == 0)) return 0;
+		if (value > 0) {
+			if (this.positive_scales === null) return Math.floor(this.arrow_max_width / 2);
+			for (let i = 0; i < this.positive_scales.length; i++) {
+				if (value < this.positive_scales[i]) return this.calculateArrowWidth(i, this.positive_scales.length);
+			}
+			return this.arrow_max_width;
+		}
+		if (value < 0) {
+			if (this.negative_scales === null) return Math.floor(this.arrow_max_width / 2);
+			for (let i = 0; i < this.negative_scales.length; i++) {
+				if (value > this.negative_scales[i]) return this.calculateArrowWidth(i, this.negative_scales.length);
+			}
+			return this.arrow_max_width;
+		}
+		return Math.ceil(this.arrow_max_width / 2);
+	}
+
+	private calculateArrowWidth(index: number, max: number) {
+		const width = Math.floor((index / max) * this.arrow_max_width);
+		return (width == 0) ? 1 : width;
+	}
+
 	public getPositiveStatsSerie(): any {
 		return this.positive_stats.serie;
 	}
+
 	public getNegativeStatsSerie(): any {
 		return this.negative_stats.serie;
 	}
+
 }

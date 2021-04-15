@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Pane, Map, Marker, Polygon, Tooltip, ScaleControl, TileLayer, GeoJSON, ImageOverlay, Circle, Viewport } from 'react-leaflet';
 import React, { createRef, Component } from 'react';
+import Log from '../../log';
 import { Button } from 'primereact/button';
 import Geodata from '../../model/Geodata';
 import { Feature, FeatureCollection } from 'geojson';
@@ -425,23 +426,19 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
-								const arrowWidthIdx = this.classification.getPositiveArrowWidthBounds().findIndex((value) => item.Wert <= value);
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									color: this.classification.getNegativeArrowColor(),
 									factor: 0.75,
-									weight: this.classification.getArrowWidths()[arrowWidthIdx],
+									weight: this.classification.getArrowWidth(item.Wert),
 									hideArrowHead: true,
 								}).openTooltip();
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
-								const arrowWidthIdx = this.classification
-									.getNegativeArrowWidthBounds()
-									.findIndex((value) => Math.abs(item.Wert) <= value);
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									color: this.classification.getPositiveArrowColor(),
 									factor: 0.75,
-									weight: this.classification.getArrowWidths()[arrowWidthIdx],
+									weight: this.classification.getArrowWidth(item.Wert),
 									arrowId: '#arrowHead',
 								}).openTooltip();
 							}
@@ -452,12 +449,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Von == this.props.selectedLocation && item.Nach == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							const arrowWidthIdx = this.classification.getPositiveArrowWidthBounds().findIndex((value) => item.Wert <= value);
 							// @ts-ignore
 							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								color: this.classification.getPositiveArrowColor(),
 								factor: 0.75,
-								weight: this.classification.getArrowWidths()[arrowWidthIdx],
+								weight: this.classification.getArrowWidth(item.Wert),
 								arrowId: '#arrowHead',
 							}).openTooltip();
 						}
@@ -468,12 +464,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							const arrowWidthIdx = this.classification.getPositiveArrowWidthBounds().findIndex((value) => item.Wert <= value);
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),
 								factor: 0.75,
-								weight: this.classification.getArrowWidths()[arrowWidthIdx],
+								weight: this.classification.getArrowWidth(item.Wert),
 								hideArrowHead: true,
 							}).openTooltip();
 						}
