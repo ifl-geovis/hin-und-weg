@@ -446,7 +446,7 @@ export default class Classification {
 		return Math.ceil(this.arrow_max_width / 2);
 	}
 
-	private calculateArrowWidth(index: number, max: number) {
+	public calculateArrowWidth(index: number, max: number) {
 		const width = Math.floor((index / max) * this.arrow_max_width);
 		return (width == 0) ? 1 : width;
 	}

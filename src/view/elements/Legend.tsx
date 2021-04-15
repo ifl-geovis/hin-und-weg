@@ -29,11 +29,11 @@ export default class Legend extends React.Component<ILegendProps> {
 		let i = 0;
 		const negative_scales = classification.getNegativeScales();
 		const negative_colors = classification.getNegativeColors();
-		const negative = this.createNegativeScale(negative_scales, negative_colors, i);
+		const negative = this.createNegativeScale(negative_scales, negative_colors, i, this.props.showCenter === '2');
 		if (negative_scales != null) i += negative_colors.length;
 		const positive_scales = classification.getPositiveScales();
 		const positive_colors = classification.getPositiveColors();
-		const positive = this.createPositiveScale(positive_scales, positive_colors, (i > 0) ? i * this.box_width + this.label_offset : 0);
+		const positive = this.createPositiveScale(positive_scales, positive_colors, (i > 0) ? i * this.box_width + this.label_offset : 0, this.props.showCenter === '2');
 		if (positive_scales != null) i += positive_colors.length;
 		const neutral = this.createNeutralBox(classification.hasZeroValues(), classification.getNeutralColor(), classification.hasNanValues(), classification.getMissingColor(), this.label_offset, 6);
 		const arrows = this.createArrows(
@@ -194,6 +194,14 @@ export default class Legend extends React.Component<ILegendProps> {
 		return <line key={key} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} />;
 	}
 
+	private createArrowLine(color: string, key: string, x: number, y: number, width: number): object {
+		const x1 = x + 3;
+		const x2 = x + this.box_width - 3;
+		const y1 = y + 5;
+		const y2 = y1;
+		return <line key={key} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} stroke-width={width} />;
+	}
+
 	private createLabel(label: string, x: number, y: number, index: string): object {
 		let offset = label.length * this.label_char_width * 0.5;
 		return (
@@ -237,8 +245,9 @@ export default class Legend extends React.Component<ILegendProps> {
 		);
 	}
 
-	private createPositiveScale(scales: number[] | null, colors: string[], offset: number): object {
+	private createPositiveScale(scales: number[] | null, colors: string[], offset: number, arrows: boolean): object {
 		if (scales == null) return <svg></svg>;
+		const classification = Classification.getCurrentClassification();
 		Log.debug("positive scales: ", scales);
 		let boxes = [];
 		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i * this.box_width + this.label_offset, 0, 'positive-' + i));
@@ -256,6 +265,7 @@ export default class Legend extends React.Component<ILegendProps> {
 					this.box_height + 10
 				)
 			);
+			if (arrows && i > 0) lines.push(this.createArrowLine((classification.getTheme() == 'Von') ? classification.getPositiveArrowColor() : classification.getNegativeArrowColor(), 'arrow-positive-' + i, (i - 1) * this.box_width + this.label_offset, this.box_height, classification.calculateArrowWidth(i, scales.length)));
 		}
 		return (
 			<svg x={offset} y={0}>
@@ -266,8 +276,9 @@ export default class Legend extends React.Component<ILegendProps> {
 		);
 	}
 
-	private createNegativeScale(scales: number[] | null, colors: string[], index: number): object {
+	private createNegativeScale(scales: number[] | null, colors: string[], index: number, arrows: boolean): object {
 		if (scales == null) return <svg></svg>;
+		const classification = Classification.getCurrentClassification();
 		Log.debug("negative scales: ", scales);
 		let boxes = [];
 		for (let i = 0; i < colors.length; i++)
@@ -286,6 +297,7 @@ export default class Legend extends React.Component<ILegendProps> {
 					this.box_height + 10
 				)
 			);
+			if (arrows && i > 0) lines.push(this.createArrowLine(classification.getPositiveArrowColor(), 'arrow-negative-' + i, (i - 1) * this.box_width + this.label_offset, this.box_height, classification.calculateArrowWidth(scales.length - i, scales.length)));
 		}
 		return (
 			<svg x={index * this.box_width} y={0}>
