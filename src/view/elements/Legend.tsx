@@ -88,7 +88,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		const x2 = x + this.box_width - 3;
 		const y1 = y + 5;
 		const y2 = y1;
-		return <line key={key} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} stroke-width={width} />;
+		return <line key={key} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={width} />;
 	}
 
 	private createLabel(label: string, x: number, y: number, index: string): object {
