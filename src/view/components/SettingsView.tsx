@@ -46,7 +46,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		return (
 			<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.tabChanged(e)}>
 				<TabPanel header="Karte">{map}</TabPanel>
-				<TabPanel header="Farben">{colorschemes}</TabPanel>
+				<TabPanel header="Farbschemata">{colorschemes}</TabPanel>
 				<TabPanel header="Klassen">{classification}</TabPanel>
 			</TabView>
 		);

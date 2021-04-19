@@ -169,7 +169,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						theme={this.state.theme}
 						yearsAvailable={this.props.yearsAvailable}
 						yearsSelected={this.state.years}
-						onSelectLocation={(newLocation) => this.setState({ location: newLocation })}
+						onSelectLocation={(newLocation) => this.setLocation(newLocation) }
 						setGeodata={this.props.setGeodata}
 						setGeoName={this.setGeoName}
 						setGeoId={this.props.setGeoId}
@@ -458,10 +458,10 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		if (this.state.classcountset) return;
 		const classification = Classification.getCurrentClassification();
 		let positiveClassCount = '' + classification.calculateSturgesRule(true);
-		Log.debug('positiveClassCount:', positiveClassCount);
+		Log.trace('positiveClassCount:', positiveClassCount);
 		this.setState({ positiveClasses: positiveClassCount });
 		let negativeClassCount = '' + classification.calculateSturgesRule(false);
-		Log.debug('negativeClassCount:', negativeClassCount);
+		Log.trace('negativeClassCount:', negativeClassCount);
 		this.setState({ negativeClasses: negativeClassCount });
 	}
 
