@@ -209,6 +209,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		return (
 			<div>
 				<h1>benutzerdefinierte Klassengrenzen</h1>
+				<div>Füllen Sie die Eingabefelder mit den Werten für Klassengrenzen entsprechend der von Ihnen gewählten der Anzahl der Klassen aus.</div>
 				<h2>positive Werte</h2>
 				{inputpositive1}
 				{inputpositive2}
