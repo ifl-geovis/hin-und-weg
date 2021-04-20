@@ -149,7 +149,13 @@ export default class MainMenu
 					label: 'Datenbank',
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
-				}
+				},
+				{
+					id: 'index',
+					label: 'Indexwert',
+					enabled: false,
+					click(event, window, content) {MainMenu.execute("viewswitcher", "index", event, window, content);},
+				},
 			]
 		},
 		{

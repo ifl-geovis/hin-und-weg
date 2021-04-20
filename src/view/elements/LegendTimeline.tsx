@@ -26,15 +26,14 @@ export default class LegendTimeline extends React.Component<ILegendTimelineProps
 		let timelinePositiveColors = classification.getZeitreihenPositiveColors();
 		let timelineNegativeColors = classification.getZeitreihenNegativeColors();
 
-
 		const wegzug = this.createBox(timelineNegativeColors[0], 2, 0, "wegzug")
-		const zuzug = this.createBox(timelinePositiveColors[0], 120, 0, "zuzug")
+		const zuzug = this.createBox(timelinePositiveColors[0], 121, 0, "zuzug")
 		const negative_circle = this.createCircle(timelineNegativeColors[1], 2 + this.box_size/2, this.box_size + 5+ this.box_size/2 )
-		const positive_circle = this.createCircle(timelinePositiveColors[1], 120 + this.box_size/2, this.box_size + 5+ this.box_size/2 )
+		const positive_circle = this.createCircle(timelinePositiveColors[1], 121 + this.box_size/2, this.box_size + 5+ this.box_size/2 )
 		const wegzugLabel = this.createLabel(' - Wegzug', this.box_size + 7,  this.label_offset, 'wegzugLabel');
-		const zuzugLabel = this.createLabel(' - Zuzug', this.box_size + 125, this.label_offset, 'zuzugLabel');
-		const positiveSaldiLabel = this.createLabel(' - positive Saldi ', this.box_size + 7, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');
-		const negativeSaldiLabel = this.createLabel(' - negative Saldi ', this.box_size + 125, this.box_size + 5 + this.label_offset, 'negativeSaldiLabel');
+		const zuzugLabel = this.createLabel(' - Zuzug', this.box_size + 126, this.label_offset, 'zuzugLabel');
+		const positiveSaldiLabel = this.createLabel(' - positive Saldi ', this.box_size + 126, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');
+		const negativeSaldiLabel = this.createLabel(' - negative Saldi ', this.box_size + 7, this.box_size + 5 + this.label_offset, 'negativeSaldiLabel');
 
 
 		
