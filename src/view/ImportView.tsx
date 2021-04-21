@@ -35,15 +35,18 @@ interface IImportState
 export default class ImportView extends React.Component<IImportProps, IImportState>
 {
 
+	private static savedTableStatus: TableFileStatus[] = [];
+
 	constructor(props: IImportProps)
 	{
 		super(props);
 		this.onSelectGeodataFile = this.onSelectGeodataFile.bind(this);
 		this.onSelectTabledataFiles = this.onSelectTabledataFiles.bind(this);
 		this.generateSummaryMessage = this.generateSummaryMessage.bind(this);
+		Log.debug('Importview new');
 		this.state =
 		{
-			tablefiles: [],
+			tablefiles: ImportView.savedTableStatus,
 			shapeloadmessage: "",
 			newtableloading: false,
 		};
@@ -234,6 +237,10 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 			else errorcount++;
 		}
 		if ((successcount == 0) && (errorcount == 0)) return;
+		ImportView.savedTableStatus = [];
+		for (let status of this.state.tablefiles) {
+			if (status.getStatus() === 'success') ImportView.savedTableStatus.push(status);
+		}
 		let summarystatus = 'notice';
 		if ((errorcount > 0) && (successcount > 0)) summarystatus = 'warning';
 		if ((errorcount > 0) && (successcount == 0)) summarystatus = 'error';
