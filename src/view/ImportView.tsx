@@ -90,23 +90,29 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		return (
 			<div className="p-col-12">
 				<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false}/>
-				<p className="errormessage">{this.state.shapeloadmessage}</p>
+				<p className="loadmessage">{this.state.shapeloadmessage}</p>
 			</div>
 		);
 	}
 
 	private onSelectGeodataFile(files: FileList)
 	{
-		Log.debug("ImportView.onSelectGeodataFile(" + files + ")");
+		Log.debug("ImportView.onSelectGeodataFile", files);
 		if (files.length != 1) MessageList.getMessageList().addMessage('Es kann nur eine Shape-Datei geladen werden!', 'error');
 		else if (!files[0].name.endsWith(".shp")) MessageList.getMessageList().addMessage('Die Datei ' + files[0].name + ' sieht nicht wie eine Shape-Datei aus.', 'error');
 		else
 		{
-			this.setState({ shapeloadmessage: "Problem beim Einlesen der Datei " + files[0].name + " aufgetreten." });
+			this.setState({ shapeloadmessage: "Shape-Datei " + files[0].name + " wird geladen. Bitte warten."});
 			Geodata.read(files[0].path, (newGeodata) => {
-				Log.trace("ImportView.onSelectGeodataFile setGeodata(" + newGeodata + ")");
+				Log.trace("ImportView.onSelectGeodataFile setGeodata", newGeodata);
+				this.setState({ shapeloadmessage: ""});
 				MessageList.getMessageList().addMessage('Shape Datei wurde erfolgreich geladen.', 'success');
 				this.props.setGeodata(newGeodata.transformToWGS84());
+			}, (reason) => {
+				Log.debug("ImportView.onSelectGeodataFile failure", reason);
+				this.setState({ shapeloadmessage: ""});
+				MessageList.getMessageList().addMessage("Problem beim Einlesen der Shape-Datei aufgetreten. Fehlermeldung ist: " + reason, 'error');
+				this.props.change();
 			});
 		}
 		this.props.change();

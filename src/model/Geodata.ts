@@ -5,22 +5,27 @@ import * as Proj4 from "proj4";
 import R from "ramda";
 import * as reproject from "reproject";
 import * as shapefile from "shapefile";
+import Log from "../log";
 
 export default class Geodata {
 
-	public static read(path: string,callback: (data: Geodata) => void) {
-		shapefile.read(path, path.replace(".shp", ".dbf"), { encoding: "UTF-8"})
-			.then((data) => {
-				let projection = fs.readFileSync(path.replace(".shp", ".prj")).toString();
-				if (projection == null || projection === undefined) {
-					projection = Proj4.WGS84;
-				}
-				callback(Geodata.createGeodata(data, projection));
-			});
+	public static read(path: string, callback: (data: Geodata) => void, failure: (reason: any) => void) {
+		Log.trace("Geodata.read:", path);
+		let result = shapefile.read(path, path.replace(".shp", ".dbf"), { encoding: "UTF-8"});
+		Log.trace("Geodata.read shapefile.read result:", result);
+		result.then((data) => {
+			Log.trace("Geodata.read result.then data:", data);
+			let projection = fs.readFileSync(path.replace(".shp", ".prj")).toString();
+			if (projection == null || projection === undefined) {
+				projection = Proj4.WGS84;
+			}
+			Log.trace("Geodata.read result.then projection:", projection);
+			callback(Geodata.createGeodata(data, projection));
+		}, (reason) => {failure(reason);});
 	}
 
 	private static createGeodata = (features: FeatureCollection<Geometry>, projection: string | Proj4.ProjectionDefinition): Geodata => {
-			return new Geodata(features, projection);
+		return new Geodata(features, projection);
 	}
 
 	public projection: string | Proj4.ProjectionDefinition;
