@@ -259,3 +259,16 @@ div.negativebar {
 	max-width: 26px;
 	height: 26px;
 }
+
+.HoverBox {
+	position: absolute;
+	opacity: 80%;
+    background-color: #007ad9;
+    width: fit-content;
+	height: 25px;
+	z-index: 1000;
+	top: 70px;
+	left: 100px;
+	display: none;
+	border-radius: 5px;
+}

@@ -4,7 +4,7 @@ import React, { createRef, Component } from 'react';
 import Log from '../../log';
 import { Button } from 'primereact/button';
 import Geodata from '../../model/Geodata';
-import { Feature, FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import L, { Layer, LatLngExpression, LatLng, point } from 'leaflet';
 import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
@@ -12,6 +12,8 @@ import Classification from '../../data/Classification';
 import { IOfflineMaps } from '../../data/OfflineMaps';
 // @ts-ignore
 import 'leaflet-swoopy';
+import { lowerFirst } from 'lodash';
+import { relative } from 'node:path';
 
 export interface ILeafletMapViewProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -37,6 +39,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	centerpoint: { Center1: any };
 	classification: Classification;
 	mapRef: React.RefObject<any>;
+	SwoopyArrows: Array<any> = [];
 
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
@@ -49,6 +52,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 		this.classification = Classification.getCurrentClassification();
 		this.extentMap = this.extentMap.bind(this);
+		this.addArrowsEvents = this.addArrowsEvents.bind(this);
 		this.mapRef = createRef();
 		// console.log('CONSTRUCTOR LEAFLETMAPVIEW');
 	}
@@ -61,6 +65,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		// They have to be cleared manually by following function.
 		this.clearArrows();
 		this.updateArrowHead();
+
+		//Methode mit Query selector für arrwos um event hinzuzufügen
+		//FP01
 
 		let boundsOfGeodata: Array<Array<number>> = [];
 		let geoDataJson;
@@ -89,9 +96,13 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (this.props.selectedLocation) featureBorder = this.setFeatureBorder(geoDataJson);
 			if (this.props.showMap) geomap = this.getMapLayer();
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
+
+			this.addArrowsEvents();
 		}
 		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
+			<div style={{position: "relative"}}>
+				
 			<Map bounds={boundsOfGeodata} ref={this.mapRef} zoomDelta={0.25} zoomSnap={0}>
 				{geomap}
 				{arrows1}
@@ -120,6 +131,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				</Pane>
 				<Button className="p-button-raised btnMapExtent" icon="pi pi-home" onClick={this.extentMap} />
 			</Map>
+			</div>
 		);
 	}
 
@@ -137,7 +149,59 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		svgArrows.forEach((svg) => {
 			if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
 		});
+	//	this.SwoopyArrows = [];
 	}
+
+	public addArrowsEvents() {
+
+		document.addEventListener("mouseover", (event) => {
+			//@ts-ignore
+			if(!event.target.matches('.swoopyarrow__path')) return;
+			console.log("Event:", event);
+			//@ts-ignore
+			const arrowpathID = event.target.id;
+			const pattern = new RegExp(/\d+/);
+			const id = arrowpathID.match(pattern);
+			console.log(id);
+			console.log("arrowid", arrowpathID);
+			console.log("SwoopyArrows", this.SwoopyArrows);
+			console.log(this.SwoopyArrows[id]);
+
+			let hoverbox = document.getElementById("HoverBox");
+			if(hoverbox){
+			
+				hoverbox.style.left = event.screenX+"px";
+				hoverbox.style.top = event.screenY+"px";
+				hoverbox.textContent = `${this.SwoopyArrows[id].label} \n ${this.SwoopyArrows[id].value}`  ;
+
+			hoverbox.style.display = "block";
+			}
+
+		})
+
+		document.addEventListener("mouseout", (event) => {
+			//@ts-ignore
+			if(!event.target.matches('.swoopyarrow__path')) return;
+			console.log("Event:", event);
+
+			let hoverbox = document.getElementById("HoverBox");
+			if(hoverbox)
+			hoverbox.style.display = "none";
+
+
+		});
+		//const map = this.mapRef.current.leafletElement;
+		//if(map){ console.log(map);}
+	}
+
+	public start(e: any){
+		console.log("start",e);
+	}
+
+	public move(e: any){
+		console.log("move",e);
+	}
+
 
 	public updateArrowHead() {
 		const arrowHeadSVG = document.querySelector('#arrowHead path');
@@ -426,20 +490,24 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
+								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									color: this.classification.getNegativeArrowColor(),
 									factor: 0.75,
 									weight: this.classification.getArrowWidth(item.Wert),
 									hideArrowHead: true,
+									label: item.Wert,
 								}).openTooltip();
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
+								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									color: this.classification.getPositiveArrowColor(),
 									factor: 0.75,
 									weight: this.classification.getArrowWidth(item.Wert),
 									arrowId: '#arrowHead',
+									label: "Test2",
 								}).openTooltip();
 							}
 						}
@@ -449,12 +517,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Von == this.props.selectedLocation && item.Nach == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
+							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
 							// @ts-ignore
 							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								color: this.classification.getPositiveArrowColor(),
 								factor: 0.75,
 								weight: this.classification.getArrowWidth(item.Wert),
 								arrowId: '#arrowHead',
+								label: item.Wert,
 							}).openTooltip();
 						}
 					}
@@ -464,12 +534,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
+							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),
 								factor: 0.75,
 								weight: this.classification.getArrowWidth(item.Wert),
 								hideArrowHead: true,
+								label: item.Wert,
 							}).openTooltip();
 						}
 					}
