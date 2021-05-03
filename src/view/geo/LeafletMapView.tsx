@@ -162,17 +162,23 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			const arrowpathID = event.target.id;
 			const pattern = new RegExp(/\d+/);
 			const id = arrowpathID.match(pattern);
+			let color = "#007ad9";
 			console.log(id);
 			console.log("arrowid", arrowpathID);
 			console.log("SwoopyArrows", this.SwoopyArrows);
 			console.log(this.SwoopyArrows[id]);
-
+			if(this.SwoopyArrows[id].color){
+			console.log("color:",this.SwoopyArrows[id].color);
+			color = this.SwoopyArrows[id].color;}
+			
 			let hoverbox = document.getElementById("HoverBox");
 			if(hoverbox){
 			
 				hoverbox.style.left = event.screenX+"px";
 				hoverbox.style.top = event.screenY+"px";
+				hoverbox.style.backgroundColor = color;
 				hoverbox.textContent = `${this.SwoopyArrows[id].label} \n ${this.SwoopyArrows[id].value}`  ;
+				
 
 			hoverbox.style.display = "block";
 			}
@@ -192,14 +198,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		});
 		//const map = this.mapRef.current.leafletElement;
 		//if(map){ console.log(map);}
-	}
-
-	public start(e: any){
-		console.log("start",e);
-	}
-
-	public move(e: any){
-		console.log("move",e);
 	}
 
 
@@ -490,7 +488,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
-								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
+								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor()});
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									color: this.classification.getNegativeArrowColor(),
@@ -500,7 +498,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 									label: item.Wert,
 								}).openTooltip();
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
-								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
+								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor()});
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									color: this.classification.getPositiveArrowColor(),
@@ -517,7 +515,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Von == this.props.selectedLocation && item.Nach == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
+							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor()});
 							// @ts-ignore
 							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								color: this.classification.getPositiveArrowColor(),
@@ -534,7 +532,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert});
+							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor()});
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),
