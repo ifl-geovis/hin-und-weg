@@ -170,6 +170,8 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 
 	private loadHeaderNames(tabledata: Tabledata, filestatus: TableFileStatus): [any[], any[]]
 	{
+		Log.debug('Header 1:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(0)));
+		Log.debug('Header 2:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(1)));
 		const columnHeaders = R.slice(1, tabledata.getColumnCount(), tabledata.getRowAt(2));
 		const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
 		Log.debug('columnHeaders:', columnHeaders);
