@@ -52,10 +52,6 @@ p.status {
 	min-height: 65px;
 }
 
-img.logo {
-	float: right;
-}
-
 div.message-notice,
 div.message-success,
 div.message-error,
@@ -263,8 +259,8 @@ div.negativebar {
 .HoverBox {
 	position: absolute;
 	opacity: 80%;
-    background-color: #007ad9;
-    width: fit-content;
+	 background-color: #007ad9;
+	 width: fit-content;
 	height: 25px;
 	z-index: 1000;
 	top: 70px;
