@@ -122,7 +122,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						<tbody>
 
 							<tr>
-								<th>Year</th>
+								<th>Jahr</th>
 								<th>Saldi Mittelwert</th>
 								<th>Zuzüge Mittelwert</th>
 								<th>Wegzüge Mittelwert</th>
