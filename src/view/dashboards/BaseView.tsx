@@ -226,6 +226,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: value };
 				results = R.append(saldiItem, results);
 			}
+			for (let i = 0; i < results.length; i++) {
+				if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
+			}
 			return results;
 		}
 		Log.debug('Query: ', query);
