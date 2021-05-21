@@ -127,24 +127,27 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		let newTablefiles = [] as TableFileStatus[];
 		for (let i=0;i<files.length; i++)
 		{
-			let status: TableFileStatus = new TableFileStatus(files[i].path)
-			const start = files[i].path.length - 8;
-			const stop = start + 4;
-			const year = files[i].path.substring(start, stop);
-			const regexp = new RegExp('^[1-9][01-9]{3}$');
-			const test = regexp.test(year);
-			if (test)
-			{
-				this.addTabledataToDB(year, status);
-			}
-			else
-			{
-				status.failure("'" + year + "' sieht nicht wie ein Jahr aus");
-			}
+			let status: TableFileStatus = new TableFileStatus(files[i].path);
+			this.readTabledata(status);
 			newTablefiles = R.append(status, newTablefiles);
 		}
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
 		this.generateSummaryMessage();
+	}
+
+	private loadMetadata(tabledata: Tabledata, filestatus: TableFileStatus): any
+	{
+		Log.trace('Header 1:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(0)));
+		Log.trace('Header 2:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(1)));
+		let metadata = new Object();
+		for (let i = 0; i < tabledata.getColumnCount(); i++)
+		{
+			const key = tabledata.getValueAt(0, i);
+			const value = tabledata.getValueAt(1, i);
+			//@ts-ignore
+			if (key) metadata[key] = value;
+		}
+		return metadata;
 	}
 
 	private getNameForId(id: string): string|null
@@ -170,8 +173,6 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 
 	private loadHeaderNames(tabledata: Tabledata, filestatus: TableFileStatus): [any[], any[]]
 	{
-		Log.debug('Header 1:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(0)));
-		Log.debug('Header 2:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(1)));
 		const columnHeaders = R.slice(1, tabledata.getColumnCount(), tabledata.getRowAt(2));
 		const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
 		Log.debug('columnHeaders:', columnHeaders);
@@ -199,13 +200,30 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		return [columnNames, rowNames];
 	}
 
-	private addTabledataToDB(year: string, filestatus: TableFileStatus)
+	private readTabledata(filestatus: TableFileStatus)
 	{
 		Tabledata.read(filestatus.getPath(), (tabledata) => {
+			const metadata = this.loadMetadata(tabledata, filestatus);
+			Log.debug('metadata', metadata);
+			Log.debug('data type:', metadata.type);
+			if (metadata.type == 'movement-year') this.addMovementYearDataToDB(metadata.year.toString(), tabledata, filestatus);
+			else filestatus.failure("Unbekannter Typ von Tabellendaten: " + metadata.type);
+			this.generateSummaryMessage();
+			this.setState({ tablefiles: this.state.tablefiles });
+		});
+	}
+
+	private addMovementYearDataToDB(year: string, tabledata: Tabledata, filestatus: TableFileStatus)
+	{
+		const regexp = new RegExp('^[1-9][01-9]{3}$');
+		const test = regexp.test(year);
+		if (!test) filestatus.failure("'" + year + "' sieht nicht wie ein Jahr aus");
+		else
+		{
 			const [columnNames, rowNames] = this.loadHeaderNames(tabledata, filestatus);
 			Log.debug("columnNames: ", columnNames);
 			Log.debug("rowNames: ", rowNames);
-			Log.debug("filestatus.getStatus(): ", filestatus.getStatus());
+			Log.trace("filestatus.getStatus(): ", filestatus.getStatus());
 			if (filestatus.getStatus() == "running")
 			{
 				const valueMatrix = tabledata.getTabledataBy([3, tabledata.getRowCount()], [1, tabledata.getColumnCount()]);
@@ -224,9 +242,9 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 				this.props.addYear(year);
 				this.generateSummaryMessage();
 			}
-			this.generateSummaryMessage();
-			this.setState({ tablefiles: this.state.tablefiles });
-		});
+		}
+		//this.generateSummaryMessage();
+		//this.setState({ tablefiles: this.state.tablefiles });
 	}
 
 	private generateSummaryMessage() {
