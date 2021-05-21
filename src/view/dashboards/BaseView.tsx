@@ -13,6 +13,7 @@ import Years from '../Years';
 import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
 import ArrowColorSelections from '../selections/ArrowColorSelections';
+import OptionSelections from '../selections/OptionSelections';
 import DashboardView from './DashboardView';
 
 import Config from '../../config';
@@ -37,6 +38,7 @@ interface IBaseState {
 	years: string[];
 	location: string | null;
 	theme: string;
+	migrationsInside: boolean;
 	algorithm: string;
 	positiveColors: string;
 	negativeColors: string;
@@ -57,6 +59,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			years: [],
 			location: null,
 			theme: 'Von',
+			migrationsInside: true,
 			algorithm: 'equidistant',
 			positiveColors: 'rot',
 			negativeColors: 'blau',
@@ -128,6 +131,10 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						availableYears={this.props.yearsAvailable}
 						selected={this.state.years}
 						setYears={(newYears) => this.setYears(newYears) }
+					/>
+					<OptionSelections
+						migrationsInside={this.state.migrationsInside}
+						setMigrationsInside={(status) => this.setState({ migrationsInside: status }) }
 					/>
 					<ClassificationSelections
 						algorithm={this.state.algorithm}
