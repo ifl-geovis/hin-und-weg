@@ -254,7 +254,6 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 				}
 			}
 			filestatus.success("Datei erfolgreich geladen");
-			//this.generateSummaryMessage();
 		}
 		this.generateSummaryMessage();
 		this.setState({ tablefiles: this.state.tablefiles });
@@ -285,7 +284,6 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 			}
 			filestatus.success("Datei erfolgreich geladen");
 			this.props.addYear(year);
-			//this.generateSummaryMessage();
 		}
 		this.generateSummaryMessage();
 		this.setState({ tablefiles: this.state.tablefiles });
