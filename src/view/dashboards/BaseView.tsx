@@ -193,11 +193,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		);
 	}
 
-	private query(): any[] {
-		let results: any[] = [];
-		if (R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable))) {
-			return results;
-		}
+	private constructQuery(target: string): string {
 		// disabled because of #2883
 		//const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
 		const years = this.state.years;
@@ -206,26 +202,34 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			R.map((year) => `'${year}'`, years)
 		);
 		const location = ` ('${this.state.location}') `;
+		if (target === 'Von')
+		{
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, MYSUM(matrices.Wert * 1000 / population.Wert) as Wert FROM matrices, population WHERE Von = '${this.state.location}' AND matrices.Jahr IN (${stringYears}) AND population.Area = '${this.state.location}' AND matrices.Jahr = population.Jahr GROUP BY Nach ORDER BY Nach`;
+			// fallback for absolute and other values
+			return `SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Nach ORDER BY Nach`;
+		}
+		if (target === 'Nach')
+		{
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, MYSUM(matrices.Wert * 1000 / population.Wert) as Wert FROM matrices, population WHERE Nach = '${this.state.location}' AND matrices.Jahr IN (${stringYears}) AND population.Area = '${this.state.location}' AND matrices.Jahr = population.Jahr GROUP BY Von ORDER BY Von`;
+			// fallback for absolute and other values
+			return `SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Von ORDER BY Von`;
+		}
+		return '';
+	}
+
+	private query(): any[] {
+		let results: any[] = [];
+		if (R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable))) {
+			return results;
+		}
 		let query = '';
 		if (this.state.theme === 'Von') {
-			query =
-				`SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices ` +
-				`WHERE Von IN ${location} AND Jahr IN (${stringYears}) ` +
-				`GROUP BY Nach `;
+			query = this.constructQuery('Von');
 		} else if (this.state.theme === 'Nach') {
-			query =
-				`SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices ` +
-				`WHERE Nach IN ${location} AND Jahr IN (${stringYears}) ` +
-				`GROUP BY Von `;
+			query = this.constructQuery('Nach');
 		} else if (this.state.theme === 'Saldi') {
-			const vonQuery =
-				`SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices ` +
-				`WHERE  Von IN ${location}  AND Jahr IN (${stringYears}) ` +
-				`GROUP BY Nach ORDER BY Nach`;
-			const nachQuery =
-				`SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices ` +
-				`WHERE Nach IN ${location} AND Jahr IN (${stringYears}) ` +
-				`GROUP BY Von ORDER BY Von`;
+			const vonQuery = this.constructQuery('Von');
+			const nachQuery = this.constructQuery('Nach');
 			const vonResults = this.props.db(vonQuery);
 			const nachResults = this.props.db(nachQuery);
 			for (let i = 0; i < nachResults.length; i++) {
