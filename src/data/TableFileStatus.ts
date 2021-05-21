@@ -18,34 +18,34 @@ export default class TableFileStatus
 		assert(path != "", "path shouldn't be empty");
 		this.path = path;
 		this.status = "running";
-		this.message = "Daten werden geladen…"
+		this.message = "Daten werden geladen…";
 	}
 
 	public getPath(): string
 	{
-		return this.path
+		return this.path;
 	}
 
 	public getStatus(): string
 	{
-		return this.status
+		return this.status;
 	}
 
 	public getMessage(): string
 	{
-		return this.message
+		return this.message;
 	}
 
 	public success(message: string)
 	{
-		this.status = "success"
+		this.status = "success";
 		this.message = message;
 	}
 
 	public failure(message: string)
 	{
 		//MessageList.getMessageList().addMessage('Fehler beim Laden von ' + this.path + ': ' + message, 'error');
-		this.status = "failure"
+		this.status = "failure";
 		this.message = message;
 	}
 
