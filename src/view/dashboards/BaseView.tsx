@@ -14,6 +14,7 @@ import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
 import ArrowColorSelections from '../selections/ArrowColorSelections';
 import OptionSelections from '../selections/OptionSelections';
+import DataProcessingSelections from '../selections/DataProcessingSelections';
 import DashboardView from './DashboardView';
 
 import Config from '../../config';
@@ -38,6 +39,7 @@ interface IBaseState {
 	years: string[];
 	location: string | null;
 	theme: string;
+	dataProcessing: string;
 	migrationsInside: boolean;
 	algorithm: string;
 	positiveColors: string;
@@ -59,6 +61,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			years: [],
 			location: null,
 			theme: 'Von',
+			dataProcessing: 'absolute',
 			migrationsInside: true,
 			algorithm: 'equidistant',
 			positiveColors: 'rot',
@@ -131,6 +134,10 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						availableYears={this.props.yearsAvailable}
 						selected={this.state.years}
 						setYears={(newYears) => this.setYears(newYears) }
+					/>
+					<DataProcessingSelections
+						selected={this.state.dataProcessing}
+						setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
 					/>
 					<OptionSelections
 						migrationsInside={this.state.migrationsInside}
