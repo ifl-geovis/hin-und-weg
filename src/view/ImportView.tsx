@@ -171,12 +171,32 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		}
 	}
 
-	private loadHeaderNames(tabledata: Tabledata, filestatus: TableFileStatus): [any[], any[]]
+	private loadHeaderNames(tabledata: Tabledata): [any[], any[]]
 	{
 		const columnHeaders = R.slice(1, tabledata.getColumnCount(), tabledata.getRowAt(2));
 		const rowHeaders = R.slice(3, tabledata.getRowCount(), tabledata.getColumnAt(0));
 		Log.debug('columnHeaders:', columnHeaders);
 		Log.debug('rowHeaders:', rowHeaders);
+		return [columnHeaders, rowHeaders];
+	}
+
+	private loadHeaderNamesForPopulation(tabledata: Tabledata, filestatus: TableFileStatus): [any[], any[]]
+	{
+		const [columnHeaders, rowHeaders] = this.loadHeaderNames(tabledata);
+		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
+		const geocount = this.props.geodata!.count();
+		if (rowNames.length != geocount) filestatus.failure("Zeilenzahl (" + rowNames.length + ") entspricht nicht den Geodaten (" + geocount + ")");
+		for (let i in rowNames)
+		{
+			const rownum = parseInt(i, 10) + 4;
+			if (rowNames[i] == null) filestatus.failure("Index '" + rowHeaders[i] + "' (Zeile " + rownum + ") nicht in den Geodaten gefunden");
+		}
+		return [columnHeaders, rowNames];
+	}
+
+	private loadHeaderNamesForMovement(tabledata: Tabledata, filestatus: TableFileStatus): [any[], any[]]
+	{
+		const [columnHeaders, rowHeaders] = this.loadHeaderNames(tabledata);
 		if (columnHeaders.length != rowHeaders.length) filestatus.failure("Anzahl der Zeilen und Spalten stimmt nicht überein.");
 		else for (let i in columnHeaders)
 		{
@@ -206,11 +226,38 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 			const metadata = this.loadMetadata(tabledata, filestatus);
 			Log.debug('metadata', metadata);
 			Log.debug('data type:', metadata.type);
-			if (metadata.type == 'movement-year') this.addMovementYearDataToDB(metadata.year.toString(), tabledata, filestatus);
+			if (metadata.type == 'population') this.addPopulationDataToDB(metadata, tabledata, filestatus);
+			else if (metadata.type == 'movement-year') this.addMovementYearDataToDB(metadata.year.toString(), tabledata, filestatus);
 			else filestatus.failure("Unbekannter Typ von Tabellendaten: " + metadata.type);
 			this.generateSummaryMessage();
 			this.setState({ tablefiles: this.state.tablefiles });
 		});
+	}
+
+	private addPopulationDataToDB(metadata: any, tabledata: Tabledata, filestatus: TableFileStatus)
+	{
+		const [columnNames, rowNames] = this.loadHeaderNamesForPopulation(tabledata, filestatus);
+		Log.debug("columnNames: ", columnNames);
+		Log.debug("rowNames: ", rowNames);
+		Log.trace("filestatus.getStatus(): ", filestatus.getStatus());
+		if (filestatus.getStatus() == "running")
+		{
+			const valueMatrix = tabledata.getTabledataBy([3, tabledata.getRowCount()], [1, tabledata.getColumnCount()]);
+			for (let row = 0; row < valueMatrix.getRowCount(); row++)
+			{
+				for (let column = 0; column < valueMatrix.getColumnCount(); column++)
+				{
+					const wert = parseInt(valueMatrix.getValueAt(row, column), 10);
+					const area = rowNames[row];
+					const jahr = columnNames[column];
+					this.props.db(`INSERT INTO population ('${area}', '${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
+				}
+			}
+			filestatus.success("Datei erfolgreich geladen");
+			//this.generateSummaryMessage();
+		}
+		this.generateSummaryMessage();
+		this.setState({ tablefiles: this.state.tablefiles });
 	}
 
 	private addMovementYearDataToDB(year: string, tabledata: Tabledata, filestatus: TableFileStatus)
@@ -218,7 +265,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		const regexp = new RegExp('^[1-9][01-9]{3}$');
 		const test = regexp.test(year);
 		if (!test) filestatus.failure("'" + year + "' sieht nicht wie ein Jahr aus");
-		const [columnNames, rowNames] = this.loadHeaderNames(tabledata, filestatus);
+		const [columnNames, rowNames] = this.loadHeaderNamesForMovement(tabledata, filestatus);
 		Log.debug("columnNames: ", columnNames);
 		Log.debug("rowNames: ", rowNames);
 		Log.trace("filestatus.getStatus(): ", filestatus.getStatus());
@@ -238,7 +285,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 			}
 			filestatus.success("Datei erfolgreich geladen");
 			this.props.addYear(year);
-			this.generateSummaryMessage();
+			//this.generateSummaryMessage();
 		}
 		this.generateSummaryMessage();
 		this.setState({ tablefiles: this.state.tablefiles });
