@@ -218,33 +218,30 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		const regexp = new RegExp('^[1-9][01-9]{3}$');
 		const test = regexp.test(year);
 		if (!test) filestatus.failure("'" + year + "' sieht nicht wie ein Jahr aus");
-		else
+		const [columnNames, rowNames] = this.loadHeaderNames(tabledata, filestatus);
+		Log.debug("columnNames: ", columnNames);
+		Log.debug("rowNames: ", rowNames);
+		Log.trace("filestatus.getStatus(): ", filestatus.getStatus());
+		if (filestatus.getStatus() == "running")
 		{
-			const [columnNames, rowNames] = this.loadHeaderNames(tabledata, filestatus);
-			Log.debug("columnNames: ", columnNames);
-			Log.debug("rowNames: ", rowNames);
-			Log.trace("filestatus.getStatus(): ", filestatus.getStatus());
-			if (filestatus.getStatus() == "running")
+			const valueMatrix = tabledata.getTabledataBy([3, tabledata.getRowCount()], [1, tabledata.getColumnCount()]);
+			for (let row = 0; row < valueMatrix.getRowCount(); row++)
 			{
-				const valueMatrix = tabledata.getTabledataBy([3, tabledata.getRowCount()], [1, tabledata.getColumnCount()]);
-				for (let row = 0; row < valueMatrix.getRowCount(); row++)
+				for (let column = 0; column < valueMatrix.getColumnCount(); column++)
 				{
-					for (let column = 0; column < valueMatrix.getColumnCount(); column++)
-					{
-						const wert = parseInt(valueMatrix.getValueAt(row, column), 10);
-						const nach = columnNames[column];
-						const von = rowNames[row];
-						const jahr = `${year}`;
-						this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
-					}
+					const wert = parseInt(valueMatrix.getValueAt(row, column), 10);
+					const nach = columnNames[column];
+					const von = rowNames[row];
+					const jahr = `${year}`;
+					this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
 				}
-				filestatus.success("Datei erfolgreich geladen");
-				this.props.addYear(year);
-				this.generateSummaryMessage();
 			}
+			filestatus.success("Datei erfolgreich geladen");
+			this.props.addYear(year);
+			this.generateSummaryMessage();
 		}
-		//this.generateSummaryMessage();
-		//this.setState({ tablefiles: this.state.tablefiles });
+		this.generateSummaryMessage();
+		this.setState({ tablefiles: this.state.tablefiles });
 	}
 
 	private generateSummaryMessage() {
