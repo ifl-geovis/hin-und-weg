@@ -204,13 +204,13 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		const location = ` ('${this.state.location}') `;
 		if (target === 'Von')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, MYSUM(matrices.Wert * 1000 / population.Wert) as Wert FROM matrices, population WHERE Von = '${this.state.location}' AND matrices.Jahr IN (${stringYears}) AND population.Area = '${this.state.location}' AND matrices.Jahr = population.Jahr GROUP BY Nach ORDER BY Nach`;
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, MYSUM(RateVon) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Nach ORDER BY Nach`;
 			// fallback for absolute and other values
 			return `SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Nach ORDER BY Nach`;
 		}
 		if (target === 'Nach')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, MYSUM(matrices.Wert * 1000 / population.Wert) as Wert FROM matrices, population WHERE Nach = '${this.state.location}' AND matrices.Jahr IN (${stringYears}) AND population.Area = '${this.state.location}' AND matrices.Jahr = population.Jahr GROUP BY Von ORDER BY Von`;
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, MYSUM(RateNach) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Von ORDER BY Von`;
 			// fallback for absolute and other values
 			return `SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Von ORDER BY Von`;
 		}
