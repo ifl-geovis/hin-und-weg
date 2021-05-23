@@ -237,7 +237,9 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
-		for (let i = 0; i < ranges.length; i++) this.positive_scales.push(this.roundValue(ranges[i]));
+		this.positive_scales.push(Math.floor(ranges[0]));
+		for (let i = 1; i < ranges.length - 1; i++) this.positive_scales.push(this.roundValue(ranges[i]));
+		this.positive_scales.push(Math.ceil(ranges[ranges.length - 1]));
 	}
 
 	private fillPositiveScalesD3Labels() {
@@ -253,7 +255,9 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValue(ranges[i]));
+		this.negative_scales.push(Math.ceil(ranges[ranges.length - 1]));
+		for (let i = ranges.length - 2; i >= 1; i--) this.negative_scales.push(this.roundValue(ranges[i]));
+		this.negative_scales.push(Math.floor(ranges[0]));
 	}
 
 	private fillNegativeScalesD3Labels() {
