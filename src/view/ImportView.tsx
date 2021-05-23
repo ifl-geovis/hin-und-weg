@@ -279,7 +279,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 					const nach = columnNames[column];
 					const von = rowNames[row];
 					const jahr = `${year}`;
-					this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
+					this.props.db(`INSERT INTO matrices ('${nach}','${von}','${jahr}', ${isNaN(wert) ? null : wert}, null, null);`);
 				}
 			}
 			filestatus.success("Datei erfolgreich geladen");
@@ -310,9 +310,21 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		let summary = 'Laden der Tabellendateien abgeschlossen. ';
 		if (successcount > 0) summary += 'Es wurden ' + successcount + ' Tabellendateien erfolgreich geladen. ';
 		if (errorcount > 0) summary += errorcount + ' Tabellendateien hatten Fehler beim Einladen.';
+		this.recalculateWanderungsrate();
 		MessageList.getMessageList().addMessage(summary, summarystatus);
 		this.setState({ newtableloading: false });
 		this.props.change();
+	}
+
+	private recalculateWanderungsrate() {
+		Log.debug("recalculateWanderungsrate");
+		const results: any[] = this.props.db(`SELECT Area, Jahr, Wert FROM population;`);
+		Log.debug("results", results);
+		for (const popdata of results)
+		{
+			this.props.db(`UPDATE matrices SET RateVon = ROUND(Wert * 1000 / ${popdata.Wert}, 3) WHERE Von = '${popdata.Area}' AND Jahr = '${popdata.Jahr}'`);
+			this.props.db(`UPDATE matrices SET RateNach = ROUND(Wert * 1000 / ${popdata.Wert}, 3) WHERE Nach = '${popdata.Area}' AND Jahr = '${popdata.Jahr}'`);
+		}
 	}
 
 	private formatTableStatus(tablefile: TableFileStatus)

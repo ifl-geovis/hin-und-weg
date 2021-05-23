@@ -25,7 +25,7 @@ function setupDB() {
 	}
 	DB('CREATE DATABASE hin_und_weg');
 	DB('USE hin_und_weg');
-	DB('CREATE TABLE matrices (Nach STRING, Von STRING, Jahr STRING, Wert FLOAT);');
+	DB('CREATE TABLE matrices (Nach STRING, Von STRING, Jahr STRING, Wert FLOAT, RateVon FLOAT, RateNach FLOAT);');
 	DB('CREATE TABLE population (Area STRING, Jahr STRING, Wert FLOAT);');
 	DB('CREATE INDEX matrices_index ON matrices(Jahr);');
 	DB('CREATE INDEX population_index ON population(Jahr);');
