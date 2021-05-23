@@ -201,18 +201,19 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			', ',
 			R.map((year) => `'${year}'`, years)
 		);
-		const location = ` ('${this.state.location}') `;
+		const migrationsInsideClause = (this.state.migrationsInside) ? `` : ` AND Von <> Nach `;
+		//const location = ` ('${this.state.location}') `;
 		if (target === 'Von')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYSUM(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Nach ORDER BY Nach`;
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYSUM(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 			// fallback for absolute and other values
-			return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYSUM(Wert)) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Nach ORDER BY Nach`;
+			return `SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 		}
 		if (target === 'Nach')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYSUM(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Von ORDER BY Von`;
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYSUM(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 			// fallback for absolute and other values
-			return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYSUM(Wert)) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Von ORDER BY Von`;
+			return `SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 		}
 		return '';
 	}
