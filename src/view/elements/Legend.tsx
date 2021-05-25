@@ -29,22 +29,22 @@ export default class Legend extends React.Component<ILegendProps> {
 		let i = 0;
 		const negative_scales = classification.getNegativeScales();
 		const negative_colors = classification.getNegativeColors();
-		const negative = this.createNegativeScale(negative_scales, negative_colors, i, this.props.showCenter === '2');
+		const negative = this.createNegativeScale(negative_scales, negative_colors, this.props.showCenter === '2');
 		if (negative_scales != null) i += negative_colors.length;
+		const numneg = i;
+		i = 0;
 		const positive_scales = classification.getPositiveScales();
 		const positive_colors = classification.getPositiveColors();
-		const positive = this.createPositiveScale(positive_scales, positive_colors, (i > 0) ? i * this.box_width + this.label_offset : 0, this.props.showCenter === '2');
+		const positive = this.createPositiveScale(positive_scales, positive_colors, this.props.showCenter === '2');
 		if (positive_scales != null) i += positive_colors.length;
 		const neutral = this.createNeutralBox(classification.hasZeroValues(), classification.getNeutralColor(), classification.hasNanValues(), classification.getMissingColor(), this.label_offset, 6);
-		i++;
+		const numpos = i;
 		return (
 			<div>
 				<h4>{this.createLegendTitle(classification)}</h4>
-				<svg key="legend" width={i * this.box_width + 3 * this.label_offset} height={this.box_height + 22} style={{ display: 'block' }}>
-					{' '}
-					{negative}
-					{positive}
-				</svg>
+				{negative}
+				{positive}
+				<br />
 				{neutral}
 			</div>
 		);
@@ -134,8 +134,8 @@ export default class Legend extends React.Component<ILegendProps> {
 		);
 	}
 
-	private createPositiveScale(scales: number[] | null, colors: string[], offset: number, arrows: boolean): object {
-		if (scales == null) return <svg></svg>;
+	private createPositiveScale(scales: number[] | null, colors: string[], arrows: boolean): object {
+		if (scales == null) return <svg key="legend-positive" width={0} height={0}></svg>;
 		const classification = Classification.getCurrentClassification();
 		Log.debug("positive scales: ", scales);
 		let boxes = [];
@@ -157,7 +157,7 @@ export default class Legend extends React.Component<ILegendProps> {
 			if (arrows && i > 0) lines.push(this.createArrowLine((classification.getTheme() == 'Von') ? classification.getPositiveArrowColor() : classification.getNegativeArrowColor(), 'arrow-positive-' + i, (i - 1) * this.box_width + this.label_offset, this.box_height, classification.calculateArrowWidth(i, scales.length)));
 		}
 		return (
-			<svg x={offset} y={0}>
+			<svg key="legend-positive" width={(scales.length - 1) * this.box_width + 2 * this.label_offset} height={this.box_height + 22}>
 				{boxes}
 				{lines}
 				{labels}
@@ -165,8 +165,8 @@ export default class Legend extends React.Component<ILegendProps> {
 		);
 	}
 
-	private createNegativeScale(scales: number[] | null, colors: string[], index: number, arrows: boolean): object {
-		if (scales == null) return <svg></svg>;
+	private createNegativeScale(scales: number[] | null, colors: string[], arrows: boolean): object {
+		if (scales == null) return <svg key="legend-negative" width={0} height={0}></svg>;
 		const classification = Classification.getCurrentClassification();
 		Log.debug("negative scales: ", scales);
 		let boxes = [];
@@ -189,7 +189,7 @@ export default class Legend extends React.Component<ILegendProps> {
 			if (arrows && i > 0) lines.push(this.createArrowLine(classification.getPositiveArrowColor(), 'arrow-negative-' + i, (i - 1) * this.box_width + this.label_offset, this.box_height, classification.calculateArrowWidth(scales.length - i, scales.length)));
 		}
 		return (
-			<svg x={index * this.box_width} y={0}>
+			<svg key="legend-negative" width={(scales.length - 1) * this.box_width + 2 * this.label_offset} height={this.box_height + 22}>
 				{boxes}
 				{lines}
 				{labels}
