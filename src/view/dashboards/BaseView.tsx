@@ -193,6 +193,13 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		);
 	}
 
+	private standardizeValues(value: number): number
+	{
+		if (this.state.dataProcessing === 'wanderungsrate') return Math.round((value + Number.EPSILON) * 1000) / 1000;
+		if (this.state.dataProcessing === 'absolute') return Math.round(value);
+		return value;
+	}
+
 	private constructQuery(target: string): string {
 		// disabled because of #2883
 		//const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
@@ -240,7 +247,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 					if (isNaN(nachResults[i].Wert)) value = 0 - vonResults[i].Wert;
 					if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
 				}
-				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: value };
+				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: this.standardizeValues(value) };
 				results = R.append(saldiItem, results);
 			}
 			for (let i = 0; i < results.length; i++) {
@@ -252,6 +259,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		results = this.props.db(query);
 		for (let i = 0; i < results.length; i++) {
 			if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
+			results[i].Wert = this.standardizeValues(results[i].Wert);
 		}
 		console.log(results);
 		return results;
@@ -280,9 +288,9 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			results.push({
 				'Ort': this.state.location,
 				'Jahr': year,
-				'Zuzug': zuzug,
-				'Wegzug': -wegzug,
-				'Saldo': zuzug - wegzug,
+				'Zuzug': this.standardizeValues(zuzug),
+				'Wegzug': this.standardizeValues(-wegzug),
+				'Saldo': this.standardizeValues(zuzug - wegzug),
 			});
 		}
 		for(let item of results ){
