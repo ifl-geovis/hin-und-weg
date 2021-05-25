@@ -32,6 +32,22 @@ export default class MainMenu
 					type: 'separator'
 				},
 				{
+					label: 'Vergrößern',
+					accelerator: 'CommandOrControl+=',
+					role: 'zoomIn'
+				},
+				{
+					label: 'Verkleinern',
+					role: 'zoomOut'
+				},
+				{
+					label: 'Zoom zurücksetzen',
+					role: 'resetZoom'
+				},
+				{
+					type: 'separator'
+				},
+				{
 					label: 'Drucken',
 					click(event, window, content) {MainMenu.print(event, window, content);}
 				},
