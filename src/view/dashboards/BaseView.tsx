@@ -150,12 +150,14 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						positiveClasses={this.state.positiveClasses}
 						negativeClasses={this.state.negativeClasses}
 						withNegative={this.state.theme == 'Saldi'}
+						automaticButton={this.state.classcountset}
 						colorSchemes={classification.getColorSchemes()}
 						setAlgorithm={(newAlgorithm) => this.setState({ algorithm: newAlgorithm })}
 						setPositiveColorScheme={(newColorScheme) => this.setState({ positiveColors: newColorScheme })}
 						setNegativeColorScheme={(newColorScheme) => this.setState({ negativeColors: newColorScheme })}
-						setPositiveClasses={(classes) => this.setClassCount(true, classes) }
-						setNegativeClasses={(classes) => this.setClassCount(false, classes) }
+						setPositiveClasses={(classes) => this.setClassCount(true, classes)}
+						setNegativeClasses={(classes) => this.setClassCount(false, classes)}
+						resetAutomaticClasses={(automatic) => this.setState({ classcountset: !automatic, updateclasscount: automatic })}
 					/>
 					<ArrowColorSelections
 						theme={this.state.theme}

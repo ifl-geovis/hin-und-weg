@@ -1,6 +1,7 @@
-import * as React from "react";
+import React, {MouseEvent} from "react";
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Dropdown } from "primereact/dropdown";
+import { Button } from 'primereact/button';
 
 import SelectInput from "../input/SelectInput";
 import Config from "../../config";
@@ -14,12 +15,14 @@ export interface IClassificationSelectionsProps
 	positiveClasses: string;
 	negativeClasses: string;
 	colorSchemes: string[];
+	withNegative: boolean;
+	automaticButton: boolean;
 	setAlgorithm: (newAlgorithm: string) => void;
 	setPositiveColorScheme: (newColorScheme: string) => void;
 	setNegativeColorScheme: (newColorScheme: string) => void;
 	setPositiveClasses: (classes: string) => void;
 	setNegativeClasses: (classes: string) => void;
-	withNegative: boolean;
+	resetAutomaticClasses: (automatic: boolean) => void;
 }
 
 export default class ClassificationSelections extends React.Component<IClassificationSelectionsProps>
@@ -42,6 +45,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 		this.setAlgorithm = this.setAlgorithm.bind(this);
 		this.setPositiveColors = this.setPositiveColors.bind(this);
 		this.setNegativeColors = this.setNegativeColors.bind(this);
+		this.resetAutomaticClasses = this.resetAutomaticClasses.bind(this);
 	}
 
 	public render(): JSX.Element
@@ -49,6 +53,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 		const label = (this.props.withNegative) ? 'positive Skala und Farbschema' : 'Skala und Farbschema';
 		let negativeScale;
 		if (this.props.withNegative) negativeScale = this.getNegativeScale();
+		const automaticClassesButton = this.getAutomaticClassesButton();
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header="Klassifikation">
@@ -58,6 +63,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 					<SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/>
 					<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.positiveColors)} onChange={this.setPositiveColors} style={{ width: "100%" }}/>
 					{negativeScale}
+					{automaticClassesButton}
 				</AccordionTab>
 			</Accordion>
 		);
@@ -103,13 +109,27 @@ export default class ClassificationSelections extends React.Component<IClassific
 		this.props.setNegativeColorScheme(event.value.value);
 	}
 
+	private resetAutomaticClasses(e: MouseEvent) {
+		this.props.resetAutomaticClasses(true);
+	}
+
 	private getNegativeScale() {
 		return (
 			<div>
-				<br /><br />
+				<br />
 				<div>negative Skala und Farbschema</div>
 				<SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/>
 				<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.negativeColors)} onChange={this.setNegativeColors} style={{ width: "100%" }}/>
+			</div>
+		);
+	}
+
+	private getAutomaticClassesButton() {
+		if (!this.props.automaticButton) return null;
+		return (
+			<div>
+				<br />
+				<Button onClick={this.resetAutomaticClasses} label="empfohlene Klassenanzahl"/>
 			</div>
 		);
 	}
