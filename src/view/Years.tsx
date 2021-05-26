@@ -3,6 +3,7 @@ import { Panel } from "primereact/panel";
 import R from "ramda";
 import React, {MouseEvent} from "react";
 import { Accordion, AccordionTab } from 'primereact/accordion';
+import { Button } from 'primereact/button';
 import Log from "../log";
 
 export interface IYearsProps
@@ -30,8 +31,9 @@ export default class Years extends React.Component<IYearsProps>
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header="Jahr(e)">
-					<button onClick={this.selectAllYears}>alle auswählen…</button>
-					<button onClick={this.unselectAllYears}>nichts auswählen…</button>
+					<Button onClick={this.selectAllYears} label="alle"/>
+					<span> </span>
+					<Button onClick={this.unselectAllYears} label="keine"/>
 					<div className="p-grid" style={{ margin: "10px" }}>
 						{checkboxes}
 					</div>
