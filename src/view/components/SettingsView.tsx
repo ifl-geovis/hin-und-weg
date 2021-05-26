@@ -129,7 +129,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		const missingcolor = Settings.getValue('user-colors', 'missing-color');
 		return (
 			<div>
-				<h1>benutzerdefinierte Farben</h1>
+				<h1>Benutzerdefinierte Farben</h1>
 				<h2>Spezialfarben</h2>
 				<div>
 					<ColorPicker
