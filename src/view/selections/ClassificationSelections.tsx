@@ -40,6 +40,8 @@ export default class ClassificationSelections extends React.Component<IClassific
 	{
 		super(props);
 		this.setAlgorithm = this.setAlgorithm.bind(this);
+		this.setPositiveColors = this.setPositiveColors.bind(this);
+		this.setNegativeColors = this.setNegativeColors.bind(this);
 	}
 
 	public render(): JSX.Element
@@ -54,11 +56,30 @@ export default class ClassificationSelections extends React.Component<IClassific
 					<br /><br />
 					<div>{label}</div>
 					<SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/>
-					<SelectInput options={this.props.colorSchemes} selected={this.props.positiveColors} onSelected={this.props.setPositiveColorScheme}/>
+					<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.positiveColors)} onChange={this.setPositiveColors} style={{ width: "100%" }}/>
 					{negativeScale}
 				</AccordionTab>
 			</Accordion>
 		);
+	}
+
+	private createColorOptions(raw: string[]): any[] {
+		let results: any[] = [];
+		for (let colorscheme of raw) {
+			let item = {label: colorscheme, value: colorscheme};
+			if (colorscheme.startsWith('scheme')) item.label = 'Schema ' + colorscheme.substring(6);
+			results.push(item);
+		}
+		return results;
+	}
+
+	private getSelectedColorscheme(selectedColor: string)
+	{
+		for (let colorscheme of this.createColorOptions(this.props.colorSchemes))
+		{
+			if (colorscheme.value === selectedColor) return colorscheme;
+		}
+		return this.createColorOptions(this.props.colorSchemes)[0];
 	}
 
 	private getSelectedAlgorithm()
@@ -74,6 +95,13 @@ export default class ClassificationSelections extends React.Component<IClassific
 		this.props.setAlgorithm(event.value.value);
 	}
 
+	private setPositiveColors(event: { originalEvent: Event, value: any}) {
+		this.props.setPositiveColorScheme(event.value.value);
+	}
+
+	private setNegativeColors(event: { originalEvent: Event, value: any}) {
+		this.props.setNegativeColorScheme(event.value.value);
+	}
 
 	private getNegativeScale() {
 		return (
@@ -81,7 +109,7 @@ export default class ClassificationSelections extends React.Component<IClassific
 				<br /><br />
 				<div>negative Skala und Farbschema</div>
 				<SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/>
-				<SelectInput options={this.props.colorSchemes} selected={this.props.negativeColors} onSelected={this.props.setNegativeColorScheme}/>
+				<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.negativeColors)} onChange={this.setNegativeColors} style={{ width: "100%" }}/>
 			</div>
 		);
 	}
