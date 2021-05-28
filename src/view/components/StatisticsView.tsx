@@ -271,8 +271,8 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 					<td>{this.standardizeOutput(row.MeanWegzüge)}</td>
 					<td>{row.MedianZuzüge}</td>
 					<td>{row.MedianWegzüge}</td>
-					<td>{row.max}</td>
 					<td>{row.min}</td>
+					<td>{row.max}</td>
 				</tr>
 		);
 	}
