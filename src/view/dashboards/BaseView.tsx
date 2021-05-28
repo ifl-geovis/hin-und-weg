@@ -27,9 +27,11 @@ export interface IBaseProps {
 	geodata: Geodata | null;
 	geoName: string | null;
 	geoId: string | null;
+	shapefilename: string;
 	yearsAvailable: string[];
 	baseViewId: number;
 	setGeodata: (geodata: Geodata) => void;
+	setShapefileName: (shapefilename: string) => void;
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
@@ -178,6 +180,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						timeline={timeline}
 						geoName={this.props.geoName}
 						geoId={this.props.geoId}
+						shapefilename={this.props.shapefilename}
 						locations={locations}
 						location={this.state.location}
 						theme={this.state.theme}
@@ -185,6 +188,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						yearsSelected={this.state.years}
 						onSelectLocation={(newLocation) => this.setLocation(newLocation) }
 						setGeodata={this.props.setGeodata}
+						setShapefileName={this.props.setShapefileName}
 						setGeoName={this.setGeoName}
 						setGeoId={this.props.setGeoId}
 						addYear={this.addYear}

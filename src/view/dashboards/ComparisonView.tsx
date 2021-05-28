@@ -27,6 +27,7 @@ interface IComparisonState
 	geoId: string | null;
 	geoName: string | null;
 	yearsAvailable: string[];
+	shapefilename: string;
 }
 
 export default class ComparisonView extends React.Component<IComparisonProps, IComparisonState>
@@ -42,6 +43,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 			geoId: "OT",
 			geoName: null,
 			yearsAvailable: [],
+			shapefilename: "",
 		};
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
@@ -67,8 +69,9 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	private getBaseView(view: string, space: string, id: number): JSX.Element
 	{
 		return (
-			<BaseView baseViewId={id} view={view} space={space} db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable}
+			<BaseView baseViewId={id} view={view} space={space} db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable} shapefilename={this.state.shapefilename}
 				setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
+				setShapefileName={(newName) => { this.setState({ shapefilename: newName }); }}
 				setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
 				setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }}
 				addYear={(year) => { this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) }); }}

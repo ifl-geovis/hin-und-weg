@@ -18,9 +18,11 @@ export interface IImportProps
 	geodata: Geodata | null;
 	geoId: string | null;
 	geoName: string | null;
+	shapefilename: string;
 	setGeodata: (geodata: Geodata) => void;
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
+	setShapefileName: (shapefilename: string) => void;
 	addYear: (year: string) => void;
 	change: () => void;
 }
@@ -87,7 +89,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	private getShapeFileButton() {
 		if (this.props.geodata) return (
 			<div className="p-col-12">
-				<p className="successmessage">Shape Datei wurde erfolgreich geladen...</p>
+				<p className="successmessage">Shape Datei {this.props.shapefilename} wurde erfolgreich geladen...</p>
 			</div>
 		);
 		return (
@@ -105,16 +107,17 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		else if (!files[0].name.endsWith(".shp")) MessageList.getMessageList().addMessage('Die Datei ' + files[0].name + ' sieht nicht wie eine Shape-Datei aus.', 'error');
 		else
 		{
-			this.setState({ shapeloadmessage: "Shape-Datei " + files[0].name + " wird geladen. Bitte warten."});
+			this.setState({ shapeloadmessage: "Shape-Datei " + files[0].name + " wird geladen. Bitte warten." });
+			this.props.setShapefileName(files[0].name);
 			Geodata.read(files[0].path, (newGeodata) => {
 				Log.trace("ImportView.onSelectGeodataFile setGeodata", newGeodata);
 				this.setState({ shapeloadmessage: ""});
-				MessageList.getMessageList().addMessage('Shape Datei wurde erfolgreich geladen.', 'success');
+				MessageList.getMessageList().addMessage("Shape-Datei " + this.props.shapefilename + " wurde erfolgreich geladen.", 'success');
 				this.props.setGeodata(newGeodata.transformToWGS84());
 			}, (reason) => {
 				Log.debug("ImportView.onSelectGeodataFile failure", reason);
 				this.setState({ shapeloadmessage: ""});
-				MessageList.getMessageList().addMessage("Problem beim Einlesen der Shape-Datei aufgetreten. Fehlermeldung ist: " + reason, 'error');
+				MessageList.getMessageList().addMessage("Problem beim Einlesen der Shape-Datei " + this.props.shapefilename + " aufgetreten. Fehlermeldung ist: " + reason, 'error');
 				this.props.change();
 			});
 		}

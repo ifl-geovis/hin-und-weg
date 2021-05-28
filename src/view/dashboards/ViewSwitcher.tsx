@@ -48,6 +48,7 @@ export interface IViewSwitcherProps {
 	statisticPerYearAusgabe: StatisticPerYearAusgabe[];
 	geoName: string | null;
 	geoId: string | null;
+	shapefilename: string;
 	locations: string[];
 	location: string | null;
 	theme: string;
@@ -57,6 +58,7 @@ export interface IViewSwitcherProps {
 	baseViewId: number;
 	onSelectLocation: (newLocation: string) => void;
 	setGeodata: (geodata: Geodata) => void;
+	setShapefileName: (shapefilename: string) => void;
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
@@ -267,9 +269,11 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 					geodata={this.props.geodata}
 					geoName={this.props.geoName}
 					geoId={this.props.geoId}
+					shapefilename={this.props.shapefilename}
 					setGeodata={this.props.setGeodata}
 					setGeoName={this.props.setGeoName}
 					setGeoId={this.props.setGeoId}
+					setShapefileName={this.props.setShapefileName}
 					addYear={this.props.addYear}
 					change={this.props.change}
 				/>
