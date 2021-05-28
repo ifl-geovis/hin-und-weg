@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import R from "ramda";
 import React from "react";
 import { systemPreferences } from "electron";
+import Log from '../log';
 
 export type TableItem  = {[name: string]: any} | null;
 
@@ -15,6 +16,8 @@ export default class TableView extends React.Component<ITableViewProps> {
 
 	constructor(props: ITableViewProps) {
 		super(props);
+		this.sortByNumberValue = this.sortByNumberValue.bind(this);
+		this.createColumn = this.createColumn.bind(this);
 	}
 
 	public render(): JSX.Element {
@@ -41,13 +44,33 @@ export default class TableView extends React.Component<ITableViewProps> {
 		);
 	}
 
+	private sortByNumberValue(event: any): any[] {
+		Log.debug("sortByNumberValue event", event);
+		let data = this.props.items;
+		Log.debug("sortByNumberValue data", data);
+		data.sort((data1: any, data2: any) => {
+			Log.debug("sortByNumberValue data1", data1);
+			Log.debug("sortByNumberValue data2", data2);
+			let result = data1.Wert - data2.Wert;
+			if (Number.isNaN(data1.Wert) && !Number.isNaN(data2.Wert)) result = -1;
+			if (!Number.isNaN(data1.Wert) && Number.isNaN(data2.Wert)) result = 1;
+			if (Number.isNaN(data1.Wert) && Number.isNaN(data2.Wert)) result = 0;
+			Log.debug("sortByNumberValue result", result);
+			return (event.order * result);
+		});
+		Log.debug("sortByNumberValue data", data);
+		return data;
+	}
+
 	private createColumn(fieldName: string): JSX.Element {
+		const numberValue = (fieldName === "Wert") || (fieldName === "RateVon") || (fieldName === "RateNach");
 		let filterMatchMode = "contains";
-		if (fieldName === "Wert"){
+		if (numberValue) {
 			filterMatchMode = "equals";
 		}
 		return <Column key={fieldName}  field={`${fieldName}`} header={fieldName} filterPlaceholder="Filtern ..."
-							sortable={true} filter={true} filterMatchMode={filterMatchMode}/>;
+							// @ts-ignore
+							sortable={true} sortFunction={numberValue ? this.sortByNumberValue : null} filter={true} filterMatchMode={filterMatchMode}/>;
 	}
 
 }
