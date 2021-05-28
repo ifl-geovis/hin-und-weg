@@ -2,6 +2,7 @@ import React from "react";
 import R from "ramda";
 import D3HistogramView from '../charts/D3HistogramView';
 
+import Log from '../../log';
 
 // Does not work in electronjs, so we use the @ts-ignore annotation
 // For development (hint types, autocompletion) uncomment this 2 lines below
@@ -49,6 +50,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 	public render(): JSX.Element
 	{
+		Log.debug("render input", this.props.items);
 		let maxzuzüge: string;
 		let maxwegzüge: string;
 		let count: number = this.props.items.length;
