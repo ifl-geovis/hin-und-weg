@@ -124,15 +124,28 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		this.props.change();
 	}
 
+	private isAlreadyLoaded(path: string)
+	{
+		for (let tablefile of this.state.tablefiles) {
+			if (tablefile.getPath() === path) return true;
+		}
+		return false;
+	}
+
 	private onSelectTabledataFiles(files: FileList)
 	{
 		this.setState({ newtableloading: true });
 		let newTablefiles = [] as TableFileStatus[];
 		for (let i=0;i<files.length; i++)
 		{
-			let status: TableFileStatus = new TableFileStatus(files[i].path);
-			this.readTabledata(status);
-			newTablefiles = R.append(status, newTablefiles);
+			if (this.isAlreadyLoaded(files[i].path)) {
+				MessageList.getMessageList().addMessage('CSV-Datei ' + files[i].path + ' wurde bereits zuvor geladen.' , 'error');
+				this.props.change();
+			} else {
+				let status: TableFileStatus = new TableFileStatus(files[i].path);
+				this.readTabledata(status);
+				newTablefiles = R.append(status, newTablefiles);
+			}
 		}
 		this.setState({ tablefiles: R.concat(newTablefiles, this.state.tablefiles) });
 		this.generateSummaryMessage();
