@@ -101,36 +101,35 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		}
 		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
-			<div style={{position: "relative"}}>
-				
-			<Map bounds={boundsOfGeodata} ref={this.mapRef} zoomDelta={0.25} zoomSnap={0}>
-				{geomap}
-				{arrows1}
-				{arrows2}
-				<ScaleControl></ScaleControl>
-				<Pane name="offlineMap" style={{ zIndex: 200 }}>
-					{offlinemap}
-				</Pane>
-				<Pane name="districts" style={{ zIndex: 300 }}>
-					<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
-				</Pane>
-				<Pane name="NamesPane" style={{ zIndex: 800 }}>
-					{labelsNames}
-				</Pane>
-				<Pane name="ValuesPane1" style={{ zIndex: 800 }}>
-					{labelsValues1}
-				</Pane>
-				<Pane name="centerMarker" style={{ zIndex: 900 }}>
-					{centerMarker}
-				</Pane>
-				<Pane name="ValuesPane2" style={{ zIndex: 800 }}>
-					{labelsValues2}
-				</Pane>
-				<Pane name="borderSelectedFeature" style={{ zIndex: 350 }}>
-					{featureBorder}
-				</Pane>
-				<Button className="p-button-raised btnMapExtent" icon="pi pi-home" onClick={this.extentMap} />
-			</Map>
+			<div style={{ position: 'relative' }}>
+				<Map bounds={boundsOfGeodata} ref={this.mapRef} zoomDelta={0.25} zoomSnap={0}>
+					{geomap}
+					{arrows1}
+					{arrows2}
+					<ScaleControl></ScaleControl>
+					<Pane name="offlineMap" style={{ zIndex: 200 }}>
+						{offlinemap}
+					</Pane>
+					<Pane name="districts" style={{ zIndex: 300 }}>
+						<GeoJSON data={geoDataJson} onEachFeature={this.onEachFeature} style={this.style}></GeoJSON>
+					</Pane>
+					<Pane name="NamesPane" style={{ zIndex: 800 }}>
+						{labelsNames}
+					</Pane>
+					<Pane name="ValuesPane1" style={{ zIndex: 800 }}>
+						{labelsValues1}
+					</Pane>
+					<Pane name="centerMarker" style={{ zIndex: 900 }}>
+						{centerMarker}
+					</Pane>
+					<Pane name="ValuesPane2" style={{ zIndex: 800 }}>
+						{labelsValues2}
+					</Pane>
+					<Pane name="borderSelectedFeature" style={{ zIndex: 350 }}>
+						{featureBorder}
+					</Pane>
+					<Button className="p-button-raised btnMapExtent" icon="pi pi-home" onClick={this.extentMap} />
+				</Map>
 			</div>
 		);
 	}
@@ -149,57 +148,50 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		svgArrows.forEach((svg) => {
 			if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
 		});
-	//	this.SwoopyArrows = [];
+		//	this.SwoopyArrows = [];
 	}
 
 	public addArrowsEvents() {
-
-		document.addEventListener("mouseover", (event) => {
+		document.addEventListener('mouseover', (event) => {
 			//@ts-ignore
-			if(!event.target.matches('.swoopyarrow__path')) return;
-			console.log("Event:", event);
+			if (!event.target.matches('.swoopyarrow__path')) return;
+			console.log('Event:', event);
 			//@ts-ignore
 			const arrowpathID = event.target.id;
 			const pattern = new RegExp(/\d+/);
 			const id = arrowpathID.match(pattern);
-			let color = "#007ad9";
+			let color = '#007ad9';
 			console.log(id);
-			console.log("arrowid", arrowpathID);
-			console.log("SwoopyArrows", this.SwoopyArrows);
+			console.log('arrowid', arrowpathID);
+			console.log('SwoopyArrows', this.SwoopyArrows);
 			console.log(this.SwoopyArrows[id]);
-			if(this.SwoopyArrows[id].color){
-			console.log("color:",this.SwoopyArrows[id].color);
-			color = this.SwoopyArrows[id].color;}
-			
-			let hoverbox = document.getElementById("HoverBox");
-			if(hoverbox){
-			
-				hoverbox.style.left = event.screenX+"px";
-				hoverbox.style.top = event.screenY+"px";
-				hoverbox.style.backgroundColor = color;
-				hoverbox.textContent = `${this.SwoopyArrows[id].label} \n ${this.SwoopyArrows[id].value}`  ;
-				
-
-			hoverbox.style.display = "block";
+			if (this.SwoopyArrows[id].color) {
+				console.log('color:', this.SwoopyArrows[id].color);
+				color = this.SwoopyArrows[id].color;
 			}
 
-		})
+			let hoverbox = document.getElementById('HoverBox');
+			if (hoverbox) {
+				hoverbox.style.left = event.screenX + 'px';
+				hoverbox.style.top = event.screenY + 'px';
+				hoverbox.style.backgroundColor = color;
+				hoverbox.textContent = `${this.SwoopyArrows[id].label} \n ${this.SwoopyArrows[id].value}`;
 
-		document.addEventListener("mouseout", (event) => {
+				hoverbox.style.display = 'block';
+			}
+		});
+
+		document.addEventListener('mouseout', (event) => {
 			//@ts-ignore
-			if(!event.target.matches('.swoopyarrow__path')) return;
-			console.log("Event:", event);
+			if (!event.target.matches('.swoopyarrow__path')) return;
+			console.log('Event:', event);
 
-			let hoverbox = document.getElementById("HoverBox");
-			if(hoverbox)
-			hoverbox.style.display = "none";
-
-
+			let hoverbox = document.getElementById('HoverBox');
+			if (hoverbox) hoverbox.style.display = 'none';
 		});
 		//const map = this.mapRef.current.leafletElement;
 		//if(map){ console.log(map);}
 	}
-
 
 	public updateArrowHead() {
 		const arrowHeadSVG = document.querySelector('#arrowHead path');
@@ -285,7 +277,21 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	}
 
 	public getOfflineMap() {
-		return <ImageOverlay url={this.props.offlineMap.file} bounds={this.props.offlineMap.bounds} />;
+		const lowerLeft3857: Array<number> = this.props.offlineMap.bounds[0];
+		const upperRight3857: Array<number> = this.props.offlineMap.bounds[1];
+
+		const lowerLeft4326: Array<number> = turf.toWgs84(lowerLeft3857);
+		const upperRight4326: Array<number> = turf.toWgs84(upperRight3857);
+
+		return (
+			<ImageOverlay
+				url={this.props.offlineMap.file}
+				bounds={[
+					[lowerLeft4326[1], lowerLeft4326[0]],
+					[upperRight4326[1], upperRight4326[0]],
+				]}
+			/>
+		);
 	}
 
 	public style(feature: Feature) {
@@ -488,7 +494,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
-								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor()});
+								this.SwoopyArrows.push({
+									label: feature1.properties.Name,
+									value: item.Wert,
+									color: this.classification.getNegativeArrowColor(),
+								});
 								// @ts-ignore
 								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									color: this.classification.getNegativeArrowColor(),
@@ -498,14 +508,18 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 									label: item.Wert,
 								}).openTooltip();
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
-								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor()});
+								this.SwoopyArrows.push({
+									label: feature1.properties.Name,
+									value: item.Wert,
+									color: this.classification.getPositiveArrowColor(),
+								});
 								// @ts-ignore
 								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									color: this.classification.getPositiveArrowColor(),
 									factor: 0.75,
 									weight: this.classification.getArrowWidth(item.Wert),
 									arrowId: '#arrowHead',
-									label: "Test2",
+									label: 'Test2',
 								}).openTooltip();
 							}
 						}
@@ -515,7 +529,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Von == this.props.selectedLocation && item.Nach == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor()});
+							this.SwoopyArrows.push({
+								label: feature1.properties.Name,
+								value: item.Wert,
+								color: this.classification.getPositiveArrowColor(),
+							});
 							// @ts-ignore
 							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								color: this.classification.getPositiveArrowColor(),
@@ -532,7 +550,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor()});
+							this.SwoopyArrows.push({
+								label: feature1.properties.Name,
+								value: item.Wert,
+								color: this.classification.getNegativeArrowColor(),
+							});
 							// @ts-ignore
 							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),

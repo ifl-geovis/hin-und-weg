@@ -1,7 +1,7 @@
 ## Kurzanleitung
 
--   \*.png Datei erstellen und im Ordner offline speichern
--   Extent des Bildes in EPSG:4326 ermitteln
+-   \*.png (EPSG:3857) Datei erstellen und im Ordner offline speichern
+-   Extent (EPSG:3857) des Bildes ermitteln
 -   Label, Dateipfad und Extent in Konfigurationsdatei eintragen
 
 ## Ausführliche Anleitung
@@ -9,6 +9,7 @@
 -   Ordner für die Bilddateien und die Konfigurationsdatei erstellen
     -   Konfigurationsdatei (*.txt) erstellen
 -   Offlinekarten erstellen
+    -   Koordinatensystem EPSG:3857 verwenden
     -   Für die gewünschte Hintergrundkarte einen Geodienst finden
     -   Geodienst (WMS/WMTS) in QGIS einladen
     -   Auf die gewünschte Ausdehnung navigieren / zoomen
@@ -26,13 +27,20 @@ Die Konfigurationsdatei enthält alle relevanten Informationen für die Nutzung 
 
 -   Label zur Anzeige in der Anwendung
 -   Dateiname
--   Ausdehnung Süd (EPSG:4326)
--   Ausdehnung West (EPSG:4326)
--   Ausdehnung Nord (EPSG:4326)
--   Ausdehnung Ost (EPSG:4326)
+-   Ausdehnung West
+-   Ausdehnung Süd
+-   Ausdehnung Ost
+-   Ausdehnung Nord
 
 bspw:
-Potsdam,potsdam.png,52.3627883,12.9794247,52.4269553,13.1674247
+Potsdam,potsdam.png,1431295.12,6855898.52,1491858.23,6889632.89
 
 ## Eigene Karten in die Anwendung importieren
 In den Einstellungen in der Anwendung kann ein eigener Ordner mit Offlinekarten ausgewählt werden. Dafür muss ein Ordner mit den Offlinekarten sowie einer Konfigurationsdatei vorhanden sein. Um die Karten in die Anwendung zu importieren, muss in den Einstellungen die Konfigurationsdatei ausgewählt werden.
+
+## Standardpfad für die integrierten Offline-Karten
+* Windows: ..\hin-und-weg-win32-x64\resources\app\offline
+* Linux: ..\hin-und-weg-linux-x64\resources\app\offline
+* MacOS: ..\hin-und-weg-darwin-x64\hin-und-weg.app\Contents\Resources\app\offline
+<span style="font-size: 14px;">Um die Ordner unter hin-und-weg.app anzuzeigen, müssen mittels <kbd>ctrl</kbd> + linker Maustaste die Paketinhalte
+angezeigt werden.</span>
