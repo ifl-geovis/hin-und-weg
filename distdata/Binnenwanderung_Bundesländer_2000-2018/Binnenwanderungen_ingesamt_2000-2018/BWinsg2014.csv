@@ -1,5 +1,5 @@
-metadata keys,type,year,﻿Metadaten(Kategorien),Inhalt,Bezugsraum,Zeitraum,Zeitraumbezogen,Geschlecht,,,,,,,,,,,
-metadata values,movement-year,2014,Metadaten(Werte),Binnenwanderungen,Bundesländer,Jahr,2014,insgesamt,,,,,,,,,,,
+metadata keys,type,timeunit,time,﻿Metadaten(Kategorien),Inhalt,Bezugsraum,Zeitraum,Zeitraumbezogen,Geschlecht,,,,,,,,,,,
+metadata values,movement,year,2014,Metadaten(Werte),Binnenwanderungen,Bundesländer,Jahr,2014,insgesamt,,,,,,,,,,,
 ,DE1,DE2,DE3,DE4,DE5,DE6,DE7,DE8,DE9,DEA,DEB,DEC,DED,DEE,DEF,DEG
 DE1,.,38138,7259,2039,895,3128,17272,1339,7691,18629,15733,1732,5261,1906,2950,2524
 DE2,36108,.,8452,2500,817,3554,14624,1394,8082,17653,5225,960,7786,2300,3161,4982

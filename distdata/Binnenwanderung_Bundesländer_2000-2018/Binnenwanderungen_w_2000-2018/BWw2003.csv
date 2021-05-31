@@ -1,5 +1,5 @@
-metadata keys,type,year,﻿Metadaten(Kategorien),Inhalt,Bezugsraum,Zeitraum,Zeitraumbezogen,Geschlecht,,,,,,,,,,,
-metadata values,movement-year,2003,Metadaten(Werte),Binnenwanderungen,Bundesländer,Jahr,2003,weiblich,,,,,,,,,,,
+metadata keys,type,timeunit,time,﻿Metadaten(Kategorien),Inhalt,Bezugsraum,Zeitraum,Zeitraumbezogen,Geschlecht,,,,,,,,,,,
+metadata values,movement,year,2003,Metadaten(Werte),Binnenwanderungen,Bundesländer,Jahr,2003,weiblich,,,,,,,,,,,
 ,DE1,DE2,DE3,DE4,DE5,DE6,DE7,DE8,DE9,DEA,DEB,DEC,DED,DEE,DEF,DEG
 DE1,.,14892,2698,961,361,1133,6635,520,3312,7821,6072,722,2114,950,1312,1098
 DE2,14214,.,3093,1081,346,1193,5851,469,3205,7511,2175,447,3420,1106,1338,1920
