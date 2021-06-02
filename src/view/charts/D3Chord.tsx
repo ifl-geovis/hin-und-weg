@@ -127,8 +127,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let von = data.map(d => d.Von);
       let names = nach.concat(von);
       let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
-      let marginResponsive = this.state.checkedLabel === false ? maxNameLength*6 : (maxNameLength + 10)*6; //5.3
-
+      let marginResponsive = this.props.width < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
+      this.props.width < 700 && this.props.width >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 : 
+      this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4; // +10
+     
       let MARGIN = {TOP: marginResponsive, RIGHT: marginResponsive, BOTTOM: marginResponsive, LEFT: marginResponsive}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
       let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
@@ -141,7 +143,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
       const classification = Classification.getCurrentClassification();
       // let hexcolor = classification.getColor(data[1]);
-      console.log("classification: " + JSON.stringify(classification));
+      // console.log("classification: " + JSON.stringify(classification));
 
       let classColors = (data: ID3ChordItem[]) => {
         let colors = new Array(data.length);
@@ -152,7 +154,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         }  return colors
       }
       let hexcolor:string[]  = classColors(data);
-      console.log("classification colors: " + hexcolor);
+      // console.log("classification colors: " + hexcolor);
 
       let hexcolorAdd: string[] =  classColors(data);
         hexcolorAdd.push("#f7f7f7");
@@ -223,7 +225,11 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let fillNachPlus = () => {
           for(let i=0;i<nach.length;i++){
               nachPlus[i]=nach[i]
-            } return nachPlus
+            }  
+            if (indx === undefined){
+              nachPlus[nachPlus.length - 1] = von[0]
+            }
+            return nachPlus
           }
         nachPlus = fillNachPlus();
 
@@ -460,11 +466,11 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               + "translate(" + (outerRadius + 10) + ")"
               + (d.angle > Math.PI ? "rotate(180)" : "");
             })
-            .style("font-size", "14px" )
+            .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px" )
             .attr("font-family", "Open Sans")
-            .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.2em" :  "1.2em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2em" :  "2em" : d.angle > Math.PI ? "-3em" : "3em"; }) // 1.2em
-            .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " - " + nachVar[i] : nachVar[i] + " - "; });
-            // .text(function(d, i) { return nachVar[i]; });
+            .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : d.angle > Math.PI ? "-4em" : "4em"; }) // 1.2em
+            // .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " : " + nachVar[i] : nachVar[i] + " : "; });
+            .text(function(d, i) { return nachVar[i]; });
             // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
 
           const labelsValues = group.append("text")
@@ -477,10 +483,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               + "translate(" + (outerRadius + 10) + ")"
               + (d.angle > Math.PI ? "rotate(180)" : "");
             })
-            .style("font-size", "14px" )
+            .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px" )
             .attr("font-family", "Open Sans")
             .style("font-weight", "bold")
-            .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
+            .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + d.value : d.value + " : " ; });
 
           group.append("title")
           group.select("title")
@@ -641,10 +647,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", "14px" )
+        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px")
         .attr("font-family", "Open Sans")
-        .attr("dx", function(d:any) { return labelText === 0 ? "" : max < 100 ? d.angle > Math.PI ? "-1.2em" :  "1.2em" : max < 1000  && max >= 100 ? d.angle > Math.PI ? "-2em" :  "2em" : d.angle > Math.PI ? "-3em" : "3em"; }) // 1.2em
-        .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " - " + vonVar[i] : vonVar[i] + " - "; });
+        .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : d.angle > Math.PI ? "-4em" : "4em"; }) // 1.2em
+        .text(function(d, i) { return vonVar[i]; });
         // .text(function(d, i) { return nachVar[i]; });
         // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
 
@@ -658,10 +664,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", "14px" )
+        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + d.value : d.value + " : " ; });
 
 
           group.append("title")
@@ -704,7 +710,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let arrSaldi = arrAbsolute(arrFull)
 
         let valueasSaldiVar = arr.length === values.length? values : valuesPlus;
-
+        let valueasSaldiVarLabels = arr.length === values.length? values : valuesPlus;
+        if(indx !== undefined){
+          valueasSaldiVarLabels[indx] = valueasSaldiVarLabels.reduce((a, b) => a + b, 0)
+        } else {
+          valueasSaldiVarLabels[valueasSaldiVarLabels.length - 1] = valueasSaldiVarLabels.reduce((a, b) => a + b, 0)
+        }
         let colorsSaldiFunctionNEW = (clrs:string[], ar:number[]) => {
           let ar2 = new Array(ar.length);
           ar2.fill(clrs[2]);
@@ -861,10 +872,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", "14px" )
+        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" :  "13px" )
         .attr("font-family", "Open Sans")
-        .attr("dx", function(d:any) { return labelText === 0 ? "" : max < 100 ? d.angle > Math.PI ? "-1.2em" :  "1.2em" : max < 1000  && max >= 100 ? d.angle > Math.PI ? "-2em" :  "2em" : d.angle > Math.PI ? "-3em" : "3em"; }) // 1.2em
-        .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " - " + vonVar[i] : vonVar[i] + " - "; });
+        .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : d.angle > Math.PI ? "-4em" : "4em"; }) // 1.2em
+        .text(function(d, i) { return vonVar[i]; });
         // .text(function(d, i) { return nachVar[i]; });
         // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
 
@@ -878,10 +889,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", "14px" )
+        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) { return labelText === 0 ? '' : d.value ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + valueasSaldiVarLabels[d.index]  : valueasSaldiVarLabels[d.index]  + " : " ; });
 
         group.append("title")
         group.select("title")
