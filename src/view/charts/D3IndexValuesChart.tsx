@@ -8,6 +8,7 @@ export interface ID3IndexValuesChartItem {
 	label: string;
 	result: number;
 	index: number;
+	yearSelect: string;
 }
 
 export interface ID3IndexValuesChartProps {
@@ -107,10 +108,13 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	private drawIndxValChart(data: ID3IndexValuesChartItem[], theme: string) {
 		const svgIndxValChart = select(this.svgRef!);
 
-		let heightResponsive = data.length <= 10 ? data.length*50 : data.length * 25;
-		let MARGIN = { TOP: 75, RIGHT: 15, BOTTOM: 50, LEFT: 80 };
-		let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
-		let HEIGHT = heightResponsive - MARGIN.TOP - MARGIN.BOTTOM;
+		// let heightResponsive = data.length <= 10 ? data.length*50 : data.length * 25;
+		const labels = data.map((d) => d.label);
+		let maxNameLength = Math.max(...labels.map(el => el ? el.length : 50));
+		let marginResponsive =  this.props.type === 'year' ? maxNameLength*10 : maxNameLength*8 ; // +10		
+		let MARGIN = { TOP: 75, RIGHT: 15, BOTTOM: marginResponsive, LEFT: 80 }; //50
+				let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
+		let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
 
 		const classification = Classification.getCurrentClassification();
 		let positiveColor = classification.getZeitreihenPositiveColors()[0];
@@ -126,7 +130,6 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		let xAxisGroup = indxValChart.append('g').attr('transform', `translate(0, ${HEIGHT})`);
 		let yAxisGroup = indxValChart.append('g');
 
-		const labels = data.map((d) => d.label);
 		const indexValues = data.map((d) => d.index);
 
 		let checkRef = (ar1:string[], ref1:string, ref2:string) => {

@@ -1,4 +1,5 @@
 import * as React from "react";
+import R from 'ramda';
 
 import { Dropdown } from "primereact/dropdown";
 import * as d3 from 'd3';
@@ -17,7 +18,9 @@ export interface ID3IndexViewProps {
 	yearsAvailable: string[];
 	locations: string[];
 	vizID: number;
-	 baseViewId: number;
+	baseViewId: number;
+	yearsSelected: string[];
+	migrationsInside: boolean;
 }
 
 interface ID3IndexViewState {
@@ -122,7 +125,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 							yearsAvailable={this.props.yearsAvailable} 
 							baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 							width={ width}
-							height={(data.length < 20 )? data.length*50 : data.length*20}
+							height = {this.state.type === 'year' ? 450: 550}
 							data={data} 
 							referenceYear={this.state.referenceYear}
 							referenceLocation={this.state.referenceLocation}
@@ -141,6 +144,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 
 	private constructQuery(type: string, theme: string)
 	{
+	
 		if (type === "year")
 		{
 			if (theme === "Von") return "SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '" + this.props.location + "' AND Von <> Nach GROUP BY Jahr";
@@ -170,10 +174,26 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		}
 		let query = this.constructQuery(this.state.type, this.props.theme);
 		let results = this.props.db(query);
-		Log.debug("results in queryIndex : ", results);
+		// selectable years from the left panel
+		let resultsFiltered : any[] = [];
+		const years = this.props.yearsSelected;
+		const stringYears = R.join(
+			', ',
+			R.map((year) => `'${year}'`, years)
+		);
+		if(this.state.type === 'year'){
+			for(let item of results ){
+				if ( R.contains(item.label, stringYears)){
+					resultsFiltered.push(item);
+				}
+			}
+		}
+		Log.debug("resultsFiltered in queryIndex : ", resultsFiltered);
 
 		
-		return this.calculateIndexValue(results);
+		//return this.calculateIndexValue(results);
+		return this.state.type === 'year' ? this.calculateIndexValue(resultsFiltered):this.calculateIndexValue(results);
+
 	}
 
 	private calculateSaldiForYears(results_zuzug: any[], results_wegzug: any[]): any[]

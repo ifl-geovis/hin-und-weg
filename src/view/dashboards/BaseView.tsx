@@ -193,6 +193,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						setGeoId={this.props.setGeoId}
 						addYear={this.addYear}
 						change={this.change}
+						migrationsInside={this.state.migrationsInside}
 					/>
 				</div>
 			</div>
