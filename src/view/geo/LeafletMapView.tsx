@@ -13,7 +13,6 @@ import { IOfflineMaps } from '../../data/OfflineMaps';
 // @ts-ignore
 import 'leaflet-swoopy';
 import { lowerFirst } from 'lodash';
-import { relative } from 'node:path';
 import { options } from 'alasql';
 
 export interface ILeafletMapViewProps {
@@ -103,7 +102,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
 			<div style={{position: "relative"}}>
-				
+
 			<Map bounds={boundsOfGeodata} ref={this.mapRef} zoomDelta={0.25} zoomSnap={0}>
 				{geomap}
 				{arrows1}
@@ -161,8 +160,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		document.addEventListener("mouseover", (event) => {
 		const map = this.mapRef.current.leafletElement;
 		let geoDataJson: FeatureCollection<Geometry, GeoJsonProperties>;
-		
-	
+
+
 			//@ts-ignore
 			if(!event.target.matches('.swoopyarrow__path')) return;
 			console.log("Event:", event);
@@ -189,10 +188,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 
 			console.log("lat id", lat);
 			console.log("lng id", lng);
-			
+
 
 			map.eachLayer((layer: any) => {
-				
+
 
 			if(layer.options.pane == "SwoopyPopUpCenter"){
 				console.log("FP01 layer:",layer);
@@ -522,7 +521,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
-								
+
 								this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// @ts-ignore
 								lat: latlng.lat, lng: latlng.lng});
