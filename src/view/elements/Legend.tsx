@@ -60,7 +60,14 @@ export default class Legend extends React.Component<ILegendProps> {
 			else if (theme == 'Nach') title += 'Zuzüge nach ';
 			else if (theme == 'Saldi') title += 'Saldi für ';
 			title += location;
-			title += " (" + this.props.yearsSelected + ")";
+			title += " (";
+			let first: boolean = true;
+			for (let year of this.props.yearsSelected) {
+				if (!first) title += ", ";
+				title += year;
+				first = false;
+			}
+			title += ")";
 		}
 		return title;
 	}

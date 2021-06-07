@@ -73,7 +73,15 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 		let title_text = "Statistik für";
 		if (this.props.theme) title_text += " " + this.props.theme;
 		if (this.props.location) title_text += " " + this.props.location;
-		if (this.props.yearsSelected) title_text += " in den Jahren " + this.props.yearsSelected;
+		if (this.props.yearsSelected) {
+			title_text += " in den Jahren ";
+			let first: boolean = true;
+			for (let year of this.props.yearsSelected) {
+				if (!first) title_text += ", ";
+				title_text += year;
+				first = false;
+			}
+		}
 		const years = this.getYears();
 		return (
 			<div className="p-grid">
