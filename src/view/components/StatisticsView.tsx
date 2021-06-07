@@ -128,18 +128,22 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 				<br></br>
 
 				<div className="scrollable p-col-12">
-					<table>
+					<table className="year-statistics">
 						<tbody>
-
 							<tr>
-								<th>Jahr</th>
-								<th>Saldi Mittelwert</th>
-								<th>Zuzüge Mittelwert</th>
-								<th>Wegzüge Mittelwert</th>
-								<th>Median Zuzüge</th>
-								<th>Median Wegzüge</th>
-								<th>Meiste Wegzüge</th>
-								<th>Meiste Zuzüge</th>
+								<th rowSpan={2}>Jahr</th>
+								<th colSpan={3}>Mittelwert</th>
+								<th colSpan={2}>Median</th>
+								<th colSpan={2}>Meiste</th>
+							</tr>
+							<tr>
+								<th>Saldi</th>
+								<th>Zuzüge</th>
+								<th>Wegzüge</th>
+								<th>Zuzüge</th>
+								<th>Wegzüge</th>
+								<th>Zuzüge</th>
+								<th>Wegzüge</th>
 							</tr>
 
 							{years}
@@ -281,8 +285,8 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 					<td>{this.standardizeOutput(row.MeanWegzüge)}</td>
 					<td>{row.MedianZuzüge}</td>
 					<td>{row.MedianWegzüge}</td>
-					<td>{row.min}</td>
 					<td>{row.max}</td>
+					<td>{row.min}</td>
 				</tr>
 		);
 	}

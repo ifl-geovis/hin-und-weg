@@ -268,3 +268,21 @@ div.negativebar {
 	display: none;
 	border-radius: 5px;
 }
+
+table.year-statistics
+{
+	border-collapse: collapse
+}
+
+table.year-statistics td,
+table.year-statistics th
+{
+	border-style: solid;
+	border-width: 1px;
+	text-align: center;
+}
+
+table.year-statistics th
+{
+	background-color: #dddddd;
+}
