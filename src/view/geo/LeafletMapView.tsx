@@ -164,10 +164,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 
 			//@ts-ignore
 			if(!event.target.matches('.swoopyarrow__path')) return;
-			console.log("Event:", event);
-
-			console.log("map",map);
-			console.log("map_map",map._map);
 
 			//@ts-ignore
 			const arrowpathID = event.target.id;
@@ -176,38 +172,38 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			let color = "#007ad9";
 			let lat = 0;
 			let lng = 0;
-			console.log(id);
-			console.log("arrowid", arrowpathID);
-			console.log("SwoopyArrows", this.SwoopyArrows);
-			console.log(this.SwoopyArrows[id]);
 			if(this.SwoopyArrows[id].color){
 			console.log("color:",this.SwoopyArrows[id].color);
 			color = this.SwoopyArrows[id].color;
 			lat = this.SwoopyArrows[id].lat;
 			lng = this.SwoopyArrows[id].lng}
 
-			console.log("lat id", lat);
-			console.log("lng id", lng);
-
 
 			map.eachLayer((layer: any) => {
 
 
 			if(layer.options.pane == "SwoopyPopUpCenter"){
-				console.log("FP01 layer:",layer);
 				layer.bindTooltip(`${this.SwoopyArrows[id].label} \n ${this.SwoopyArrows[id].value}`, {
 					permanent: true,
 					opacity: 0.7,
 					className: 'district-label-arrow',
 					id: 'tooltip-arrow',
 					direction: 'center',
+					backgroundcolor: "blue",
 					color: color,
 				})
 				.openTooltip({ lat: lat, lng: lng });
 				}
+				
+			let hoverbox = Array.from(document.getElementsByClassName('district-label-arrow') as HTMLCollectionOf<HTMLElement>)
 
-
+			let i = 0;
+			for(i = 0; i < hoverbox.length; i++){
+				hoverbox[i].style.backgroundColor = color;
 			}
+			}
+
+
 
 			);
 
@@ -216,11 +212,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		document.addEventListener("mouseout", (event) => {
 			//@ts-ignore
 			if(!event.target.matches('.swoopyarrow__path')) return;
-			console.log("Mouseout Event");
-			console.log("Event:", event);
 			let hoverbox = Array.from(document.getElementsByClassName('district-label-arrow') as HTMLCollectionOf<HTMLElement>)
 
-			console.log(hoverbox);
 			let i = 0;
 			for(i = 0; i < hoverbox.length; i++){
 				hoverbox[i].style.display = "none";
