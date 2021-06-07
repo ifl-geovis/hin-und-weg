@@ -32,6 +32,7 @@ export default class Classification {
 	private theme: string | null = null;
 	private query: { [name: string]: any }[] = [];
 	private algorithm: string = 'equidistant';
+	private dataProcessing: string = 'absolute';
 
 	private positive_stats: any;
 	private negative_stats: any;
@@ -169,6 +170,10 @@ export default class Classification {
 		this.algorithm = algorithm;
 	}
 
+	public setDataProcessing(dataProcessing: string) {
+		this.dataProcessing = dataProcessing;
+	}
+
 	public setPositiveColors(colorScheme: string[]) {
 		this.positive_colors = colorScheme;
 	}
@@ -232,14 +237,22 @@ export default class Classification {
 		return Math.round(num);
 	}
 
+	private roundValueThree(num: number): number {
+		return parseFloat(num.toFixed(3));
+	}
+
 	private fillPositiveScales() {
 		this.positive_scales = [];
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
-		this.positive_scales.push(Math.floor(ranges[0]));
-		for (let i = 1; i < ranges.length - 1; i++) this.positive_scales.push(this.roundValue(ranges[i]));
-		this.positive_scales.push(Math.ceil(ranges[ranges.length - 1]));
+		if (this.dataProcessing === 'wanderungsrate') {
+			for (let i = 0; i < ranges.length; i++) this.positive_scales.push(this.roundValueThree(ranges[i]));
+		} else {
+			this.positive_scales.push(Math.floor(ranges[0]));
+			for (let i = 1; i < ranges.length - 1; i++) this.positive_scales.push(this.roundValue(ranges[i]));
+			this.positive_scales.push(Math.ceil(ranges[ranges.length - 1]));
+		}
 	}
 
 	private fillPositiveScalesD3Labels() {
@@ -255,9 +268,13 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		this.negative_scales.push(Math.ceil(ranges[ranges.length - 1]));
-		for (let i = ranges.length - 2; i >= 1; i--) this.negative_scales.push(this.roundValue(ranges[i]));
-		this.negative_scales.push(Math.floor(ranges[0]));
+		if (this.dataProcessing === 'wanderungsrate') {
+			for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValueThree(ranges[i]));
+		} else {
+			this.negative_scales.push(Math.ceil(ranges[ranges.length - 1]));
+			for (let i = ranges.length - 2; i >= 1; i--) this.negative_scales.push(this.roundValue(ranges[i]));
+			this.negative_scales.push(Math.floor(ranges[0]));
+		}
 	}
 
 	private fillNegativeScalesD3Labels() {

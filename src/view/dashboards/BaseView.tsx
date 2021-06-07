@@ -94,6 +94,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		classification.setTheme(this.state.theme);
 		classification.setQuery(results);
 		classification.setAlgorithm(this.state.algorithm);
+		classification.setDataProcessing(this.state.dataProcessing);
 		classification.setPositiveColors(classification.getColorScheme(this.state.positiveColors, this.state.positiveClasses));
 		classification.setNegativeColors(classification.getColorScheme(this.state.negativeColors, this.state.negativeClasses));
 		classification.setPositiveArrowColor('#' + this.state.positiveArrowColor);
