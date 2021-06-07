@@ -53,7 +53,7 @@ export default class Tabledata {
 
     public getColumnCount(): number {
         assert(this.data.length > 0, "data should has a length > 0");
-        return (this.data[0].length > this.data[2].length) ? this.data[0].length : this.data[2].length;
+        return this.data[2].length;
     }
 
     public getRowAt(index: number): string[] {
