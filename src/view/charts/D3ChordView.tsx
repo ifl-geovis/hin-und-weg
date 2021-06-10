@@ -12,6 +12,7 @@ export interface ID3ChordViewProps
 	vizID: number;
 	 baseViewId: number;
 	yearsSelected: string[];
+	dataProcessing: string;
 }
 interface ID3ChordViewState
 {
@@ -44,8 +45,8 @@ export default class D3chordChartsView extends React.Component<ID3ChordViewProps
 				<div id="chartDivChord" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-						<D3Chord  baseViewId={this.props.baseViewId} vizID={this.props.vizID}
-							yearsSelected={this.props.yearsSelected}
+						<D3Chord  dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
+						yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							data={this.props.items} theme={this.props.theme}/>                        }

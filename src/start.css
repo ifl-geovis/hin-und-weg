@@ -149,6 +149,14 @@ ul.p-tabview-nav li a {
 }
 
 div.slider-reversed .p-slider .p-slider-range {
+	background-color: #1f7ed0;
+
+}
+div.slider-saldi .p-slider {
+	background-color: #1f7ed0;
+	border: 0 none;
+  }
+div.slider-saldi .p-slider .p-slider-range {
 	background-color: #c8c8c8;
 }
 

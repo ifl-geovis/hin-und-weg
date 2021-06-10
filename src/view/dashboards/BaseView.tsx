@@ -172,6 +172,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-10' : 'p-col-8'}>
 					<DashboardView
+						dataProcessing={this.state.dataProcessing}
 						baseViewId={this.props.baseViewId}
 						view={this.props.view}
 						geodata={this.props.geodata}

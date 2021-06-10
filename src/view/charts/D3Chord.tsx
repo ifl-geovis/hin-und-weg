@@ -27,6 +27,7 @@ export interface ID3ChordProps {
     vizID: number;
     baseViewId: number;
    yearsSelected: string[];
+   dataProcessing:string;
 }
 interface ID3ChordState
 {
@@ -36,6 +37,7 @@ interface ID3ChordState
   rangeValues: [number, number],
   checked: boolean,
   checkedLabel: boolean,
+  checkedNoFilter: boolean,
 }
 
 export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
@@ -55,6 +57,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       rangeValues: [0, 0],
       checked: false,
       checkedLabel: false,
+      checkedNoFilter: false,
 
     }
   }
@@ -79,17 +82,18 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
     public shouldComponentUpdate (nextProps: ID3ChordProps, nextState: ID3ChordState) {
 
-      return nextProps.data !== this.props.data || nextProps.theme !== this.props.theme|| nextState.checkedLabel !== this.state.checkedLabel  || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextState.threshold !==this.state.threshold || nextState.rangeValues !== this.state.rangeValues
+      return nextProps.data !== this.props.data || nextProps.theme !== this.props.theme|| nextState.checkedNoFilter !== this.state.checkedNoFilter || nextState.checkedLabel !== this.state.checkedLabel  || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextState.threshold !==this.state.threshold || nextState.rangeValues !== this.state.rangeValues
       }
 
     public componentDidUpdate(){
         const [min, max] = this.getMinMax2();
-        let threshold: number = this.calculateCurrentThreshold();
-
-        let data1 :ID3ChordItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] &&item.Wert >= min, this.props.data);
-        let data2 :ID3ChordItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] &&item.Wert <= max, this.props.data);
+        let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
+        let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
+        
+        let data1 :ID3ChordItem[] = R.filter((item) => item.Wert <= rangeValues[0] &&item.Wert >= min, this.props.data);
+        let data2 :ID3ChordItem[] = R.filter((item) => item.Wert >= rangeValues[1] &&item.Wert <= max, this.props.data);
         let dataFilterSmall: ID3ChordItem[] = R.concat(data1, data2);
-        let dataFilterLarge :ID3ChordItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1], this.props.data);
+        let dataFilterLarge :ID3ChordItem[] = R.filter((item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1], this.props.data);
         let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
         let normalizedData:ID3ChordItem[] = R.filter((item) => item.Wert >= threshold, this.props.data);
         let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
@@ -127,9 +131,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let von = data.map(d => d.Von);
       let names = nach.concat(von);
       let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
-      let marginResponsive = this.props.width < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
+      let marginResponsive = this.props.dataProcessing === "absolute" ? this.props.width < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
       this.props.width < 700 && this.props.width >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 : 
-      this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4; // +10
+      this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 : 
+      this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 ; // +10
      
       let MARGIN = {TOP: marginResponsive, RIGHT: marginResponsive, BOTTOM: marginResponsive, LEFT: marginResponsive}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
@@ -454,6 +459,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
            })
 
            let labelText:number = this.state.checkedLabel === false ? 0 :  1 ;
+           let dataProcessing = this.props.dataProcessing;
 
           //Append the label names on the outside
           const labels = group.append("text")
@@ -468,8 +474,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             })
             .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px" )
             .attr("font-family", "Open Sans")
-            .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : d.angle > Math.PI ? "-4em" : "4em"; }) // 1.2em
-            // .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " : " + nachVar[i] : nachVar[i] + " : "; });
+            .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing ==="absolute" ? 
+            d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : 
+            d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : 
+            d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : 
+            d.angle > Math.PI ? "-4em" : "4em" : dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
+                        // .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " : " + nachVar[i] : nachVar[i] + " : "; });
             .text(function(d, i) { return nachVar[i]; });
             // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
 
@@ -486,7 +496,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px" )
             .attr("font-family", "Open Sans")
             .style("font-weight", "bold")
-            .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + d.value : d.value + " : " ; });
+            .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((d.value + Number.EPSILON) * 1000) / 1000 : Math.round((d.value + Number.EPSILON) * 1000) / 1000+ " : " ; });
 
           group.append("title")
           group.select("title")
@@ -635,7 +645,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           })
 
           let labelText:number = this.state.checkedLabel === false ? 0 :  1 ;
-
+          let dataProcessing : string = this.props.dataProcessing;
         //Append the label names on the outside
         const labels = group.append("text")
         .each(function(d:any) { d.angle = (d.startAngle + d.endAngle) / 2; })
@@ -649,8 +659,12 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         })
         .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px")
         .attr("font-family", "Open Sans")
-        .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : d.angle > Math.PI ? "-4em" : "4em"; }) // 1.2em
-        .text(function(d, i) { return vonVar[i]; });
+        .attr("dx", function(d:any) { return labelText === 0 ? "" :  dataProcessing ==="absolute" ?
+        d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : 
+        d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : 
+        d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :d.angle > Math.PI ? "-4em" : "4em" :
+        dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
+                .text(function(d, i) { return vonVar[i]; });
         // .text(function(d, i) { return nachVar[i]; });
         // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
 
@@ -667,7 +681,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + d.value : d.value + " : " ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((d.value + Number.EPSILON) * 1000) / 1000 : Math.round((d.value + Number.EPSILON) * 1000) / 1000 + " : " ; });
 
 
           group.append("title")
@@ -860,6 +874,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             } return t
           })
           let labelText:number = this.state.checkedLabel === false ? 0 :  1 ;
+          let dataProcessing :string = this.props.dataProcessing;
 
         //Append the label names on the outside
         const labels = group.append("text")
@@ -874,8 +889,13 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         })
         .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" :  "13px" )
         .attr("font-family", "Open Sans")
-        .attr("dx", function(d:any) { return labelText === 0 ? "" : d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : d.angle > Math.PI ? "-4em" : "4em"; }) // 1.2em
-        .text(function(d, i) { return vonVar[i]; });
+        .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing === "absolute" ?
+        d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : 
+        d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : 
+        d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : 
+        d.angle > Math.PI ? "-4em" : "4em" :
+        dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
+                .text(function(d, i) { return vonVar[i]; });
         // .text(function(d, i) { return nachVar[i]; });
         // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
 
@@ -892,7 +912,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + valueasSaldiVarLabels[d.index]  : valueasSaldiVarLabels[d.index]  + " : " ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000  : Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000  + " : " ; });
 
         group.append("title")
         group.select("title")
@@ -997,17 +1017,20 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
     public render() {
         const { width, height } = this.props;
-        const [min, max] = this.getMinMax2();
-        let threshold: number = this.calculateCurrentThreshold();
-        let rangeValues: [number, number] = this.getInitialValuesSliderSaldi();
-        // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
-        let rangeValue1: number =rangeValues[0];
-        let rangeValue2: number = rangeValues[1];
+        let [min, max] = this.getMinMax2();
+        min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+        max = Math.round((max + Number.EPSILON) * 1000) / 1000;
+
+        let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
+        let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
+                // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
+                let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
+                let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
 
         return (
         <div className="p-grid">
 
-          <div className="p-col-12 noprint">
+          <div className="p-col-6 noprint">
             <Checkbox
               name = "saldiChord"
               id	= "saldiChord"
@@ -1017,35 +1040,47 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             />
             <label className="p-checkbox-label">Umgekehrt filtern</label>
           </div>
-
+          <div className="p-col-6 noprint">
+            <Checkbox
+              name = "saldiChordNoFilter"
+              id	= "saldiChordNoFilter"
+              onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
+              checked={this.state.checkedNoFilter}
+            />
+            <label className="p-checkbox-label">Kein Filter</label>
+          </div>
+          
           <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{min}</div>
             <div className="p-col-10 noprint">
-          <div className={`banner ${ this.props.theme == "Saldi" && this.state.checked === true ?  "slider-reversed" : ""}`}>
+            <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}> 
 
                 {
                     this.props.theme == "Saldi" ?
-                    <Slider min={min} max={max} value={rangeValues} onChange={(e) => this.setState({rangeValues: e.value as [number, number]})} range={true} style={this.state.checked === true? {background: '#1f7ed0', color: '#80CBC4'}:{}} />
+                    <Slider disabled={this.state.checkedNoFilter === false ? false : true} min={min} max={max} value={this.state.checkedNoFilter === false ? rangeValues : [min, max]} onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})} range={true}  /> //style={this.state.checked === false? {border: '0px none', background: '#80CBC4'}:{}}
                     :
-                    <Slider min={min} max={max} value={threshold} orientation="horizontal" onChange={(e) => this.setState({ threshold: e.value as number})}/>
+                    <Slider disabled={this.state.checkedNoFilter === false ? false : true} min={min} max={max} value={this.state.checkedNoFilter === false ? threshold: min } orientation="horizontal" onChange={(e) => this.state.checkedNoFilter === false ? this.setState({  threshold: e.value as number}) :this.setState({  threshold: min as number}) }/>
                 }
           </div>
           </div>
             <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{max}</div>
               {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-          <div className="p-col-2">{this.props.theme == "Saldi" ?
-            'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
+              <div className="p-col-2">{this.props.theme == "Saldi" ?  this.state.checked === true?
+          'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
+          'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
             </div>
             <div className="p-col-2">{this.props.theme == "Saldi" ?
-             <InputText value={rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
-            : <InputText value={threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.setState({ threshold: e.target.value as number })} />
-             }
+             <InputText value={rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
+             : <InputText value={ this.state.checkedNoFilter ? min: threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
+            }
              </div>
-            <div className="p-col-2">{this.props.theme == "Saldi" ?
-            'bis ' : ' '} </div>
-             <div className="p-col-2"> {this.props.theme == "Saldi" ?
-             <InputText  value={rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
+             <div className="p-col-2">{this.props.theme == "Saldi" ? this.state.checked === true?
+            'und ab ' : 'bis ' : ' '} </div>
+            <div className="p-col-2"> {this.props.theme == "Saldi" ?
+             <InputText  value={rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
              </div>
-          <div className="p-col-12 p-md-12 p-lg-6">
+             <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
+            'bis ' + max : ' '} </div>
+            <div className="p-col-12 p-md-12 p-lg-6">
                <Legend showCenter='' yearsSelected={this.props.yearsSelected} />
             </div>
         <div className="p-col-12 p-md-12 p-lg-6 noprint">
