@@ -252,8 +252,15 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 			const xAxis = d3.axisBottom(x)
 			const yAxis = d3.axisLeft(y)
 				.ticks(9)
-			xAxisGroup.call(xAxis);
-			yAxisGroup.call(yAxis);
+				xAxisGroup.call(xAxis)
+				.attr('class', 'axis axis--x')
+						.selectAll("text")	
+						.style("text-anchor", "end")
+						.attr("dx", "-.8em")
+						.attr("dy", "-.5em") 
+						.attr("transform", "rotate(-90)")
+						.style('font-size', '10px');
+				yAxisGroup.call(yAxis);
 
 
 			chart.append("line")

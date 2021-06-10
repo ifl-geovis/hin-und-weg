@@ -72,7 +72,7 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 	private drawHistogram(theme: string) {
 	const svgHistogram = select(this.svgRef!);
 
-	let MARGIN = {TOP: 20, RIGHT: 30, BOTTOM: 70, LEFT: 50}
+	let MARGIN = {TOP: 20, RIGHT: 30, BOTTOM: 100, LEFT: 50}
     let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
     let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
 
