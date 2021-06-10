@@ -221,13 +221,13 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		//const location = ` ('${this.state.location}') `;
 		if (target === 'Von')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYSUM(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, ROUND(AVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 			// fallback for absolute and other values
 			return `SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 		}
 		if (target === 'Nach')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYSUM(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, ROUND(AVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 			// fallback for absolute and other values
 			return `SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 		}
@@ -286,10 +286,10 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			R.map((year) => `'${year}'`, years)
 		);
 		let query_zuzug = `SELECT Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
-		if (this.state.dataProcessing === 'wanderungsrate') query_zuzug = `SELECT Nach, Jahr, ROUND(sum(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
+		if (this.state.dataProcessing === 'wanderungsrate') query_zuzug = `SELECT Nach, Jahr, ROUND(AVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
 		let results_zuzug = this.props.db(query_zuzug);
 		let query_wegzug = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
-		if (this.state.dataProcessing === 'wanderungsrate') query_wegzug = `SELECT Von, Jahr, ROUND(sum(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
+		if (this.state.dataProcessing === 'wanderungsrate') query_wegzug = `SELECT Von, Jahr, ROUND(AVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
 		let results_wegzug = this.props.db(query_wegzug);
 		for (let year of this.props.yearsAvailable.sort()) {
 			let zuzug = this.getFieldForYear(results_zuzug, year, 'zuzug');
