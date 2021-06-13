@@ -35,7 +35,14 @@ export default class ChartsView extends React.Component<ID3ChartViewProps, ID3Ch
 	public render(): JSX.Element
 	{
 
-
+		const heightResponsive =
+		this.props.items.length <= 2
+			? this.props.items.length * 50
+			: this.props.items.length > 2 && this.props.items.length <= 5
+			? this.props.items.length * 35
+			: this.props.items.length > 5 && this.props.items.length < 30
+			? this.props.items.length * 25
+			: this.props.items.length * 20;
 		return (
 			<div className="p-grid">
 				<div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">Skalierung 100%</label> </div>
@@ -49,7 +56,7 @@ export default class ChartsView extends React.Component<ID3ChartViewProps, ID3Ch
 							<D3Chart baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 							yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
-							height={(this.props.items.length < 20 )? this.props.items.length*50 : this.props.items.length*20}
+							height={heightResponsive}
 							data={this.props.items} theme={this.props.theme}/>
 								}
 						  </ContainerDimensions>

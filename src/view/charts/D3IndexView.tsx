@@ -65,10 +65,10 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		else selector = this.createYearSelector();
 		let view = this.createView(data);
 		let refText : string = this.state.type === "location" ? this.state.referenceLocation : " Jahr " + this.state.referenceYear;
-		let themeTitel = this.props.theme === "Von" ? "Wegzüge" : this.props.theme === "Nach" ? "Zuzüge" : this.props.theme === "Saldi" ? "Saldi" : "";
+		let themeTitel = this.props.theme === "Von" ? "Wegzüge aus" : this.props.theme === "Nach" ? "Zuzüge nach" : this.props.theme === "Saldi" ? "Saldi für" : "";
 		return (
 			<div>
-				<h3>{themeTitel} aus {this.props.location}, Indexwert (100%): {refText} </h3>
+				<h3>{themeTitel}  {this.props.location}, Indexwert (100%): {refText} </h3>
 				Auswahl Indexwert:
 				&nbsp;
 				<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />

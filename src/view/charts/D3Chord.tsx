@@ -1056,9 +1056,9 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
                 {
                     this.props.theme == "Saldi" ?
-                    <Slider disabled={this.state.checkedNoFilter === false ? false : true} min={min} max={max} value={this.state.checkedNoFilter === false ? rangeValues : [min, max]} onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})} range={true}  /> //style={this.state.checked === false? {border: '0px none', background: '#80CBC4'}:{}}
+                    <Slider disabled={this.state.checkedNoFilter ? true : false} min={min} max={max} value={this.state.checkedNoFilter ? [min, max] :rangeValues } onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})} range={true}  /> 
                     :
-                    <Slider disabled={this.state.checkedNoFilter === false ? false : true} min={min} max={max} value={this.state.checkedNoFilter === false ? threshold: min } orientation="horizontal" onChange={(e) => this.state.checkedNoFilter === false ? this.setState({  threshold: e.value as number}) :this.setState({  threshold: min as number}) }/>
+                    <Slider disabled={this.state.checkedNoFilter ? true : false} min={min} max={max} value={this.state.checkedNoFilter ? min : threshold} orientation="horizontal" onChange={(e) => this.state.checkedNoFilter ? this.setState({  threshold: min as number}) : this.setState({  threshold: e.value as number}) }/>
                 }
           </div>
           </div>

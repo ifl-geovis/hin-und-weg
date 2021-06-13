@@ -3,6 +3,8 @@ import { Slider } from 'primereact/slider';
 import { Checkbox } from 'primereact/checkbox';
 import Classification from '../../data/Classification';
 
+
+
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import R from 'ramda';
@@ -32,6 +34,8 @@ interface ID3ChartState {
 	rangeValues: [number, number];
 	selectedRadio: string;
 	checked: boolean;
+	checkedNoFilter: boolean,
+
 }
 
 export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
@@ -47,6 +51,8 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 			rangeValues: [0, 0],
 			selectedRadio: 'kleineWerte',
 			checked: false,
+			checkedNoFilter: false,
+
 		};
 	}
 
@@ -72,6 +78,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		return (
 			nextProps.data !== this.props.data ||
 			nextProps.theme !== this.props.theme ||
+			nextState.checkedNoFilter !== this.state.checkedNoFilter || 
 			nextState.checked !== this.state.checked ||
 			nextProps.width !== this.props.width ||
 			nextProps.height !== this.props.height ||
@@ -83,13 +90,14 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 	public componentDidUpdate() {
 		const [min, max] = this.getMinMax2();
-		let threshold: number = this.calculateCurrentThreshold();
-
-		let data1: ID3ChartItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] && item.Wert >= min, this.props.data);
-		let data2: ID3ChartItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] && item.Wert <= max, this.props.data);
+		let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
+		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
+		
+		let data1: ID3ChartItem[] = R.filter((item) => item.Wert <= rangeValues[0] && item.Wert >= min, this.props.data);
+		let data2: ID3ChartItem[] = R.filter((item) => item.Wert >= rangeValues[1] && item.Wert <= max, this.props.data);
 		let dataFilterSmall: ID3ChartItem[] = R.concat(data1, data2);
 		let dataFilterLarge: ID3ChartItem[] = R.filter(
-			(item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1],
+			(item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1],
 			this.props.data
 		);
 		let dataSaldi = this.state.checked === false ? dataFilterLarge : dataFilterSmall;
@@ -119,6 +127,8 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 	// DRAW D3 CHART
 	private drawBarChartH(data: ID3ChartItem[], theme: string) {
+
+
 		const svgBarChart = select(this.svgRef!);
 		let nach = data.map((d) => d.Nach);
 		let von = data.map((d) => d.Von);
@@ -500,7 +510,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				.scaleLinear()
 				.domain([min, max])
 				.nice()
-				.range([0, WIDTH - 32]);
+				.range([32, WIDTH - 32]);
 
 			if (min > 0) {
 				x.domain([0, max]).nice();
@@ -744,7 +754,9 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 	}
 
 	private calculateCurrentThreshold(): number {
-		const [min, max] = this.getMinMax2();
+		let [min, max] = this.getMinMax2();
+		min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+		max = Math.round((max + Number.EPSILON) * 1000) / 1000;
 		let threshold: number = this.state.threshold;
 		if (this.state.threshold == 0) threshold = min;
 		if (this.state.threshold < min) threshold = min;
@@ -768,15 +780,15 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 	public render() {
 		const { width, height } = this.props;
 		const [min, max] = this.getMinMax2();
-		let threshold: number = this.calculateCurrentThreshold();
-		let rangeValues: [number, number] = this.getInitialValuesSliderSaldi();
+		let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
+		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
 		// let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
-		let rangeValue1: number = rangeValues[0];
-		let rangeValue2: number = rangeValues[1];
+		let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
+		let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
 
 		return (
 			<div className="p-grid">
-				<div className="p-col-12 noprint">
+				<div className="p-col-6 noprint">
 					<Checkbox
 						onChange={(e: { value: any; checked: boolean }) => this.setState({ checked: e.checked })}
 						checked={this.state.checked}
@@ -784,27 +796,38 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					/>
 					<label className="p-checkbox-label">Umgekehrt filtern</label>
 				</div>
+				<div className="p-col-6 noprint">
+            <Checkbox
+              name = "saldiChordNoFilter"
+              id	= "saldiChordNoFilter"
+              onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
+              checked={this.state.checkedNoFilter}
+            />
+            <label className="p-checkbox-label">Kein Filter</label>
+          </div>
+
 				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
 					{min}
 				</div>
 				<div className="p-col-10 noprint">
-					<div className={`banner ${this.props.theme == 'Saldi' && this.state.checked === true ? 'slider-reversed' : ''}`}>
+					<div className={`banner ${this.props.theme == 'Saldi' ? this.state.checked === true ? 'slider-reversed' : "slider-saldi" : ''}`}>
 						{this.props.theme == 'Saldi' ? (
 							<Slider
+								disabled={this.state.checkedNoFilter   ? true : false}
 								min={min}
 								max={max}
-								value={rangeValues}
-								onChange={(e) => this.setState({ rangeValues: e.value as [number, number] })}
+								value={this.state.checkedNoFilter  ? [min, max] : rangeValues } 
+								onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({ rangeValues: e.value as [number, number] })}
 								range={true}
-								style={this.state.checked === true ? { background: '#1f7ed0', color: '#80CBC4' } : {}}
 							/>
 						) : (
 							<Slider
+								disabled={this.state.checkedNoFilter   ? true : false}
 								min={min}
 								max={max}
-								value={threshold}
+								value={this.state.checkedNoFilter  ? min : threshold}
 								orientation="horizontal"
-								onChange={(e) => this.setState({ threshold: e.value as number })}
+								onChange={(e) => this.state.checkedNoFilter  ? this.setState({  threshold: min as number}) : this.setState({ threshold: e.value as number })}
 							/>
 						)}
 					</div>
@@ -813,38 +836,45 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					{max}
 				</div>
 				{/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-				<div className="p-col-2">{this.props.theme == 'Saldi' ? 'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}</div>
 				<div className="p-col-2">
-					{this.props.theme == 'Saldi' ? (
+					{this.props.theme == 'Saldi' ? this.state.checked ?
+					'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
+					'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}					
+					</div>
+				<div className="p-col-2">
+					{this.props.theme == 'Saldi' ? 
 						<InputText
 							value={rangeValue1}
 							style={{ width: '6em' }}
 							type="number"
-							onChange={(e: any) => this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
+							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
 						/>
-					) : (
+					 : 
 						<InputText
-							value={threshold}
+							value={this.state.checkedNoFilter ? min: threshold}
 							style={{ width: '10em' }}
 							type="number"
-							onChange={(e: any) => this.setState({ threshold: e.target.value as number })}
+							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
 						/>
-					)}
+					}
 				</div>
-				<div className="p-col-2">{this.props.theme == 'Saldi' ? 'bis ' : ' '} </div>
+				<div className="p-col-2">{this.props.theme == 'Saldi' ? this.state.checked === true?
+            		'und ab ' : 'bis ' : ' '} 
+				</div>
 				<div className="p-col-2">
-					{' '}
-					{this.props.theme == 'Saldi' ? (
+					{this.props.theme == 'Saldi' ? 
 						<InputText
 							value={rangeValue2}
 							style={{ width: '6em' }}
 							type="number"
-							onChange={(e: any) => this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
+							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
 						/>
-					) : (
-						<div className="p-col-2 p-offset-1"></div>
-					)}
+					 : 
+						<div className="p-col-2 p-offset-1"></div>}
+
 				</div>
+				<div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
+            		'bis ' + max : ' '} </div>
 				<div className="p-col-12">
 					<Legend showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>
