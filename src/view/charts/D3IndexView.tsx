@@ -68,7 +68,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		let themeTitel = this.props.theme === "Von" ? "Wegzüge aus" : this.props.theme === "Nach" ? "Zuzüge nach" : this.props.theme === "Saldi" ? "Saldi für" : "";
 		return (
 			<div>
-				<h3>{themeTitel}  {this.props.location}, Indexwert (100%): {refText} </h3>
+				<h3>{themeTitel}  {this.props.location}, Indexwert: {refText} (=100%) </h3>
 				Auswahl Indexwert:
 				&nbsp;
 				<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
@@ -87,6 +87,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		const options = this.props.yearsAvailable.map((option: string) => {
 			return { value: option, label: option};
 		});
+		
 		const selected = { value: this.state.referenceYear, label: this.state.referenceYear};
 		return (
 			<Dropdown optionLabel="label" value={selected} options={options} onChange={this.setYear} />
@@ -97,9 +98,14 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		const options = this.props.locations.map((option: string) => {
 			return { value: option, label: option};
 		});
+		const selectzedLocation = this.props.location;
+		console.log("selected location: " + selectzedLocation);
+		const optionsFiltered = options.filter(function(item) {
+			return item.label !== selectzedLocation
+		})
 		const selected = { value: this.state.referenceLocation, label: this.state.referenceLocation};
 		return (
-			<Dropdown optionLabel="label" value={selected} options={options} onChange={this.setLocation} style={{ width: "15em" }} />
+			<Dropdown optionLabel="label" value={selected} options={optionsFiltered} onChange={this.setLocation} style={{ width: "15em" }} />
 		);
 	}
 
@@ -129,7 +135,8 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 							data={data} 
 							referenceYear={this.state.referenceYear}
 							referenceLocation={this.state.referenceLocation}
-							type = {this.state.type}/>
+							type = {this.state.type}
+							yearsSelected = {this.getYearsSelected()} />
 								}
 						  </ContainerDimensions>
 
@@ -144,16 +151,33 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 
 	private constructQuery(type: string, theme: string)
 	{
+		const years = this.props.yearsSelected;
+		const stringYears = R.join(
+			', ',
+			R.map((year) => `'${year}'`, years)
+		);
+		const migrationsInsideClause = (this.props.migrationsInside) ? `` : ` AND Von <> Nach `;
+		const migrationsInsideOff = ` AND Von <> Nach `;
+
+
+		Log.debug("stringYears in constructQuery : ", stringYears);
 	
 		if (type === "year")
 		{
-			if (theme === "Von") return "SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '" + this.props.location + "' AND Von <> Nach GROUP BY Jahr";
-			if (theme === "Nach") return "SELECT Jahr as label, sum(Wert) as result FROM matrices where Nach = '" + this.props.location + "' AND Von <> Nach GROUP BY Jahr";
+			if (theme === "Von") return  `SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			if (theme === "Nach") return `SELECT Jahr as label, sum(Wert) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
 		}
 		if (type === "location")
 		{
-			if (theme === "Von") return "SELECT Nach as label, sum(Wert) as result FROM matrices where Von = '" + this.props.location + "' GROUP BY Nach";
-			if (theme === "Nach") return "SELECT Von as label, sum(Wert) as result FROM matrices where Nach = '" + this.props.location + "' GROUP BY Von";
+			if (theme === "Von") 
+			return `SELECT Nach as label, MYSUM(Wert) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideOff} GROUP BY Nach ORDER BY Nach`;
+
+			// return "SELECT Nach as label, MYSUM(Wert) as result FROM matrices where Von = '" + this.props.location + "' AND Jahr IN '" + stringYears + "' GROUP BY Nach ORDER BY Nach";
+			// "SELECT Nach as label, sum(Wert) as result FROM matrices where Von = '" + this.props.location + "' GROUP BY Nach";
+			if (theme === "Nach")
+			return `SELECT Von as label, MYSUM(Wert) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideOff} GROUP BY Von ORDER BY Von`;
+
+			//  return "SELECT Von as label, sum(Wert) as result FROM matrices where Nach = '" + this.props.location + "' GROUP BY Von";
 		}
 		return null;
 	}
@@ -169,7 +193,10 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 			let query_zuzug = this.constructQuery(this.state.type, 'Nach');
 			let results_zuzug = this.props.db(query_zuzug);
 			let query_wegzug = this.constructQuery(this.state.type, 'Von');
+
 			let results_wegzug = this.props.db(query_wegzug);
+			Log.debug("results_wegzug in queryIndex : ", results_wegzug);
+
 			return this.calculateIndexValue(this.calculateSaldiForYears(results_zuzug, results_wegzug));
 		}
 		let query = this.constructQuery(this.state.type, this.props.theme);
@@ -188,7 +215,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 				}
 			}
 		}
-		Log.debug("resultsFiltered in queryIndex : ", resultsFiltered);
+		Log.debug("results in queryIndex : ", results);
 
 		
 		//return this.calculateIndexValue(results);
@@ -272,6 +299,16 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		console.log(event);
 		this.setState({ referenceLocation: event.value.value });
 	}
+
+	private getYearsSelected(): string {
+		 const years = this.props.yearsSelected;
+		const stringYears = R.join(
+			', ',
+			R.map((year) => `'${year}'`, years)
+		);
+		return stringYears;
+	}
+
 
 
 	

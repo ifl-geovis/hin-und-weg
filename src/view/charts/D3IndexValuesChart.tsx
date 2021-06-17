@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Classification from '../../data/Classification';
+import R from 'ramda';
 
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
@@ -25,6 +26,7 @@ export interface ID3IndexValuesChartProps {
 	referenceYear: string;
 	referenceLocation: string;
 	type: string;
+	yearsSelected:string;
 }
 interface ID3IndexValuesChartState {
 	percent: boolean;
@@ -59,7 +61,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			nextProps.referenceLocation !== this.props.referenceLocation ||
 			nextProps.theme !== this.props.theme ||
 			nextProps.width !== this.props.width ||
-			nextProps.height !== this.props.height
+			nextProps.height !== this.props.height ||
+			nextProps.type !== this.props.type
+
 		);
 	}
 
@@ -107,6 +111,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	// DRAW D3 CHART
 	private drawIndxValChart(data: ID3IndexValuesChartItem[], theme: string) {
 		const svgIndxValChart = select(this.svgRef!);
+		console.log("reference year: " + this.props.referenceYear);
+		console.log(" yearsSelected: " + this.props.yearsSelected);
 
 		// let heightResponsive = data.length <= 10 ? data.length*50 : data.length * 25;
 		const labels = data.map((d) => d.label);
@@ -119,6 +125,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const classification = Classification.getCurrentClassification();
 		let positiveColor = classification.getZeitreihenPositiveColors()[0];
 		let negativeColor = classification.getZeitreihenNegativeColors()[0];
+		let NaNcolor = classification.getMissingColor();
 
 		svgIndxValChart
 			.append('svg')
@@ -143,6 +150,15 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				}
 		  }
 		const refLabelIndx = checkRef(labels, this.props.referenceYear , this.props.referenceLocation  );
+		const results = data.map((d) => d.result);
+		const calculateIfNaN: any = () =>  {if (typeof(refLabelIndx) === "number"){ return results[refLabelIndx] === undefined || results[refLabelIndx] === NaN}};
+		
+		const ifRefNaN = calculateIfNaN();
+
+		const calculateIfYearSelected : any = () =>  { return ( R.contains(this.props.referenceYear, this.props.yearsSelected)) ? true : false};
+		const ifYearSelected = calculateIfYearSelected();
+		console.log("ifYearSelected: " + ifYearSelected);
+
 		const calculateIfPercentage: any = () =>  {if (typeof(refLabelIndx) === "number"){ return indexValues[refLabelIndx] === 0 ? false : true}};
 		const percentage: boolean = calculateIfPercentage();
 
@@ -161,6 +177,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const warnText = "Achtung, der gewählte Indexwert ist gleich 0. ";
 		const warnText2 = "Es kann kein prozentualer Bezug hergestellt werden. ";
 		const warnText3 = "Dargestellt sind absolute Werte!";
+		const warnText4 = "Achtung, der gewählte Indexwert ist NaN. ";
+		const warnText5 = "Achtung, das Bezugsjahr wird nicht unter den verfügbaren Jahren ausgewählt."
 
 		  let textWidth = 0;
 
@@ -171,7 +189,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("text-anchor", "start")
 				.style("font-size", "16px")
 				.attr("font-weight", 800) // between 100 - 900
-				.text( percentage === true ? " ": (warnText + warnText2 + warnText3) );
+				.text( percentage === false && this.props.type === "location" ||percentage === false && this.props.type === "year" && ifYearSelected === true ?  (warnText + warnText2 + warnText3) : " " );
 
 		let warningText2 = indxValChart.append("text")
 				.attr("x", (10))
@@ -188,7 +206,28 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.style("font-size", "16px")
 				.attr("font-weight", 800) // between 100 - 900
 				.text( " " );
-				if (warningText !== null && warnText2 !== null && warnText3 !== null && percentage === false) {
+
+
+		let warningText4 = indxValChart.append("text")
+				.attr("x", (10))
+				.attr("y", 0 - (MARGIN.TOP / 4))
+				.attr("width", WIDTH)
+				.attr("text-anchor", "start")
+				.style("font-size", "16px")
+				.attr("font-weight", 800) // between 100 - 900
+				.text( ifRefNaN ?   (warnText4 + warnText2 ) : " " );
+
+		let warningText5 = indxValChart.append("text")
+				.attr("x", (10))
+				.attr("y", 0 - (MARGIN.TOP / 4))
+				.attr("width", WIDTH)
+				.attr("text-anchor", "start")
+				.style("font-size", "16px")
+				.attr("font-weight", 800) // between 100 - 900
+				.text( ifYearSelected === false && this.props.type === "year" ?    warnText5  : " " );
+
+				if (warningText !== null && warnText2 !== null && warnText3 !== null && percentage === false && this.props.type === "location" 
+				|| warningText !== null && warnText2 !== null && warnText3 !== null && percentage === false && ifYearSelected === true && this.props.type === "year" ) { // || warningText !== null && warnText2 !== null && warnText3 !== null && ifYearSelected === false
 					let		bboxt =  warningText.node()
 					let bbox;
 					if (bboxt !== null){
@@ -202,6 +241,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					textWidth = bbox.width;
 						  }
 
+				
+						  // || warningText4 !== null && warnText2 !== null  && ifRefNaN
+
 					warningText.text(  WIDTH >= textWidth ? ( warnText + warnText2 + warnText3) : WIDTH >= 670 ?  warnText + warnText2 : warnText  )
 					.attr("y", (WIDTH >= textWidth ? 0 - (MARGIN.TOP / 4) :WIDTH > 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)*3));
 
@@ -211,7 +253,50 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						  warningText3.text(WIDTH < textWidth ?  warnText3 :" ");
 
 				}
+				if (warningText4 !== null && warnText2 !== null && ifRefNaN === true ) { //&& percentage === false
+					let		bboxt =  warningText4.node()
+					let bbox;
+					if (bboxt !== null){
+								bbox = bboxt.getBBox();
+						 let rect = indxValChart.insert('rect','text')
+						.attr('x', bbox.x  )
+						.attr('y', bbox.y -25 - 25)
+						.attr('width', bbox.width + 10 )
+						.attr('height', bbox.height +25 + 25)
+						.style("fill", "#f78928");
+					textWidth = bbox.width;
+						  }
 
+						  warningText4.text(  WIDTH >= textWidth ? ( warnText4 + warnText2) : WIDTH >= 670 ?  warnText4 + warnText2 : warnText4  )
+						  .attr("y", (WIDTH >= textWidth ? 0 - (MARGIN.TOP / 4) :WIDTH > 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)*3));
+	  
+								warningText2.text(WIDTH < 670 ?  warnText2 : " " )
+						  .attr("y", (WIDTH < 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)));
+	  
+					  }
+
+					  if (warningText5 !== null  && ifYearSelected === false && this.props.type === "year"   ) { 
+						let		bboxt =  warningText5.node()
+						let bbox;
+						if (bboxt !== null){
+									bbox = bboxt.getBBox();
+							 let rect = indxValChart.insert('rect','text')
+							.attr('x', bbox.x  )
+							.attr('y', bbox.y -25 - 25)
+							.attr('width', bbox.width + 10 )
+							.attr('height', bbox.height +25 + 25)
+							.style("fill", "#f78928");
+						textWidth = bbox.width;
+							  }
+	
+							//   warningText4.text(  WIDTH >= textWidth ? ( warnText4 + warnText2) : WIDTH >= 670 ?  warnText4 + warnText2 : warnText4  )
+							//   .attr("y", (WIDTH >= textWidth ? 0 - (MARGIN.TOP / 4) :WIDTH > 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)*3));
+		  
+							// 		warningText2.text(WIDTH < 670 ?  warnText2 : " " )
+							//   .attr("y", (WIDTH < 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)));
+		  
+						  }
+		
 
 		if (theme === 'Von') {
 
@@ -296,6 +381,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 				// Add the valueline path.
 			let lineGenerator = d3.line<ID3IndexValuesChartItem>()
+			// .defined(function (d) { return d.index !== undefined; })
+
 			.x(function(d,i) {
 				const xCoordinate = x(d.label)
 				if (xCoordinate) {
@@ -303,7 +390,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				}
 				return 0
 				})
-			.y( d => y(  percentage === false ? d.index : d.index*100));
+				.y( d => y(  d.index === undefined ? 0 : percentage === false ?  d.index :  d.index*100));
+				// .y( d => y(  percentage === false ? d.index === undefined ? 0: d.index : d.index === undefined ? 0: d.index*100));
 
 			let g = indxValChart.append("g")
 			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
@@ -370,6 +458,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.append('circle');
 
 			circlesGraph
+			// .filter(function(d) { return d.index !== undefined })
+
 				.attr('r', (d,i) => { return i === refLabelIndx ? 4 : 3})
 				.attr('cx',( d,i) => {
 					const xCoordinate = x(d.label)
@@ -378,8 +468,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				}
 				return 0
 				})
-				.attr('cy', d => y(  percentage === false ? d.index : d.index*100))
-				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index*100 < 100 ? negativeColor : positiveColor})
+				.attr('cy', d => y( d.index === undefined ? 0 : percentage === false ? d.index : d.index*100))
+				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
 
 
@@ -388,7 +478,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			circlesGraph.select("title")
 					.text(function(d, i) {
 					let t:string
-					t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
+					t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
 					+ "\n" + "Wert: " + d.result
 					return t
 				})
@@ -481,7 +571,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				}
 				return 0
 				})
-			.y( d => y(  percentage === false ? d.index : d.index*100));
+			.y( d => y( d.index === undefined ? 0 : percentage === false ? d.index : d.index*100));
 
 			let g = indxValChart.append("g")
 			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
@@ -558,8 +648,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				return 0
 				})
 
-				.attr('cy', d => y(  percentage === false ? d.index : d.index*100))
-				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index*100 < 100 ? negativeColor : positiveColor})
+				.attr('cy', d => y( d.index === undefined ? 0 :  percentage === false ? d.index : d.index*100))
+				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
 
 
@@ -568,7 +658,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					 circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string
-								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
+								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
 								+ "\n" + "Wert: " + d.result
 								return t
 						  })
@@ -663,7 +753,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				return 0
 				})
 			// .x(function(d, i) { return x(i); })
-			.y( d => y(  percentage === false ? d.index : d.index*100));
+			.y( d => y(  d.index === undefined ? 0 : percentage === false ? d.index : d.index*100));
 
 
 			let g = indxValChart.append("g")
@@ -741,8 +831,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				return 0
 				})
 
-				.attr('cy', d => y(  percentage === false ? d.index : d.index*100))
-				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index*100 < 100 ? negativeColor : positiveColor})
+				.attr('cy', d => y( d.index === undefined ? 0 :  percentage === false ? d.index : d.index*100))
+				.attr('fill', (d,i) => {console.log("label + indx: " + d.label + " : " + d.index === undefined ) ; return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
 
 
@@ -751,7 +841,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					 circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string
-								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false? " " : "%")
+								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
 								+ "\n" + "Wert: " + d.result
 								return t
 						  })
