@@ -71,7 +71,7 @@
 		"lodash": "^4.17.21",
 		"primeflex": "1.0.0-rc.1",
 		"primeicons": "1.0.0",
-		"primereact": "6.4.1",
+		"primereact": "3.1.0",
 		"proj4": "2.5.0",
 		"proj4js-defs": "0.0.1",
 		"ramda": "0.26.1",
