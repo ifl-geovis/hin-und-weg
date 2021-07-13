@@ -294,3 +294,7 @@ table.year-statistics th
 {
 	background-color: #dddddd;
 }
+
+.popup-label-arrow{
+	display: none;
+}

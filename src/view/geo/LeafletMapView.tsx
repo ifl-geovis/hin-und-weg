@@ -40,6 +40,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	classification: Classification;
 	mapRef: React.RefObject<any>;
 	SwoopyArrows: Array<any> = [];
+	name: String | undefined;
 
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
@@ -49,6 +50,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		this.style = this.style.bind(this);
 		this.pointToLayerNames = this.pointToLayerNames.bind(this);
 		this.pointToLayerValues = this.pointToLayerValues.bind(this);
+		this.pointToLayerArrowValues = this.pointToLayerArrowValues.bind(this);
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 		this.classification = Classification.getCurrentClassification();
 		this.extentMap = this.extentMap.bind(this);
@@ -74,6 +76,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		let labelsNames;
 		let labelsValues1;
 		let labelsValues2;
+		let labelsPopUpArrows1;
+		let labelsPopUpArrows2;
 		let geomap;
 		let arrows1;
 		let arrows2;
@@ -86,8 +90,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			boundsOfGeodata = this.calcGeodataBounds(geoDataJson);
 			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
 			else if (this.props.showCenter === '2') {
-				if (LeafletMapView.odd) arrows1 = this.getArrows();
-				else arrows2 = this.getArrows();
+				if (LeafletMapView.odd){ arrows1 = this.getArrows();
+					labelsPopUpArrows1 = this.getLabelsArrows();
+				}else{ 	arrows2 = this.getArrows();
+						labelsPopUpArrows2 = this.getLabelsArrows();
+				}				
 			} else if (this.props.showCenter === '3') {
 				if (LeafletMapView.odd) labelsValues1 = this.getLabelsValues();
 				else labelsValues2 = this.getLabelsValues();
@@ -98,6 +105,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 
 			this.addArrowsEvents();
+			
 		}
 		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
@@ -128,6 +136,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				</Pane>
 				<Pane name="ValuesPane2" style={{ zIndex: 800 }}>
 					{labelsValues2}
+				</Pane>
+				<Pane name="PopUpArrowsPane1" style={{ zIndex: 800 }}>
+					{labelsPopUpArrows1}
+				</Pane>				
+				<Pane name="PopUpArrowsPane1" style={{ zIndex: 800 }}>
+					{labelsPopUpArrows2}
 				</Pane>
 				<Pane name="borderSelectedFeature" style={{ zIndex: 350 }}>
 					{featureBorder}
@@ -180,11 +194,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			lat = this.SwoopyArrows[id].lat;
 			lng = this.SwoopyArrows[id].lng}
 
+			console.log("name:", name);
 
 			map.eachLayer((layer: any) => {
 
 
-			if(layer.options.pane == "SwoopyPopUpCenter"){
+/*			if(layer.options.pane == "SwoopyPopUpCenter"){
 				layer.bindTooltip(`${this.SwoopyArrows[id].label} \n ${this.SwoopyArrows[id].value}`, {
 					permanent: true,
 					opacity: 0.7,
@@ -196,12 +211,15 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				})
 				.openTooltip({ lat: lat, lng: lng });
 				}
-				
-			let hoverbox = Array.from(document.getElementsByClassName('district-label-arrow') as HTMLCollectionOf<HTMLElement>)
+				*/
+			let hoverbox = Array.from(document.getElementsByClassName('popup-label-arrow'+this.SwoopyArrows[id].label) as HTMLCollectionOf<HTMLElement>)
+
+			console.log("hoverbox:",hoverbox.length);
 
 			let i = 0;
 			for(i = 0; i < hoverbox.length; i++){
 				hoverbox[i].style.backgroundColor = color;
+				hoverbox[i].style.display = "block";
 			}
 			}
 
@@ -214,7 +232,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		document.addEventListener("mouseout", (event) => {
 			//@ts-ignore
 			if(!event.target.matches('.swoopyarrow__path')) return;
-			let hoverbox = Array.from(document.getElementsByClassName('district-label-arrow') as HTMLCollectionOf<HTMLElement>)
+			let hoverbox = Array.from(document.getElementsByClassName('popup-label-arrow'+name) as HTMLCollectionOf<HTMLElement>)
 
 			let i = 0;
 			for(i = 0; i < hoverbox.length; i++){
@@ -254,6 +272,18 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			[bounds[1], bounds[0]],
 			[bounds[3], bounds[2]],
 		];
+	}
+
+	public getLabelsArrows() {
+		let geoDataJson;
+		let centerpoints;
+
+		if (this.props.geodata) {
+			geoDataJson = this.props.geodata.getFeatureCollection();
+			centerpoints = this.generateCenterPoints(geoDataJson);
+		}
+
+		return <GeoJSON data={centerpoints} pointToLayer={this.pointToLayerArrowValues}></GeoJSON>;
 	}
 
 	public getLabelsNames() {
@@ -437,6 +467,74 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			return;
 		}
 	}
+
+	public pointToLayerArrowValues(feature1: Feature, latlng: LatLngExpression) {
+		let label = '';
+		let name = 'Fehler!!!';
+
+		if (feature1.properties) name = String(feature1.properties.Name);
+		if (feature1.properties && this.props.nameField) name = String(feature1.properties[this.props.nameField]);
+
+			if (this.props.items && this.props.items.length > 0) {
+				switch (this.props.theme) {
+					case 'Von': {
+						for (let item of this.props.items) {
+							if (item.Nach === name) {
+								label = item.Nach + "¦" + String(item.Wert);
+							}
+						}
+
+						break;
+					}
+					case 'Nach': {
+						for (let item of this.props.items) {
+							if (item.Von === name) {
+								label = item.Von + "¦" + String(item.Wert);
+							}
+						}
+						break;
+					}
+					case 'Saldi': {
+						for (let item of this.props.items) {
+							if (item.Von === name) {
+								label = item.Von + "¦" + String(item.Wert);
+							}
+						}
+					}
+
+					default: {
+						break;
+					}
+				}
+			}
+
+			if (name === this.props.selectedLocation) {
+				return new L.CircleMarker(latlng, {
+					radius: 1,
+				})
+					.bindTooltip(label, {
+						permanent: true,
+						opacity: 0.7,
+						className: 'popup-label-arrow' + name +" popup-label-arrow",
+						direction: 'center',
+
+					})
+					.openTooltip();
+			}
+
+			return new L.CircleMarker(latlng, {
+				radius: 1,
+			})
+				.bindTooltip(label, {
+					permanent: true,
+					opacity: 0.7,
+					className: 'popup-label-arrow' + name +" popup-label-arrow",
+					direction: 'center',
+				})
+				.openTooltip();
+
+	}
+	
 
 	public pointToLayerValues(feature1: Feature, latlng: LatLngExpression) {
 		let label = '';

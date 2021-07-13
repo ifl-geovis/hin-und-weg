@@ -5,7 +5,7 @@ import Settings from '../settings';
 export interface IOfflineMaps {
 	label: string;
 	file: string;
-	bounds: Array<Array<number>>;
+	bounds: any;
 }
 
 export default class OfflineMaps {
