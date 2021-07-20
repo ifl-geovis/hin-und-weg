@@ -94,7 +94,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 					labelsPopUpArrows1 = this.getLabelsArrows();
 				}else{ 	arrows2 = this.getArrows();
 						labelsPopUpArrows2 = this.getLabelsArrows();
-				}				
+				}
 			} else if (this.props.showCenter === '3') {
 				if (LeafletMapView.odd) labelsValues1 = this.getLabelsValues();
 				else labelsValues2 = this.getLabelsValues();
@@ -105,7 +105,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 
 			this.addArrowsEvents();
-			
+
 		}
 		LeafletMapView.odd = !LeafletMapView.odd;
 		return (
@@ -139,8 +139,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				</Pane>
 				<Pane name="PopUpArrowsPane1" style={{ zIndex: 800 }}>
 					{labelsPopUpArrows1}
-				</Pane>				
-				<Pane name="PopUpArrowsPane1" style={{ zIndex: 800 }}>
+				</Pane>
+				<Pane name="PopUpArrowsPane2" style={{ zIndex: 800 }}>
 					{labelsPopUpArrows2}
 				</Pane>
 				<Pane name="borderSelectedFeature" style={{ zIndex: 350 }}>
@@ -534,7 +534,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				.openTooltip();
 
 	}
-	
+
 
 	public pointToLayerValues(feature1: Feature, latlng: LatLngExpression) {
 		let label = '';
