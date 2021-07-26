@@ -363,7 +363,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				if (meisteWegzüge < results_wegzug[i].wegzug) {
 					meisteWegzüge = results_wegzug[i].wegzug;
 				}
-				indexPerYear += 1;
+				if ((!Number.isNaN(results_zuzug[i].zuzug)) || (!Number.isNaN(results_wegzug[i].wegzug))) indexPerYear += 1;
 			} else {
 				Log.debug('medianZuzügeArray', medianZuzügeArray);
 				Log.debug('medianWegzügeArray', medianWegzügeArray);
@@ -419,7 +419,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				if (meisteWegzüge < results_wegzug[i].wegzug) {
 					meisteWegzüge = results_wegzug[i].wegzug;
 				}
-				indexPerYear += 1;
+				if ((!Number.isNaN(results_zuzug[i].zuzug)) || (!Number.isNaN(results_wegzug[i].wegzug))) indexPerYear += 1;
 			}
 			letztesJahr = results_zuzug[i].Jahr;
 		}
