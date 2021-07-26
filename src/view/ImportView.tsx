@@ -77,7 +77,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 				<Panel header="2. Tabellendaten" style={((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0)) ? {display: "none"} : {display: "block"}}>
 					<div className="p-grid">
 						<div className="p-col-12">
-							<FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onSelectTabledataFiles} disabled={false}/>
+							<FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onSelectTabledataFiles} disabled={false} accept=".csv"/>
 						</div>
 						{tablesfiles}
 					</div>
@@ -94,7 +94,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		);
 		return (
 			<div className="p-col-12">
-				<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false}/>
+				<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false} accept=".shp"/>
 				<p className="loadmessage">{this.state.shapeloadmessage}</p>
 			</div>
 		);
