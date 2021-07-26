@@ -1,5 +1,5 @@
-metadata keys,type,timeunit,time,Metadaten (Kategorien),Inhalt,Bezugs-raum,Zeitraum,Zeitraum bezogen,,,,,,
-metadata values,movement,year,2005,Metadaten (Werte),Wanderungsdaten,Stadtbezirke,Jahr,2005,,,,,,
+metadata keys,type,timeunit,time,Metadaten (Kategorien),Inhalt,Bezugs-raum,Zeitraum,Zeitraum bezogen,,
+metadata values,movement,year,2005,Metadaten (Werte),Wanderungsdaten,Stadtbezirke,Jahr,2005,,
 ,0,1,2,3,4,5,6,7,8,9
 0,2694,118,489,459,933,443,112,275,75,654
 1,169,1933,453,163,166,102,40,121,76,256

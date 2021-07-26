@@ -1,5 +1,5 @@
-metadata keys,type,begin,end
-metadata values,population,2002,2012
+metadata keys,type,begin,end,,,,,,,,
+metadata values,population,2002,2012,,,,,,,,
 Gebiet id,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
 00,1960,1845,1735,1757,1761,1779,1772,1736,1634,1677,1703
 01,2849,2952,2789,3045,3144,3228,3281,3370,3457,3589,3750
