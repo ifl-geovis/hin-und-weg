@@ -239,14 +239,18 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	private readTabledata(filestatus: TableFileStatus)
 	{
 		Tabledata.read(filestatus.getPath(), (tabledata) => {
-			const metadata = this.loadMetadata(tabledata, filestatus);
-			Log.debug('metadata', metadata);
-			Log.debug('data type:', metadata.type);
-			if (metadata.type === 'population') this.addPopulationDataToDB(metadata, tabledata, filestatus);
-			else if (metadata.type === 'movement') {
-				if (metadata.timeunit === 'year') this.addMovementYearDataToDB(metadata.time.toString(), tabledata, filestatus);
-				else filestatus.failure("Unbekannte Zeiteinheit für bewegungsdaten: " + metadata.timeunit);
-			} else filestatus.failure("Unbekannter Typ von Tabellendaten: " + metadata.type);
+			if (tabledata.getRowAt(0).length != tabledata.getRowAt(2).length) filestatus.failure("Metadaten haben andere Spaltenzahl als Rest der Datei.");
+			else if (tabledata.getRowAt(1).length != tabledata.getRowAt(2).length) filestatus.failure("Metadaten haben andere Spaltenzahl als Rest der Datei.");
+			else {
+				const metadata = this.loadMetadata(tabledata, filestatus);
+				Log.debug('metadata', metadata);
+				Log.debug('data type:', metadata.type);
+				if (metadata.type === 'population') this.addPopulationDataToDB(metadata, tabledata, filestatus);
+				else if (metadata.type === 'movement') {
+					if (metadata.timeunit === 'year') this.addMovementYearDataToDB(metadata.time.toString(), tabledata, filestatus);
+					else filestatus.failure("Unbekannte Zeiteinheit für bewegungsdaten: " + metadata.timeunit);
+				} else filestatus.failure("Unbekannter Typ von Tabellendaten: " + metadata.type);
+			}
 			this.generateSummaryMessage();
 			this.setState({ tablefiles: this.state.tablefiles });
 		});
