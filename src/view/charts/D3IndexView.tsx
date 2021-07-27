@@ -164,8 +164,8 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 	
 		if (type === "year")
 		{
-			if (theme === "Von") return  `SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-			if (theme === "Nach") return `SELECT Jahr as label, sum(Wert) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			if (theme === "Von") return  `SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '${this.props.location}' ${migrationsInsideClause} GROUP BY Jahr`;
+			if (theme === "Nach") return `SELECT Jahr as label, sum(Wert) as result FROM matrices where Nach = '${this.props.location}' ${migrationsInsideClause} GROUP BY Jahr`;
 		}
 		if (type === "location")
 		{
