@@ -158,10 +158,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		);
 		const migrationsInsideClause = (this.props.migrationsInside) ? `` : ` AND Von <> Nach `;
 		const migrationsInsideOff = ` AND Von <> Nach `;
-
-
 		Log.debug("stringYears in constructQuery : ", stringYears);
-	
 		if (type === "year")
 		{
 			if (theme === "Von") return  `SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '${this.props.location}' ${migrationsInsideClause} GROUP BY Jahr`;
@@ -171,13 +168,8 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		{
 			if (theme === "Von") 
 			return `SELECT Nach as label, MYSUM(Wert) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideOff} GROUP BY Nach ORDER BY Nach`;
-
-			// return "SELECT Nach as label, MYSUM(Wert) as result FROM matrices where Von = '" + this.props.location + "' AND Jahr IN '" + stringYears + "' GROUP BY Nach ORDER BY Nach";
-			// "SELECT Nach as label, sum(Wert) as result FROM matrices where Von = '" + this.props.location + "' GROUP BY Nach";
 			if (theme === "Nach")
 			return `SELECT Von as label, MYSUM(Wert) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideOff} GROUP BY Von ORDER BY Von`;
-
-			//  return "SELECT Von as label, sum(Wert) as result FROM matrices where Nach = '" + this.props.location + "' GROUP BY Von";
 		}
 		return null;
 	}
