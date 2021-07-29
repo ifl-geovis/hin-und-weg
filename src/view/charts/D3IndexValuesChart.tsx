@@ -111,10 +111,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	// DRAW D3 CHART
 	private drawIndxValChart(data: ID3IndexValuesChartItem[], theme: string) {
 		const svgIndxValChart = select(this.svgRef!);
-		console.log("reference year: " + this.props.referenceYear);
-		console.log(" yearsSelected: " + this.props.yearsSelected);
 
-		// let heightResponsive = data.length <= 10 ? data.length*50 : data.length * 25;
 		const labels = data.map((d) => d.label);
 		let maxNameLength = Math.max(...labels.map(el => el ? el.length : 50));
 		let marginResponsive =  this.props.type === 'year' ? maxNameLength*10 : maxNameLength*8 ; // +10		
@@ -151,13 +148,12 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		  }
 		const refLabelIndx = checkRef(labels, this.props.referenceYear , this.props.referenceLocation  );
 		const results = data.map((d) => d.result);
-		const calculateIfNaN: any = () =>  {if (typeof(refLabelIndx) === "number"){ return results[refLabelIndx] === undefined || results[refLabelIndx] === NaN}};
+		const calculateIfRefNaN: any = () =>  {if (typeof(refLabelIndx) === "number"){   return typeof results[refLabelIndx]  !== 'number' || !results[refLabelIndx] && results[refLabelIndx] !== 0 }};
 		
-		const ifRefNaN = calculateIfNaN();
+		const ifRefNaN = calculateIfRefNaN();
 
 		const calculateIfYearSelected : any = () =>  { return ( R.contains(this.props.referenceYear, this.props.yearsSelected)) ? true : false};
 		const ifYearSelected = calculateIfYearSelected();
-		console.log("ifYearSelected: " + ifYearSelected);
 
 		const calculateIfPercentage: any = () =>  {if (typeof(refLabelIndx) === "number"){ return indexValues[refLabelIndx] === 0 ? false : true}};
 		const percentage: boolean = calculateIfPercentage();
@@ -165,14 +161,14 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const maxIndex: any = d3.max(data, (d,i) => {
 			return d.index
 		});
-		const maxIndexOrValue: any = (maxIndex:any) =>  {if (typeof(refLabelIndx) === "number"){return indexValues[refLabelIndx] === 0 ? maxIndex : maxIndex*100}};
-		  const maxIndex2: number = maxIndexOrValue(maxIndex);
+		const maxIndexOrPercentage: any = (maxIndex:any) =>  {if (typeof(refLabelIndx) === "number"){return indexValues[refLabelIndx] === 0 ? maxIndex : maxIndex*100}};
+		  const maxIndex2: number = maxIndexOrPercentage(maxIndex);
 
 		const minIndex: any = d3.min(data, (d) => {
 			return d.index
 		});
-		const minIndexOrValue: any = (minIndex:any) =>  {if (typeof(refLabelIndx) === "number"){return indexValues[refLabelIndx] === 0 ? minIndex : minIndex*100}};
-		const minIndex2: number = minIndexOrValue(minIndex);
+		const minIndexOrPercentage: any = (minIndex:any) =>  {if (typeof(refLabelIndx) === "number"){return indexValues[refLabelIndx] === 0 ? minIndex : minIndex*100}};
+		const minIndex2: number = minIndexOrPercentage(minIndex);
 
 		const warnText = "Achtung, der gewählte Indexwert ist gleich 0. ";
 		const warnText2 = "Es kann kein prozentualer Bezug hergestellt werden. ";
@@ -241,9 +237,6 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					textWidth = bbox.width;
 						  }
 
-				
-						  // || warningText4 !== null && warnText2 !== null  && ifRefNaN
-
 					warningText.text(  WIDTH >= textWidth ? ( warnText + warnText2 + warnText3) : WIDTH >= 670 ?  warnText + warnText2 : warnText  )
 					.attr("y", (WIDTH >= textWidth ? 0 - (MARGIN.TOP / 4) :WIDTH > 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)*3));
 
@@ -275,7 +268,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	  
 					  }
 
-					  if (warningText5 !== null  && ifYearSelected === false && this.props.type === "year"   ) { 
+				if (warningText5 !== null  && ifYearSelected === false && this.props.type === "year"   ) { 
 						let		bboxt =  warningText5.node()
 						let bbox;
 						if (bboxt !== null){
@@ -289,18 +282,12 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						textWidth = bbox.width;
 							  }
 	
-							//   warningText4.text(  WIDTH >= textWidth ? ( warnText4 + warnText2) : WIDTH >= 670 ?  warnText4 + warnText2 : warnText4  )
-							//   .attr("y", (WIDTH >= textWidth ? 0 - (MARGIN.TOP / 4) :WIDTH > 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)*3));
-		  
-							// 		warningText2.text(WIDTH < 670 ?  warnText2 : " " )
-							//   .attr("y", (WIDTH < 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)));
-		  
 						  }
 		
 
 		if (theme === 'Von') {
 
-			const domain = data.map(d => d.label);
+			const domain = data.map(d => d.result === undefined || NaN ? d.label + ' (NaN) ' : d.result === 0 ? d.label + ' (0) ' : d.label);
 			let offsetDomain = (maxIndex2 - minIndex2)/ data.length;
 
 			const x = d3.scaleBand()
@@ -333,7 +320,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.selectAll("text")
 			.style("text-anchor", "end")
 			.attr("dx", "-.8em")
-			.attr("dy", 0)
+			.attr("dy", "-.5em")
 			.attr("transform", "rotate(-90)")
 			.style('font-size', '12px');
 
@@ -379,203 +366,81 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						.tickFormat(() => '')
 				);
 
+			if (this.props.type === 'location') {
+					let g = indxValChart.append("g")
+					.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
+					.datum(data);
+		
+		
+						let stopPoint = y(100)*100/HEIGHT + "%";
+						let linearGradient = g.append("linearGradient")
+						.attr("id", "line-gradient")
+						.attr("gradientUnits", "userSpaceOnUse")
+						.attr("x1", 0)
+						.attr("y1", y(maxIndex2 + offsetDomain))
+						.attr("x2", 0)
+						.attr("y2", y(minIndex2 - offsetDomain));
+		
+						linearGradient.selectAll("stop")
+						.data([
+							 {offset: "0%", color: positiveColor},
+							 {offset: stopPoint, color: positiveColor},
+							 {offset:  stopPoint, color: negativeColor},
+							 {offset: "100%", color: negativeColor}
+						])
+						.enter().append("stop")
+						.attr("offset", function(d) { return d.offset; })
+						.attr("stop-color", function(d) { return d.color; });
+		
+		
+					
+					 const circlesGraph = indxValChart.selectAll('circle')
+						.data(data)
+						.enter()
+						.append('circle');
+		
+					circlesGraph		
+						.attr('r', (d,i) => { return  !x(d.label) ? 0 : i === refLabelIndx ? 4 : 3})
+						.attr('cx',( d,i) => {
+							const xCoordinate = x(d.label)
+						if (xCoordinate) {
+							return xCoordinate + x.bandwidth()/2
+						}
+						return 0
+						})
+						.attr('cy', d => y( d.index === undefined ? 0 : percentage === false ? d.index : d.index*100))
+						.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
+						.attr('stroke', 'black');
+		
+		
+					
+					const formatRound =d3.format(".2f");
+						circlesGraph.append("title")
+						circlesGraph.select("title")
+							.text(function(d, i) {
+							let t:string
+							t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+							+ "\n" + "Wert: " + d.result
+							return t
+						})
+					
+				
+				}else if (this.props.type === 'year'){
 				// Add the valueline path.
-			let lineGenerator = d3.line<ID3IndexValuesChartItem>()
-			// .defined(function (d) { return d.index !== undefined; })
+				let lineGenerator = d3.line<ID3IndexValuesChartItem>()
 
-			.x(function(d,i) {
-				const xCoordinate = x(d.label)
-				if (xCoordinate) {
-					return xCoordinate + x.bandwidth()/2
-				}
-				return 0
-				})
-				.y( d => y(  d.index === undefined ? 0 : percentage === false ?  d.index :  d.index*100));
-				// .y( d => y(  percentage === false ? d.index === undefined ? 0: d.index : d.index === undefined ? 0: d.index*100));
-
-			let g = indxValChart.append("g")
-			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
-			.datum(data);
-
-				let linegraph1 = indxValChart.append("path")
-				.datum(data);
-
-				let stopPoint = y(100)*100/HEIGHT + "%";
-				let linearGradient = g.append("linearGradient")
-				.attr("id", "line-gradient")
-				.attr("gradientUnits", "userSpaceOnUse")
-				.attr("x1", 0)
-				.attr("y1", y(maxIndex2 + offsetDomain))
-				.attr("x2", 0)
-				.attr("y2", y(minIndex2 - offsetDomain));
-
-				linearGradient.selectAll("stop")
-				.data([
-					 {offset: "0%", color: positiveColor},
-					 {offset: stopPoint, color: positiveColor},
-					 {offset:  stopPoint, color: negativeColor},
-					 {offset: "100%", color: negativeColor}
-				])
-				.enter().append("stop")
-				.attr("offset", function(d) { return d.offset; })
-				.attr("stop-color", function(d) { return d.color; });
-
-			 linegraph1
-			.attr("d", lineGenerator)
-			.attr("stroke", "url(#line-gradient)")
-			.attr("stroke-width", 2.5)
-			.attr("fill", "none");
-
-			linegraph1.exit().remove();
-
-			//Update
-			linegraph1
-			.attr("d", lineGenerator)
-			.attr("stroke", "url(#line-gradient)")
-			.attr("stroke-width", 2.5)
-			.attr("fill", "none");
-			//Enter
-			linegraph1
-			.enter()
-				.append("path")
-				.attr("d", lineGenerator)
-				.attr("fill", "none")
-				.attr("stroke", "url(#line-gradient)")
-				.attr("stroke-width", 1)
-
-
-			  indxValChart.append("line")
-				.attr("x1", 0)
-				.attr("x2", WIDTH )
-				.attr("stroke", "#3a403d")
-				.attr("stroke-width", "1px")
-				.attr("y1", y(100))
-				.attr("y2", y(100));
-
-			 const circlesGraph = indxValChart.selectAll('circle')
-				.data(data)
-				.enter()
-				.append('circle');
-
-			circlesGraph
-			// .filter(function(d) { return d.index !== undefined })
-
-				.attr('r', (d,i) => { return i === refLabelIndx ? 4 : 3})
-				.attr('cx',( d,i) => {
+				.x(function(d,i) {
 					const xCoordinate = x(d.label)
-				if (xCoordinate) {
-					return xCoordinate + x.bandwidth()/2
-				}
-				return 0
-				})
-				.attr('cy', d => y( d.index === undefined ? 0 : percentage === false ? d.index : d.index*100))
-				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
-				.attr('stroke', 'black');
-
-
-			const formatRound =d3.format(".2f");
-			circlesGraph.append("title")
-			circlesGraph.select("title")
-					.text(function(d, i) {
-					let t:string
-					t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-					+ "\n" + "Wert: " + d.result
-					return t
-				})
-
-
-		} else if (theme === 'Nach') {
-			const domain = data.map(d => d.label);
-			let offsetDomain = (maxIndex2 - minIndex2)/ data.length;
-
-			const x = d3.scaleBand()
-			.domain(domain.sort(d3.ascending))
-			.range([0, WIDTH])
-			.padding(0.25);
-
-			const y = d3
-				.scaleLinear()
-				.domain([maxIndex2 + offsetDomain, minIndex2 - offsetDomain])
-				.range([0, HEIGHT]);
-
-
-				// gridlines in x axis function
-			let make_x_gridlines = () => {
-				return d3.axisBottom(x);
-			};
-
-			// gridlines in y axis function
-			let make_y_gridlines = () => {
-				return d3.axisLeft(y);
-			};
-			const yAxisCall = d3.axisLeft(y);
-			yAxisGroup.call(yAxisCall).attr('class', 'axis axis--y').style('font-size', '12px');
-
-			const xAxisCall = d3.axisBottom(x);
-			xAxisGroup.call(xAxisCall).attr('class', 'axis axis--x')
-			.selectAll("text")
-			.style("text-anchor", "end")
-			.attr("dx", "-.8em")
-			.attr("dy", 0)
-			.attr("transform", "rotate(-90)")
-			.style('font-size', '12px');
-
-			xAxisGroup.selectAll('.tick')
-			.each(function(d, i) {
-				if(i === refLabelIndx) {
-					d3.select(this)
-						.selectAll('text')
-						.attr('font-weight', 'bold')
-						.style('fill', 'black')
-						.style('font-size', '13px')
+					if (xCoordinate) {
+						return xCoordinate + x.bandwidth()/2
 					}
-			});
+					return 0
+					})
+					.y( d => y(  d.index === undefined ? 0 : percentage === false ?  d.index :  d.index*100));
 
-			  // text label for the y axis
-			const xAxisName = indxValChart.append("text")
-				.attr("transform", "rotate(-90)")
-				.attr("y", 0 - MARGIN.LEFT)
-				.attr("x",0 - (HEIGHT / 2))
-				.attr("dy", "1em")
-				.style("text-anchor", "middle")
-				.text(percentage === true ? "%" : "Wert");
-
-			// add the X gridlines
-			indxValChart
-				.append('g')
-				.classed('gridLine', true)
-				.attr('transform', 'translate(0,' + HEIGHT + ')')
-				.style('fill', 'none')
-				.call(
-					make_x_gridlines()
-						.tickSize(-HEIGHT)
-						.tickFormat(() => '')
-				);
-
-			// add the Y gridlines
-			indxValChart
-				.append('g')
-				.classed('gridLine', true)
-				.call(
-					make_y_gridlines()
-						.tickSize(-WIDTH)
-						.tickFormat(() => '')
-				);
-
-				// Add the valueline path.
-			let lineGenerator = d3.line<ID3IndexValuesChartItem>()
-			.x(function(d,i) {
-				const xCoordinate = x(d.label)
-				if (xCoordinate) {
-					return xCoordinate + x.bandwidth()/2
-				}
-				return 0
-				})
-			.y( d => y( d.index === undefined ? 0 : percentage === false ? d.index : d.index*100));
-
-			let g = indxValChart.append("g")
-			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
-			.datum(data);
+				let g = indxValChart.append("g")
+				.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
+				.datum(data);
 
 				let linegraph1 = indxValChart.append("path")
 				.datum(data);
@@ -601,71 +466,69 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("stop-color", function(d) { return d.color; });
 
 				linegraph1
-			.attr("d", lineGenerator)
-			.attr("stroke", "url(#line-gradient)")
-			.attr("stroke-width", 2.5)
-			.attr("fill", "none");
-
-			linegraph1.exit().remove();
-
-			//Update
-			linegraph1
-			.attr("d", lineGenerator)
-			.attr("stroke", "url(#line-gradient)")
-			.attr("stroke-width", 2.5)
-			.attr("fill", "none");
-			//Enter
-			linegraph1
-			.enter()
-				.append("path")
 				.attr("d", lineGenerator)
-				.attr("fill", "none")
 				.attr("stroke", "url(#line-gradient)")
-				.attr("stroke-width", 1)
+				.attr("stroke-width", 2.5)
+				.attr("fill", "none");
 
+				linegraph1.exit().remove();
 
-				indxValChart.append("line")
-				.attr("x1", 0)
-				.attr("x2", WIDTH )
-				.attr("stroke", "#3a403d")
-				.attr("stroke-width", "1px")
-				.attr("y1", y(100))
-				.attr("y2", y(100));
-
-			 const circlesGraph = indxValChart.selectAll('circle')
-				.data(data)
+				//Update
+				linegraph1
+				.attr("d", lineGenerator)
+				.attr("stroke", "url(#line-gradient)")
+				.attr("stroke-width", 2.5)
+				.attr("fill", "none");
+				//Enter
+				linegraph1
 				.enter()
-				.append('circle');
+					.append("path")
+					.attr("d", lineGenerator)
+					.attr("fill", "none")
+					.attr("stroke", "url(#line-gradient)")
+					.attr("stroke-width", 1)
 
-			circlesGraph
-				.attr('r', (d,i) => { return i === refLabelIndx ? 4 : 3})
+
+
+				const circlesGraph = indxValChart.selectAll('circle')
+					.data(data)
+					.enter()
+					.append('circle');
+
+				circlesGraph
+				.attr('r', (d,i) => { return !x(d.label) ? 0 : i === refLabelIndx ? 4 : 3})
 				.attr('cx',( d,i) => {
 					const xCoordinate = x(d.label)
 				if (xCoordinate) {
 					return xCoordinate + x.bandwidth()/2
-
 				}
 				return 0
 				})
-
-				.attr('cy', d => y( d.index === undefined ? 0 :  percentage === false ? d.index : d.index*100))
+				.attr('cy', d => y( d.index === undefined ? 0 : percentage === false ? d.index : d.index*100))
 				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
 
 
-					 const formatRound =d3.format(".2f");
-					 circlesGraph.append("title")
-					 circlesGraph.select("title")
-								.text(function(d, i) {
-								let t:string
-								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-								+ "\n" + "Wert: " + d.result
-								return t
-						  })
+				const formatRound =d3.format(".2f");
+				circlesGraph.append("title")
+				circlesGraph.select("title")
+						.text(function(d, i) {
+						let t:string
+						t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+						+ "\n" + "Wert: " + d.result
+						return t
+					})
+				}
 
-
-		} else if (theme == 'Saldi') {
-			const domain = data.map(d => d.label);
+			indxValChart.append("line")
+			.attr("x1", 0)
+			.attr("x2", WIDTH )
+			.attr("stroke", "#3a403d")
+			.attr("stroke-width", "1px")
+			.attr("y1", y(100))
+			.attr("y2", y(100));
+		} else if (theme === 'Nach') {
+			const domain = data.map(d => d.result === undefined || NaN ? d.label + ' (NaN) ' : d.result === 0 ? d.label + ' (0) ' : d.label);
 			let offsetDomain = (maxIndex2 - minIndex2)/ data.length;
 
 			const x = d3.scaleBand()
@@ -677,6 +540,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.scaleLinear()
 				.domain([maxIndex2 + offsetDomain, minIndex2 - offsetDomain])
 				.range([0, HEIGHT]);
+
 
 				// gridlines in x axis function
 			let make_x_gridlines = () => {
@@ -695,7 +559,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.selectAll("text")
 			.style("text-anchor", "end")
 			.attr("dx", "-.8em")
-			.attr("dy", 0)
+			.attr("dy", "-.5em")
 			.attr("transform", "rotate(-90)")
 			.style('font-size', '12px');
 
@@ -741,24 +605,78 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						.tickFormat(() => '')
 				);
 
+				
+			if (this.props.type === 'location') {
+					let g = indxValChart.append("g")
+					.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
+					.datum(data);
+		
+						let stopPoint = y(100)*100/HEIGHT + "%";
+						let linearGradient = g.append("linearGradient")
+						.attr("id", "line-gradient")
+						.attr("gradientUnits", "userSpaceOnUse")
+						.attr("x1", 0)
+						.attr("y1", y(maxIndex2 + offsetDomain))
+						.attr("x2", 0)
+						.attr("y2", y(minIndex2 - offsetDomain));
+		
+						linearGradient.selectAll("stop")
+						.data([
+							 {offset: "0%", color: positiveColor},
+							 {offset: stopPoint, color: positiveColor},
+							 {offset:  stopPoint, color: negativeColor},
+							 {offset: "100%", color: negativeColor}
+						])
+						.enter().append("stop")
+						.attr("offset", function(d) { return d.offset; })
+						.attr("stop-color", function(d) { return d.color; });
+			
+					 const circlesGraph = indxValChart.selectAll('circle')
+						.data(data)
+						.enter()
+						.append('circle');
+		
+					circlesGraph
+						.attr('r', (d,i) => { return !x(d.label) ? 0 : i === refLabelIndx ? 4 : 3})
+						.attr('cx',( d,i) => {
+							const xCoordinate = x(d.label)
+						if (xCoordinate) {
+							return xCoordinate + x.bandwidth()/2
+		
+						}
+						return 0
+						})
+		
+						.attr('cy', d => y( d.index === undefined ? 0 :  percentage === false ? d.index : d.index*100))
+						.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
+						.attr('stroke', 'black');
+		
+		
+							 const formatRound =d3.format(".2f");
+							 circlesGraph.append("title")
+							 circlesGraph.select("title")
+										.text(function(d, i) {
+										let t:string
+										t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+										+ "\n" + "Wert: " + d.result
+										return t
+								  })
+					
+			}else if (this.props.type === 'year'){
 				// Add the valueline path.
-			let lineGenerator = d3.line<ID3IndexValuesChartItem>()
-			.x(function(d,i) {
-				// const xCoordinate = x(labels[i])
-				const xCoordinate = x(d.label)
-
-				if (xCoordinate) {
-					return xCoordinate + x.bandwidth()/2
-				}
-				return 0
+				let lineGenerator = d3.line<ID3IndexValuesChartItem>()
+				.x(function(d,i) {
+					const xCoordinate = x(d.label)
+					if (xCoordinate) {
+						return xCoordinate + x.bandwidth()/2
+					}
+					return 0
 				})
-			// .x(function(d, i) { return x(i); })
-			.y( d => y(  d.index === undefined ? 0 : percentage === false ? d.index : d.index*100));
+				.y( d => y( d.index === undefined ? 0 : percentage === false ? d.index : d.index*100));
 
-
-			let g = indxValChart.append("g")
-			.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
-			.datum(data);
+				let g = indxValChart.append("g")
+				.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
+				.datum(data);
 
 				let linegraph1 = indxValChart.append("path")
 				.datum(data);
@@ -783,45 +701,280 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("offset", function(d) { return d.offset; })
 				.attr("stop-color", function(d) { return d.color; });
 
-			 linegraph1
-			.attr("d", lineGenerator)
-			.attr("stroke", "url(#line-gradient)")
-			.attr("stroke-width", 2.5)
-			.attr("fill", "none");
-
-			linegraph1.exit().remove();
-
-			//Update
-			linegraph1
-			.attr("d", lineGenerator)
-			.attr("stroke", "url(#line-gradient)")
-			.attr("stroke-width", 2.5)
-			.attr("fill", "none");
-			//Enter
-			linegraph1
-			.enter()
-				.append("path")
+				linegraph1
 				.attr("d", lineGenerator)
-				.attr("fill", "none")
 				.attr("stroke", "url(#line-gradient)")
-				.attr("stroke-width", 1)
+				.attr("stroke-width", 2.5)
+				.attr("fill", "none");
+
+				linegraph1.exit().remove();
+
+				//Update
+				linegraph1
+				.attr("d", lineGenerator)
+				.attr("stroke", "url(#line-gradient)")
+				.attr("stroke-width", 2.5)
+				.attr("fill", "none");
+				//Enter
+				linegraph1
+				.enter()
+					.append("path")
+					.attr("d", lineGenerator)
+					.attr("fill", "none")
+					.attr("stroke", "url(#line-gradient)")
+					.attr("stroke-width", 1)
+
+				
+
+				const circlesGraph = indxValChart.selectAll('circle')
+					.data(data)
+					.enter()
+					.append('circle');
+
+				circlesGraph
+				.attr('r', (d,i) => { return !x(d.label) ? 0 : i === refLabelIndx ? 4 : 3})
+				.attr('cx',( d,i) => {
+						const xCoordinate = x(d.label)
+					if (xCoordinate) {
+						return xCoordinate + x.bandwidth()/2
+
+					}
+					return 0
+					})
+
+				.attr('cy', d => y( d.index === undefined ? 0 :  percentage === false ? d.index : d.index*100))
+				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
+				.attr('stroke', 'black');
 
 
-			  indxValChart.append("line")
+				const formatRound =d3.format(".2f");
+					 circlesGraph.append("title")
+					 circlesGraph.select("title")
+								.text(function(d, i) {
+								let t:string
+								t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								+ "\n" + "Wert: " + d.result
+								return t
+						  })
+						}
+				indxValChart.append("line")
+						.attr("x1", 0)
+						.attr("x2", WIDTH )
+						.attr("stroke", "#3a403d")
+						.attr("stroke-width", "1px")
+						.attr("y1", y(100))
+						.attr("y2", y(100));
+
+
+		} else if (theme == 'Saldi') {
+			const domain = data.map(d => typeof  d.result !== 'number' || !d.result && d.result !== 0  ? d.label + ' (NaN) ' : d.result === 0 ? d.label + ' (0) ' : d.label);
+			let offsetDomain = (maxIndex2 - minIndex2)/ data.length;
+
+			const x = d3.scaleBand()
+			.domain(domain.sort(d3.ascending))
+			.range([0, WIDTH])
+			.padding(0.25);
+
+			const y = d3
+				.scaleLinear()
+				.domain([maxIndex2 + offsetDomain, minIndex2 > 0 ? 0 - offsetDomain :minIndex2 - offsetDomain])
+				.range([0, HEIGHT]);
+
+				// gridlines in x axis function
+			let make_x_gridlines = () => {
+				return d3.axisBottom(x);
+			};
+
+			// gridlines in y axis function
+			let make_y_gridlines = () => {
+				return d3.axisLeft(y);
+			};
+			const yAxisCall = d3.axisLeft(y);
+			yAxisGroup.call(yAxisCall).attr('class', 'axis axis--y').style('font-size', '12px');
+
+			const xAxisCall = d3.axisBottom(x);
+			xAxisGroup.call(xAxisCall).attr('class', 'axis axis--x')
+			.selectAll("text")
+			.style("text-anchor", "end")
+			.attr("dx", "-.8em")
+			.attr("dy", "-.5em")
+			.attr("transform", "rotate(-90)")
+			.style('font-size', '12px');
+
+			xAxisGroup.selectAll('.tick')
+			.each(function(d, i) {
+				if(i === refLabelIndx) {
+					d3.select(this)
+						.selectAll('text')
+						.attr('font-weight', 'bold')
+						.style('fill', 'black')
+						.style('font-size', '13px')
+					}
+			});
+
+			  // text label for the y axis
+			const xAxisName = indxValChart.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 0 - MARGIN.LEFT)
+				.attr("x",0 - (HEIGHT / 2))
+				.attr("dy", "1em")
+				.style("text-anchor", "middle")
+				.text(percentage === true ? "%" : "Wert");
+
+			// add the X gridlines
+			indxValChart
+				.append('g')
+				.classed('gridLine', true)
+				.attr('transform', 'translate(0,' + HEIGHT + ')')
+				.style('fill', 'none')
+				.call(
+					make_x_gridlines()
+						.tickSize(-HEIGHT)
+						.tickFormat(() => '')
+				);
+
+			// add the Y gridlines
+			indxValChart
+				.append('g')
+				.classed('gridLine', true)
+				.call(
+					make_y_gridlines()
+						.tickSize(-WIDTH)
+						.tickFormat(() => '')
+				);
+			
+			if (this.props.type === 'location') {
+
+				let g = indxValChart.append("g")
+				.attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
+				.datum(data);
+
+				let stopPoint = percentage === true ? y(100)*100/HEIGHT + "%" : y(0)*100/HEIGHT + "%";
+				let linearGradient = g.append("linearGradient")
+				.attr("id", "line-gradient")
+				.attr("gradientUnits", "userSpaceOnUse")
 				.attr("x1", 0)
-				.attr("x2", WIDTH )
-				.attr("stroke", "#3a403d")
-				.attr("stroke-width", "1px")
-				.attr("y1", y(100))
-				.attr("y2", y(100));
+				.attr("y1", y(maxIndex2 + offsetDomain))
+				.attr("x2", 0)
+				.attr("y2", y(minIndex2 > 0 ? 0 - offsetDomain :minIndex2 - offsetDomain));
 
-			const circlesGraph = indxValChart.selectAll('circle')
+				linearGradient.selectAll("stop")
+				.data([
+					 {offset: "0%", color: positiveColor},
+					 {offset: stopPoint, color: positiveColor},
+					 {offset:  stopPoint, color: negativeColor},
+					 {offset: "100%", color: negativeColor}
+				])
+				.enter().append("stop")
+				.attr("offset", function(d) { return d.offset; })
+				.attr("stop-color", function(d) { return d.color; });
+
+				const circlesGraph = indxValChart.selectAll('circle')
 				.data(data)
 				.enter()
 				.append('circle');
 
-			circlesGraph
-				.attr('r', (d,i) => { return i === refLabelIndx ? 4 : 3})
+				circlesGraph
+				.attr('r', (d,i) => { return !x(d.label) ? 0 :  i === refLabelIndx ? 4 : 3  }) //4:3
+				.attr('cx',( d,i) => {
+					const xCoordinate = x(d.label)
+					console.log("d.label: " + d.label + " xCoordinate: " + xCoordinate);
+				if (xCoordinate) {
+					return xCoordinate + x.bandwidth()/2
+
+				}
+				return 0
+				})
+
+				.attr('cy', d => y( d.index === undefined ? 0 :  percentage === false ? d.index : d.index*100))
+				.attr('fill', (d,i) => { return i === refLabelIndx ? "black"  : d.index*100 < 100 ? negativeColor : positiveColor})
+				.attr('stroke', 'black');
+
+
+				const formatRound =d3.format(".2f");
+					circlesGraph.append("title")
+					circlesGraph.select("title")
+								.text(function(d, i) {
+								let t:string
+								t = d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+							+ "\n" + "Wert: " + d.result
+								return t
+						  })
+						}else if (this.props.type === 'year'){	
+						  // Add the valueline path.
+				let lineGenerator = d3.line<ID3IndexValuesChartItem>()
+				.defined(function (d) { return d.index !== undefined; })
+
+				.x(function(d,i) {
+				const xCoordinate = x(d.label)
+
+				if (xCoordinate) {
+					return xCoordinate + x.bandwidth()/2
+				}
+				return 0
+				})
+				.y( d => y(  d.index === undefined ? 0 : percentage === false ? d.index : d.index*100));
+
+
+				let g = indxValChart.append("g")
+				.attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")")
+				.datum(data);
+
+				let linegraph1 = indxValChart.append("path")
+				.datum(data);
+
+				let stopPoint = y(100)*100/HEIGHT + "%";
+				let linearGradient = g.append("linearGradient")
+				.attr("id", "line-gradient")
+				.attr("gradientUnits", "userSpaceOnUse")
+				.attr("x1", 0)
+				.attr("y1", y(maxIndex2 + offsetDomain))
+				.attr("x2", 0)
+				.attr("y2", y(minIndex2 - offsetDomain));
+
+				linearGradient.selectAll("stop")
+				.data([
+					 {offset: "0%", color: positiveColor},
+					 {offset: stopPoint, color: positiveColor},
+					 {offset:  stopPoint, color: negativeColor},
+					 {offset: "100%", color: negativeColor}
+				])
+				.enter().append("stop")
+				.attr("offset", function(d) { return d.offset; })
+				.attr("stop-color", function(d) { return d.color; });
+
+				linegraph1
+				.attr("d", lineGenerator)
+				.attr("stroke", "url(#line-gradient)")
+				.attr("stroke-width", 2.5)
+				.attr("fill", "none");
+
+				linegraph1.exit().remove();
+
+				//Update
+				linegraph1
+				.attr("d", lineGenerator)
+				.attr("stroke", "url(#line-gradient)")
+				.attr("stroke-width", 2.5)
+				.attr("fill", "none");
+				//Enter
+				linegraph1
+				.enter()
+					.append("path")
+					.attr("d", lineGenerator)
+					.attr("fill", "none")
+					.attr("stroke", "url(#line-gradient)")
+					.attr("stroke-width", 1)
+
+
+				
+				const circlesGraph = indxValChart.selectAll('circle')
+					.data(data)
+					.enter()
+					.append('circle');
+
+				circlesGraph
+				.attr('r', (d,i) => { return !x(d.label) ? 0 : i === refLabelIndx ? 4 : 3})
 				.attr('cx',( d,i) => {
 					const xCoordinate = x(d.label)
 				if (xCoordinate) {
@@ -832,7 +985,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				})
 
 				.attr('cy', d => y( d.index === undefined ? 0 :  percentage === false ? d.index : d.index*100))
-				.attr('fill', (d,i) => {console.log("label + indx: " + d.label + " : " + d.index === undefined ) ; return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
+				.attr('fill', (d,i) => { return i === refLabelIndx ? "black": d.index === undefined ? NaNcolor : d.index*100 < 100 ? negativeColor : positiveColor})
 				.attr('stroke', 'black');
 
 
@@ -841,12 +994,20 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					 circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string
-								t =  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								t =  d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
 								+ "\n" + "Wert: " + d.result
 								return t
 						  })
-		}
-	}
+				}
+				indxValChart.append("line")
+				.attr("x1", 0)
+				.attr("x2", WIDTH )
+				.attr("stroke", "#3a403d")
+				.attr("stroke-width", "1px")
+				.attr("y1", y(100))
+				.attr("y2", y(100));
+			}
+				}
 
 
 

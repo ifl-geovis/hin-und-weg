@@ -21,6 +21,7 @@ export interface ID3IndexViewProps {
 	baseViewId: number;
 	yearsSelected: string[];
 	migrationsInside: boolean;
+	dataProcessing:string;
 }
 
 interface ID3IndexViewState {
@@ -99,13 +100,12 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 			return { value: option, label: option};
 		});
 		const selectzedLocation = this.props.location;
-		console.log("selected location: " + selectzedLocation);
 		const optionsFiltered = options.filter(function(item) {
 			return item.label !== selectzedLocation
 		})
 		const selected = { value: this.state.referenceLocation, label: this.state.referenceLocation};
 		return (
-			<Dropdown optionLabel="label" value={selected} options={optionsFiltered} onChange={this.setLocation} style={{ width: "15em" }} />
+			<Dropdown optionLabel="label" value={selected} options={options} onChange={this.setLocation} style={{ width: "15em" }} />
 		);
 	}
 
@@ -161,15 +161,27 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		Log.debug("stringYears in constructQuery : ", stringYears);
 		if (type === "year")
 		{
-			if (theme === "Von") return  `SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '${this.props.location}' ${migrationsInsideClause} GROUP BY Jahr`;
-			if (theme === "Nach") return `SELECT Jahr as label, sum(Wert) as result FROM matrices where Nach = '${this.props.location}' ${migrationsInsideClause} GROUP BY Jahr`;
-		}
+			if(this.props.dataProcessing === 'wanderungsrate'){
+				if (theme === "Von") return  `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			}
+			if (theme === "Von") return  `SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			if (theme === "Nach") return `SELECT Jahr as label, sum(Wert) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+				}
 		if (type === "location")
 		{
-			if (theme === "Von") 
-			return `SELECT Nach as label, MYSUM(Wert) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideOff} GROUP BY Nach ORDER BY Nach`;
+			if(this.props.dataProcessing === 'wanderungsrate') {
+				if (theme === "Von") 
+				return `SELECT Nach as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 			if (theme === "Nach")
-			return `SELECT Von as label, MYSUM(Wert) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideOff} GROUP BY Von ORDER BY Von`;
+			return `SELECT Von as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+		}
+		if (theme === "Von") 
+		return `SELECT Nach as label, MYSUM(Wert) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+
+		if (theme === "Nach")
+		return `SELECT Von as label, MYSUM(Wert) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+
 		}
 		return null;
 	}
@@ -182,6 +194,8 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		}
 		if (this.props.theme === 'Saldi')
 		{
+			let results_zuzug_Filtered : any[] = [];
+			let results_wegzug_Filtered : any[] = [];
 			let query_zuzug = this.constructQuery(this.state.type, 'Nach');
 			let results_zuzug = this.props.db(query_zuzug);
 			let query_wegzug = this.constructQuery(this.state.type, 'Von');
@@ -189,7 +203,24 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 			let results_wegzug = this.props.db(query_wegzug);
 			Log.debug("results_wegzug in queryIndex : ", results_wegzug);
 
-			return this.calculateIndexValue(this.calculateSaldiForYears(results_zuzug, results_wegzug));
+			const years = this.props.yearsSelected;
+			const stringYears = R.join(
+				', ',
+				R.map((year) => `'${year}'`, years)
+			);
+			if(this.state.type === 'year'){
+				for(let item of results_zuzug ){
+					if ( R.contains(item.label, stringYears)){
+						results_zuzug_Filtered.push(item);
+					}
+				}
+				for(let item of results_wegzug ){
+					if ( R.contains(item.label, stringYears)){
+						results_wegzug_Filtered.push(item);
+					}
+				}
+			}
+			return this.calculateIndexValue(this.calculateSaldiForYears(this.state.type === 'year' ? results_zuzug_Filtered : results_zuzug, this.state.type === 'year' ? results_wegzug_Filtered : results_wegzug));
 		}
 		let query = this.constructQuery(this.state.type, this.props.theme);
 		let results = this.props.db(query);
@@ -224,7 +255,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 			{
 				if (zuzug.label === wegzug.label)
 				{
-					let saldo = zuzug.result - wegzug.result;
+					let saldo = zuzug.result === NaN || zuzug.result === undefined && wegzug.result !== NaN || wegzug.result !== undefined ? 0 - wegzug.result : zuzug.result !== NaN || zuzug.result !== undefined && wegzug.result === NaN || wegzug.result === undefined ? zuzug.result - 0 : zuzug.result === NaN && wegzug.result === NaN ? NaN : zuzug.result - wegzug.result;
 					results.push({
 						'label': zuzug.label,
 						'result': saldo,
@@ -246,7 +277,8 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 			if ((reference > 0) && (value >= 0)) item.index = 1 + (value - reference) / reference;
 			if ((reference > 0) && (value < 0)) item.index = 1 + (value - reference) / reference;
 			if ((reference < 0) && (value < 0)) item.index = 1 + (reference - value) / reference;
-			if ((reference < 0) && (value >= 0)) item.index = 1 + (reference - value) / reference;
+			if ((reference < 0) && (value > 0)) item.index = 1 + (reference - value) / reference;
+			if ((reference < 0) && (value = 0)) item.index = 1 - (reference - value) / reference;
 		}
 
 		return results;

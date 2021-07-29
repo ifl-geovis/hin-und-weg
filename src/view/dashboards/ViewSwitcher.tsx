@@ -242,7 +242,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectIndexView() {
 		return (
 			<div className="p-col-12">
-				<D3IndexView migrationsInside={this.props.migrationsInside} baseViewId={this.props.baseViewId} vizID={this.props.vizID} db={this.props.db} theme={this.props.theme} location={this.props.location} locations={this.props.locations} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} />
+				<D3IndexView migrationsInside={this.props.migrationsInside} baseViewId={this.props.baseViewId} vizID={this.props.vizID} db={this.props.db} theme={this.props.theme} location={this.props.location} locations={this.props.locations} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing}/>
 			</div>
 		);
 	}
