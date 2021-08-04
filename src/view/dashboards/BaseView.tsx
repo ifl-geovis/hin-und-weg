@@ -483,7 +483,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	{
 		let optimal = Classification.getCurrentClassification().calculateSturgesRule(positive);
 		let result = count.substring(0, 1);
-		if ((this.props.geodata != null) && (this.state.years.length > 0) && (optimal != parseInt(result, 10))) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen entsprechend der Regel nach Sturges ist ' + optimal + '.', 'warning');
+		if ((this.props.geodata != null) && (this.state.years.length > 0) && (optimal != parseInt(result, 10)) && (!this.state.classcountset)) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen ist ' + optimal + '. Zu viele Klassen können eventuell zu gleichen Werten oder NaN bei Klassengrenzen führen.', 'warning');
 		this.setState({ classcountset: true });
 		if (positive) this.setState({ positiveClasses: result });
 		else this.setState({ negativeClasses: result });

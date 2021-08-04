@@ -325,7 +325,10 @@ export default class Classification {
 		let stats = positive ? this.positive_stats : this.negative_stats;
 		if (stats == null) return 1;
 		let number = stats.pop();
-		if (number < 1) return 1;
+		if (number < 5) return 1;
+		if (number < 10) return 2;
+		if (number < 15) return 3;
+		if (number < 20) return 4;
 		return Math.round(1 + 3.3 * Math.log10(number));
 	}
 
