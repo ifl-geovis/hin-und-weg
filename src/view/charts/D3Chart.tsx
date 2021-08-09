@@ -36,7 +36,7 @@ interface ID3ChartState {
 	checked: boolean;
 	checkedNoFilter: boolean;
 	checkedNaN: boolean;
-	
+
 
 }
 
@@ -65,11 +65,11 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		const [min, max] = this.getMinMax2();
 		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) =>  item.Wert <= this.state.rangeValues[0] && item.Wert >= min , this.props.data) : R.filter((item) => Number.isNaN(item.Wert) || item.Wert <= this.state.rangeValues[0] && item.Wert >= min , this.props.data);
 		let data2: ID3ChartItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] && item.Wert <= max, this.props.data);
-		
+
 		let dataFilterSmall: ID3ChartItem[] = R.concat(data1, data2);
 		let dataFilterLarge: ID3ChartItem[] = this.state.checkedNaN ? R.filter(
-			(item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1],this.props.data) : 
-			R.filter((item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1] 
+			(item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1],this.props.data) :
+			R.filter((item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1]
 				|| Number.isNaN(item.Wert), this.props.data);
 		let dataSaldi = this.state.checked === false ? dataFilterLarge : dataFilterSmall;
 		let normalizedData: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => item.Wert >= this.state.threshold , this.props.data) : R.filter((item) => item.Wert >= this.state.threshold || Number.isNaN(item.Wert), this.props.data);
@@ -82,7 +82,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		return (
 			nextProps.data !== this.props.data ||
 			nextProps.theme !== this.props.theme ||
-			nextState.checkedNoFilter !== this.state.checkedNoFilter || 
+			nextState.checkedNoFilter !== this.state.checkedNoFilter ||
 			nextState.checked !== this.state.checked ||
 			nextProps.width !== this.props.width ||
 			nextProps.height !== this.props.height ||
@@ -101,9 +101,9 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		let data2: ID3ChartItem[] = R.filter((item) => item.Wert >= rangeValues[1] && item.Wert <= max, this.props.data);
 		let dataFilterSmall: ID3ChartItem[] =  R.concat(data1, data2);
 		let dataFilterLarge: ID3ChartItem[] = this.state.checkedNaN ? R.filter(
-			(item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1] , 
+			(item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1] ,
 			this.props.data
-		) : R.filter((item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1] || Number.isNaN(item.Wert), 
+		) : R.filter((item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1] || Number.isNaN(item.Wert),
 			this.props.data
 		);
 		let dataSaldi = this.state.checked === false ? dataFilterLarge : dataFilterSmall;
@@ -799,23 +799,23 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					<label className="p-checkbox-label">Umgekehrt filtern</label>
 				</div>
 				<div className="p-col-4 noprint">
-            <Checkbox
-              name = "saldiChordNoFilter"
-              id	= "saldiChordNoFilter"
-              onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
-              checked={this.state.checkedNoFilter}
-            />
-            <label className="p-checkbox-label">Kein Filter</label>
-          </div>
+				<Checkbox
+				  name = "saldiChordNoFilter"
+				  id	= "saldiChordNoFilter"
+				  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
+				  checked={this.state.checkedNoFilter}
+				/>
+				<label className="p-checkbox-label">Kein Filter</label>
+			 </div>
 		  <div className="p-col-4 noprint">
-            <Checkbox
-              name = "noNaN"
-              id	= "noNaN"
-              onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNaN: e.checked})}
-              checked={this.state.checkedNaN}
-            />
-            <label className="p-checkbox-label">Kein NaN</label>
-          </div>
+				<Checkbox
+				  name = "noNaN"
+				  id	= "noNaN"
+				  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNaN: e.checked})}
+				  checked={this.state.checkedNaN}
+				/>
+				<label className="p-checkbox-label">Kein NaN</label>
+			 </div>
 
 				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
 					{min}
@@ -827,7 +827,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 								disabled={this.state.checkedNoFilter   ? true : false}
 								min={min}
 								max={max}
-								value={this.state.checkedNoFilter  ? [min, max] : rangeValues } 
+								value={this.state.checkedNoFilter  ? [min, max] : rangeValues }
 								onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({ rangeValues: e.value as [number, number] })}
 								range={true}
 							/>
@@ -847,20 +847,20 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					{max}
 				</div>
 				{/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-				<div className="p-col-2">
+				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ? this.state.checked ?
 					'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
-					'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}					
+					'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
 					</div>
-				<div className="p-col-2">
-					{this.props.theme == 'Saldi' ? 
+				<div className="p-col-2 noprint">
+					{this.props.theme == 'Saldi' ?
 						<InputText
 							value={rangeValue1}
 							style={{ width: '6em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
 						/>
-					 : 
+					 :
 						<InputText
 							value={this.state.checkedNoFilter ? min: threshold}
 							style={{ width: '10em' }}
@@ -869,23 +869,23 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 						/>
 					}
 				</div>
-				<div className="p-col-2">{this.props.theme == 'Saldi' ? this.state.checked === true?
-            		'und ab ' : 'bis ' : ' '} 
+				<div className="p-col-2 noprint">{this.props.theme == 'Saldi' ? this.state.checked === true?
+						'und ab ' : 'bis ' : ' '}
 				</div>
-				<div className="p-col-2">
-					{this.props.theme == 'Saldi' ? 
+				<div className="p-col-2 noprint">
+					{this.props.theme == 'Saldi' ?
 						<InputText
 							value={rangeValue2}
 							style={{ width: '6em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
 						/>
-					 : 
+					 :
 						<div className="p-col-2 p-offset-1"></div>}
 
 				</div>
 				<div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
-            		'bis ' + max : ' '} </div>
+						'bis ' + max : ' '} </div>
 				<div className="p-col-12">
 					<Legend showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>

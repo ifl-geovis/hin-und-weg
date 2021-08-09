@@ -58,7 +58,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 	public render(): JSX.Element
 	{
 		let data = this.queryIndex();
-	
+
 		Log.debug("index value data: ", data);
 		let selector = null;
 		if (this.state.type === "year") selector = this.createYearSelector();
@@ -70,13 +70,15 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		return (
 			<div>
 				<h3>{themeTitel}  {this.props.location}, Indexwert: {refText} (=100%) </h3>
-				Auswahl Indexwert:
-				&nbsp;
-				<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
-				&nbsp;
-				{selector}
-				&nbsp;
-				<hr />
+				<div className="noprint">
+					Auswahl Indexwert:
+					&nbsp;
+					<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
+					&nbsp;
+					{selector}
+					&nbsp;
+					<hr />
+				</div>
 				{view}
 			</div>
 		);
@@ -88,7 +90,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		const options = this.props.yearsAvailable.map((option: string) => {
 			return { value: option, label: option};
 		});
-		
+
 		const selected = { value: this.state.referenceYear, label: this.state.referenceYear};
 		return (
 			<Dropdown optionLabel="label" value={selected} options={options} onChange={this.setYear} />
@@ -114,25 +116,25 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		return this.createD3ChartView(data);
 	}
 
-	
+
 	private createD3ChartView(data: any[])
 	{
 
 		return (
 			<div className="p-grid">
-				
+
 				<div id="chartDiv" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-							<D3IndexValuesChart 
+							<D3IndexValuesChart
 							db={this.props.db}
 							theme={this.props.theme}
-							location={this.props.location} locations={this.props.locations} 
-							yearsAvailable={this.props.yearsAvailable} 
+							location={this.props.location} locations={this.props.locations}
+							yearsAvailable={this.props.yearsAvailable}
 							baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 							width={ width}
 							height = {this.state.type === 'year' ? 450: 550}
-							data={data} 
+							data={data}
 							referenceYear={this.state.referenceYear}
 							referenceLocation={this.state.referenceLocation}
 							type = {this.state.type}
@@ -142,12 +144,12 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 
 
 				</div>
-				
+
 			</div>
-			
+
 		);
 	}
-	
+
 
 	private constructQuery(type: string, theme: string)
 	{
@@ -171,12 +173,12 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		if (type === "location")
 		{
 			if(this.props.dataProcessing === 'wanderungsrate') {
-				if (theme === "Von") 
+				if (theme === "Von")
 				return `SELECT Nach as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 			if (theme === "Nach")
 			return `SELECT Von as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 		}
-		if (theme === "Von") 
+		if (theme === "Von")
 		return `SELECT Nach as label, MYSUM(Wert) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 
 		if (theme === "Nach")
@@ -240,7 +242,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		}
 		Log.debug("results in queryIndex : ", results);
 
-		
+
 		//return this.calculateIndexValue(results);
 		return this.state.type === 'year' ? this.calculateIndexValue(resultsFiltered):this.calculateIndexValue(results);
 
@@ -301,7 +303,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 	{
 		this.setState({ type: event.value.value });
 	}
-	
+
 
 	private getType()
 	{
@@ -335,6 +337,6 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 
 
 
-	
+
 
 }

@@ -870,64 +870,64 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             <label className="p-checkbox-label">Kein Filter</label>
           </div>
 
-       
+
             <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{min}</div>
             <div className="p-col-10 noprint">
         <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
 
                 {
                     this.props.theme == "Saldi" ?
-                    <Slider 
-                    disabled={this.state.checkedNoFilter   ? true : false} 
-                    min={min} 
-                    max={max} 
-                    value={this.state.checkedNoFilter ? [min, max] : rangeValues} 
-                    onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})} 
+                    <Slider
+                    disabled={this.state.checkedNoFilter   ? true : false}
+                    min={min}
+                    max={max}
+                    value={this.state.checkedNoFilter ? [min, max] : rangeValues}
+                    onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})}
                     range={true} />
                     :
-                    <Slider 
-                    disabled={this.state.checkedNoFilter ? true : false} 
-                    min={min} 
-                    max={max} 
-                    value={this.state.checkedNoFilter  ? min : threshold} 
-                    orientation="horizontal" 
+                    <Slider
+                    disabled={this.state.checkedNoFilter ? true : false}
+                    min={min}
+                    max={max}
+                    value={this.state.checkedNoFilter  ? min : threshold}
+                    orientation="horizontal"
                     onChange={(e) => this.state.checkedNoFilter  ? this.setState({  threshold: min as number}) : this.setState({ threshold: e.value as number})}/>
                 }
                 </div>
                 </div>
             <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{max}</div>
             {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-        <div className="p-col-2">
+        <div className="p-col-2 noprint">
           {this.props.theme == "Saldi" ? this.state.checked ?
             'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
             'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
             </div>
-            <div className="p-col-2">
+            <div className="p-col-2 noprint">
               {this.props.theme == "Saldi" ?
-             <InputText 
-              value={rangeValue1 } 
-              style={{ width: '6em' }} 
-              type='number' 
-              onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} 
+             <InputText
+              value={rangeValue1 }
+              style={{ width: '6em' }}
+              type='number'
+              onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
              />
-            : <InputText 
-              value={this.state.checkedNoFilter ? min: threshold} 
-              style={{ width: '10em' }} 
-              type='number' 
-              onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} 
+            : <InputText
+              value={this.state.checkedNoFilter ? min: threshold}
+              style={{ width: '10em' }}
+              type='number'
+              onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
             />
              }
              </div>
-            <div className="p-col-2">{this.props.theme == "Saldi" ? this.state.checked === true?
-              'und ab ' : 'bis ' : ' '} 
+            <div className="p-col-2 noprint">{this.props.theme == "Saldi" ? this.state.checked === true?
+              'und ab ' : 'bis ' : ' '}
             </div>
-             <div className="p-col-2"> {this.props.theme == "Saldi" ?
-              <InputText  
-                value={rangeValue2} 
-                style={{ width: '6em' }} 
-                type='number' 
-                onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} 
-              /> : 
+             <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
+              <InputText
+                value={rangeValue2}
+                style={{ width: '6em' }}
+                type='number'
+                onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
+              /> :
              <div className="p-col-2 p-offset-1"></div>}
              </div>
              <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?

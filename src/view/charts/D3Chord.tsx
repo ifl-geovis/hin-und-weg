@@ -89,7 +89,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         const [min, max] = this.getMinMax2();
         let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
         let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
-        
+
         let data1 :ID3ChordItem[] = R.filter((item) => item.Wert <= rangeValues[0] &&item.Wert >= min, this.props.data);
         let data2 :ID3ChordItem[] = R.filter((item) => item.Wert >= rangeValues[1] &&item.Wert <= max, this.props.data);
         let dataFilterSmall: ID3ChordItem[] = R.concat(data1, data2);
@@ -132,10 +132,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let names = nach.concat(von);
       let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
       let marginResponsive = this.props.dataProcessing === "absolute" ? this.props.width < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
-      this.props.width < 700 && this.props.width >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 : 
-      this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 : 
+      this.props.width < 700 && this.props.width >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 :
+      this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 :
       this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 ; // +10
-     
+
       let MARGIN = {TOP: marginResponsive, RIGHT: marginResponsive, BOTTOM: marginResponsive, LEFT: marginResponsive}
       let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
       let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
@@ -230,7 +230,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let fillNachPlus = () => {
           for(let i=0;i<nach.length;i++){
               nachPlus[i]=nach[i]
-            }  
+            }
             if (indx === undefined){
               nachPlus[nachPlus.length - 1] = von[0]
             }
@@ -474,10 +474,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             })
             .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px" )
             .attr("font-family", "Open Sans")
-            .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing ==="absolute" ? 
-            d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : 
-            d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : 
-            d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : 
+            .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing ==="absolute" ?
+            d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
+            d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
+            d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :
             d.angle > Math.PI ? "-4em" : "4em" : dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
                         // .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " : " + nachVar[i] : nachVar[i] + " : "; });
             .text(function(d, i) { return nachVar[i]; });
@@ -660,8 +660,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px")
         .attr("font-family", "Open Sans")
         .attr("dx", function(d:any) { return labelText === 0 ? "" :  dataProcessing ==="absolute" ?
-        d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : 
-        d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : 
+        d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
+        d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
         d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :d.angle > Math.PI ? "-4em" : "4em" :
         dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
                 .text(function(d, i) { return vonVar[i]; });
@@ -890,9 +890,9 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" :  "13px" )
         .attr("font-family", "Open Sans")
         .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing === "absolute" ?
-        d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" : 
-        d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" : 
-        d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" : 
+        d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
+        d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
+        d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :
         d.angle > Math.PI ? "-4em" : "4em" :
         dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
                 .text(function(d, i) { return vonVar[i]; });
@@ -1049,14 +1049,14 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             />
             <label className="p-checkbox-label">Kein Filter</label>
           </div>
-          
+
           <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{min}</div>
             <div className="p-col-10 noprint">
-            <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}> 
+            <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
 
                 {
                     this.props.theme == "Saldi" ?
-                    <Slider disabled={this.state.checkedNoFilter ? true : false} min={min} max={max} value={this.state.checkedNoFilter ? [min, max] :rangeValues } onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})} range={true}  /> 
+                    <Slider disabled={this.state.checkedNoFilter ? true : false} min={min} max={max} value={this.state.checkedNoFilter ? [min, max] :rangeValues } onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})} range={true}  />
                     :
                     <Slider disabled={this.state.checkedNoFilter ? true : false} min={min} max={max} value={this.state.checkedNoFilter ? min : threshold} orientation="horizontal" onChange={(e) => this.state.checkedNoFilter ? this.setState({  threshold: min as number}) : this.setState({  threshold: e.value as number}) }/>
                 }
@@ -1064,18 +1064,18 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           </div>
             <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{max}</div>
               {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-              <div className="p-col-2">{this.props.theme == "Saldi" ?  this.state.checked === true?
+              <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?  this.state.checked === true?
           'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
           'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
             </div>
-            <div className="p-col-2">{this.props.theme == "Saldi" ?
+            <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?
              <InputText value={rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
              : <InputText value={ this.state.checkedNoFilter ? min: threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
             }
              </div>
-             <div className="p-col-2">{this.props.theme == "Saldi" ? this.state.checked === true?
+             <div className="p-col-2 noprint">{this.props.theme == "Saldi" ? this.state.checked === true?
             'und ab ' : 'bis ' : ' '} </div>
-            <div className="p-col-2"> {this.props.theme == "Saldi" ?
+            <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
              <InputText  value={rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
              </div>
              <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
