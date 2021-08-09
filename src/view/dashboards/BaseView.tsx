@@ -121,7 +121,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-2 noprint' : 'p-col-4 noprint'}>
 					<div>
-						<img src="./assets/blue_huwlogo.png" />
+						<img src="../assets/blue_huwlogo.png" />
 					</div>
 					<TabView activeIndex={this.state.activeLeftTab} onTabChange={(e) => this.setState({ activeLeftTab: e.index })}>
 						<TabPanel header="Auswahl">
