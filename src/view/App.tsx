@@ -1,4 +1,5 @@
 import React from "react";
+import { Panel } from 'primereact/panel';
 
 import ComparisonView from "./dashboards/ComparisonView";
 
@@ -18,7 +19,9 @@ export default class App extends React.Component<IAppProps>
 	public render(): JSX.Element
 	{
 		return (
-			<ComparisonView db={this.props.db}/>
+			<Panel className="app">
+				<ComparisonView db={this.props.db}/>
+			</Panel>
 		);
 	}
 

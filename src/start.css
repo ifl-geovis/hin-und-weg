@@ -42,6 +42,16 @@
 	}
 }
 
+body {
+	padding: 0px;
+	margin: 0px;
+}
+
+.root, .app {
+	padding: 0px;
+	margin: 0px;
+}
+
 p.status {
 	font-style: italic;
 	font-weight: 10%;
