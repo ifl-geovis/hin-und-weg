@@ -26,7 +26,8 @@
 		"global": {
 			"devtools": false,
 			"menu": true,
-			"datadir": "../../Beispieldaten"
+			"datadir": "../../Beispieldaten",
+			"style": "rhea"
 		},
 		"map": {
 			"offlinePath": "../../offline",

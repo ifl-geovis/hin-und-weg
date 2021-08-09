@@ -5,7 +5,7 @@ import Log from './log';
 
 export default class Settings {
 
-	private static savepath: string = require('electron').remote.app.getAppPath() + '/.hin&weg';
+	private static savepath: string = './.hin&weg';
 	private static settings: any = JSON.parse('{}');
 
 	public static load() {

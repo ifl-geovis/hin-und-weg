@@ -19,9 +19,20 @@ interface ISettingsState {
 }
 
 export default class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
+
 	private legendPlacementSelections = [
 		{ label: 'Unter der Karte', value: 'bottom' },
 		{ label: 'Über der Karte', value: 'top' },
+	];
+	private styles = [
+		{ label: 'Luna Amber', value: 'luna-amber' },
+		{ label: 'Luna Blue', value: 'luna-blue' },
+		{ label: 'Luna Green', value: 'luna-green' },
+		{ label: 'Luna Pink', value: 'luna-pink' },
+		{ label: 'Nova Colored', value: 'nova-colored' },
+		{ label: 'Nova Dark', value: 'nova-dark' },
+		{ label: 'Nova Light', value: 'nova-light' },
+		{ label: 'Rhea', value: 'rhea' },
 	];
 	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
 	private classificationPositiveDefault = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -43,11 +54,13 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		const map = this.getMapSettings();
 		const colorschemes = this.getColorSchemes();
 		const classification = this.getClassification();
+		const styles = this.getStyles();
 		return (
 			<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.tabChanged(e)}>
 				<TabPanel header="Karte">{map}</TabPanel>
 				<TabPanel header="Farbschemata">{colorschemes}</TabPanel>
 				<TabPanel header="Klassen">{classification}</TabPanel>
+				<TabPanel header="Styles">{styles}</TabPanel>
 			</TabView>
 		);
 	}
@@ -374,4 +387,22 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		}
 		Settings.setValue('classification', 'negative', negative);
 	}
+
+	private getStyles() {
+		const dropdownStyles = this.createDropdownInput(
+			'Style: ',
+			'global',
+			'style',
+			this.styles
+		);
+		return (
+			<div>
+				<h1>Styles</h1>
+				<div>Hinweis: Die Änderung des Styles wird erst nach dem Neustart der Anwendung wirksam.</div>
+				{dropdownStyles}
+				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+			</div>
+		);
+	}
+
 }

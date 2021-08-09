@@ -3,6 +3,7 @@ import path from 'path';
 import Log from './log';
 import Config from './config';
 import MainMenu from './menu';
+import Settings from './settings';
 
 let mainWindow: Electron.BrowserWindow;
 
@@ -21,7 +22,9 @@ function createWindow() {
 	});
 
 	// and load the index.html of the app.
-	mainWindow.loadFile(path.join(__dirname, './nova-light.html'));
+	Settings.load();
+	let style = Settings.getValue('global', 'style');
+	mainWindow.loadFile(path.join(__dirname, './' + style + '.html'));
 
 	// set main menu
 	Menu.setApplicationMenu(MainMenu.getMainMenu());
