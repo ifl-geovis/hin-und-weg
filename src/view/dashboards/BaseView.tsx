@@ -14,7 +14,6 @@ import Years from '../selections/Years';
 import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
 import ArrowColorSelections from '../selections/ArrowColorSelections';
-import OptionSelections from '../selections/OptionSelections';
 import DataProcessingSelections from '../selections/DataProcessingSelections';
 import DashboardView from './DashboardView';
 
@@ -132,6 +131,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 								locations={locations}
 								selectedLocation={this.state.location}
 								onSelectLocation={(newLocation) => this.setLocation(newLocation) }
+								migrationsInside={this.state.migrationsInside}
+								setMigrationsInside={(status) => this.setState({ migrationsInside: status }) }
 							/>
 							<Themes
 								themes={['Von', 'Nach', 'Saldi']}
@@ -146,10 +147,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 							<DataProcessingSelections
 								selected={this.state.dataProcessing}
 								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
-							/>
-							<OptionSelections
-								migrationsInside={this.state.migrationsInside}
-								setMigrationsInside={(status) => this.setState({ migrationsInside: status }) }
 							/>
 						</TabPanel>
 						<TabPanel header="Darstellung">
