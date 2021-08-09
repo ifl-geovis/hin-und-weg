@@ -1,5 +1,6 @@
 import R from 'ramda';
 import React from 'react';
+import { TabView,TabPanel } from 'primereact/tabview';
 
 import Geodata from '../../model/Geodata';
 import { GeoJsonProperties } from 'geojson';
@@ -53,6 +54,7 @@ interface IBaseState {
 	change: boolean;
 	classcountset: boolean;
 	updateclasscount: boolean;
+	activeLeftTab: number;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState> {
@@ -75,6 +77,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			change: true,
 			classcountset: false,
 			updateclasscount: false,
+			activeLeftTab: 0,
 		};
 		this.change = this.change.bind(this);
 		this.addYear = this.addYear.bind(this);
@@ -122,53 +125,59 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 					<div>
 						<img src="./assets/blue_huwlogo.png" />
 					</div>
-					<Location
-						title="Bezugsfläche"
-						locations={locations}
-						selectedLocation={this.state.location}
-						onSelectLocation={(newLocation) => this.setLocation(newLocation) }
-					/>
-					<Themes
-						themes={['Von', 'Nach', 'Saldi']}
-						selected={this.state.theme}
-						setTheme={(newTheme) => this.setTheme(newTheme) }
-					/>
-					<Years
-						availableYears={this.props.yearsAvailable}
-						selected={this.state.years}
-						setYears={(newYears) => this.setYears(newYears) }
-					/>
-					<DataProcessingSelections
-						selected={this.state.dataProcessing}
-						setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
-					/>
-					<OptionSelections
-						migrationsInside={this.state.migrationsInside}
-						setMigrationsInside={(status) => this.setState({ migrationsInside: status }) }
-					/>
-					<ClassificationSelections
-						algorithm={this.state.algorithm}
-						positiveColors={this.state.positiveColors}
-						negativeColors={this.state.negativeColors}
-						positiveClasses={this.state.positiveClasses}
-						negativeClasses={this.state.negativeClasses}
-						withNegative={this.state.theme == 'Saldi'}
-						automaticButton={this.state.classcountset}
-						colorSchemes={classification.getColorSchemes()}
-						setAlgorithm={(newAlgorithm) => this.setState({ algorithm: newAlgorithm })}
-						setPositiveColorScheme={(newColorScheme) => this.setState({ positiveColors: newColorScheme })}
-						setNegativeColorScheme={(newColorScheme) => this.setState({ negativeColors: newColorScheme })}
-						setPositiveClasses={(classes) => this.setClassCount(true, classes)}
-						setNegativeClasses={(classes) => this.setClassCount(false, classes)}
-						resetAutomaticClasses={(automatic) => this.setState({ classcountset: !automatic, updateclasscount: automatic })}
-					/>
-					<ArrowColorSelections
-						theme={this.state.theme}
-						positiveColor={this.state.positiveArrowColor}
-						negativeColor={this.state.negativeArrowColor}
-						setPositiveColor={(event) => this.setState({ positiveArrowColor: event.value })}
-						setNegativeColor={(event) => this.setState({ negativeArrowColor: event.value })}
-					/>
+					<TabView activeIndex={this.state.activeLeftTab} onTabChange={(e) => this.setState({ activeLeftTab: e.index })}>
+						<TabPanel header="Auswahl">
+							<Location
+								title="Bezugsfläche"
+								locations={locations}
+								selectedLocation={this.state.location}
+								onSelectLocation={(newLocation) => this.setLocation(newLocation) }
+							/>
+							<Themes
+								themes={['Von', 'Nach', 'Saldi']}
+								selected={this.state.theme}
+								setTheme={(newTheme) => this.setTheme(newTheme) }
+							/>
+							<Years
+								availableYears={this.props.yearsAvailable}
+								selected={this.state.years}
+								setYears={(newYears) => this.setYears(newYears) }
+							/>
+							<DataProcessingSelections
+								selected={this.state.dataProcessing}
+								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
+							/>
+							<OptionSelections
+								migrationsInside={this.state.migrationsInside}
+								setMigrationsInside={(status) => this.setState({ migrationsInside: status }) }
+							/>
+						</TabPanel>
+						<TabPanel header="Darstellung">
+							<ClassificationSelections
+								algorithm={this.state.algorithm}
+								positiveColors={this.state.positiveColors}
+								negativeColors={this.state.negativeColors}
+								positiveClasses={this.state.positiveClasses}
+								negativeClasses={this.state.negativeClasses}
+								withNegative={this.state.theme == 'Saldi'}
+								automaticButton={this.state.classcountset}
+								colorSchemes={classification.getColorSchemes()}
+								setAlgorithm={(newAlgorithm) => this.setState({ algorithm: newAlgorithm })}
+								setPositiveColorScheme={(newColorScheme) => this.setState({ positiveColors: newColorScheme })}
+								setNegativeColorScheme={(newColorScheme) => this.setState({ negativeColors: newColorScheme })}
+								setPositiveClasses={(classes) => this.setClassCount(true, classes)}
+								setNegativeClasses={(classes) => this.setClassCount(false, classes)}
+								resetAutomaticClasses={(automatic) => this.setState({ classcountset: !automatic, updateclasscount: automatic })}
+							/>
+							<ArrowColorSelections
+								theme={this.state.theme}
+								positiveColor={this.state.positiveArrowColor}
+								negativeColor={this.state.negativeArrowColor}
+								setPositiveColor={(event) => this.setState({ positiveArrowColor: event.value })}
+								setNegativeColor={(event) => this.setState({ negativeArrowColor: event.value })}
+							/>
+						</TabPanel>
+					</TabView>
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-10' : 'p-col-8'}>
 					<DashboardView
