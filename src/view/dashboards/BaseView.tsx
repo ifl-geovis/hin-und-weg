@@ -14,7 +14,6 @@ import Years from '../selections/Years';
 import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
 import ArrowColorSelections from '../selections/ArrowColorSelections';
-import DataProcessingSelections from '../selections/DataProcessingSelections';
 import DashboardView from './DashboardView';
 
 import Config from '../../config';
@@ -136,17 +135,15 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 							/>
 							<Themes
 								themes={['Von', 'Nach', 'Saldi']}
-								selected={this.state.theme}
+								selectedTheme={this.state.theme}
 								setTheme={(newTheme) => this.setTheme(newTheme) }
+								selected={this.state.dataProcessing}
+								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
 							/>
 							<Years
 								availableYears={this.props.yearsAvailable}
 								selected={this.state.years}
 								setYears={(newYears) => this.setYears(newYears) }
-							/>
-							<DataProcessingSelections
-								selected={this.state.dataProcessing}
-								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
 							/>
 						</TabPanel>
 						<TabPanel header="Darstellung">
