@@ -5,6 +5,7 @@ import Config from './config';
 import MainMenu from './menu';
 
 let mainWindow: Electron.BrowserWindow;
+
 function createWindow() {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
@@ -59,6 +60,12 @@ app.on('activate', () => {
 		createWindow();
 	}
 });
+
+Log.debug(app.getAppPath());
+Log.debug(app.getPath("appData"));
+app.setPath("appData", app.getAppPath() + "/../" + Config.getValue('global', 'datadir'));
+Log.debug(app.getAppPath());
+Log.debug(app.getPath("appData"));
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

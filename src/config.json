@@ -11,7 +11,8 @@
 	"development": {
 		"global": {
 			"version-addon": "development version",
-			"devtools": true
+			"devtools": true,
+			"datadir": "distdata"
 		},
 		"components": {
 			"systeminfo": true,
@@ -24,7 +25,8 @@
 	"default": {
 		"global": {
 			"devtools": false,
-			"menu": true
+			"menu": true,
+			"datadir": "Beispieldaten"
 		},
 		"map": {
 			"offlinePath": "../../offline",
