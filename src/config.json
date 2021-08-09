@@ -110,6 +110,8 @@
 		"user-colors": {
 			"neutral-color":"f7f7f7",
 			"missing-color":"7f7f7f",
+			"arrow-positive-color": "0432ff",
+			"arrow-negative-color": "ff0000"
 		},
 	}
 }

@@ -25,8 +25,6 @@ export default class Classification {
 	//private colorsAll = ['#67001f','#b2182b','#d6604d','#f4a582','#fddbc7','#f7f7f7',"#d1e5f0", "#92c5de", "#4393c3", "#2166ac", "#053061"];
 	private selected_color = '#cbf719';
 	private error_color = '#000000';
-	private positive_arrow_color = '#ff0000';
-	private negative_arrow_color = '#0432ff';
 
 	private location: string | null = null;
 	private theme: string | null = null;
@@ -383,19 +381,12 @@ export default class Classification {
 	}
 
 	public getPositiveArrowColor(): string {
-		return this.positive_arrow_color;
-	}
-
-	public setPositiveArrowColor(color: string) {
-		this.positive_arrow_color = color;
+		Log.debug(Settings.getValue('user-colors', 'arrow-positive-color'));
+		return '#' + Settings.getValue('user-colors', 'arrow-positive-color');
 	}
 
 	public getNegativeArrowColor(): string {
-		return this.negative_arrow_color;
-	}
-
-	public setNegativeArrowColor(color: string) {
-		this.negative_arrow_color = color;
+		return '#' + Settings.getValue('user-colors', 'arrow-negative-color');
 	}
 
 	public getColorScheme(colorScheme: string, classes: string) {

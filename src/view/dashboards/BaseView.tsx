@@ -13,7 +13,6 @@ import Themes from '../selections/Themes';
 import Years from '../selections/Years';
 import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
-import ArrowColorSelections from '../selections/ArrowColorSelections';
 import DashboardView from './DashboardView';
 
 import Config from '../../config';
@@ -47,8 +46,6 @@ interface IBaseState {
 	negativeColors: string;
 	positiveClasses: string;
 	negativeClasses: string;
-	positiveArrowColor: string;
-	negativeArrowColor: string;
 	change: boolean;
 	classcountset: boolean;
 	updateclasscount: boolean;
@@ -70,8 +67,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			negativeColors: 'blau',
 			positiveClasses: '5',
 			negativeClasses: '5',
-			positiveArrowColor: '0432ff',
-			negativeArrowColor: 'ff0000',
 			change: true,
 			classcountset: false,
 			updateclasscount: false,
@@ -98,8 +93,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		classification.setDataProcessing(this.state.dataProcessing);
 		classification.setPositiveColors(classification.getColorScheme(this.state.positiveColors, this.state.positiveClasses));
 		classification.setNegativeColors(classification.getColorScheme(this.state.negativeColors, this.state.negativeClasses));
-		classification.setPositiveArrowColor('#' + this.state.positiveArrowColor);
-		classification.setNegativeArrowColor('#' + this.state.negativeArrowColor);
 		classification.calculateClassification();
 		this.setRecommendedClassCount();
 		let attributes: GeoJsonProperties[] = [];
@@ -162,13 +155,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 								setPositiveClasses={(classes) => this.setClassCount(true, classes)}
 								setNegativeClasses={(classes) => this.setClassCount(false, classes)}
 								resetAutomaticClasses={(automatic) => this.setState({ classcountset: !automatic, updateclasscount: automatic })}
-							/>
-							<ArrowColorSelections
-								theme={this.state.theme}
-								positiveColor={this.state.positiveArrowColor}
-								negativeColor={this.state.negativeArrowColor}
-								setPositiveColor={(event) => this.setState({ positiveArrowColor: event.value })}
-								setNegativeColor={(event) => this.setState({ negativeArrowColor: event.value })}
 							/>
 						</TabPanel>
 					</TabView>

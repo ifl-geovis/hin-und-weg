@@ -47,6 +47,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		this.processInput = this.processInput.bind(this);
 		this.saveSettings = this.saveSettings.bind(this);
 		this.refreshOfflineMapsCheck = this.refreshOfflineMapsCheck.bind(this);
+		this.setArrowColor = this.setArrowColor.bind(this);
 		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 	}
 
@@ -80,6 +81,8 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 			'legendPlacement',
 			this.legendPlacementSelections
 		);
+		let positivePicker = this.getPicker(true);
+		let negativePicker = this.getPicker(false);
 		return (
 			<div>
 				<h1>Karte</h1>
@@ -126,9 +129,30 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 					Longitude: {OfflineMaps.getCurrentOfflineMaps().lonBounds.min} / {OfflineMaps.getCurrentOfflineMaps().lonBounds.max}
 				</p> */}
 				{dropdownLegendPlacement}
+				<hr style={{ margin: '2em 0' }} />
+				{positivePicker}
+				{negativePicker}
 				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
 			</div>
 		);
+	}
+
+	private getPicker(positive: boolean) {
+		const label = (positive) ? 'Pfeilfarbe Von' : 'Pfeilfarbe Nach';
+		const id = (positive) ? 'positiveArrowColor' : 'negativeArrowColor';
+		const value = (positive) ? Settings.getValue('user-colors', 'arrow-positive-color') : Settings.getValue('user-colors', 'arrow-negative-color');
+		return (
+			<div>
+				<div>{label}</div>
+				<ColorPicker id={id} value={value} onChange={(event) => this.setArrowColor(positive, event.value)} />
+			</div>
+		);
+	}
+
+	private setArrowColor(positive: boolean, value: string) {
+		if (positive) Settings.setValue('user-colors', 'arrow-positive-color', value);
+		else Settings.setValue('user-colors', 'arrow-negative-color', value);
+		Settings.save();
 	}
 
 	private getColorSchemes() {
