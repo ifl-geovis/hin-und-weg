@@ -8,9 +8,9 @@ import { GeoJsonProperties } from 'geojson';
 import Classification from '../../data/Classification';
 import MessageList from '../../data/MessageList';
 
-import Location from '../Location';
-import Themes from '../Themes';
-import Years from '../Years';
+import Location from '../selections/Location';
+import Themes from '../selections/Themes';
+import Years from '../selections/Years';
 import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
 import ArrowColorSelections from '../selections/ArrowColorSelections';

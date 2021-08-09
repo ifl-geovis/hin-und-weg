@@ -1,7 +1,7 @@
 import { Panel } from "primereact/panel";
 import * as React from "react";
 import { Accordion, AccordionTab } from 'primereact/accordion';
-import SelectInput from "./input/SelectInput";
+import SelectInput from "../input/SelectInput";
 
 export interface ILocationProps
 {

@@ -4,7 +4,7 @@ import R from "ramda";
 import React, {MouseEvent} from "react";
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Button } from 'primereact/button';
-import Log from "../log";
+import Log from "../../log";
 
 export interface IYearsProps
 {
