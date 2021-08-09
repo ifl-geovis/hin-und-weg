@@ -47,6 +47,18 @@ body {
 	margin: 0px;
 }
 
+.selectionstab {
+	padding: 0px;
+	margin: 0px;
+	border: none;
+}
+
+.selectionstab > div.p-tabview-panels {
+	padding: 0px;
+	margin: 0px;
+	border: none;
+}
+
 .root, .app {
 	padding: 0px;
 	margin: 0px;

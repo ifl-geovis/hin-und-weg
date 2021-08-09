@@ -123,8 +123,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 					<div>
 						<img src="../assets/blue_huwlogo.png" />
 					</div>
-					<TabView activeIndex={this.state.activeLeftTab} onTabChange={(e) => this.setState({ activeLeftTab: e.index })}>
-						<TabPanel header="Auswahl">
+					<TabView activeIndex={this.state.activeLeftTab} onTabChange={(e) => this.setState({ activeLeftTab: e.index })} className="selectionstab">
+						<TabPanel header="Auswahl" contentClassName="selectionstab">
 							<Location
 								title="Bezugsfläche"
 								locations={locations}
@@ -146,7 +146,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 								setYears={(newYears) => this.setYears(newYears) }
 							/>
 						</TabPanel>
-						<TabPanel header="Darstellung">
+						<TabPanel header="Darstellung" contentClassName="selectionstab">
 							<ClassificationSelections
 								algorithm={this.state.algorithm}
 								positiveColors={this.state.positiveColors}
