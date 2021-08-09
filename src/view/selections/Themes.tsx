@@ -10,6 +10,7 @@ export interface IThemesProps {
 	themes: string[];
 	selected: string;
 	setDataProcessing: (data: string) => void;
+	populationDataLoaded: boolean;
 }
 
 export default class Themes extends React.Component<IThemesProps> {
@@ -22,17 +23,27 @@ export default class Themes extends React.Component<IThemesProps> {
 
 	public render(): JSX.Element {
 		const radioButtons = R.map(this.makeRadioButtonTheme, this.props.themes);
-		const absolute = this.makeRadioButton("absolute", "Anzahl Umzüge");
-		const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
+		const wanderungsselector = this.createWanderungsSelector();
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header="Thema">
 					{radioButtons}
-					<hr />
-					{absolute}
-					{wanderungsrate}
+					{wanderungsselector}
 				</AccordionTab>
 			</Accordion>
+		);
+	}
+
+	private createWanderungsSelector(): JSX.Element {
+		if (!this.props.populationDataLoaded) return (<span></span>);
+		const absolute = this.makeRadioButton("absolute", "Anzahl Umzüge");
+		const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
+		return (
+			<div>
+				<hr />
+				{absolute}
+				{wanderungsrate}
+			</div>
 		);
 	}
 

@@ -23,6 +23,7 @@ export interface IImportProps
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
 	setShapefileName: (shapefilename: string) => void;
+	setPopulationDataLoaded: () => void;
 	addYear: (year: string) => void;
 	change: () => void;
 }
@@ -275,6 +276,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 					this.props.db(`INSERT INTO population ('${area}', '${jahr}', ${isNaN(wert) ? "NULL" : wert});`);
 				}
 			}
+			this.props.setPopulationDataLoaded();
 			filestatus.success("Datei erfolgreich geladen");
 		}
 		this.generateSummaryMessage();

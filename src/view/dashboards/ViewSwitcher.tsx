@@ -66,6 +66,7 @@ export interface IViewSwitcherProps {
 	change: () => void;
 	migrationsInside: boolean;
 	dataProcessing: string;
+	setPopulationDataLoaded: () => void;
 
 }
 
@@ -279,6 +280,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 					setShapefileName={this.props.setShapefileName}
 					addYear={this.props.addYear}
 					change={this.props.change}
+					setPopulationDataLoaded={this.props.setPopulationDataLoaded}
 				/>
 			</div>
 		);
