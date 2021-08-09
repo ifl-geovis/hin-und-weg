@@ -89,13 +89,13 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	private getShapeFileButton() {
 		if (this.props.geodata) return (
 			<div className="p-col-12">
-				<p className="successmessage">Shape Datei {this.props.shapefilename} wurde erfolgreich geladen...</p>
+				<p>Shape Datei {this.props.shapefilename} wurde erfolgreich geladen...</p>
 			</div>
 		);
 		return (
 			<div className="p-col-12">
 				<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false} accept=".shp"/>
-				<p className="loadmessage">{this.state.shapeloadmessage}</p>
+				<p>{this.state.shapeloadmessage}</p>
 			</div>
 		);
 	}
