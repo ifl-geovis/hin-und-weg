@@ -92,12 +92,6 @@ export default class OfflineMaps {
 						const file = path.resolve(__dirname, `${offlineMapsPath}/${mapData[1].trim()}`);
 						if (
 							fs.existsSync(file)
-							// &&
-							// this.checkCoordsFromBounds(
-							// 	mapData[0].trim(),
-							// 	[+mapData[2].trim(), +mapData[4].trim()],
-							// 	[+mapData[3].trim(), +mapData[5].trim()]
-							// )
 						) {
 							this.offlineMaps.push({
 								label: mapData[0].trim(),

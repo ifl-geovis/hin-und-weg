@@ -340,7 +340,21 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	}
 
 	public getOfflineMap() {
-		return <ImageOverlay url={this.props.offlineMap.file} bounds={this.props.offlineMap.bounds} />;
+		const lowerLeft3857: Array<number> = this.props.offlineMap.bounds[0];
+		const upperRight3857: Array<number> = this.props.offlineMap.bounds[1];
+
+		const lowerLeft4326: Array<number> = turf.toWgs84(lowerLeft3857);
+		const upperRight4326: Array<number> = turf.toWgs84(upperRight3857);
+
+		return (
+			<ImageOverlay
+				url={this.props.offlineMap.file}
+				bounds={[
+					[lowerLeft4326[1], lowerLeft4326[0]],
+					[upperRight4326[1], upperRight4326[0]],
+				]}
+			/>
+		);
 	}
 
 	public style(feature: Feature) {
