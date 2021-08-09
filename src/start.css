@@ -27,6 +27,9 @@
 		page-break-after: always;
 	}
 
+	.leaflet-control-container, .pi-home, .p-button {
+		display: none;
+	}
 
 }
 
