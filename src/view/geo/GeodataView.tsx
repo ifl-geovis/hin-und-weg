@@ -5,6 +5,7 @@ import LeafletMapView from './LeafletMapView';
 import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
 import { RadioButton } from 'primereact/radiobutton';
+import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Slider } from 'primereact/slider';
 import Classification from '../../data/Classification';
 import OfflineMaps, { IOfflineMaps } from '../../data/OfflineMaps';
@@ -56,106 +57,112 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		const classification = Classification.getCurrentClassification();
 		return (
 			<div className="p-grid p-component">
-				<div className="p-col noprint">
-					<div className="p-grid p-dir-col">
-						<strong className="p-col">Karteninformationen:</strong>
-						<div className="p-col rdBtnContainer">
-							<RadioButton
-								inputId="rb1"
-								name="center"
-								value="1"
-								onChange={this.onShowCenterChange}
-								checked={this.state.showCenter === '1'}
-							/>
-							<label className="p-checkbox-label pointer" htmlFor="rb1">
-								Namen anzeigen
-							</label>
+				<Accordion activeIndex={0}>
+					<AccordionTab header="Kontrollelemente">
+						<div className="p-grid p-component">
+							<div className="p-col noprint">
+								<div className="p-grid p-dir-col">
+									<strong className="p-col">Karteninformationen:</strong>
+									<div className="p-col rdBtnContainer">
+										<RadioButton
+											inputId="rb1"
+											name="center"
+											value="1"
+											onChange={this.onShowCenterChange}
+											checked={this.state.showCenter === '1'}
+										/>
+										<label className="p-checkbox-label pointer" htmlFor="rb1">
+											Namen anzeigen
+										</label>
+									</div>
+									<div className="p-col rdBtnContainer">
+										<RadioButton
+											inputId="rb2"
+											name="center"
+											value="2"
+											onChange={this.onShowCenterChange}
+											checked={this.state.showCenter === '2'}
+										/>
+										<label className="p-checkbox-label pointer" htmlFor="rb2">
+											Bewegung visualisieren
+										</label>
+									</div>
+									<div className="p-col rdBtnContainer">
+										<RadioButton
+											inputId="rb3"
+											name="center"
+											value="3"
+											onChange={this.onShowCenterChange}
+											checked={this.state.showCenter === '3'}
+										/>
+										<label className="p-checkbox-label pointer" htmlFor="rb3">
+											Anzahl der Umzüge anzeigen
+										</label>
+									</div>
+									<div className="p-col rdBtnContainer">
+										<RadioButton
+											inputId="rb4"
+											name="center"
+											value="4"
+											onChange={this.onShowCenterChange}
+											checked={this.state.showCenter === '4'}
+										/>
+										<label className="p-checkbox-label pointer" htmlFor="rb4">
+											Beschriftungen ausschalten
+										</label>
+									</div>
+									<div className="p-col rdBtnContainer">
+										<label>Transparenz:</label>
+										<Slider
+											className="transparencySlider"
+											min={0}
+											max={100}
+											step={1}
+											value={this.state.polygonTransparency}
+											orientation="horizontal"
+											onChange={this.onTransparencySliderChange}
+										/>
+									</div>
+								</div>
+							</div>
+							<div className="p-col noprint">
+								<div className="p-grid p-dir-col">
+									<strong className="p-col">Hintergrundkarte:</strong>
+									<div className="p-col rdBtnContainer">
+										<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
+										<label className="p-checkbox-label pointer" htmlFor="showMap">
+											zeige Hintergrundkarte (online)
+										</label>
+									</div>
+									<div className="p-col">
+										<Dropdown
+											optionLabel="label"
+											options={OfflineMaps.getCurrentOfflineMaps().getData()}
+											onChange={this.onOfflineMapChange}
+											placeholder={this.state.offlineMap.label}
+											disabled={OfflineMaps.getCurrentOfflineMaps().getData().length - 1 === 0}
+										/>
+									</div>
+								</div>
+							</div>
+							<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
+								<hr className={`noprint`} />
+								<div className="p-grid p-align-center noprint">
+									<p className="p-col-4">Es werden alle Werte über {this.state.threshold} angezeigt.</p>
+									<div className="p-col-8">
+										<Slider
+											min={0}
+											max={classification.getAbsoluteMaxValue()}
+											value={this.state.threshold}
+											orientation="horizontal"
+											onChange={this.onSliderChange}
+										/>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div className="p-col rdBtnContainer">
-							<RadioButton
-								inputId="rb2"
-								name="center"
-								value="2"
-								onChange={this.onShowCenterChange}
-								checked={this.state.showCenter === '2'}
-							/>
-							<label className="p-checkbox-label pointer" htmlFor="rb2">
-								Bewegung visualisieren
-							</label>
-						</div>
-						<div className="p-col rdBtnContainer">
-							<RadioButton
-								inputId="rb3"
-								name="center"
-								value="3"
-								onChange={this.onShowCenterChange}
-								checked={this.state.showCenter === '3'}
-							/>
-							<label className="p-checkbox-label pointer" htmlFor="rb3">
-								Anzahl der Umzüge anzeigen
-							</label>
-						</div>
-						<div className="p-col rdBtnContainer">
-							<RadioButton
-								inputId="rb4"
-								name="center"
-								value="4"
-								onChange={this.onShowCenterChange}
-								checked={this.state.showCenter === '4'}
-							/>
-							<label className="p-checkbox-label pointer" htmlFor="rb4">
-								Beschriftungen ausschalten
-							</label>
-						</div>
-						<div className="p-col rdBtnContainer">
-							<label>Transparenz:</label>
-							<Slider
-								className="transparencySlider"
-								min={0}
-								max={100}
-								step={1}
-								value={this.state.polygonTransparency}
-								orientation="horizontal"
-								onChange={this.onTransparencySliderChange}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="p-col noprint">
-					<div className="p-grid p-dir-col">
-						<strong className="p-col">Hintergrundkarte:</strong>
-						<div className="p-col rdBtnContainer">
-							<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
-							<label className="p-checkbox-label pointer" htmlFor="showMap">
-								zeige Hintergrundkarte (online)
-							</label>
-						</div>
-						<div className="p-col">
-							<Dropdown
-								optionLabel="label"
-								options={OfflineMaps.getCurrentOfflineMaps().getData()}
-								onChange={this.onOfflineMapChange}
-								placeholder={this.state.offlineMap.label}
-								disabled={OfflineMaps.getCurrentOfflineMaps().getData().length - 1 === 0}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
-					<hr className={`noprint`} />
-					<div className="p-grid p-align-center noprint">
-						<p className="p-col-4">Es werden alle Werte über {this.state.threshold} angezeigt.</p>
-						<div className="p-col-8">
-							<Slider
-								min={0}
-								max={classification.getAbsoluteMaxValue()}
-								value={this.state.threshold}
-								orientation="horizontal"
-								onChange={this.onSliderChange}
-							/>
-						</div>
-					</div>
-				</div>
+					</AccordionTab>
+				</Accordion>
 				{Settings.getValue('map', 'legendPlacement') === 'top' && (
 					<div className="p-col-12">
 						<Legend showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
