@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
-npm install
+npm clean-install
 cp -r extra/types/*  node_modules/@types/
