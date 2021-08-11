@@ -1,6 +1,7 @@
 #!/bin/sh
 VERSION=1.7.5
 ./clean.sh
+./setup.sh
 npm run build
 # create installations
 electron-packager --platform=win32,darwin,linux .
