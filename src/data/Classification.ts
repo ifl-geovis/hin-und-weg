@@ -278,7 +278,7 @@ export default class Classification {
 	private fillNegativeScalesD3Labels() {
 		this.negative_scales_d3labels = [];
 		let ranges = [];
-		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.negative_colors.length);
+		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
 		for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValue(ranges[i]));
 	}

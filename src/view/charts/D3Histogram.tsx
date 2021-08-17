@@ -400,9 +400,8 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
             for (let i = 0; i < this.props.negativeValues.length; i++){
                     let item = this.props.negativeValues[i];
                   for (let j = 0; j < binsNeg.length; j++){
-                    let bin = binsNeg[j];
-                    if(i === 0 ? item >= bin.minNum :item > bin.minNum && item <= bin.maxNum){
-                      console.log("item: " + item);
+					let bin = binsNeg[j];
+					if(j === binsNeg.length-1 ? item >= bin.minNum && item <= bin.maxNum :item >= bin.minNum && item < bin.maxNum){
                         bin.count++;
                       break;  
                     }
