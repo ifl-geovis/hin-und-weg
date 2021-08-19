@@ -42,7 +42,6 @@ export default class App extends React.Component<IAppProps>
 	private exportImage(format: string) {
 		if (format === 'png') exportComponentAsPNG(this.imageref);
 		if (format === 'jpeg') exportComponentAsJPEG(this.imageref);
-		if (format === 'pdf') exportComponentAsPDF(this.imageref);
 	}
 
 }

@@ -38,11 +38,6 @@ export default class MainMenu
 							label: 'JPEG',
 							click(event, window, content) {MainMenu.execute("export-image", "jpeg", event, window, content);},
 						},
-						{
-							id: 'export-pdf',
-							label: 'PDF',
-							click(event, window, content) {MainMenu.execute("export-image", "pdf", event, window, content);},
-						},
 					]
 				},
 				{
