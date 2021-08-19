@@ -76,6 +76,7 @@
 		"proj4js-defs": "0.0.1",
 		"ramda": "0.26.1",
 		"react": "17.0.2",
+		"react-component-export-image": "^1.0.6",
 		"react-container-dimensions": "1.4.1",
 		"react-d3": "0.4.0",
 		"react-d3-map": "0.8.3",
