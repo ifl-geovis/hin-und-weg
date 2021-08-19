@@ -469,6 +469,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 
 			return new L.CircleMarker(latlng, {
 				radius: 1,
+				fill: false,
+				stroke: false,
 			})
 				.bindTooltip(label, {
 					permanent: true,
@@ -525,6 +527,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (name === this.props.selectedLocation) {
 				return new L.CircleMarker(latlng, {
 					radius: 1,
+					fill: false,
+					stroke: false,
 				})
 					.bindTooltip(label, {
 						permanent: true,
@@ -538,6 +542,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 
 			return new L.CircleMarker(latlng, {
 				radius: 1,
+				fill: false,
+				stroke: false,
 			})
 				.bindTooltip(label, {
 					permanent: true,
@@ -594,6 +600,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			if (name === this.props.selectedLocation) {
 				return new L.CircleMarker(latlng, {
 					radius: 1,
+					fill: false,
+					stroke: false,
 				})
 					.bindTooltip(label, {
 						permanent: true,
@@ -606,6 +614,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 
 			return new L.CircleMarker(latlng, {
 				radius: 1,
+				fill: false,
+				stroke: false,
 			})
 				.bindTooltip(label, {
 					permanent: true,
