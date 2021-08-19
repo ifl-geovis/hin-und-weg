@@ -758,4 +758,3 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		});
 	};
 }
-
