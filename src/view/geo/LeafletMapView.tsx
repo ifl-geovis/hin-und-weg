@@ -758,7 +758,4 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		});
 	};
 }
-function foreach(layers: any) {
-	throw new Error('Function not implemented.');
-}
 
