@@ -83,7 +83,7 @@
 		"react-dom": "16.8.3",
 		"react-leaflet": "2.7.0",
 		"react-transition-group": "2.6.1",
-		"reproject": "1.2.5",
+		"reproject": "1.2.6",
 		"shapefile": "0.6.6"
 	}
 }
