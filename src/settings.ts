@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 
 import Config from "./config";
 import Log from './log';
@@ -8,8 +9,13 @@ export default class Settings {
 	private static savepath: string = './.hin&weg';
 	private static settings: any = JSON.parse('{}');
 
+	private static fixSavepathForMac() {
+		if (process.platform === 'darwin') Settings.savepath = os.homedir() + '/.hin&weg-' + Config.getVersion();
+	}
+
 	public static load() {
 		try {
+			Settings.fixSavepathForMac();
 			Settings.settings = JSON.parse(fs.readFileSync(Settings.savepath, 'utf8'));
 		} catch (e) {
 			Log.debug("Could not load file " + Settings.savepath + ": " + e);
@@ -18,6 +24,7 @@ export default class Settings {
 
 	public static save() {
 		try {
+			Settings.fixSavepathForMac();
 			fs.writeFileSync(Settings.savepath, JSON.stringify(Settings.settings), 'utf8');
 		} catch (e) {
 			Log.debug("Could not write file " + Settings.savepath + ": " + e);
