@@ -9,7 +9,7 @@ electron-packager --platform=win32,darwin,linux .
 rm -rf hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/.*
 rm -rf hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/testdata/
 mv hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/distdata hin-und-weg-darwin-x64/Beispieldaten
-mv hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/offline hin-und-weg-darwin-x64/
+#mv hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/offline hin-und-weg-darwin-x64/
 # cleanup win installation
 rm -rf hin-und-weg-win32-x64/resources/app/.*
 rm -rf hin-und-weg-win32-x64/resources/app/testdata/
