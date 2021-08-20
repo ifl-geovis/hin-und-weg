@@ -1,5 +1,5 @@
 import React from "react";
-import { exportComponentAsJPEG, exportComponentAsPDF, exportComponentAsPNG } from 'react-component-export-image';
+import { exportComponentAsJPEG, exportComponentAsPNG } from 'react-component-export-image';
 import { Panel } from 'primereact/panel';
 
 import ComparisonView from "./dashboards/ComparisonView";
