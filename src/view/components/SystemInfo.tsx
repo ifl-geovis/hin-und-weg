@@ -28,6 +28,10 @@ export default class SystemInfo extends React.Component<{}, {}>
 							<td>{process.versions.electron}</td>
 						</tr>
 						<tr>
+							<th align="right">Plattform:</th>
+							<td>{process.platform}</td>
+						</tr>
+						<tr>
 							<th align="right">Konfigurationsprofil:</th>
 							<td>{Config.getProfile()}</td>
 						</tr>
