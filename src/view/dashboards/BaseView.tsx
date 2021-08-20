@@ -114,54 +114,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				<div className="p-col-12">
 					<Messages change={this.change} />
 				</div>
-				<div className={this.props.space == 'wide' ? 'p-col-2 noprint' : 'p-col-4 noprint'}>
-					<div>
-						<img src="../assets/blue_huwlogo.png" />
-					</div>
-					<TabView activeIndex={this.state.activeLeftTab} onTabChange={(e) => this.setState({ activeLeftTab: e.index })} className="selectionstab">
-						<TabPanel header="Auswahl" contentClassName="selectionstab">
-							<Location
-								title="Bezugsfläche"
-								locations={locations}
-								selectedLocation={this.state.location}
-								onSelectLocation={(newLocation) => this.setLocation(newLocation) }
-								migrationsInside={this.state.migrationsInside}
-								setMigrationsInside={(status) => this.setState({ migrationsInside: status }) }
-							/>
-							<Themes
-								themes={['Von', 'Nach', 'Saldi']}
-								selectedTheme={this.state.theme}
-								setTheme={(newTheme) => this.setTheme(newTheme) }
-								selected={this.state.dataProcessing}
-								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
-								populationDataLoaded={this.state.populationDataLoaded}
-							/>
-							<Years
-								availableYears={this.props.yearsAvailable}
-								selected={this.state.years}
-								setYears={(newYears) => this.setYears(newYears) }
-							/>
-						</TabPanel>
-						<TabPanel header="Darstellung" contentClassName="selectionstab">
-							<ClassificationSelections
-								algorithm={this.state.algorithm}
-								positiveColors={this.state.positiveColors}
-								negativeColors={this.state.negativeColors}
-								positiveClasses={this.state.positiveClasses}
-								negativeClasses={this.state.negativeClasses}
-								withNegative={this.state.theme == 'Saldi'}
-								automaticButton={this.state.classcountset}
-								colorSchemes={classification.getColorSchemes()}
-								setAlgorithm={(newAlgorithm) => this.setState({ algorithm: newAlgorithm })}
-								setPositiveColorScheme={(newColorScheme) => this.setState({ positiveColors: newColorScheme })}
-								setNegativeColorScheme={(newColorScheme) => this.setState({ negativeColors: newColorScheme })}
-								setPositiveClasses={(classes) => this.setClassCount(true, classes)}
-								setNegativeClasses={(classes) => this.setClassCount(false, classes)}
-								resetAutomaticClasses={(automatic) => this.setState({ classcountset: !automatic, updateclasscount: automatic })}
-							/>
-						</TabPanel>
-					</TabView>
-				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-10' : 'p-col-8'}>
 					<DashboardView
 						dataProcessing={this.state.dataProcessing}
