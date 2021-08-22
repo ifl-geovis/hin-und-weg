@@ -158,6 +158,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 	private standardizeOutput(value: number): string
 	{
+		if (Number.isInteger(value)) return "" + value;
 		return value.toFixed(3);
 	}
 
@@ -283,10 +284,10 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 					<td>{this.standardizeOutput(row.Mean)}</td>
 					<td>{this.standardizeOutput(row.MeanZuzüge)}</td>
 					<td>{this.standardizeOutput(row.MeanWegzüge)}</td>
-					<td>{row.MedianZuzüge}</td>
-					<td>{row.MedianWegzüge}</td>
-					<td>{row.max}</td>
-					<td>{row.min}</td>
+					<td>{this.standardizeOutput(row.MedianZuzüge)}</td>
+					<td>{this.standardizeOutput(row.MedianWegzüge)}</td>
+					<td>{this.standardizeOutput(row.max)}</td>
+					<td>{this.standardizeOutput(row.min)}</td>
 				</tr>
 		);
 	}
