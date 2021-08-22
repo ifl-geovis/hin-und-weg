@@ -65,7 +65,14 @@ export default class LegendTimeline extends React.Component<ILegendTimelineProps
 			title += ' für ';
 
             title += location;
-            title += " (" + this.props.yearsSelected + ")";
+			title += " (";
+			let first: boolean = true;
+			for (let year of this.props.yearsSelected) {
+				if (!first) title += ", ";
+				title += year;
+				first = false;
+			}
+			title += ")";
 		}
 		return title;
 	}
