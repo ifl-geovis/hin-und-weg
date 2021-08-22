@@ -89,14 +89,12 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 
 	private getShapeFileButton() {
 		if (this.props.geodata) return (
-			<div className="p-col-12">
-				<p>Shape Datei {this.props.shapefilename} wurde erfolgreich geladen...</p>
-			</div>
+			<div className="p-col-12 status-success">✓ Shape Datei {this.props.shapefilename} wurde erfolgreich geladen...</div>
 		);
 		return (
 			<div className="p-col-12">
 				<FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false} accept=".shp"/>
-				<p>{this.state.shapeloadmessage}</p>
+				<div className="status-progress">{this.state.shapeloadmessage}</div>
 			</div>
 		);
 	}
@@ -108,7 +106,7 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 		else if (!files[0].name.endsWith(".shp")) MessageList.getMessageList().addMessage('Die Datei ' + files[0].name + ' sieht nicht wie eine Shape-Datei aus.', 'error');
 		else
 		{
-			this.setState({ shapeloadmessage: "Shape-Datei " + files[0].name + " wird geladen. Bitte warten." });
+			this.setState({ shapeloadmessage: "↺ Shape-Datei " + files[0].name + " wird geladen. Bitte warten." });
 			this.props.setShapefileName(files[0].name);
 			Geodata.read(files[0].path, (newGeodata) => {
 				Log.trace("ImportView.onSelectGeodataFile setGeodata", newGeodata);
