@@ -1,5 +1,5 @@
 {
-	"profile": "development",
+	"profile": "production",
 	"version": "1.8.0",
 
 	"production": {
