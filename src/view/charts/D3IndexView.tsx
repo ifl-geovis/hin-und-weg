@@ -58,7 +58,6 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 	public render(): JSX.Element
 	{
 		let data = this.queryIndex();
-
 		Log.debug("index value data: ", data);
 		let selector = null;
 		if (this.state.type === "year") selector = this.createYearSelector();
@@ -90,10 +89,8 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		const options = this.props.yearsAvailable.map((option: string) => {
 			return { value: option, label: option};
 		});
-
-		const selected = { value: this.state.referenceYear, label: this.state.referenceYear};
 		return (
-			<Dropdown optionLabel="label" value={selected} options={options} onChange={this.setYear} />
+			<Dropdown optionLabel="label" value={this.state.referenceYear} options={options} onChange={this.setYear} />
 		);
 	}
 
@@ -104,10 +101,9 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		const selectzedLocation = this.props.location;
 		const optionsFiltered = options.filter(function(item) {
 			return item.label !== selectzedLocation
-		})
-		const selected = { value: this.state.referenceLocation, label: this.state.referenceLocation};
+		});
 		return (
-			<Dropdown optionLabel="label" value={selected} options={options} onChange={this.setLocation} style={{ width: "15em" }} />
+			<Dropdown optionLabel="label" value={this.state.referenceLocation} options={options} onChange={this.setLocation} style={{ width: "15em" }} />
 		);
 	}
 
@@ -309,9 +305,9 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 	{
 		for (let type of this.types)
 		{
-			if (type.value === this.state.type) return type;
+			if (type.value === this.state.type) return type.value;
 		}
-		return this.types[0];
+		return this.types[0].value;
 	}
 
 	private setYear(event: { originalEvent: Event, value: any})
