@@ -297,9 +297,8 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 
 	private setType(event: { originalEvent: Event, value: any})
 	{
-		this.setState({ type: event.value.value });
+		this.setState({ type: event.value });
 	}
-
 
 	private getType()
 	{
@@ -313,13 +312,13 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 	private setYear(event: { originalEvent: Event, value: any})
 	{
 		console.log(event);
-		this.setState({ referenceYear: event.value.value });
+		this.setState({ referenceYear: event.value });
 	}
 
 	private setLocation(event: { originalEvent: Event, value: any})
 	{
 		console.log(event);
-		this.setState({ referenceLocation: event.value.value });
+		this.setState({ referenceLocation: event.value });
 	}
 
 	private getYearsSelected(): string {
@@ -330,9 +329,5 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		);
 		return stringYears;
 	}
-
-
-
-
 
 }
