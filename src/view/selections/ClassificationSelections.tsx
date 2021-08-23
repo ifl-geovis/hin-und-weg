@@ -98,15 +98,15 @@ export default class ClassificationSelections extends React.Component<IClassific
 	}
 
 	private setAlgorithm(event: { originalEvent: Event, value: any}) {
-		this.props.setAlgorithm(event.value.value);
+		this.props.setAlgorithm(event.value);
 	}
 
 	private setPositiveColors(event: { originalEvent: Event, value: any}) {
-		this.props.setPositiveColorScheme(event.value.value);
+		this.props.setPositiveColorScheme(event.value);
 	}
 
 	private setNegativeColors(event: { originalEvent: Event, value: any}) {
-		this.props.setNegativeColorScheme(event.value.value);
+		this.props.setNegativeColorScheme(event.value);
 	}
 
 	private resetAutomaticClasses(e: MouseEvent) {
