@@ -83,18 +83,18 @@ export default class ClassificationSelections extends React.Component<IClassific
 	{
 		for (let colorscheme of this.createColorOptions(this.props.colorSchemes))
 		{
-			if (colorscheme.value === selectedColor) return colorscheme;
+			if (colorscheme.value === selectedColor) return colorscheme.value;
 		}
-		return this.createColorOptions(this.props.colorSchemes)[0];
+		return this.createColorOptions(this.props.colorSchemes)[0].value;
 	}
 
 	private getSelectedAlgorithm()
 	{
 		for (let algorithm of this.algorithms)
 		{
-			if (algorithm.value === this.props.algorithm) return algorithm;
+			if (algorithm.value === this.props.algorithm) return algorithm.value;
 		}
-		return this.algorithms[0];
+		return this.algorithms[0].value;
 	}
 
 	private setAlgorithm(event: { originalEvent: Event, value: any}) {
