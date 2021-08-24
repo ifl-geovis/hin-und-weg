@@ -188,6 +188,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 					yearsSelected={this.props.yearsSelected}
 					geoName={this.props.geoName}
 					theme={this.props.theme}
+					dataProcessing={this.props.dataProcessing}
 					onSelectLocation={this.props.onSelectLocation}
 				/>
 			</div>

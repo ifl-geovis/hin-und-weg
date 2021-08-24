@@ -20,6 +20,7 @@ export interface IGeodataProps {
 	yearsSelected: string[];
 	onSelectLocation: (newLocation: string) => void;
 	theme: string;
+	dataProcessing: string;
 }
 
 interface IGeodataState {
@@ -55,6 +56,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 	public render(): JSX.Element {
 		// console.log('GeodataView render');
 		const classification = Classification.getCurrentClassification();
+		let fractions: boolean = (this.props.dataProcessing === 'absolute') ? false : true;
 		return (
 			<div className="p-grid p-component">
 				<Accordion activeIndex={0}>
@@ -148,14 +150,15 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 							<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
 								<hr className={`noprint`} />
 								<div className="p-grid p-align-center noprint">
-									<p className="p-col-4">Es werden alle Werte über {this.state.threshold} angezeigt.</p>
+									<p className="p-col-4">Es werden alle Werte über {(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold} angezeigt.</p>
 									<div className="p-col-8">
 										<Slider
 											min={0}
-											max={classification.getAbsoluteMaxValue()}
+											max={(fractions) ? 1000 * classification.getAbsoluteMaxValue() : classification.getAbsoluteMaxValue()}
 											value={this.state.threshold}
 											orientation="horizontal"
 											onChange={this.onSliderChange}
+											step={1}
 										/>
 									</div>
 								</div>
@@ -179,7 +182,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 						showMap={this.state.showMap}
 						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
-						threshold={this.state.threshold}
+						threshold={(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold}
 						polygonTransparency={this.state.polygonTransparency}
 					/>
 				</div>
