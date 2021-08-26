@@ -12,8 +12,6 @@ import Classification from '../../data/Classification';
 import { IOfflineMaps } from '../../data/OfflineMaps';
 // @ts-ignore
 import 'leaflet-swoopy';
-import { lowerFirst } from 'lodash';
-import { options } from 'alasql';
 
 export interface ILeafletMapViewProps {
 	items?: Array<{ [name: string]: any }> | null;
@@ -29,11 +27,12 @@ export interface ILeafletMapViewProps {
 	polygonTransparency: number;
 }
 
-interface Centerpoint {
-	Center1: any;
+interface LeafletMapViewState {
+	canvas: boolean;
 }
 
-export default class LeafletMapView extends Component<ILeafletMapViewProps, Centerpoint> {
+
+export default class LeafletMapView extends Component<ILeafletMapViewProps, LeafletMapViewState> {
 	private static odd: boolean = true;
 
 	centerpoint: { Center1: any };
@@ -42,8 +41,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 	SwoopyArrows: Array<any> = [];
 	name: String | undefined;
 
+	
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
+		
+		this.state = {
+			canvas: false
+		}
+
 		this.centerpoint = {
 			Center1: null,
 		};
@@ -111,7 +116,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 		return (
 			<div style={{position: "relative"}}>
 
-			<Map bounds={boundsOfGeodata} ref={this.mapRef} zoomDelta={0.25} zoomSnap={0}>
+			<Map bounds={boundsOfGeodata} ref={this.mapRef} zoomDelta={0.25} zoomSnap={0} preferCanvas={this.state.canvas}>
 				{geomap}
 				{arrows1}
 				{arrows2}
@@ -187,14 +192,14 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 			let lat = 0;
 			let lng = 0;
 			if(this.SwoopyArrows[id].color){
-			console.log("color:",this.SwoopyArrows[id].color);
-			console.log("SwoopyArrows ID:",this.SwoopyArrows[id]);
+			// console.log("color:",this.SwoopyArrows[id].color);
+			// console.log("SwoopyArrows ID:",this.SwoopyArrows[id]);
 
 			color = this.SwoopyArrows[id].color;
 			lat = this.SwoopyArrows[id].lat;
 			lng = this.SwoopyArrows[id].lng}
 
-			console.log("name:", name);
+			// console.log("name:", name);
 
 			map.eachLayer((layer: any) => {
 
@@ -214,7 +219,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Cent
 				*/
 			let hoverbox = Array.from(document.getElementsByClassName('popup-label-arrow'+this.SwoopyArrows[id].label) as HTMLCollectionOf<HTMLElement>)
 
-			console.log("hoverbox:",hoverbox.length);
+			// console.log("hoverbox:",hoverbox.length);
 
 			let i = 0;
 			for(i = 0; i < hoverbox.length; i++){
