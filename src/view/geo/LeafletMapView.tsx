@@ -109,7 +109,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 			if (this.props.showMap) geomap = this.getMapLayer();
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 
-			this.addArrowsEvents();
+			if(this.mapRef && this.mapRef.current)
+				this.addArrowsEvents();
 
 		}
 		LeafletMapView.odd = !LeafletMapView.odd;
@@ -176,9 +177,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 
 	public addArrowsEvents() {
 
-		document.addEventListener("mouseover", (event) => {
-		const map = this.mapRef.current.leafletElement;
-		let geoDataJson: FeatureCollection<Geometry, GeoJsonProperties>;
+		document.addEventListener("mouseover", (event) => { 
+
+			if(!this.mapRef || !this.mapRef.current)return;
+
+			const map = this.mapRef.current.leafletElement;
+			let geoDataJson: FeatureCollection<Geometry, GeoJsonProperties>;
 
 
 			//@ts-ignore
@@ -191,13 +195,24 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 			let color = "#007ad9";
 			let lat = 0;
 			let lng = 0;
-			if(this.SwoopyArrows[id].color){
+			let indexCurrentArrow = 0;
+
+			console.log("ID:", id);
+
+			for(let i = 0; i < this.SwoopyArrows.length; i++){
+				console.log(this.SwoopyArrows[i]);
+				if("swoopyarrow__path"+this.SwoopyArrows[i].idarrow == id.input ){
+					indexCurrentArrow = i;
+				}
+			}
+
+			if(this.SwoopyArrows[indexCurrentArrow].color){
 			// console.log("color:",this.SwoopyArrows[id].color);
 			// console.log("SwoopyArrows ID:",this.SwoopyArrows[id]);
 
-			color = this.SwoopyArrows[id].color;
-			lat = this.SwoopyArrows[id].lat;
-			lng = this.SwoopyArrows[id].lng}
+			color = this.SwoopyArrows[indexCurrentArrow].color;
+			lat = this.SwoopyArrows[indexCurrentArrow].lat;
+			lng = this.SwoopyArrows[indexCurrentArrow].lng}
 
 			// console.log("name:", name);
 
@@ -217,7 +232,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 				.openTooltip({ lat: lat, lng: lng });
 				}
 				*/
-			let hoverbox = Array.from(document.getElementsByClassName('popup-label-arrow'+this.SwoopyArrows[id].label) as HTMLCollectionOf<HTMLElement>)
+			let hoverbox = Array.from(document.getElementsByClassName('popup-label-arrow'+this.SwoopyArrows[indexCurrentArrow].label) as HTMLCollectionOf<HTMLElement>)
 
 			// console.log("hoverbox:",hoverbox.length);
 
@@ -644,30 +659,38 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
 
-								this.SwoopyArrows.push({label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
-									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
+								
 								// @ts-ignore
-								lat: latlng.lat, lng: latlng.lng});
-								// @ts-ignore
-								return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
+								let swoopyarrow = new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									color: this.classification.getNegativeArrowColor(),
 									factor: 0.75,
 									weight: this.classification.getArrowWidth(item.Wert),
 									hideArrowHead: true,
 									label: item.Wert,
 								}).openTooltip();
-							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
-								this.SwoopyArrows.push({label: item.Von, value: item.Wert, color: this.classification.getPositiveArrowColor(),
-									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor(),
-									// @ts-ignore
-									lat: latlng.lat, lng: latlng.lng});
+								
+								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
+									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// @ts-ignore
-								return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
+								lat: latlng.lat, lng: latlng.lng});
+
+								return swoopyarrow; 
+							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
+								
+								// @ts-ignore
+								let  swoopyarrow = new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									color: this.classification.getPositiveArrowColor(),
 									factor: 0.75,
 									weight: this.classification.getArrowWidth(item.Wert),
 									arrowId: '#arrowHead',
 								}).openTooltip();
+
+								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getPositiveArrowColor(),
+									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor(),
+									// @ts-ignore
+									lat: latlng.lat, lng: latlng.lng});
+
+									return swoopyarrow;
 							}
 						}
 					}
@@ -678,18 +701,24 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
 							console.log("lat:" ,this.centerpoint.Center1.lat);
 							console.log("lng:" ,this.centerpoint.Center1.lng);
-								this.SwoopyArrows.push({label: item.Nach, value: item.Wert, color: this.classification.getPositiveArrowColor(),
-									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor(),
+								
 							// @ts-ignore
-								lat: latlng.lat, lng: latlng.lng});
-							// @ts-ignore
-							return new L.swoopyArrow(this.centerpoint.Center1, latlng, {
+							let  swoopyarrow = new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								color: this.classification.getPositiveArrowColor(),
 								factor: 0.75,
 								weight: this.classification.getArrowWidth(item.Wert),
 								arrowId: '#arrowHead',
 								label: item.Wert,
 							}).openTooltip();
+
+
+							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Nach, value: item.Wert, color: this.classification.getPositiveArrowColor(),
+									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor(),
+							// @ts-ignore
+								lat: latlng.lat, lng: latlng.lng});
+
+
+							return swoopyarrow;
 						}
 					}
 				}
@@ -698,18 +727,22 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							this.SwoopyArrows.push({label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
-								// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
-								// @ts-ignore
-								lat: latlng.lat, lng: latlng.lng});
+							
 							// @ts-ignore
-							return new L.swoopyArrow(latlng, this.centerpoint.Center1, {
+							let  swoopyarrow = new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),
 								factor: 0.75,
 								weight: this.classification.getArrowWidth(item.Wert),
 								hideArrowHead: true,
 								label: item.Wert,
 							}).openTooltip();
+
+							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
+								// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
+								// @ts-ignore
+								lat: latlng.lat, lng: latlng.lng});
+
+							return swoopyarrow;
 						}
 					}
 				}
