@@ -727,7 +727,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							
+							 
 							// @ts-ignore
 							let  swoopyarrow = new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),
