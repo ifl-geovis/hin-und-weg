@@ -239,16 +239,41 @@ export default class ImportView extends React.Component<IImportProps, IImportSta
 	{
 		Tabledata.read(filestatus.getPath(), (tabledata) => {
 			const metadata = this.loadMetadata(tabledata, filestatus);
+			const metadata_error = this.validateMetadata(metadata)
 			Log.debug('metadata', metadata);
 			Log.debug('data type:', metadata.type);
-			if (metadata.type === 'population') this.addPopulationDataToDB(metadata, tabledata, filestatus);
-			else if (metadata.type === 'movement') {
-				if (metadata.timeunit === 'year') this.addMovementYearDataToDB(metadata.time.toString(), tabledata, filestatus);
-				else filestatus.failure("Unbekannte Zeiteinheit für bewegungsdaten: " + metadata.timeunit);
-			} else filestatus.failure("Unbekannter Typ von Tabellendaten: " + metadata.type);
+			Log.debug('metadata error', metadata_error);
+			if (metadata_error) filestatus.failure(metadata_error);
+			else
+			{
+				if (metadata.type === 'population') this.addPopulationDataToDB(metadata, tabledata, filestatus);
+				else if (metadata.type === 'movement') {
+					if (metadata.timeunit === 'year') this.addMovementYearDataToDB(metadata.time.toString(), tabledata, filestatus);
+					else filestatus.failure("Unbekannte Zeiteinheit für bewegungsdaten: " + metadata.timeunit);
+				} else filestatus.failure("Unbekannter Typ von Tabellendaten: " + metadata.type);
+			}
 			this.generateSummaryMessage();
 			this.setState({ tablefiles: this.state.tablefiles });
 		});
+	}
+
+	private validateMetadata(metadata: any)
+	{
+		if (!metadata) return "Metadaten fehlen";
+		if (!metadata.type) return "Metadatenfeld 'type' erwartet";
+		if ((metadata.type != 'population') && (metadata.type != 'movement')) return "Unbekannter Inhalt für Metadatenfeld 'type': " + metadata.type + ". Erlaubte Werte sind: population/movement";
+		if (metadata.type === 'population')
+		{
+			if (!metadata.begin) return "Metadatenfeld 'begin' erwartet";
+			if (!metadata.end) return "Metadatenfeld 'end' erwartet";
+		}
+		if (metadata.type === 'movement')
+		{
+			if (!metadata.timeunit) return "Metadatenfeld 'timeunit' erwartet";
+			if (!metadata.time) return "Metadatenfeld 'time' erwartet";
+			if (metadata.timeunit != 'year') return "Unbekannter Inhalt für Metadatenfeld 'timeunit': " + metadata.type + ". Erlaubte Werte sind: year";
+		}
+		return null;
 	}
 
 	private addPopulationDataToDB(metadata: any, tabledata: Tabledata, filestatus: TableFileStatus)
