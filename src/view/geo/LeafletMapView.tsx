@@ -41,10 +41,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 	SwoopyArrows: Array<any> = [];
 	name: String | undefined;
 
-	
+
 	constructor(props: ILeafletMapViewProps) {
 		super(props);
-		
+
 		this.state = {
 			canvas: false
 		}
@@ -172,12 +172,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 		svgArrows.forEach((svg) => {
 			if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
 		});
-	//	this.SwoopyArrows = [];
+		this.SwoopyArrows = [];
 	}
 
 	public addArrowsEvents() {
 
-		document.addEventListener("mouseover", (event) => { 
+		document.addEventListener("mouseover", (event) => {
 
 			if(!this.mapRef || !this.mapRef.current)return;
 
@@ -659,7 +659,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
 
-								
+
 								// @ts-ignore
 								let swoopyarrow = new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									color: this.classification.getNegativeArrowColor(),
@@ -668,15 +668,15 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 									hideArrowHead: true,
 									label: item.Wert,
 								}).openTooltip();
-								
+
 								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// @ts-ignore
 								lat: latlng.lat, lng: latlng.lng});
 
-								return swoopyarrow; 
+								return swoopyarrow;
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
-								
+
 								// @ts-ignore
 								let  swoopyarrow = new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									color: this.classification.getPositiveArrowColor(),
@@ -701,7 +701,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
 							console.log("lat:" ,this.centerpoint.Center1.lat);
 							console.log("lng:" ,this.centerpoint.Center1.lng);
-								
+
 							// @ts-ignore
 							let  swoopyarrow = new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								color: this.classification.getPositiveArrowColor(),
@@ -727,7 +727,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-							 
+
 							// @ts-ignore
 							let  swoopyarrow = new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),
