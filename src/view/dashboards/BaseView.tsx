@@ -33,6 +33,8 @@ export interface IBaseProps {
 	setGeoName: (geoName: string) => void;
 	setGeoId: (geoId: string) => void;
 	addYear: (year: string) => void;
+	populationDataLoaded: boolean;
+	setPopulationDataLoaded: () => void;
 }
 
 interface IBaseState {
@@ -50,7 +52,6 @@ interface IBaseState {
 	classcountset: boolean;
 	updateclasscount: boolean;
 	activeLeftTab: number;
-	populationDataLoaded: boolean;
 }
 
 export default class BaseView extends React.Component<IBaseProps, IBaseState> {
@@ -72,7 +73,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			classcountset: false,
 			updateclasscount: false,
 			activeLeftTab: 0,
-			populationDataLoaded: false,
 		};
 		this.change = this.change.bind(this);
 		this.addYear = this.addYear.bind(this);
@@ -134,7 +134,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 								setTheme={(newTheme) => this.setTheme(newTheme) }
 								selected={this.state.dataProcessing}
 								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
-								populationDataLoaded={this.state.populationDataLoaded}
+								populationDataLoaded={this.props.populationDataLoaded}
 							/>
 							<Years
 								availableYears={this.props.yearsAvailable}
@@ -188,7 +188,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						addYear={this.addYear}
 						change={this.change}
 						migrationsInside={this.state.migrationsInside}
-						setPopulationDataLoaded={() => this.setState({ populationDataLoaded: true })}
+						setPopulationDataLoaded={this.props.setPopulationDataLoaded}
 					/>
 				</div>
 			</div>

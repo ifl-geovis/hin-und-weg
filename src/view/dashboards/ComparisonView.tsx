@@ -28,6 +28,7 @@ interface IComparisonState
 	geoName: string | null;
 	yearsAvailable: string[];
 	shapefilename: string;
+	populationDataLoaded: boolean;
 }
 
 export default class ComparisonView extends React.Component<IComparisonProps, IComparisonState>
@@ -44,6 +45,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 			geoName: null,
 			yearsAvailable: [],
 			shapefilename: "",
+			populationDataLoaded: false,
 		};
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
@@ -75,6 +77,8 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 				setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
 				setGeoId={(newGeoId) => { this.setState({ geoId: newGeoId }); }}
 				addYear={(year) => { this.setState({ yearsAvailable: R.uniq(R.append(year, this.state.yearsAvailable)) }); }}
+				populationDataLoaded={this.state.populationDataLoaded}
+				setPopulationDataLoaded={() => this.setState({ populationDataLoaded: true })}
 			/>
 		);
 	}
