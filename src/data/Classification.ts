@@ -68,6 +68,7 @@ export default class Classification {
 		if (item.Wert > 0) {
 			if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];
 			for (let i = 0; i < this.positive_scales.length; i++) {
+				if ((i < (this.positive_scales.length - 1)) && (item.Wert == this.positive_scales[i])) return this.positive_colors[i];
 				if (item.Wert < this.positive_scales[i]) return this.positive_colors[i - 1];
 			}
 			return this.positive_colors[this.positive_colors.length - 1];
@@ -75,6 +76,7 @@ export default class Classification {
 		if (item.Wert < 0) {
 			if (this.negative_scales === null) return this.negative_colors[this.negative_colors.length - 1];
 			for (let i = 0; i < this.negative_scales.length; i++) {
+				if ((i < (this.negative_scales.length - 1)) && (item.Wert == this.negative_scales[i])) return this.negative_colors[i];
 				if (item.Wert > this.negative_scales[i]) return this.negative_colors[i - 1];
 			}
 			return this.negative_colors[this.negative_colors.length - 1];
