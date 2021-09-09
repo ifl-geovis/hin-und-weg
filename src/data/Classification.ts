@@ -46,6 +46,9 @@ export default class Classification {
 
 	private arrow_max_width = 6;
 
+	private distinct_positives: number = 1;
+	private distinct_negatives: number = 1;
+
 	private colorSchemeDefault = ['cc8844', 'bb8855', 'aa8866', '998877', '888888', '778899', '6688aa', '5588bb', '4488cc'];
 	private classificationPositiveDefault = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 	private classificationNegativeDefault = [-1, -2, -3, -4, -5, -6, -7, -8, -9];
@@ -304,7 +307,14 @@ export default class Classification {
 		}
 		Log.trace('positives: ' + positives);
 		Log.trace('negatives: ' + negatives);
+		this.distinct_positives = 1;
+		this.distinct_negatives = 1;
 		if (positives.length > 0) {
+			let foundvalues: number[] = [];
+			for (let value of positives) {
+				if (!foundvalues.includes(value)) foundvalues.push(value);
+			}
+			this.distinct_positives = foundvalues.length;
 			this.positive_stats = new geostats(positives);
 			this.fillPositiveScales();
 			this.fillPositiveScalesD3Labels();
@@ -312,6 +322,11 @@ export default class Classification {
 			this.positive_stats = new geostats([0]);
 		}
 		if (negatives.length > 0) {
+			let foundvalues: number[] = [];
+			for (let value of negatives) {
+				if (!foundvalues.includes(value)) foundvalues.push(value);
+			}
+			this.distinct_negatives = foundvalues.length;
 			this.negative_stats = new geostats(negatives);
 			this.fillNegativeScales();
 			this.fillNegativeScalesD3Labels();
@@ -325,11 +340,17 @@ export default class Classification {
 		let stats = positive ? this.positive_stats : this.negative_stats;
 		if (stats == null) return 1;
 		let number = stats.pop();
-		if (number < 5) return 1;
+		/*if (number < 5) return 1;
 		if (number < 10) return 2;
 		if (number < 15) return 3;
-		if (number < 20) return 4;
-		return Math.round(1 + 3.3 * Math.log10(number));
+		if (number < 20) return 4;*/
+		let sturges = Math.round(1 + 3.3 * Math.log10(number));
+		let distinct_number = positive ? this.distinct_positives : this.distinct_negatives;
+		Log.debug("sturges", sturges);
+		Log.debug("distinct_number", distinct_number);
+		Log.debug("count", Math.round(1 + Math.log(number)));
+		if (sturges > distinct_number) return Math.round(1 + Math.log(distinct_number));
+		return sturges;
 	}
 
 	public getMinValue(): number {
