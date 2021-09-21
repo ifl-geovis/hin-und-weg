@@ -5,7 +5,10 @@
 	"production": {
 		"logging": {
 			"debug": false
-		}
+		},
+		"map": {
+			"offlinePath": "../../../../offline",
+		},
 	},
 
 	"development": {
