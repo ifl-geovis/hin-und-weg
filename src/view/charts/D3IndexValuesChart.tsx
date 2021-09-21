@@ -149,9 +149,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const refLabelIndx = checkRef(labels, this.props.referenceYear , this.props.referenceLocation  );
 		const results = data.map((d) => d.result);
 		const calculateIfRefNaN: any = () =>  {if (typeof(refLabelIndx) === "number"){   return typeof results[refLabelIndx]  !== 'number' || !results[refLabelIndx] && results[refLabelIndx] !== 0 }};
-		
+		console.log("refLabelIndx: " + refLabelIndx);
 		const ifRefNaN = calculateIfRefNaN();
-
+		  console.log("ifRefNaN: " + ifRefNaN);
 		const calculateIfYearSelected : any = () =>  { return ( R.contains(this.props.referenceYear, this.props.yearsSelected)) ? true : false};
 		const ifYearSelected = calculateIfYearSelected();
 
@@ -175,6 +175,16 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const warnText3 = "Dargestellt sind absolute Werte!";
 		const warnText4 = "Achtung, der gewählte Indexwert ist NaN. ";
 		const warnText5 = "Achtung, das Bezugsjahr wird nicht unter den verfügbaren Jahren ausgewählt."
+		const warnText6 = "Bitte wählen Sie ein Jahr oder Jahre aus. "
+		const warnText7 = "Achtung, die gewählte Bezugsfläche ist Null. "
+		const warnText8 = "Bitte wählen Sie die Bezugsfläche aus. "
+
+
+		console.log("this.props.location: " + this.props.location); 
+		console.log("!refLabelIndx: " + !refLabelIndx); 
+		console.log("this.props.yearsSelected: " + this.props.yearsSelected); 
+		console.log("!this.props.yearsSelected: " + !this.props.yearsSelected); 
+
 
 		  let textWidth = 0;
 
@@ -211,7 +221,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("text-anchor", "start")
 				.style("font-size", "16px")
 				.attr("font-weight", 800) // between 100 - 900
-				.text( ifRefNaN ?   (warnText4 + warnText2 ) : " " );
+				.text( ifRefNaN && this.props.type === "location" ||  this.props.type === "location" && refLabelIndx === undefined && this.props.location && this.props.yearsSelected ?   (warnText4 + warnText2 ) : " " );
 
 		let warningText5 = indxValChart.append("text")
 				.attr("x", (10))
@@ -220,13 +230,33 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("text-anchor", "start")
 				.style("font-size", "16px")
 				.attr("font-weight", 800) // between 100 - 900
-				.text( ifYearSelected === false && this.props.type === "year" ?    warnText5  : " " );
+				.text( ifYearSelected === false && this.props.type === "year" && this.props.location ?    warnText5  : " " );
+
+		let warningText6 = indxValChart.append("text")
+				.attr("x", (10))
+				.attr("y", 0 - (MARGIN.TOP / 4))
+				.attr("width", WIDTH)
+				.attr("text-anchor", "start")
+				.style("font-size", "16px")
+				.attr("font-weight", 800) // between 100 - 900
+				.text(  !this.props.yearsSelected && this.props.type === "location" && this.props.location && typeof(refLabelIndx) !== "number"  ?    warnText6  : " " );
+		
+			let warningText7 = indxValChart.append("text")
+				.attr("x", (10))
+				.attr("y", 0 - (MARGIN.TOP / 4))
+				.attr("width", WIDTH)
+				.attr("text-anchor", "start")
+				.style("font-size", "16px")
+				.attr("font-weight", 800) // between 100 - 900
+				.text( !this.props.location ?   (warnText7 + warnText8 ) : " " );
+
+		
 
 				if (warningText !== null && warnText2 !== null && warnText3 !== null && percentage === false && this.props.type === "location" 
-				|| warningText !== null && warnText2 !== null && warnText3 !== null && percentage === false && ifYearSelected === true && this.props.type === "year" ) { // || warningText !== null && warnText2 !== null && warnText3 !== null && ifYearSelected === false
+				|| warningText !== null && warnText2 !== null && warnText3 !== null && percentage === false && ifYearSelected === true && this.props.type === "year" ) { 
 					let		bboxt =  warningText.node()
 					let bbox;
-					if (bboxt !== null){
+					if (bboxt !== null){ 
 								bbox = bboxt.getBBox();
 						 let rect = indxValChart.insert('rect','text')
 						.attr('x', bbox.x  )
@@ -246,7 +276,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						  warningText3.text(WIDTH < textWidth ?  warnText3 :" ");
 
 				}
-				if (warningText4 !== null && warnText2 !== null && ifRefNaN === true ) { //&& percentage === false
+				if (warningText4 !== null && warnText2 !== null && ifRefNaN && this.props.type === "location" ||  this.props.type === "location" && refLabelIndx === undefined && this.props.location && this.props.yearsSelected) { //&& percentage === false
 					let		bboxt =  warningText4.node()
 					let bbox;
 					if (bboxt !== null){
@@ -268,7 +298,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	  
 					  }
 
-				if (warningText5 !== null  && ifYearSelected === false && this.props.type === "year"   ) { 
+				if (warningText5 !== null  && ifYearSelected === false && this.props.type === "year" && this.props.location   ) { 
 						let		bboxt =  warningText5.node()
 						let bbox;
 						if (bboxt !== null){
@@ -283,8 +313,45 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 							  }
 	
 						  }
-		
 
+
+				if (warningText6 !== null  && !this.props.yearsSelected && this.props.type === "location" && this.props.location && typeof(refLabelIndx) !== "number"   ) { 
+							let		bboxt =  warningText6.node()
+							let bbox;
+							if (bboxt !== null){
+										bbox = bboxt.getBBox();
+								 let rect = indxValChart.insert('rect','text')
+								.attr('x', bbox.x  )
+								.attr('y', bbox.y -25 - 25)
+								.attr('width', bbox.width + 10 )
+								.attr('height', bbox.height +25 + 25)
+								.style("fill", "#f78928");
+							textWidth = bbox.width;
+								  }
+		
+							  }
+				if (warningText7 !== null && warnText8 !== null && !this.props.location) { 
+								let		bboxt =  warningText7.node()
+								let bbox;
+								if (bboxt !== null){
+											bbox = bboxt.getBBox();
+									 let rect = indxValChart.insert('rect','text')
+									.attr('x', bbox.x  )
+									.attr('y', bbox.y -25 - 25)
+									.attr('width', bbox.width + 10 )
+									.attr('height', bbox.height +25 + 25)
+									.style("fill", "#f78928");
+								textWidth = bbox.width;
+									  }
+			
+									  warningText7.text(  WIDTH >= textWidth ? ( warnText7 + warnText8) : WIDTH >= 670 ?  warnText7 + warnText8 : warnText7  )
+									  .attr("y", (WIDTH >= textWidth ? 0 - (MARGIN.TOP / 4) :WIDTH > 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)*3));
+				  
+											warningText2.text(WIDTH < 670 ?  warnText8 : " " )
+									  .attr("y", (WIDTH < 670 ? 0 - (MARGIN.TOP / 4)*2 : 0 - (MARGIN.TOP / 4)));
+				  
+								  }
+			
 		if (theme === 'Von') {
 
 			const domain = data.map(d => d.result === undefined || NaN ? d.label + ' (NaN) ' : d.result === 0 ? d.label + ' (0) ' : d.label);
@@ -777,7 +844,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 			const y = d3
 				.scaleLinear()
-				.domain([maxIndex2 + offsetDomain, minIndex2 > 0 ? 0 - offsetDomain :minIndex2 - offsetDomain])
+				.domain([maxIndex2 + offsetDomain, minIndex2 > 0 ? minIndex2 + offsetDomain :minIndex2 - offsetDomain]) //minIndex2 > 0 ? 0 - offsetDomain :minIndex2 - offsetDomain]
 				.range([0, HEIGHT]);
 
 				// gridlines in x axis function
@@ -900,7 +967,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 							+ "\n" + "Wert: " + d.result
 								return t
 						  })
-						}else if (this.props.type === 'year'){	
+		}else if (this.props.type === 'year'){	
 						  // Add the valueline path.
 				let lineGenerator = d3.line<ID3IndexValuesChartItem>()
 				.defined(function (d) { return d.index !== undefined; })

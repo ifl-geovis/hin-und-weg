@@ -85,7 +85,7 @@ export default class HistogramView extends React.Component<ID3HistogramViewProps
 				<div id="chartDiv" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-								<D3Histogram width={width} height={width < 400 ? 200 : width/2}
+								<D3Histogram width={width} height={320}
 								baseViewId={this.props.baseViewId} vizID={this.props.vizID} 
 								theme={this.props.theme} yearsSelected={this.props.yearsSelected}
 								positive_scales={positiveScalesD3Labels} positive_scales_short={positiveScalesShort} 
