@@ -340,12 +340,12 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		//console.log("Jahr: " + results_zuzug[0].Jahr + "; zuzug: " + results_zuzug[0].Von);
 		for (let i = 0; i < results_zuzug.length; i++) {
 			if (letztesJahr == results_zuzug[i].Jahr) {
-				if (!Number.isNaN(results_zuzug[i].zuzug)) {
+				if ((!Number.isNaN(results_zuzug[i].zuzug)) && (!Number.isNaN(zuzüge + results_zuzug[i].zuzug))) {
 					zuzüge = zuzüge + results_zuzug[i].zuzug;
 					medianZuzügeArray.push(results_zuzug[i].zuzug);
 					indexPerYearZuzug += 1;
 				}
-				if (!Number.isNaN(results_wegzug[i].wegzug)) {
+				if ((!Number.isNaN(results_wegzug[i].wegzug)) && (!Number.isNaN(wegzüge + results_wegzug[i].wegzug))) {
 					wegzüge = wegzüge + results_wegzug[i].wegzug;
 					medianWegzügeArray.push(results_wegzug[i].wegzug);
 					indexPerYearWegzug += 1;
