@@ -89,7 +89,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
       this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId)
   
       const [min, max] = this.getMinMax2();
-      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
       let normalizedData:ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.threshold   , this.props.data); //   
 
       let data1 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert) >= min   , this.props.data) ;
@@ -110,7 +110,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
         public componentDidUpdate(){
           const [min, max] = this.getMinMax2();
-          let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+          let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
     
           let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
           let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
@@ -825,7 +825,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             }
          }
       }
-      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
       min = wanderungsRate ? min * 1000 : min;
       max = wanderungsRate ? max * 1000 : max;
       return [min, max + 1];
@@ -853,7 +853,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
     let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
     let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
-    let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+    let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
     return (
       <div className="p-grid">

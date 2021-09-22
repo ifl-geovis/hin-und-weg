@@ -63,7 +63,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
 
 		const [min, max] = this.getMinMax2();
-		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
 		// let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
 
@@ -96,7 +96,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 	public componentDidUpdate() {
 		const [min, max] = this.getMinMax2();
-		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 		let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
 
 		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
@@ -750,7 +750,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				}
 			}
 		}
-		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
      	min = wanderungsRate ? min * 1000 : min;
       	max = wanderungsRate ? max * 1000 : max;
 		return [min, max + 1];
@@ -788,7 +788,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		// let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
 		let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
 		let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
-		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
 		return (
 			<div className="p-grid">

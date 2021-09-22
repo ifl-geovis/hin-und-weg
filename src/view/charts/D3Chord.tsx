@@ -65,7 +65,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     public componentDidMount() {
       this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
       const [min, max] = this.getMinMax2();
-      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
       let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
       let data2 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.rangeValues[1] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= max, this.props.data);
@@ -90,7 +90,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         const [min, max] = this.getMinMax2();
         let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
         let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
-        let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+        let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
         let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
         let data2 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= rangeValues[1] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= max, this.props.data);

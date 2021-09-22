@@ -37,12 +37,16 @@ export default class Themes extends React.Component<IThemesProps> {
 	private createWanderungsSelector(): JSX.Element {
 		if (!this.props.populationDataLoaded) return (<span></span>);
 		const absolute = this.makeRadioButton("absolute", "Anzahl Umzüge");
-		const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
+		//const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
+		const ratevon = this.makeRadioButton("ratevon", "Abwanderungsrate");
+		const ratenach = this.makeRadioButton("ratenach", "Zuzugsrate");
 		return (
 			<div>
 				<hr />
 				{absolute}
-				{wanderungsrate}
+				{/*wanderungsrate*/}
+				{ratevon}
+				{ratenach}
 			</div>
 		);
 	}

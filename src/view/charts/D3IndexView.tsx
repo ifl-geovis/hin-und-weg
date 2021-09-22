@@ -159,7 +159,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		Log.debug("stringYears in constructQuery : ", stringYears);
 		if (type === "year")
 		{
-			if(this.props.dataProcessing === 'wanderungsrate'){
+			if((this.props.dataProcessing === 'wanderungsrate') || (this.props.dataProcessing === 'ratevon') || (this.props.dataProcessing === 'ratenach')){
 				if (theme === "Von") return  `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
 			if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
 			}
@@ -168,7 +168,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 				}
 		if (type === "location")
 		{
-			if(this.props.dataProcessing === 'wanderungsrate') {
+			if((this.props.dataProcessing === 'wanderungsrate') || (this.props.dataProcessing === 'ratevon') || (this.props.dataProcessing === 'ratenach')) {
 				if (theme === "Von")
 				return `SELECT Nach as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 			if (theme === "Nach")
