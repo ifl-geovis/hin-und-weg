@@ -229,6 +229,8 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             }))
             let nameSource = von[0]
             let valueSource = ()=> {
+              // return (typeof(indx) === "number")? values[indx] : NaN
+
               return (typeof(indx) === "number")? values[indx] : 0
             }
             let nodeVon = {
@@ -248,7 +250,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             let nodeVonZero = {
               nodeId: +(maxIdx+2),
               name: nameSource,
-              negative:  typeof(indx) !== "number" ? NaN : 0
+              negative:   typeof(indx) !== "number" ? NaN : 0
             }
 
             nodesArPlus.push(nodeVon, nodeVonZero)
@@ -432,7 +434,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             let nodeNachZero = {
               nodeId: +(maxIdx+2),
               name: nameTarget,
-              negative: 0
+              negative: typeof(indx) !== "number" ? NaN : 0
           }
           nodesArPlus.push(nodeNach, nodeNachZero)
 
@@ -591,18 +593,27 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
           let nameSource = nach[0]
           let valueTarget = ()=> {
-            if (typeof(indx) === "number")
-            {return values[indx]}
+            // if (typeof(indx) === "number") {return  values[indx]}
+              return (typeof(indx) === "number") ? values[indx] : NaN
+            }
+          if ((typeof(indx) !== "number")){
+            let nodeNachNaN = {
+            nodeId: +(maxIdx+1),
+            name: nameSource,
+            negative: NaN
+            }
+            nodesAr.push(nodeNachNaN)
           }
 
           let nodeNach = {
-              nodeId: +(maxIdx+1),
+              nodeId: +((typeof(indx) === "number") ? maxIdx+1 : maxIdx+2),
               name: nameSource,
               negative: +valueTarget
           }
+
           nodesAr.push(nodeNach)
 
-          let arrAbsolute = (ar:any[]) => { for(let i=0;i<ar.length;i++){
+          let arrAbsolute = (ar:any[]) => { for(let i=0;i< ar.length;i++){
             if (ar[i] < 0 ){
                   ar[i] = Math.abs(ar[i])
                 }
@@ -621,7 +632,6 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           //   }
 
           let absValues = arrAbsolute(values)
-
           let vonValues = data.map( d => +d.Wert);
           let vonSum = vonValues.reduce(function(a, b) { return a + b; }, 0);
 
