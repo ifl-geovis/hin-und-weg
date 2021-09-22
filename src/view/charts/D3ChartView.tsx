@@ -11,6 +11,8 @@ export interface ID3ChartViewProps
 	vizID: number;
 	 baseViewId: number;
 	yearsSelected: string[];
+	dataProcessing:string;
+
 }
 interface ID3ChartViewState
 {
@@ -57,7 +59,7 @@ export default class ChartsView extends React.Component<ID3ChartViewProps, ID3Ch
 							yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={heightResponsive}
-							data={this.props.items} theme={this.props.theme}/>
+							data={this.props.items} theme={this.props.theme} dataProcessing={this.props.dataProcessing} />
 								}
 						  </ContainerDimensions>
 

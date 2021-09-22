@@ -11,6 +11,8 @@ export interface ID3SankeyViewProps
 	vizID: number;
 	 baseViewId: number;
 	yearsSelected: string[];
+	dataProcessing:string;
+
 }
 interface ID3SankeyViewState
 {
@@ -31,6 +33,7 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 
 	public render(): JSX.Element
 	{
+		console.log("D3SankeyView data: " + JSON.stringify(this.props.items));
 
 
 
@@ -46,10 +49,10 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
 									<D3Sankey baseViewId={this.props.baseViewId} vizID={this.props.vizID}
-									 yearsSelected={this.props.yearsSelected}
+									 yearsSelected={this.props.yearsSelected }
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={(this.props.items.length <= 15)? 700 : 1100}
-							data={this.props.items} theme={this.props.theme}/>
+							data={this.props.items} theme={this.props.theme} dataProcessing={this.props.dataProcessing} />
 						}
 						  </ContainerDimensions>
 

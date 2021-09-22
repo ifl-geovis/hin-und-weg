@@ -150,7 +150,7 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
             .domain([0,  Math.round((yMax)*100/numOfValues) + 1])
                      .range([HEIGHT, 0]);
             
-            const yAxisCall = d3.axisLeft(y).ticks(yMax + 1); 
+            const yAxisCall = d3.axisLeft(y).ticks(15); // ticks(yMax + 1) 
                      yAxisGroup.call(yAxisCall).attr('class', 'axis axis--y').style('font-size', '12px');
          
             // text label for the y axis

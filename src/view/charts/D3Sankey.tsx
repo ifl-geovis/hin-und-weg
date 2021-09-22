@@ -28,6 +28,8 @@ export interface ID3SankeyProps {
     vizID: number;
     baseViewId: number;
    yearsSelected: string[];
+   dataProcessing:string;
+
 }
 interface ID3SankeyState
 {
@@ -65,7 +67,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     private svgRef?: SVGElement | null;
     private svgID?: string;
     private heightResponsive?: number;
-
+    
 
 
 
@@ -85,16 +87,15 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
     public componentDidMount() {
       this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId)
-      console.log("svgID DidMount:" + this.props.vizID);
-      // this.heightResponsive = this.setResponsiveHeight(this.props.data);
-      // console.log("this.responsiveHeight Didmlount: " + this.heightResponsive);
-
+  
       const [min, max] = this.getMinMax2();
-      let normalizedData:ID3SankeyItem[] = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
-      let data1 :ID3SankeyItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] &&item.Wert >= min, this.props.data);
-      let data2 :ID3SankeyItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] &&item.Wert <= max, this.props.data);
+      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      let normalizedData:ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.threshold   , this.props.data); //   
+
+      let data1 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert) >= min   , this.props.data) ;
+      let data2 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.rangeValues[1] && (wanderungsRate ? item.Wert*1000 : item.Wert) <= max, this.props.data);
       let dataFilterSmall: ID3SankeyItem[] = R.concat(data1, data2);
-      let dataFilterLarge :ID3SankeyItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1], this.props.data);
+      let dataFilterLarge :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1]   , this.props.data);
       let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
       let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
 
@@ -109,13 +110,15 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
         public componentDidUpdate(){
           const [min, max] = this.getMinMax2();
+          let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+    
           let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
           let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
-          let normalizedData:ID3SankeyItem[] = R.filter((item) => item.Wert >= threshold, this.props.data);
-          let data1 :ID3SankeyItem[] = R.filter((item) => item.Wert <= rangeValues[0] &&item.Wert >= min, this.props.data);
-          let data2 :ID3SankeyItem[] = R.filter((item) => item.Wert >= rangeValues[1] &&item.Wert <= max, this.props.data);
+          let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.Wert*1000 : item.Wert)   >= threshold   , this.props.data);
+          let data1 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  <= rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert)  >= min   , this.props.data);
+          let data2 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  >= rangeValues[1] && (wanderungsRate ? item.Wert*1000 : item.Wert)  <= max, this.props.data);
           let dataFilterSmall: ID3SankeyItem[] = R.concat(data1, data2);
-          let dataFilterLarge :ID3SankeyItem[] = R.filter((item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1], this.props.data);
+          let dataFilterLarge :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  >= rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert)  <= rangeValues[1]   , this.props.data);
           let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
           let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
 
@@ -131,7 +134,6 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
         private  removePreviousChart(id: string | undefined){
           if (typeof(id) === 'string') {
-            console.log("svgID DID Update: " + id);
             const chart = document.getElementById(id);
             if (chart) {
               while(chart.hasChildNodes())
@@ -148,9 +150,8 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           let nach = data.map(d => d.Nach);
           let von = data.map(d => d.Von);
           let names = nach.concat(von);
-         let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
+          let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
           this.heightResponsive = (data.length <= 10 )? 400 : (data.length >10 && data.length <= 15) ? 500 : (data.length > 15 && data.length <= 25) ? 600 : (data.length > 25 && data.length < 30) ? 700 : 1100;
-          // console.log("height responsive: " + this.heightResponsive);
 
           let marginResponsive : number =  maxNameLength > 3 ? maxNameLength*9 : maxNameLength*15; // this.props.width < 600 ? 35 : 100;
           // let marginResponsivePrevious : number =  this.props.width < 600 ? 35 : 100;
@@ -166,21 +167,19 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           const bordercolor = "#525252"
 
           const classification = Classification.getCurrentClassification();
-          // console.log("classification: " + JSON.stringify(classification));
 
           let classColors = (data: ID3SankeyItem[]) => {
-            let colors = new Array(data.length);
-              colors.fill('#000000');
-            for(let i=0;i<data.length;i++)
-            {
-              colors[i]=classification.getColor(data[i])
-            }  return colors
+              let colors = new Array(data.length);
+                colors.fill('#000000');
+              for(let i=0;i<data.length;i++)
+              {
+                colors[i]=classification.getColor(data[i])
+              }  return colors
           }
           let hexcolor:string[]  = classColors(data);
-          // console.log("classification colors: " + hexcolor);
 
           let hexcolorAdd: string[] =  classColors(data);
-            hexcolorAdd.push("#f7f7f7");
+          hexcolorAdd.push("#f7f7f7");
           svg.append("svg")
           .attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
           .attr("height", HEIGHT)
@@ -205,7 +204,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           let indx = checkIndx(von, nach)
 
           let maxIdx: any = d3.max(data, (d,i) => { if (d) return i})
-
+         
           // let colorsFunction = (x:any, clrs:string[] )=> {
           //     let arrCol = new Array((indx !== undefined)? x+1 : x+2);
           //     arrCol.fill(clrs[0]);
@@ -237,6 +236,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
               name: nameSource,
               negative: +valueSource
             }
+
             nodesAr.push( nodeVon)
 
             let nodesArPlus = data.map((d,i) => ({
@@ -248,9 +248,11 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             let nodeVonZero = {
               nodeId: +(maxIdx+2),
               name: nameSource,
-              negative: 0
+              negative:  typeof(indx) !== "number" ? NaN : 0
             }
+
             nodesArPlus.push(nodeVon, nodeVonZero)
+
 
             let vonValues = data.map( d => +d.Wert);
             let vonSum = vonValues.reduce(function(a, b) { return a + b; }, 0);
@@ -380,7 +382,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
              .attr("dy", "0.35em")
              .attr("text-anchor", "end") // "start"
-             .text(function (d: any) { return d.negative; })
+             .text(function (d: any) { return  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
 
 
              let sumLabel =  node //.filter(function(d:any) { return d.value != 0; })
@@ -390,12 +392,13 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
              .attr("dy", "0.35em")
              .attr("text-anchor", "start") // "end"
-             .text(vonSum)
+             .text(Math.round((vonSum + Number.EPSILON) * 1000) / 1000 )
+
 
              }
 
             node.append("title")
-              .text(function (d: any) { return d.name + "\n" + d.negative; });
+              .text(function (d: any) { return d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000 ; });
 
           }
           else if (theme === "Nach")
@@ -560,7 +563,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "end") // "start"
-           .text(nachSum)
+           .text( Math.round((nachSum + Number.EPSILON) * 1000) / 1000 )
 
 
           //  let sumLabel =  node.filter(function(d:any) { return d.value != 0; })
@@ -570,12 +573,12 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "start") // " end"
-           .text(function (d: any) { return d.negative; })
+           .text(function (d: any) { return  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
 
 
            }
           node.append("title")
-            .text(function (d: any) { return d.name + "\n" + d.negative; });
+            .text(function (d: any) { return d.name + "\n" +  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
 
           }
           else if (theme == "Saldi") {
@@ -733,7 +736,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "end") //"start"
-           .text(function (d: any) { return d.negative; })
+           .text(function (d: any) { return Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
 
 
            let sumLabel =  node.filter(function(d:any) { return d.value != 0; })
@@ -743,12 +746,12 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "start") // "end"
-           .text(vonSum)
+           .text(Math.round((vonSum + Number.EPSILON) * 1000) / 1000 )
 
            }
 
         node.append("title")
-            .text(function (d: any) { console.log("node.title d: " + d); return d.index === maxIdx+1 ? d.name : d.name + "\n" + d.negative; });
+            .text(function (d: any) { console.log("node.title d: " + d); return d.index === maxIdx+1 ? d.name : d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
           }
         }
       }
@@ -756,43 +759,44 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
     private calculateCurrentThreshold(): number
     {
-      const [min, max] = this.getMinMax2();
+      let [min, max] = this.getMinMax2();
       let threshold: number = this.state.threshold;
       if (this.state.threshold == 0) threshold = min;
       if (this.state.threshold < min) threshold = min;
       if (this.state.threshold > max) threshold = max;
+
       return threshold;
     }
 
-   private getMinMax(): [number, number]
-   {
-      let max = Number.MIN_VALUE;
-      let second_max = Number.MIN_VALUE;
-      let min = Number.MAX_VALUE;
-      if (this.props.data)
-      {
-         for (let item of this.props.data)
-         {
-            if (item["Wert"] < min)
-            {
-               min = item["Wert"];
-            }
-            if (item["Wert"] > max)
-            {
-               if (max > second_max)
-               {
-                  second_max = max;
-               }
-               max = item["Wert"];
-            }
-            else if (item["Wert"] > second_max)
-            {
-               second_max = item["Wert"];
-            }
-         }
-      }
-      return [min, second_max + 1];
-  }
+  //  private getMinMax(): [number, number]
+  //  {
+  //     let max = Number.MIN_VALUE;
+  //     let second_max = Number.MIN_VALUE;
+  //     let min = Number.MAX_VALUE;
+  //     if (this.props.data)
+  //     {
+  //        for (let item of this.props.data)
+  //        {
+  //           if (item["Wert"] < min)
+  //           {
+  //              min = item["Wert"];
+  //           }
+  //           if (item["Wert"] > max)
+  //           {
+  //              if (max > second_max)
+  //              {
+  //                 second_max = max;
+  //              }
+  //              max = item["Wert"];
+  //           }
+  //           else if (item["Wert"] > second_max)
+  //           {
+  //              second_max = item["Wert"];
+  //           }
+  //        }
+  //     }
+  //     return [min, second_max + 1];
+  // }
 
   private getMinMax2(): [number, number]
    {
@@ -821,8 +825,12 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             }
          }
       }
+      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      min = wanderungsRate ? min * 1000 : min;
+      max = wanderungsRate ? max * 1000 : max;
       return [min, max + 1];
   }
+
   private getInitialValuesSliderSaldi(): [number, number]
   {
     let [min, max] = this.getMinMax2();
@@ -834,20 +842,18 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     if (this.state.rangeValues[1] < min) rangeValues[1] = max;
     if (this.state.rangeValues[1] > max) rangeValues[1] = max;
     if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max , rangeValues[0] = min;
-
     return rangeValues;
   }
 
   public render() {
     const { width, height } = this.props;
     let [min, max] = this.getMinMax2();
-    min = Math.round((min + Number.EPSILON) * 1000) / 1000;
-    max = Math.round((max + Number.EPSILON) * 1000) / 1000;
         let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
     let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
     // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
     let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
     let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
+    let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
 
     return (
       <div className="p-grid">
@@ -871,7 +877,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           </div>
 
 
-            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{min}</div>
+            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
             <div className="p-col-10 noprint">
         <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
 
@@ -895,23 +901,23 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
                 }
                 </div>
                 </div>
-            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{max}</div>
+            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
             {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
         <div className="p-col-2 noprint">
           {this.props.theme == "Saldi" ? this.state.checked ?
-            'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
+            'Anzeige Werte in Bereich: ab ' + wanderungsRate ? min/1000 : min + ' bis ' :
             'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
             </div>
             <div className="p-col-2 noprint">
               {this.props.theme == "Saldi" ?
              <InputText
-              value={rangeValue1 }
+              value={wanderungsRate ? rangeValue1/1000 : rangeValue1 }
               style={{ width: '6em' }}
               type='number'
               onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
              />
             : <InputText
-              value={this.state.checkedNoFilter ? min: threshold}
+              value={this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min : wanderungsRate ? threshold/1000 :threshold}
               style={{ width: '10em' }}
               type='number'
               onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
@@ -923,7 +929,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             </div>
              <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
               <InputText
-                value={rangeValue2}
+                value={wanderungsRate ? rangeValue2/1000 : rangeValue2}
                 style={{ width: '6em' }}
                 type='number'
                 onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
@@ -931,7 +937,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              <div className="p-col-2 p-offset-1"></div>}
              </div>
              <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
-            'bis ' + max : ' '} </div>
+            'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
         <div className="p-col-12 p-md-12 p-lg-6">
                <Legend showCenter='' yearsSelected={this.props.yearsSelected} />
             </div>

@@ -65,14 +65,15 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     public componentDidMount() {
       this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
       const [min, max] = this.getMinMax2();
+      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
 
-      let data1 :ID3ChordItem[] = R.filter((item) => item.Wert <= this.state.rangeValues[0] &&item.Wert >= min, this.props.data);
-      let data2 :ID3ChordItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] &&item.Wert <= max, this.props.data);
+      let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
+      let data2 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.rangeValues[1] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= max, this.props.data);
       let dataFilterSmall: ID3ChordItem[] = R.concat(data1, data2);
-      let dataFilterLarge :ID3ChordItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1], this.props.data);
+      let dataFilterLarge :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= this.state.rangeValues[1], this.props.data);
       let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
 
-      let normalizedData:ID3ChordItem[] = R.filter((item) => item.Wert >= this.state.threshold, this.props.data);
+      let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.threshold, this.props.data);
 
       let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
 
@@ -89,13 +90,14 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         const [min, max] = this.getMinMax2();
         let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
         let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
+        let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
 
-        let data1 :ID3ChordItem[] = R.filter((item) => item.Wert <= rangeValues[0] &&item.Wert >= min, this.props.data);
-        let data2 :ID3ChordItem[] = R.filter((item) => item.Wert >= rangeValues[1] &&item.Wert <= max, this.props.data);
+        let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
+        let data2 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= rangeValues[1] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= max, this.props.data);
         let dataFilterSmall: ID3ChordItem[] = R.concat(data1, data2);
-        let dataFilterLarge :ID3ChordItem[] = R.filter((item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1], this.props.data);
+        let dataFilterLarge :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= rangeValues[1], this.props.data);
         let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
-        let normalizedData:ID3ChordItem[] = R.filter((item) => item.Wert >= threshold, this.props.data);
+        let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= threshold, this.props.data);
         let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
 
       this.removePreviousChart(this.svgID);
@@ -148,7 +150,6 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
       const classification = Classification.getCurrentClassification();
       // let hexcolor = classification.getColor(data[1]);
-      // console.log("classification: " + JSON.stringify(classification));
 
       let classColors = (data: ID3ChordItem[]) => {
         let colors = new Array(data.length);
@@ -159,7 +160,6 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         }  return colors
       }
       let hexcolor:string[]  = classColors(data);
-      // console.log("classification colors: " + hexcolor);
 
       let hexcolorAdd: string[] =  classColors(data);
         hexcolorAdd.push("#f7f7f7");
@@ -940,35 +940,35 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     }
 
 
-    private getMinMax(): [number, number]
-    {
-      let max = Number.MIN_VALUE;
-      let second_max = Number.MIN_VALUE;
-      let min = Number.MAX_VALUE;
-      if (this.props.data)
-      {
-        for (let item of this.props.data)
-        {
-          if (item["Wert"] < min)
-          {
-            min = item["Wert"];
-          }
-          if (item["Wert"] > max)
-          {
-            if (max > second_max)
-            {
-              second_max = max;
-            }
-            max = item["Wert"];
-          }
-          else if (item["Wert"] > second_max)
-          {
-            second_max = item["Wert"];
-          }
-        }
-      }
-      return [min, second_max + 1];
-      }
+    // private getMinMax(): [number, number]
+    // {
+    //   let max = Number.MIN_VALUE;
+    //   let second_max = Number.MIN_VALUE;
+    //   let min = Number.MAX_VALUE;
+    //   if (this.props.data)
+    //   {
+    //     for (let item of this.props.data)
+    //     {
+    //       if (item["Wert"] < min)
+    //       {
+    //         min = item["Wert"];
+    //       }
+    //       if (item["Wert"] > max)
+    //       {
+    //         if (max > second_max)
+    //         {
+    //           second_max = max;
+    //         }
+    //         max = item["Wert"];
+    //       }
+    //       else if (item["Wert"] > second_max)
+    //       {
+    //         second_max = item["Wert"];
+    //       }
+    //     }
+    //   }
+    //   return [min, second_max + 1];
+    //   }
 
     private getMinMax2(): [number, number]
     {
@@ -997,12 +997,18 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           }
         }
       }
+      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      min = wanderungsRate ? min * 1000 : min;
+      max = wanderungsRate ? max * 1000 : max;
       return [min, max + 1];
     }
 
     private getInitialValuesSliderSaldi(): [number, number]
     {
       let [min, max] = this.getMinMax2();
+      // let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      // min = wanderungsRate ?  Math.round((min + Number.EPSILON) * 1000) : min;// / 1000;
+      // max = wanderungsRate ? Math.round((max + Number.EPSILON) * 1000) : max; // / 1000;
       let rangeValues: [number, number] = this.state.rangeValues;
       if (this.state.rangeValues[0] == 0) rangeValues[0] = min;
       if (this.state.rangeValues[1] == 0) rangeValues[1] = max;
@@ -1018,14 +1024,15 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     public render() {
         const { width, height } = this.props;
         let [min, max] = this.getMinMax2();
-        min = Math.round((min + Number.EPSILON) * 1000) / 1000;
-        max = Math.round((max + Number.EPSILON) * 1000) / 1000;
+        // min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+        // max = Math.round((max + Number.EPSILON) * 1000) / 1000;
 
         let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
         let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
                 // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
-                let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
-                let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
+        let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
+        let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
+        let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
 
         return (
         <div className="p-grid">
@@ -1050,7 +1057,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             <label className="p-checkbox-label">Kein Filter</label>
           </div>
 
-          <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{min}</div>
+          <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
             <div className="p-col-10 noprint">
             <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
 
@@ -1062,24 +1069,24 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                 }
           </div>
           </div>
-            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{max}</div>
+            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
               {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
               <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?  this.state.checked === true?
-          'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
+          'Anzeige Werte in Bereich: ab ' + wanderungsRate ? min/1000 : min + ' bis ' :
           'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
             </div>
             <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?
-             <InputText value={rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
-             : <InputText value={ this.state.checkedNoFilter ? min: threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
+             <InputText value={wanderungsRate ? rangeValue1/1000 : rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
+             : <InputText value={ this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min: wanderungsRate ? threshold/1000 : threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
             }
              </div>
              <div className="p-col-2 noprint">{this.props.theme == "Saldi" ? this.state.checked === true?
             'und ab ' : 'bis ' : ' '} </div>
             <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
-             <InputText  value={rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
+             <InputText  value={wanderungsRate ? rangeValue2/1000 : rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
              </div>
              <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
-            'bis ' + max : ' '} </div>
+            'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
             <div className="p-col-12 p-md-12 p-lg-6">
                <Legend showCenter='' yearsSelected={this.props.yearsSelected} />
             </div>

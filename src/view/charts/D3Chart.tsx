@@ -26,6 +26,7 @@ export interface ID3ChartProps {
 	vizID: number;
 	baseViewId: number;
 	yearsSelected: string[];
+	dataProcessing:string;
 }
 interface ID3ChartState {
 	threshold: number;
@@ -36,7 +37,6 @@ interface ID3ChartState {
 	checked: boolean;
 	checkedNoFilter: boolean;
 	checkedNaN: boolean;
-
 
 }
 
@@ -63,16 +63,17 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
 
 		const [min, max] = this.getMinMax2();
-		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) =>  item.Wert <= this.state.rangeValues[0] && item.Wert >= min , this.props.data) : R.filter((item) => Number.isNaN(item.Wert) || item.Wert <= this.state.rangeValues[0] && item.Wert >= min , this.props.data);
-		let data2: ID3ChartItem[] = R.filter((item) => item.Wert >= this.state.rangeValues[1] && item.Wert <= max, this.props.data);
+		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+
+		// let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
+
+		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert/1000 : item.Wert)) || (wanderungsRate? item.Wert/1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data);
+		let data2: ID3ChartItem[] = R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[1] && (wanderungsRate? item.Wert*1000 : item.Wert) <= max, this.props.data);
 
 		let dataFilterSmall: ID3ChartItem[] = R.concat(data1, data2);
-		let dataFilterLarge: ID3ChartItem[] = this.state.checkedNaN ? R.filter(
-			(item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1],this.props.data) :
-			R.filter((item) => item.Wert >= this.state.rangeValues[0] && item.Wert <= this.state.rangeValues[1]
-				|| Number.isNaN(item.Wert), this.props.data);
+		let dataFilterLarge: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1],this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1] || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
 		let dataSaldi = this.state.checked === false ? dataFilterLarge : dataFilterSmall;
-		let normalizedData: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => item.Wert >= this.state.threshold , this.props.data) : R.filter((item) => item.Wert >= this.state.threshold || Number.isNaN(item.Wert), this.props.data);
+		let normalizedData: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.threshold , this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.threshold || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
 		let data = this.props.theme == 'Saldi' ? dataSaldi : normalizedData;
 		if (data) {
 			this.drawBarChartH(data, this.props.theme);
@@ -95,19 +96,16 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 	public componentDidUpdate() {
 		const [min, max] = this.getMinMax2();
+		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
 		let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
+
 		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
-		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => item.Wert <= rangeValues[0] && item.Wert >= min, this.props.data) : R.filter((item) => Number.isNaN(item.Wert)  || item.Wert <= rangeValues[0] && item.Wert >= min, this.props.data);
-		let data2: ID3ChartItem[] = R.filter((item) => item.Wert >= rangeValues[1] && item.Wert <= max, this.props.data);
+		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert))  || (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data);
+		let data2: ID3ChartItem[] = R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= rangeValues[1] && (wanderungsRate? item.Wert*1000 : item.Wert) <= max, this.props.data);
 		let dataFilterSmall: ID3ChartItem[] =  R.concat(data1, data2);
-		let dataFilterLarge: ID3ChartItem[] = this.state.checkedNaN ? R.filter(
-			(item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1] ,
-			this.props.data
-		) : R.filter((item) => item.Wert >= rangeValues[0] && item.Wert <= rangeValues[1] || Number.isNaN(item.Wert),
-			this.props.data
-		);
+		let dataFilterLarge: ID3ChartItem[] = this.state.checkedNaN ? R.filter( (item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[1] , this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[1] || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
 		let dataSaldi = this.state.checked === false ? dataFilterLarge : dataFilterSmall;
-		let normalizedData: ID3ChartItem[] = this.state.checkedNaN ?  R.filter((item) => item.Wert >= threshold , this.props.data)  : R.filter((item) => item.Wert >= threshold || Number.isNaN(item.Wert) , this.props.data);
+		let normalizedData: ID3ChartItem[] = this.state.checkedNaN ?  R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= threshold , this.props.data)  : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= threshold || Number.isNaN( item.Wert) , this.props.data);
 		let data = this.props.theme == 'Saldi' ? dataSaldi : normalizedData;
 
 		this.removePreviousChart(this.svgID);
@@ -133,7 +131,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 	// DRAW D3 CHART
 	private drawBarChartH(data: ID3ChartItem[], theme: string) {
-		console.log("data BAR CHART: " + JSON.stringify(data));
+		// console.log("data BAR CHART: " + JSON.stringify(data));
 
 
 		const svgBarChart = select(this.svgRef!);
@@ -752,13 +750,16 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				}
 			}
 		}
+		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+     	min = wanderungsRate ? min * 1000 : min;
+      	max = wanderungsRate ? max * 1000 : max;
 		return [min, max + 1];
 	}
 
 	private calculateCurrentThreshold(): number {
 		let [min, max] = this.getMinMax2();
-		min = Math.round((min + Number.EPSILON) * 1000) / 1000;
-		max = Math.round((max + Number.EPSILON) * 1000) / 1000;
+		// min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+		// max = Math.round((max + Number.EPSILON) * 1000) / 1000;
 		let threshold: number = this.state.threshold;
 		if (this.state.threshold == 0) threshold = min;
 		if (this.state.threshold < min) threshold = min;
@@ -787,6 +788,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		// let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
 		let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
 		let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
+		let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
 
 		return (
 			<div className="p-grid">
@@ -818,7 +820,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 			 </div>
 
 				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
-					{min}
+					{wanderungsRate ? min/1000 : min}
 				</div>
 				<div className="p-col-10 noprint">
 					<div className={`banner ${this.props.theme == 'Saldi' ? this.state.checked === true ? 'slider-reversed' : "slider-saldi" : ''}`}>
@@ -844,25 +846,25 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					</div>
 				</div>
 				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
-					{max}
+					{wanderungsRate ? max/1000 : max}
 				</div>
 				{/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
 				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ? this.state.checked ?
-					'Anzeige Werte in Bereich: ab ' + min + ' bis ' :
+					'Anzeige Werte in Bereich: ab ' + wanderungsRate ?  min/1000 : min + ' bis ' :
 					'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
 					</div>
 				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ?
 						<InputText
-							value={rangeValue1}
+							value={wanderungsRate ? rangeValue1/1000 : rangeValue1}
 							style={{ width: '6em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
 						/>
 					 :
 						<InputText
-							value={this.state.checkedNoFilter ? min: threshold}
+							value={this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min: wanderungsRate ? threshold/1000 : threshold}
 							style={{ width: '10em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
@@ -875,7 +877,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ?
 						<InputText
-							value={rangeValue2}
+							value={wanderungsRate ? rangeValue2/1000 : rangeValue2}
 							style={{ width: '6em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
@@ -885,7 +887,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 				</div>
 				<div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
-						'bis ' + max : ' '} </div>
+						'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
 				<div className="p-col-12">
 					<Legend showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>

@@ -206,7 +206,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectD3BarView() {
 		return (
 			<div className="p-col-12">
-				<D3ChartView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
+				<D3ChartView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
 			</div>
 		);
 	}
@@ -215,7 +215,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="p-col-12">
 				<div className="sankey1">
-					<D3SankeyView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
+					<D3SankeyView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
 				</div>
 			</div>
 		);
