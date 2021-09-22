@@ -96,7 +96,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 						<tr>
 							<th align="right">Median:</th>
-							<td>{median}</td>
+							<td>{this.standardizeOutput(median)}</td>
 						</tr>
 						<tr>
 							<th align="right">Hinzugezogen Maximal:</th>
@@ -116,7 +116,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 						</tr>
 						<tr>
 							<th align="right">Modus:</th>
-							<td>{mode}</td>
+							<td>{this.standardizeOutput(mode)}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -159,7 +159,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 	private standardizeOutput(value: number): string
 	{
 		if (Number.isInteger(value)) return "" + value;
-		return value.toFixed(3);
+		return value.toFixed(3).replace("\.", ",");
 	}
 
 	private calculateMean(count: number): number
@@ -187,7 +187,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 				}
 			}
 		}
-		return Math.abs(maxwert).toString() +  ort;
+		return this.standardizeOutput(Math.abs(maxwert)) +  ort;
 	}
 
 	private calculateMinimum(count: number): string
@@ -203,7 +203,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 				ort = " nach " + item.Von;
 			}
 		}
-		return Math.abs(minwert).toString() + ort;
+		return this.standardizeOutput(Math.abs(minwert)) + ort;
 	}
 
 	private calculateMedian(count: number): number

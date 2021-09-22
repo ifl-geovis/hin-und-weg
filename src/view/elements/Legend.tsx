@@ -102,7 +102,7 @@ export default class Legend extends React.Component<ILegendProps> {
 		let offset = label.length * this.label_char_width * 0.5;
 		return (
 			<text key={'label-' + label + '-' + index} x={x - offset} y={y} style={{ font: '11px Open Sans' }}>
-				{label}
+				{this.standardizeOutput(label)}
 			</text>
 		);
 	}
@@ -203,4 +203,10 @@ export default class Legend extends React.Component<ILegendProps> {
 			</svg>
 		);
 	}
+
+	private standardizeOutput(label: string): string
+	{
+		return label.replace("\.", ",");
+	}
+
 }
