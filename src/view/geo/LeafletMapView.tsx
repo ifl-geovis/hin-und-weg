@@ -272,17 +272,18 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 	}
 
 	public setFeatureBorder(geodata: any) {
-		let polygon;
+		let feature;
 		for (let i = 0; i < geodata.features.length; i++) {
 			if (
 				this.props.nameField &&
 				geodata.features[i].properties &&
 				geodata.features[i].properties[this.props.nameField] == this.props.selectedLocation
 			) {
-				polygon = turf.flip(geodata.features[i]);
+				feature = geodata.features[i];
 			}
 		}
-		return <Polygon color="purple" weight="3" fill="false" fillOpacity="0" positions={polygon.geometry.coordinates} />;
+		if (!feature) return <div></div>;
+		return <GeoJSON data={feature} onEachFeature={this.onEachFeature} color="purple" weight="3" fill="false" fillOpacity="0" ></GeoJSON>;
 	}
 
 	public calcGeodataBounds(geojson: FeatureCollection) {
