@@ -125,6 +125,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     // DRAW D3 CHART
     private drawChordChart (data: ID3ChordItem[], theme: string, id: string | undefined) {
       const [min, max] = this.getMinMax2();
+      let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
+
 
 
       this.checkedLabel = this.state.checkedLabel;
@@ -478,7 +480,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
             d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
             d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :
-            d.angle > Math.PI ? "-4em" : "4em" : dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
+            d.angle > Math.PI ? "-4em" : "4em" : wanderungsRate ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
                         // .text(function(d, i) { return ((d.startAngle + d.endAngle) / 2) < Math.PI ? " : " + nachVar[i] : nachVar[i] + " : "; });
             .text(function(d, i) { return nachVar[i]; });
             // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
@@ -663,7 +665,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
         d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
         d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :d.angle > Math.PI ? "-4em" : "4em" :
-        dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
+        wanderungsRate ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
                 .text(function(d, i) { return vonVar[i]; });
         // .text(function(d, i) { return nachVar[i]; });
         // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
@@ -894,7 +896,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
         d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :
         d.angle > Math.PI ? "-4em" : "4em" :
-        dataProcessing ==="wanderungsrate" ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
+        wanderungsRate ?  d.angle > Math.PI ? "-4em" : "4em" :  d.angle > Math.PI ? "-4em" : "4em" ; }) // 1.2em
                 .text(function(d, i) { return vonVar[i]; });
         // .text(function(d, i) { return nachVar[i]; });
         // .text(function(d:any, i: number) { return d.angle > Math.PI ? nachVar[i] + '  ' + d.value : d.value + '  ' +  nachVar[i]; });
@@ -997,7 +999,9 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           }
         }
       }
-      let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
+      min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+      max = Math.round((max + Number.EPSILON) * 1000) / 1000;
       min = wanderungsRate ? min * 1000 : min;
       max = wanderungsRate ? max * 1000 : max;
       return [min, max + 1];
@@ -1006,9 +1010,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     private getInitialValuesSliderSaldi(): [number, number]
     {
       let [min, max] = this.getMinMax2();
-      // let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
-      // min = wanderungsRate ?  Math.round((min + Number.EPSILON) * 1000) : min;// / 1000;
-      // max = wanderungsRate ? Math.round((max + Number.EPSILON) * 1000) : max; // / 1000;
+      
       let rangeValues: [number, number] = this.state.rangeValues;
       if (this.state.rangeValues[0] == 0) rangeValues[0] = min;
       if (this.state.rangeValues[1] == 0) rangeValues[1] = max;
@@ -1024,15 +1026,14 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     public render() {
         const { width, height } = this.props;
         let [min, max] = this.getMinMax2();
-        // min = Math.round((min + Number.EPSILON) * 1000) / 1000;
-        // max = Math.round((max + Number.EPSILON) * 1000) / 1000;
+       
 
         let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
         let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
                 // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
         let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
         let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
-        let wanderungsRate: boolean = this.props.dataProcessing === "wanderungsrate";
+      let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
         return (
         <div className="p-grid">
