@@ -508,10 +508,8 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 	public pointToLayerArrowValues(feature1: Feature, latlng: LatLngExpression) {
 		let label = '';
 		let name = 'Fehler!!!';
-
 		if (feature1.properties) name = String(feature1.properties.Name);
 		if (feature1.properties && this.props.nameField) name = String(feature1.properties[this.props.nameField]);
-
 			if (this.props.items && this.props.items.length > 0) {
 				switch (this.props.theme) {
 					case 'Von': {
@@ -520,7 +518,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 								label = item.Nach + "¦" + String(item.Wert);
 							}
 						}
-
 						break;
 					}
 					case 'Nach': {
@@ -538,13 +535,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 							}
 						}
 					}
-
 					default: {
 						break;
 					}
 				}
 			}
-
 			if (name === this.props.selectedLocation) {
 				return new L.CircleMarker(latlng, {
 					radius: 1,
@@ -560,7 +555,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					})
 					.openTooltip();
 			}
-
 			return new L.CircleMarker(latlng, {
 				radius: 1,
 				fill: false,
@@ -573,24 +567,26 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					direction: 'center',
 				})
 				.openTooltip();
-
 	}
 
+	private standardizeOutput(value: number): string
+	{
+		if (Number.isInteger(value)) return "" + value;
+		return value.toFixed(3).replace("\.", ",");
+	}
 
 	public pointToLayerValues(feature1: Feature, latlng: LatLngExpression) {
 		let label = '';
 		let name = 'Fehler!!!';
-
 		if (feature1.properties) name = String(feature1.properties.Name);
 		if (feature1.properties && this.props.nameField) name = String(feature1.properties[this.props.nameField]);
-
 		if (this.props.showCenter === '3') {
 			if (this.props.items && this.props.items.length > 0) {
 				switch (this.props.theme) {
 					case 'Von': {
 						for (let item of this.props.items) {
 							if (item.Nach === name) {
-								label = String(item.Wert);
+								label = this.standardizeOutput(item.Wert);
 							}
 						}
 
@@ -599,7 +595,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					case 'Nach': {
 						for (let item of this.props.items) {
 							if (item.Von === name) {
-								label = String(item.Wert);
+								label = this.standardizeOutput(item.Wert);
 							}
 						}
 						break;
@@ -607,7 +603,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					case 'Saldi': {
 						for (let item of this.props.items) {
 							if (item.Von === name) {
-								label = String(item.Wert);
+								label = this.standardizeOutput(item.Wert);
 							}
 						}
 					}
@@ -617,7 +613,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					}
 				}
 			}
-
 			if (name === this.props.selectedLocation) {
 				return new L.CircleMarker(latlng, {
 					radius: 1,
@@ -632,7 +627,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					})
 					.openTooltip();
 			}
-
 			return new L.CircleMarker(latlng, {
 				radius: 1,
 				fill: false,
@@ -659,8 +653,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField) {
 							if (item.Wert > 0 && item.Wert > this.props.threshold && item.Von != item.Nach) {
-
-
 								// @ts-ignore
 								let swoopyarrow = new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 									color: this.classification.getNegativeArrowColor(),
@@ -669,15 +661,12 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 									hideArrowHead: true,
 									label: item.Wert,
 								}).openTooltip();
-
 								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// @ts-ignore
 								lat: latlng.lat, lng: latlng.lng});
-
 								return swoopyarrow;
 							} else if (item.Wert < 0 && Math.abs(item.Wert) > this.props.threshold && item.Von != item.Nach) {
-
 								// @ts-ignore
 								let  swoopyarrow = new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 									color: this.classification.getPositiveArrowColor(),
@@ -685,12 +674,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 									weight: this.classification.getArrowWidth(item.Wert),
 									arrowId: '#arrowHead',
 								}).openTooltip();
-
 								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getPositiveArrowColor(),
 									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor(),
 									// @ts-ignore
 									lat: latlng.lat, lng: latlng.lng});
-
 									return swoopyarrow;
 							}
 						}
@@ -702,7 +689,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
 							console.log("lat:" ,this.centerpoint.Center1.lat);
 							console.log("lng:" ,this.centerpoint.Center1.lng);
-
 							// @ts-ignore
 							let  swoopyarrow = new L.swoopyArrow(this.centerpoint.Center1, latlng, {
 								color: this.classification.getPositiveArrowColor(),
@@ -711,14 +697,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 								arrowId: '#arrowHead',
 								label: item.Wert,
 							}).openTooltip();
-
-
 							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Nach, value: item.Wert, color: this.classification.getPositiveArrowColor(),
 									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor(),
 							// @ts-ignore
 								lat: latlng.lat, lng: latlng.lng});
-
-
 							return swoopyarrow;
 						}
 					}
@@ -728,7 +710,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 				for (let item of this.props.items) {
 					if (item.Nach == this.props.selectedLocation && item.Von == feature1.properties[this.props.nameField]) {
 						if (feature1.properties && this.props.nameField && item.Wert > this.props.threshold && item.Von != item.Nach) {
-
 							// @ts-ignore
 							let  swoopyarrow = new L.swoopyArrow(latlng, this.centerpoint.Center1, {
 								color: this.classification.getNegativeArrowColor(),
@@ -737,12 +718,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 								hideArrowHead: true,
 								label: item.Wert,
 							}).openTooltip();
-
 							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// @ts-ignore
 								lat: latlng.lat, lng: latlng.lng});
-
 							return swoopyarrow;
 						}
 					}
@@ -773,16 +752,16 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 					let label: string = '';
 					switch (this.props.showCenter) {
 						case '1':
-							label = `${value ? value.Wert : ''}`;
+							label = `${value ? this.standardizeOutput(value.Wert) : ''}`;
 							break;
 						case '2':
-							label = `${name} / ${value ? value.Wert : ''}`;
+							label = `${name} / ${value ? this.standardizeOutput(value.Wert) : ''}`;
 							break;
 						case '3':
 							label = `${name}`;
 							break;
 						case '4':
-							label = `${name} / ${value ? value.Wert : ''}`;
+							label = `${name} / ${value ? this.standardizeOutput(value.Wert) : ''}`;
 							break;
 					}
 					let center = turf.centerOfMass(e.target.feature);
