@@ -3,13 +3,19 @@ import { exportComponentAsJPEG, exportComponentAsPNG } from 'react-component-exp
 import { Panel } from 'primereact/panel';
 
 import ComparisonView from "./dashboards/ComparisonView";
+import AppData from "../data/AppData";
 
 export interface IAppProps
 {
 	db: alaSQLSpace.AlaSQL;
 }
 
-export default class App extends React.Component<IAppProps>
+interface IAppState
+{
+	data: AppData;
+}
+
+export default class App extends React.Component<IAppProps, IAppState>
 {
 
 	private imageref: any;
@@ -17,6 +23,10 @@ export default class App extends React.Component<IAppProps>
 	constructor(props: IAppProps)
 	{
 		super(props);
+		this.state =
+		{
+			data: new AppData(props.db),
+		};
 		this.imageref = React.createRef();
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
@@ -33,7 +43,7 @@ export default class App extends React.Component<IAppProps>
 		return (
 			<React.Fragment>
 				<Panel className="app" ref={this.imageref}>
-					<ComparisonView db={this.props.db}/>
+					<ComparisonView data={this.state.data}/>
 				</Panel>
 			</React.Fragment>
 		);

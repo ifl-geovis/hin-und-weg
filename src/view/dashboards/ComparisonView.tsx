@@ -6,6 +6,7 @@ import BaseView from "./BaseView";
 
 import Config from "../../config";
 import Log from "../../log";
+import AppData from "../../data/AppData";
 
 export interface TableItem
 {
@@ -17,7 +18,7 @@ export interface TableItem
 
 export interface IComparisonProps
 {
-	db: alaSQLSpace.AlaSQL;
+	data: AppData;
 }
 
 interface IComparisonState
@@ -71,7 +72,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	private getBaseView(view: string, space: string, id: number): JSX.Element
 	{
 		return (
-			<BaseView baseViewId={id} view={view} space={space} db={this.props.db} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable} shapefilename={this.state.shapefilename}
+			<BaseView baseViewId={id} view={view} space={space} db={this.props.data.getDB()} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable} shapefilename={this.state.shapefilename}
 				setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
 				setShapefileName={(newName) => { this.setState({ shapefilename: newName }); }}
 				setGeoName={(newGeoName) => { this.setState({ geoName: newGeoName }); }}
