@@ -13,7 +13,10 @@ import { IOfflineMaps } from '../../data/OfflineMaps';
 // @ts-ignore
 import 'leaflet-swoopy';
 
+import BaseData from '../../data/BaseData';
+
 export interface ILeafletMapViewProps {
+	basedata: BaseData;
 	items?: Array<{ [name: string]: any }> | null;
 	geodata: Geodata | null;
 	nameField?: string | null;
@@ -57,7 +60,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 		this.pointToLayerValues = this.pointToLayerValues.bind(this);
 		this.pointToLayerArrowValues = this.pointToLayerArrowValues.bind(this);
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
-		this.classification = Classification.getCurrentClassification();
+		this.classification = this.props.basedata.getClassification();
 		this.extentMap = this.extentMap.bind(this);
 		this.addArrowsEvents = this.addArrowsEvents.bind(this);
 		this.mapRef = createRef();
@@ -66,7 +69,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 
 	public render(): JSX.Element {
 		// console.log('RENDER LEAFLETMAPVIEW');
-		this.classification = Classification.getCurrentClassification();
+		this.classification = this.props.basedata.getClassification();
 
 		// Swoopy Arrows are always added when arrows1 or arrows2 are called.
 		// They have to be cleared manually by following function.
@@ -383,7 +386,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 		let hexBodercolor;
 		let borderWidth: number = 1;
 
-		// const classification = Classification.getCurrentClassification();
+		// const classification = this.props.basedata.getClassification();
 		let name = 'Fehler!!!';
 		if (feature.properties) name = String(feature.properties.Name);
 		if (feature.properties && this.props.nameField) name = String(feature.properties[this.props.nameField]);

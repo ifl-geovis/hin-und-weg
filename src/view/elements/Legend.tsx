@@ -1,10 +1,13 @@
 import { Polyline } from 'leaflet';
 import React from 'react';
 
+import BaseData from '../../data/BaseData';
+
 import Log from '../../log';
 import Classification from '../../data/Classification';
 
 export interface ILegendProps {
+	basedata: BaseData;
 	showCenter: string;
 	yearsSelected: string[];
 }
@@ -25,7 +28,7 @@ export default class Legend extends React.Component<ILegendProps> {
 	}
 
 	private createLegend(): JSX.Element {
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		let i = 0;
 		const negative_scales = classification.getNegativeScales();
 		const negative_colors = classification.getNegativeColors();
@@ -143,7 +146,7 @@ export default class Legend extends React.Component<ILegendProps> {
 
 	private createPositiveScale(scales: number[] | null, colors: string[], arrows: boolean): object {
 		if (scales == null) return <svg key="legend-positive" width={0} height={0}></svg>;
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		Log.debug("positive scales: ", scales);
 		let boxes = [];
 		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i * this.box_width + this.label_offset, 0, 'positive-' + i));
@@ -174,7 +177,7 @@ export default class Legend extends React.Component<ILegendProps> {
 
 	private createNegativeScale(scales: number[] | null, colors: string[], arrows: boolean): object {
 		if (scales == null) return <svg key="legend-negative" width={0} height={0}></svg>;
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		Log.debug("negative scales: ", scales);
 		let boxes = [];
 		for (let i = 0; i < colors.length; i++)

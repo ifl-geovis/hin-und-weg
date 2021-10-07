@@ -3,6 +3,8 @@ import React from 'react';
 import Config from '../../config';
 import Log from '../../log';
 
+import BaseData from '../../data/BaseData';
+
 import Geodata from '../../model/Geodata';
 import { ITimelineD3Item } from '../charts/D3Timeline';
 
@@ -41,6 +43,7 @@ export interface StatisticPerYearAusgabe {
 }
 
 export interface IViewSwitcherProps {
+	basedata: BaseData;
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
 	items: TableItem[];
@@ -181,6 +184,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="p-col-12">
 				<GeodataView
+					basedata={this.props.basedata}
 					geodata={this.props.geodata}
 					items={this.props.items}
 					locations={this.props.locations}
@@ -206,7 +210,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	private selectD3BarView() {
 		return (
 			<div className="p-col-12">
-				<D3ChartView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
+				<D3ChartView basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
 			</div>
 		);
 	}
@@ -215,7 +219,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		return (
 			<div className="p-col-12">
 				<div className="sankey1">
-					<D3SankeyView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
+					<D3SankeyView basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
 				</div>
 			</div>
 		);
@@ -225,7 +229,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		if (this.props.yearsAvailable.length > 0) {
 			return (
 				<div className="p-col-12">
-					<D3ChordView dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
+					<D3ChordView basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
 				</div>
 			);
 		}

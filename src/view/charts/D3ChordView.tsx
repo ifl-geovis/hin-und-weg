@@ -4,9 +4,11 @@ import { D3Chord, ID3ChordItem} from "./D3Chord";
 import ContainerDimensions from 'react-container-dimensions';
 import { RadioButton } from "primereact/radiobutton";
 
+import BaseData from '../../data/BaseData';
 
 export interface ID3ChordViewProps
 {
+	basedata: BaseData;
 	items: ID3ChordItem[];
 	theme: string;
 	vizID: number;
@@ -45,7 +47,7 @@ export default class D3chordChartsView extends React.Component<ID3ChordViewProps
 				<div id="chartDivChord" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-						<D3Chord  dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
+						<D3Chord basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 						yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}

@@ -3,6 +3,8 @@ import { Slider } from 'primereact/slider';
 import { Checkbox } from 'primereact/checkbox';
 import Classification from '../../data/Classification';
 
+import BaseData from '../../data/BaseData';
+
 
 
 import * as d3 from 'd3';
@@ -19,6 +21,7 @@ export interface ID3ChartItem {
 }
 
 export interface ID3ChartProps {
+	basedata: BaseData;
 	data: ID3ChartItem[];
 	theme: string;
 	width: number;
@@ -155,7 +158,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		const neutralcolor = '#f7f7f7';
 		const bordercolor = '#525252';
 
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 
 		let classColors = (data: ID3ChartItem[]) => {
 			let colors = new Array(data.length);
@@ -889,7 +892,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				<div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
 						'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
 				<div className="p-col-12">
-					<Legend showCenter="" yearsSelected={this.props.yearsSelected} />
+					<Legend basedata={this.props.basedata} showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>
 				<div className="p-col-12">
 					<svg id={this.svgID} width={width} height={height} ref={(ref) => (this.svgRef = ref)} />

@@ -11,7 +11,10 @@ import Classification from '../../data/Classification';
 import OfflineMaps, { IOfflineMaps } from '../../data/OfflineMaps';
 import Settings from '../../settings';
 
+import BaseData from '../../data/BaseData';
+
 export interface IGeodataProps {
+	basedata: BaseData;
 	items?: Array<{ [name: string]: any }> | null;
 	geodata: Geodata | null;
 	geoName: string | null;
@@ -55,7 +58,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
 	public render(): JSX.Element {
 		// console.log('GeodataView render');
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		let fractions: boolean = (this.props.dataProcessing === 'absolute') ? false : true;
 		return (
 			<div className="p-grid p-component">
@@ -168,11 +171,12 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</Accordion>
 				{Settings.getValue('map', 'legendPlacement') === 'top' && (
 					<div className="p-col-12">
-						<Legend showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
+						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
 					</div>
 				)}
 				<div className="p-col-12">
 					<LeafletMapView
+						basedata={this.props.basedata}
 						geodata={this.props.geodata}
 						nameField={this.props.geoName}
 						items={this.props.items}
@@ -188,7 +192,7 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'bottom' && (
 					<div className="p-col-12">
-						<Legend showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
+						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
 					</div>
 				)}
 			</div>
