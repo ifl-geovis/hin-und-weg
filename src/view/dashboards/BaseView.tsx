@@ -5,8 +5,6 @@ import { TabView,TabPanel } from 'primereact/tabview';
 import Geodata from '../../model/Geodata';
 import { GeoJsonProperties } from 'geojson';
 
-import AppData from '../../data/AppData';
-import BaseData from '../../data/BaseData';
 import Classification from '../../data/Classification';
 import MessageList from '../../data/MessageList';
 
@@ -21,7 +19,6 @@ import Config from '../../config';
 import Log from '../../log';
 
 export interface IBaseProps {
-	appdata: AppData;
 	db: alaSQLSpace.AlaSQL;
 	view: string;
 	space: string;
@@ -41,7 +38,6 @@ export interface IBaseProps {
 }
 
 interface IBaseState {
-	basedata: BaseData;
 	years: string[];
 	location: string | null;
 	theme: string;
@@ -63,7 +59,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	constructor(props: IBaseProps) {
 		super(props);
 		this.state = {
-			basedata: new BaseData(props.appdata),
 			years: [],
 			location: null,
 			theme: 'Von',
@@ -92,7 +87,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		const results = this.query();
 		const timeline = this.queryTimeline();
 		const statisticPerYearAusgabe = this.queryStatistics();
-		const classification = this.state.basedata.getClassification();
+		const classification = Classification.getCurrentClassification();
 		classification.setLocation(this.state.location);
 		classification.setTheme(this.state.theme);
 		classification.setQuery(results);
@@ -169,7 +164,6 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-10' : 'p-col-8'}>
 					<DashboardView
-						basedata={this.state.basedata}
 						dataProcessing={this.state.dataProcessing}
 						baseViewId={this.props.baseViewId}
 						view={this.props.view}
@@ -248,27 +242,16 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		} else if (this.state.theme === 'Nach') {
 			query = this.constructQuery('Nach');
 		} else if (this.state.theme === 'Saldi') {
-			const years = this.state.years;
-			const stringYears = R.join(
-				', ',
-				R.map((year) => `'${year}'`, years)
-			);
-			const migrationsInsideClause = (this.state.migrationsInside) ? `` : ` AND Von <> Nach `;
-			const vonQuery = `SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-			const nachQuery = `SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			const vonQuery = this.constructQuery('Von');
+			const nachQuery = this.constructQuery('Nach');
 			const vonResults = this.props.db(vonQuery);
 			const nachResults = this.props.db(nachQuery);
-			const popquery = `SELECT MYSUM(Wert) as population FROM population WHERE Area = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Area`;
-			const popResults = this.props.db(popquery);
 			for (let i = 0; i < nachResults.length; i++) {
 				let value = nachResults[i].Wert - vonResults[i].Wert;
 				if (isNaN(value))
 				{
 					if (isNaN(nachResults[i].Wert)) value = 0 - vonResults[i].Wert;
 					if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
-				}
-				if ((this.state.dataProcessing === 'wanderungsrate') || (this.state.dataProcessing === 'ratevon') || (this.state.dataProcessing === 'ratenach')) {
-					value = value * 1000 / popResults[0].population;
 				}
 				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: this.standardizeValues(value) };
 				results = R.append(saldiItem, results);
@@ -503,7 +486,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private setClassCount(positive: boolean, count: string)
 	{
-		let optimal = this.state.basedata.getClassification().calculateSturgesRule(positive);
+		let optimal = Classification.getCurrentClassification().calculateSturgesRule(positive);
 		let result = count.substring(0, 1);
 		if ((this.props.geodata != null) && (this.state.years.length > 0) && (optimal != parseInt(result, 10)) && (!this.state.classcountset)) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen ist ' + optimal + '. Zu viele Klassen können eventuell zu gleichen Werten oder NaN bei Klassengrenzen führen.', 'warning');
 		this.setState({ classcountset: true });
@@ -545,7 +528,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		if (!this.state.updateclasscount) return;
 		this.setState({ updateclasscount: false });
 		if (this.state.classcountset) return;
-		const classification = this.state.basedata.getClassification();
+		const classification = Classification.getCurrentClassification();
 		let positiveClassCount = '' + classification.calculateSturgesRule(true);
 		Log.trace('positiveClassCount:', positiveClassCount);
 		this.setState({ positiveClasses: positiveClassCount });

@@ -3,8 +3,6 @@ import {Slider as Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
 import { InputText } from 'primereact/inputtext';
 
-import BaseData from '../../data/BaseData';
-
 
 import * as d3 from 'd3';
 import * as d3Sankey from 'd3-sankey';
@@ -22,7 +20,6 @@ export interface ID3SankeyItem
 }
 
 export interface ID3SankeyProps {
-   basedata: BaseData;
    data: ID3SankeyItem[];
     theme: string;
     jahr?: string;
@@ -169,7 +166,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           const neutralcolor = "#f7f7f7"
           const bordercolor = "#525252"
 
-          const classification = this.props.basedata.getClassification();
+          const classification = Classification.getCurrentClassification();
 
           let classColors = (data: ID3SankeyItem[]) => {
               let colors = new Array(data.length);
@@ -952,7 +949,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
             'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
         <div className="p-col-12 p-md-12 p-lg-6">
-               <Legend basedata={this.props.basedata} showCenter='' yearsSelected={this.props.yearsSelected} />
+               <Legend showCenter='' yearsSelected={this.props.yearsSelected} />
             </div>
         <div className="p-col-12 p-md-12 p-lg-6 noprint">
           <Checkbox

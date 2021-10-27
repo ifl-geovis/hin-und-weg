@@ -4,11 +4,8 @@ import { D3Sankey, ID3SankeyItem} from "./D3Sankey";
 import ContainerDimensions from 'react-container-dimensions';
 import { RadioButton } from "primereact/radiobutton";
 
-import BaseData from '../../data/BaseData';
-
 export interface ID3SankeyViewProps
 {
-	basedata: BaseData;
 	items: ID3SankeyItem[];
 	theme: string;
 	vizID: number;
@@ -51,7 +48,7 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 				<div id="chartDiv" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-									<D3Sankey basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
+									<D3Sankey baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 									 yearsSelected={this.props.yearsSelected }
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={(this.props.items.length <= 15)? 700 : 1100}
