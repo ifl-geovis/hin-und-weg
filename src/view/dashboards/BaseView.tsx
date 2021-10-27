@@ -242,16 +242,27 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		} else if (this.state.theme === 'Nach') {
 			query = this.constructQuery('Nach');
 		} else if (this.state.theme === 'Saldi') {
-			const vonQuery = this.constructQuery('Von');
-			const nachQuery = this.constructQuery('Nach');
+			const years = this.state.years;
+			const stringYears = R.join(
+				', ',
+				R.map((year) => `'${year}'`, years)
+			);
+			const migrationsInsideClause = (this.state.migrationsInside) ? `` : ` AND Von <> Nach `;
+			const vonQuery = `SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			const nachQuery = `SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 			const vonResults = this.props.db(vonQuery);
 			const nachResults = this.props.db(nachQuery);
+			const popquery = `SELECT MYSUM(Wert) as population FROM population WHERE Area = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Area`;
+			const popResults = this.props.db(popquery);
 			for (let i = 0; i < nachResults.length; i++) {
 				let value = nachResults[i].Wert - vonResults[i].Wert;
 				if (isNaN(value))
 				{
 					if (isNaN(nachResults[i].Wert)) value = 0 - vonResults[i].Wert;
 					if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
+				}
+				if ((this.state.dataProcessing === 'wanderungsrate') || (this.state.dataProcessing === 'ratevon') || (this.state.dataProcessing === 'ratenach')) {
+					value = value * 1000 / popResults[0].population;
 				}
 				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: this.standardizeValues(value) };
 				results = R.append(saldiItem, results);
