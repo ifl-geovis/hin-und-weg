@@ -169,6 +169,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		});
 		const minIndexOrPercentage: any = (minIndex:any) =>  {if (typeof(refLabelIndx) === "number"){return indexValues[refLabelIndx] === 0 ? minIndex : minIndex*100}};
 		const minIndex2: number = minIndexOrPercentage(minIndex);
+		const calculateIfZeroResult: any = (results: number[] ) => { if(results) {return results.includes(0) ? true :false}  };
+		const ifZeroResult :boolean  = calculateIfZeroResult(results);
 
 		const warnText = "Achtung, der gewählte Indexwert ist gleich 0. ";
 		const warnText2 = "Es kann kein prozentualer Bezug hergestellt werden. ";
@@ -364,7 +366,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 			const y = d3
 				.scaleLinear()
-				.domain([maxIndex2 + offsetDomain, minIndex2 - offsetDomain])
+				.domain([maxIndex2 + offsetDomain, ifZeroResult && minIndex2 > 0 ? 0 : minIndex2 - offsetDomain])
 				.range([0, HEIGHT]);
 
 
@@ -467,9 +469,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						.append('circle');
 		
 					circlesGraph		
-						.attr('r', (d,i) => { return  !x(d.label) ? 0 : i === refLabelIndx ? 4 : 3})
-						.attr('cx',( d,i) => {
-							const xCoordinate = x(d.label)
+					.attr('r', (d,i) => {  return  (!x(d.label) && d.result !== 0 )  ? 0 : i === refLabelIndx ? 4 : 3})
+					.attr('cx',( d,i) => {
+						const xCoordinate = x(d.label) || x(d.label + ' (0) ')
 						if (xCoordinate) {
 							return xCoordinate + x.bandwidth()/2
 						}
@@ -605,7 +607,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 			const y = d3
 				.scaleLinear()
-				.domain([maxIndex2 + offsetDomain, minIndex2 - offsetDomain])
+				.domain([maxIndex2 + offsetDomain, ifZeroResult && minIndex2 > 0 ? 0 : minIndex2 - offsetDomain])
 				.range([0, HEIGHT]);
 
 
@@ -704,9 +706,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						.append('circle');
 		
 					circlesGraph
-						.attr('r', (d,i) => { return !x(d.label) ? 0 : i === refLabelIndx ? 4 : 3})
-						.attr('cx',( d,i) => {
-							const xCoordinate = x(d.label)
+					.attr('r', (d,i) => {  return  (!x(d.label) && d.result !== 0 )  ? 0 : i === refLabelIndx ? 4 : 3})
+					.attr('cx',( d,i) => {
+						const xCoordinate = x(d.label) || x(d.label + ' (0) ')
 						if (xCoordinate) {
 							return xCoordinate + x.bandwidth()/2
 		
@@ -843,8 +845,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 			.padding(0.25);
 
 			const y = d3
-				.scaleLinear()
-				.domain([maxIndex2 + offsetDomain, minIndex2 > 0 ? minIndex2 + offsetDomain :minIndex2 - offsetDomain]) //minIndex2 > 0 ? 0 - offsetDomain :minIndex2 - offsetDomain]
+				.scaleLinear()				
+				.domain([maxIndex2 + offsetDomain, ifZeroResult && minIndex2 > 0 ? 0 : minIndex2 - offsetDomain]) // minIndex2 > 0 ? minIndex2 - offsetDomain :minIndex2 + offsetDomain //minIndex2 > 0 ? 0 - offsetDomain :minIndex2 - offsetDomain]
 				.range([0, HEIGHT]);
 
 				// gridlines in x axis function
@@ -942,10 +944,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.append('circle');
 
 				circlesGraph
-				.attr('r', (d,i) => { return !x(d.label) ? 0 :  i === refLabelIndx ? 4 : 3  }) //4:3
+				.attr('r', (d,i) => {  return  (!x(d.label) && d.result !== 0 )  ? 0 : i === refLabelIndx ? 4 : 3})
 				.attr('cx',( d,i) => {
-					const xCoordinate = x(d.label)
-					console.log("d.label: " + d.label + " xCoordinate: " + xCoordinate);
+					const xCoordinate = x(d.label) || x(d.label + ' (0) ')
 				if (xCoordinate) {
 					return xCoordinate + x.bandwidth()/2
 
