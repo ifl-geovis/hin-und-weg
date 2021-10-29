@@ -90,16 +90,23 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 			nextState.threshold !== this.state.threshold ||
 			nextState.rangeValues !== this.state.rangeValues ||
 			nextState.selectedRadio !== this.state.selectedRadio ||
-			nextState.checkedNaN !== this.state.checkedNaN
+			nextState.checkedNaN !== this.state.checkedNaN ||
+			nextProps.dataProcessing !== this.props.dataProcessing 
 		);
 	}
 
-	public componentDidUpdate() {
+	public componentDidUpdate(nextProps: ID3ChartProps, nextState: ID3ChartState){
 		const [min, max] = this.getMinMax2();
 		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 		let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
 
 		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
+		if(nextProps.dataProcessing !== this.props.dataProcessing || nextProps.theme !== this.props.theme){
+            rangeValues = [min, max];
+            this.setState({ rangeValues: [min, max]});
+            threshold = min;
+            this.setState({threshold: min});
+         }
 		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert))  || (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data);
 		let data2: ID3ChartItem[] = R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= rangeValues[1] && (wanderungsRate? item.Wert*1000 : item.Wert) <= max, this.props.data);
 		let dataFilterSmall: ID3ChartItem[] =  R.concat(data1, data2);
@@ -851,7 +858,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				{/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
 				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ? this.state.checked ?
-					'Anzeige Werte in Bereich: ab ' + wanderungsRate ?  min/1000 : min + ' bis ' :
+					'Anzeige Werte in Bereich: ab ' + (wanderungsRate ?  min/1000 : min) + ' bis ' :
 					'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
 					</div>
 				<div className="p-col-2 noprint">

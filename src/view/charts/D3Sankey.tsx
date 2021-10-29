@@ -104,17 +104,24 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
       public shouldComponentUpdate (nextProps: ID3SankeyProps, nextState: ID3SankeyState) {
 
-        return  nextProps.data !== null || nextProps.data !== undefined  || nextProps.data !== this.props.data || nextProps.theme !== this.props.theme || nextState.threshold !==this.state.threshold  || nextState.rangeValues !==this.state.rangeValues || nextState.checkedNoFilter !== this.state.checkedNoFilter || nextState.checked !== this.state.checked || nextProps.width !== this.props.width
+        return  nextProps.data !== null || nextProps.data !== undefined  || nextProps.data !== this.props.data || nextProps.theme !== this.props.theme || nextState.threshold !==this.state.threshold  || nextState.rangeValues !==this.state.rangeValues || nextState.checkedNoFilter !== this.state.checkedNoFilter || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.dataProcessing !== this.props.dataProcessing
         // || nextProps.height !== this.props.height
         }
 
-        public componentDidUpdate(){
+        public componentDidUpdate(nextProps: ID3SankeyProps, nextState: ID3SankeyState){
           const [min, max] = this.getMinMax2();
           let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
     
           let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
           let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
-          let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.Wert*1000 : item.Wert)   >= threshold   , this.props.data);
+          if(nextProps.dataProcessing !== this.props.dataProcessing || nextProps.theme !== this.props.theme){
+            rangeValues = [min, max];
+            this.setState({ rangeValues: [min, max]});
+            threshold = min;
+            this.setState({threshold: min});
+         }
+
+let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.Wert*1000 : item.Wert)   >= threshold   , this.props.data);
           let data1 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  <= rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert)  >= min   , this.props.data);
           let data2 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  >= rangeValues[1] && (wanderungsRate ? item.Wert*1000 : item.Wert)  <= max, this.props.data);
           let dataFilterSmall: ID3SankeyItem[] = R.concat(data1, data2);
@@ -399,8 +406,18 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
              }
 
-            node.append("title")
-              .text(function (d: any) { return d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000 ; });
+            let sumTitle =  node //.filter(function(d:any) { return d.value != 0; })
+             .filter(function (d: any) { return d.x0 < WIDTH / 2; })
+             .append("title")
+            //  .text(Math.round((vonSum + Number.EPSILON) * 1000) / 1000 )
+             .text(function (d: any) { return d.name + "\n" +  Math.round((vonSum + Number.EPSILON) * 1000) / 1000; })
+
+
+
+            let titles = node
+            .filter(function (d: any) { return d.x0 > WIDTH / 2; })
+            .append("title")
+            .text(function (d: any) { return d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000 ; });
 
           }
           else if (theme === "Nach")
@@ -559,7 +576,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
             if (this.state.checkedLabel === true) {
               // let valuesLabel =  node.filter(function(d:any) { return d.value != 0; })
-              let valuesLabel =  node.filter(function (d: any) { return d.x0 > WIDTH / 2; })
+              let sumLabel =  node.filter(function (d: any) { return d.x0 > WIDTH / 2; })
            .append("text")
            .attr("x", function (d: any) { return   d.x0 - 6; }) // + 30
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
@@ -569,18 +586,29 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
 
           //  let sumLabel =  node.filter(function(d:any) { return d.value != 0; })
-           let sumLabel =  node.filter(function (d: any) { return d.x0 < WIDTH / 2; })
-           .append("text")
+          let valuesLabel =  node.filter(function (d: any) { return d.x0 < WIDTH / 2; })
+          .append("text")
            .attr("x", function (d: any) { return   d.x1 + 6; }) // d.x0 -6
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "start") // " end"
-           .text(function (d: any) { return  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
+           .text(function (d: any) { return Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
 
 
            }
-          node.append("title")
-            .text(function (d: any) { return d.name + "\n" +  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
+
+           let sumTitle =  node //.filter(function(d:any) { return d.value != 0; })
+           .filter(function (d: any) { return d.x0 > WIDTH / 2; })
+           .append("title")
+           .text(function (d: any) { return d.name + "\n" + Math.round((nachSum + Number.EPSILON) * 1000) / 1000; })
+
+          //  .text(Math.round((nachSum + Number.EPSILON) * 1000) / 1000 )
+
+
+          let titles = node
+          .filter(function (d: any) { return d.x0 < WIDTH / 2; })
+          .append("title")
+          .text(function (d: any) { return d.name + "\n" +  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
 
           }
           else if (theme == "Saldi") {
@@ -749,7 +777,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .text(function (d: any) { return Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
 
 
-           let sumLabel =  node.filter(function(d:any) { return d.value != 0; })
+           let sumLabel =  node //.filter(function(d:any) { return d.value != 0; })
            .filter(function (d: any) { return d.x0 < WIDTH / 2; })
            .append("text")
            .attr("x", function (d: any) { return   d.x0 + 30; }) // - 6
@@ -760,9 +788,17 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
            }
 
-        node.append("title")
-            .text(function (d: any) { console.log("node.title d: " + d); return d.index === maxIdx+1 ? d.name : d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
-          }
+           let sumTitle =  node //.filter(function(d:any) { return d.value != 0; })
+           .filter(function (d: any) { return d.x0 < WIDTH / 2; })
+           .append("title")
+           .text(function (d: any) {return d.name + "\n" + Math.round((vonSum + Number.EPSILON) * 1000) / 1000 })
+
+
+          let titles = node
+          .filter(function (d: any) { return d.x0 > WIDTH / 2; })
+          .append("title")
+          .text(function (d: any) {  return d.index === maxIdx+1 ? d.name : d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
+           }
         }
       }
 
@@ -915,7 +951,7 @@ export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
         <div className="p-col-2 noprint">
           {this.props.theme == "Saldi" ? this.state.checked ?
-            'Anzeige Werte in Bereich: ab ' + wanderungsRate ? min/1000 : min + ' bis ' :
+            'Anzeige Werte in Bereich: ab ' + (wanderungsRate ? min/1000 : min) + ' bis ' :
             'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
             </div>
             <div className="p-col-2 noprint">
