@@ -91,7 +91,7 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 	if (theme === 'Von' ) {
         const positive_colors = this.props.positive_colors;
 		const pos_scales_string = this.props.positive_scales.map(String);
-        const [min, max] = this.getMinMax2();
+        // const [min, max] = this.getMinMax2();
 
         let makeIntervalsString = (arr : any []) => {
 			let intrvals = [];
@@ -134,9 +134,9 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 			  }  
 			}
 			
-		let x = d3.scaleLinear()
-			.domain([min , max ]) 
-			.range([0, WIDTH]) 
+		// let x = d3.scaleLinear()
+		// 	.domain([min , max ]) 
+		// 	.range([0, WIDTH]) 
 		let xBand = d3.scaleBand()
 		    .domain(intervalsString) 
 		    .range([0, WIDTH])
@@ -208,7 +208,7 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 		} else if (theme === 'Nach') {
         const positive_colors = this.props.positive_colors;
 		const pos_scales_string = this.props.positive_scales.map(String);
-        const [min, max] = this.getMinMax2();
+        // const [min, max] = this.getMinMax2();
 
 		let makeIntervalsString = (arr : any []) => {
 			let intrvals = [];
@@ -252,9 +252,9 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 			}
 			
 		
-		let x = d3.scaleLinear()
-				.domain([min , max ]) 
-				.range([0, WIDTH]) 
+		// let x = d3.scaleLinear()
+		// 		.domain([min , max ]) 
+		// 		.range([0, WIDTH]) 
         let xBand = d3.scaleBand()
                 .domain(intervalsString) 
                 .range([0, WIDTH])
@@ -329,7 +329,7 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
         const colors = negative_colors.concat(positive_colors);
 		const pos_scales_string = this.props.positive_scales.map(String);
 		const neg_scales_string = this.props.negative_scales.map(String);
-        const [min, max] = this.getMinMax2();
+        // const [min, max] = this.getMinMax2();
 
 		let makeIntervalsString = (arr : any []) => {
 			let intrvals = [];
@@ -409,9 +409,9 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
                 }
                 
         const bins = binsNeg.concat(binsPos);
-		let x = d3.scaleLinear()
-			.domain([min, max ])
-			.range([0, WIDTH]) 
+		// let x = d3.scaleLinear()
+		// 	.domain([min, max ])
+		// 	.range([0, WIDTH]) 
 		let xBand = d3.scaleBand()
 		    .domain(intervalsString) 
 		    .range([0, WIDTH])
@@ -484,27 +484,27 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 		}
 	}
 
-	private getMinMax2(): [number, number] {
-		let max = Number.MIN_VALUE;
-		let second_max = Number.MIN_VALUE;
-		let min = Number.MAX_VALUE;
-		if (this.props.positiveValues) {
-			for (let item of this.props.positiveValues) {
-				if (item < min) {
-					min = item;
-				}
-				if (item > max) {
-					if (max > second_max) {
-						second_max = max;
-					}
-					max = item;
-				} else if (item > second_max) {
-					second_max = item;
-				}
-			}
-		}
-		return [min, max + 1];
-    }
+	// private getMinMax2(): [number, number] {
+	// 	let max = Number.MIN_VALUE;
+	// 	let second_max = Number.MIN_VALUE;
+	// 	let min = Number.MAX_VALUE;
+	// 	if (this.props.positiveValues) {
+	// 		for (let item of this.props.positiveValues) {
+	// 			if (item < min) {
+	// 				min = item;
+	// 			}
+	// 			if (item > max) {
+	// 				if (max > second_max) {
+	// 					second_max = max;
+	// 				}
+	// 				max = item;
+	// 			} else if (item > second_max) {
+	// 				second_max = item;
+	// 			}
+	// 		}
+	// 	}
+	// 	return [min, max + 1];
+    // }
     
    
 

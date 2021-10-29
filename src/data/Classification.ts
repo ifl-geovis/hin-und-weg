@@ -263,7 +263,11 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
-		for (let i = 0; i < ranges.length; i++) this.positive_scales_d3labels.push(this.roundValue(ranges[i]));
+		if ((this.dataProcessing === 'wanderungsrate') || (this.dataProcessing === 'ratevon') || (this.dataProcessing === 'ratenach')) {
+			for (let i = 0; i < ranges.length; i++) this.positive_scales_d3labels.push(this.roundValueThree(ranges[i]));
+		} else {
+			for (let i = 0; i < ranges.length; i++) this.positive_scales_d3labels.push(this.roundValue(ranges[i]));
+		}
 	}
 
 	private fillNegativeScales() {
@@ -285,7 +289,11 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValue(ranges[i]));
+		if ((this.dataProcessing === 'wanderungsrate') || (this.dataProcessing === 'ratevon') || (this.dataProcessing === 'ratenach')) {
+			for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValueThree(ranges[i]));
+		} else {
+			for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValue(ranges[i]));
+		}
 	}
 
 	public calculateClassification() {
