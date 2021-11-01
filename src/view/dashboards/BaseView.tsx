@@ -363,12 +363,12 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		//console.log("Jahr: " + results_zuzug[0].Jahr + "; zuzug: " + results_zuzug[0].Von);
 		for (let i = 0; i < results_zuzug.length; i++) {
 			if (letztesJahr == results_zuzug[i].Jahr) {
-				if ((!Number.isNaN(results_zuzug[i].zuzug)) && (!Number.isNaN(zuzüge + results_zuzug[i].zuzug))) {
+				if ((!isNaN(results_zuzug[i].zuzug)) && (!isNaN(zuzüge + results_zuzug[i].zuzug))) {
 					zuzüge = zuzüge + results_zuzug[i].zuzug;
 					medianZuzügeArray.push(results_zuzug[i].zuzug);
 					indexPerYearZuzug += 1;
 				}
-				if ((!Number.isNaN(results_wegzug[i].wegzug)) && (!Number.isNaN(wegzüge + results_wegzug[i].wegzug))) {
+				if ((!isNaN(results_wegzug[i].wegzug)) && (!isNaN(wegzüge + results_wegzug[i].wegzug))) {
 					wegzüge = wegzüge + results_wegzug[i].wegzug;
 					medianWegzügeArray.push(results_wegzug[i].wegzug);
 					indexPerYearWegzug += 1;
@@ -379,7 +379,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				if (meisteWegzüge < results_wegzug[i].wegzug) {
 					meisteWegzüge = results_wegzug[i].wegzug;
 				}
-				if ((!Number.isNaN(results_zuzug[i].zuzug)) || (!Number.isNaN(results_wegzug[i].wegzug))) indexPerYear += 1;
+				if ((!isNaN(results_zuzug[i].zuzug)) || (!isNaN(results_wegzug[i].wegzug))) indexPerYear += 1;
 			} else {
 				Log.debug('medianZuzügeArray', medianZuzügeArray);
 				Log.debug('medianWegzügeArray', medianWegzügeArray);
@@ -408,6 +408,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				};
 				results = R.append(saldiItem, results);
 				Log.debug('letztesJahr', letztesJahr);
+				Log.debug('MeanZuzüge', meanZuzüge);
 				Log.debug('summe', (zuzüge - wegzüge));
 				Log.debug('indexperYear', indexPerYear);
 				indexPerYear = 0;
@@ -419,12 +420,12 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				medianWegzügeArray = [];
 				meisteZuzüge = 0;
 				meisteWegzüge = 0;
-				if (!Number.isNaN(results_zuzug[i].zuzug)) {
+				if (!isNaN(results_zuzug[i].zuzug)) {
 					zuzüge = zuzüge + results_zuzug[i].zuzug;
 					medianZuzügeArray.push(results_zuzug[i].zuzug);
 					indexPerYearZuzug += 1;
 				}
-				if (!Number.isNaN(results_wegzug[i].wegzug)) {
+				if (!isNaN(results_wegzug[i].wegzug)) {
 					wegzüge = wegzüge + results_wegzug[i].wegzug;
 					medianWegzügeArray.push(results_wegzug[i].wegzug);
 					indexPerYearWegzug += 1;
@@ -435,7 +436,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				if (meisteWegzüge < results_wegzug[i].wegzug) {
 					meisteWegzüge = results_wegzug[i].wegzug;
 				}
-				if ((!Number.isNaN(results_zuzug[i].zuzug)) || (!Number.isNaN(results_wegzug[i].wegzug))) indexPerYear += 1;
+				if ((!isNaN(results_zuzug[i].zuzug)) || (!isNaN(results_wegzug[i].wegzug))) indexPerYear += 1;
 			}
 			letztesJahr = results_zuzug[i].Jahr;
 		}
