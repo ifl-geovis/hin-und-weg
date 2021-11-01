@@ -22,7 +22,7 @@ export interface ITimelineD3Props
 	vizID: number;
 	baseViewId: number;
 	yearsSelected: string[];
-
+	dataProcessing: string;
 }
 
 export class D3Timeline extends React.Component<ITimelineD3Props>
@@ -91,13 +91,15 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 		let timelinePositiveColors = classification.getZeitreihenPositiveColors();
 		let timelineNegativeColors = classification.getZeitreihenNegativeColors();
 
+		const wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
+		const max: any = d3.max(data, d => { if (d.Zuzug) return d.Zuzug})
+		const min: any = d3.min(data, d => { if (d.Wegzug) return d.Wegzug})
+		const maxSaldo: any = d3.max(data, d => { if (d.Saldo) return d.Saldo})
+		const minSaldo: any = d3.min(data, d => { if (d.Saldo) return d.Saldo})
 		svg.append("svg")
 		.attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
 		.attr("height", HEIGHT)
-
-		const max: any = d3.max(data, d => { if (d.Zuzug) return d.Zuzug})
-		const min: any = d3.min(data, d => { if (d.Wegzug) return d.Wegzug})
-
+		
 		svg.append("svg")
 		.attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
 		.attr("height", "auto")
@@ -123,9 +125,13 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 			d.Zuzug = +d.Zuzug;
 			d.Wegzug = +d.Wegzug;
 		});
+
+		const minRate = min < minSaldo ? min : minSaldo;
+		const maxRate = max > maxSaldo ? max : maxSaldo;
+		const ydomain = wanderungsRate ? [(minRate - (maxRate - minRate)/9), (maxRate + (maxRate - minRate)/9)] : [(min - (max - min)/9), (max + (max - min)/9)];
 		  
 		const y = d3.scaleLinear()
-				.domain([(min - (max - min)/9), (max + (max - min)/9)])
+				.domain(ydomain) // ([(min - (max - min)/9), (max + (max - min)/9)])
 				.range([HEIGHT, 0])
 
 		const domain = data.map(d => d.Jahr);
