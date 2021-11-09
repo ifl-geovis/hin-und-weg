@@ -159,46 +159,46 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		Log.debug("stringYears in constructQuery : ", stringYears);
 		if (type === "year")
 		{
-			// if((this.props.dataProcessing === 'wanderungsrate') || (this.props.dataProcessing === 'ratevon') || (this.props.dataProcessing === 'ratenach')){
-			// 	if (theme === "Von") return  `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-			// if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-			// }
-			if (this.props.dataProcessing === 'ratevon'){
+			if((this.props.dataProcessing === 'wanderungsrate') || (this.props.dataProcessing === 'ratevon') || (this.props.dataProcessing === 'ratenach')){
 				if (theme === "Von") return  `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-				if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-			} 
-			if (this.props.dataProcessing === 'ratenach') {
-				if (theme === "Von") return  `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-				if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-				
+			if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
 			}
+			// if (this.props.dataProcessing === 'ratevon'){
+			// 	if (theme === "Von") return  `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			// 	if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			// } 
+			// if (this.props.dataProcessing === 'ratenach') {
+			// 	if (theme === "Von") return  `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+			// 	if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+				
+			// }
 		
 			if (theme === "Von") return  `SELECT Jahr as label, sum(Wert) as result FROM matrices where Von = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
 			if (theme === "Nach") return `SELECT Jahr as label, sum(Wert) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
 				}
 		if (type === "location")
 		{
-		// 	if((this.props.dataProcessing === 'wanderungsrate') || (this.props.dataProcessing === 'ratevon') || (this.props.dataProcessing === 'ratenach')) {
-		// 		if (theme === "Von")
-		// 		return `SELECT Nach as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-		// 	if (theme === "Nach")
-		// 	return `SELECT Von as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-		// }
-		if (this.props.dataProcessing === 'ratevon'){
-			if (theme === "Von")
-			return `SELECT Nach as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-		if (theme === "Nach")
-		return `SELECT Von as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-				// if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-		} 
-		if (this.props.dataProcessing === 'ratenach') {
-			if (theme === "Von")
-			return `SELECT Nach as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-		if (theme === "Nach")
-		return `SELECT Von as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-				// if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
-		
+			if((this.props.dataProcessing === 'wanderungsrate') || (this.props.dataProcessing === 'ratevon') || (this.props.dataProcessing === 'ratenach')) {
+				if (theme === "Von")
+				return `SELECT Nach as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			if (theme === "Nach")
+			return `SELECT Von as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 		}
+		// if (this.props.dataProcessing === 'ratevon'){
+		// 	if (theme === "Von")
+		// 	return `SELECT Nach as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+		// if (theme === "Nach")
+		// return `SELECT Von as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+		// 		// if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateNach), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+		// } 
+		// if (this.props.dataProcessing === 'ratenach') {
+		// 	if (theme === "Von")
+		// 	return `SELECT Nach as label, ROUND(AVG(RateNach), 3) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+		// if (theme === "Nach")
+		// return `SELECT Von as label, ROUND(AVG(RateVon), 3) as result FROM matrices WHERE Nach = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+		// 		// if (theme === "Nach") return `SELECT Jahr as label, ROUND(AVG(RateVon), 3) as result FROM matrices where Nach = '${this.props.location}'  ${migrationsInsideClause} AND Von <> Nach GROUP BY Jahr`;
+		
+		// }
 
 		if (theme === "Von")
 		return `SELECT Nach as label, MYSUM(Wert) as result FROM matrices WHERE Von = '${this.props.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
@@ -272,9 +272,9 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 				}
 			}
 			let saldiValue = this.calculateSaldiForYears(this.state.type === 'year' ? results_zuzug_Filtered : results_zuzug, this.state.type === 'year' ? results_wegzug_Filtered : results_wegzug);
-			let saldiValueRate = this.calculateSaldiForYearsRate(this.state.type === 'year' ? populationResultsYear : populationResults, this.state.type === 'year' ? results_zuzug_wert_Filtered : results_zuzug_wert_location, this.state.type === 'year' ? results_wegzug_wert_Filtered : results_wegzug_wert_location);
-
-			return this.calculateIndexValue(this.props.dataProcessing === 'ratevon' || this.props.dataProcessing === 'ratenach' ? saldiValueRate : saldiValue);
+			let saldiValueRate = this.calculateSaldiRate(this.state.type === 'year' ? populationResultsYear : populationResults, this.state.type === 'year' ? results_zuzug_wert_Filtered : results_zuzug_wert_location, this.state.type === 'year' ? results_wegzug_wert_Filtered : results_wegzug_wert_location);			
+			return this.calculateIndexValue( this.props.dataProcessing === 'wanderungsrate' ? saldiValueRate : saldiValue);
+			// return this.calculateIndexValue(this.props.dataProcessing === 'ratevon' || this.props.dataProcessing === 'ratenach' ? saldiValueRate : saldiValue);
 			// return this.calculateIndexValue(this.calculateSaldiForYears(this.state.type === 'year' ? results_zuzug_Filtered : results_zuzug, this.state.type === 'year' ? results_wegzug_Filtered : results_wegzug));
 		}
 		let query = this.constructQuery(this.state.type, this.props.theme);
@@ -296,7 +296,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		return this.state.type === 'year' ? this.calculateIndexValue(resultsFiltered):this.calculateIndexValue(results);
 	}
 
-	private calculateSaldiForYearsRate(pop_data: any[],results_zuzug_wert: any[], results_wegzug_wert: any[] ): any[]
+	private calculateSaldiRate(pop_data: any[],results_zuzug_wert: any[], results_wegzug_wert: any[] ): any[]
 	{
 		let results = [];
 		let resultsRate = [];
@@ -320,24 +320,7 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		}
 		if (this.state.type === "year")
 		{
-			if (this.props.dataProcessing === "ratevon")
-			{	
-				for (let result of results)
-				{
-					for (let pop of pop_data)
-					{
-						if(result.label === pop.label )
-						{
-							let saldo_ratevon =  - result.result * 1000 / pop.population;
-							resultsRate.push({
-							'label': result.label,
-							'result': this.roundValueThree(saldo_ratevon),
-							});
-						}
-					}
-				}
-			}
-			if (this.props.dataProcessing === "ratenach")
+			if (this.props.dataProcessing === "wanderungsrate")
 			{
 				for (let result of results)
 				{
@@ -345,10 +328,10 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 					{
 						if(result.label === pop.label )
 						{
-							let saldo_ratenach = result.result * 1000 / pop.population;
+							let saldo_rate = result.result * 1000 / pop.population;
 							resultsRate.push({
 							'label': result.label,
-							'result': this.roundValueThree(saldo_ratenach),
+							'result': this.roundValueThree(saldo_rate),
 							});
 						}
 					}
@@ -360,13 +343,11 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 		{
 			for (let result of results)
 				{
-							let saldo_rate = this.props.dataProcessing === "ratevon" ? - result.result * 1000 / pop_data[0].population :  result.result * 1000 / pop_data[0].population;
-							resultsRate.push({
-							'label': result.label,
-							'result': this.roundValueThree(saldo_rate),
-							});
-					
-					
+					let saldo_rate = result.result * 1000 / pop_data[0].population;
+					resultsRate.push({
+						'label': result.label,
+						'result': this.roundValueThree(saldo_rate),
+					});
 				}
 		}
 		return resultsRate;

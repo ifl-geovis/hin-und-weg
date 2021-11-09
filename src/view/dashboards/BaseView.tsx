@@ -263,6 +263,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 				}
 				if ((this.state.dataProcessing === 'wanderungsrate') || (this.state.dataProcessing === 'ratevon') || (this.state.dataProcessing === 'ratenach')) {
 					value = value * 1000 / popResults[0].population;
+
 				}
 				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: this.standardizeValues(value) };
 				results = R.append(saldiItem, results);
@@ -295,16 +296,16 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 		);
 		let query_zuzug = `SELECT Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
 		if (this.state.dataProcessing === 'wanderungsrate') query_zuzug = `SELECT Nach, Jahr, ROUND(AVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
-		if (this.state.dataProcessing === 'ratevon') query_zuzug = `SELECT Nach, Jahr, ROUND(AVG(RateVon), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
-		if (this.state.dataProcessing === 'ratenach') query_zuzug = `SELECT Nach, Jahr, ROUND(AVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
+		// if (this.state.dataProcessing === 'ratevon') query_zuzug = `SELECT Nach, Jahr, ROUND(AVG(RateVon), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
+		// if (this.state.dataProcessing === 'ratenach') query_zuzug = `SELECT Nach, Jahr, ROUND(AVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
 		let results_zuzug = this.props.db(query_zuzug);
 		let query_zuzug_wert = `SELECT Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
 		let results_zuzug_wert = this.props.db(query_zuzug_wert);
 
 		let query_wegzug = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
 		if (this.state.dataProcessing === 'wanderungsrate') query_wegzug = `SELECT Von, Jahr, ROUND(AVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
-		if (this.state.dataProcessing === 'ratevon') query_wegzug = `SELECT Von, Jahr, ROUND(AVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
-		if (this.state.dataProcessing === 'ratenach') query_wegzug = `SELECT Von, Jahr, ROUND(AVG(RateNach), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
+		// if (this.state.dataProcessing === 'ratevon') query_wegzug = `SELECT Von, Jahr, ROUND(AVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
+		// if (this.state.dataProcessing === 'ratenach') query_wegzug = `SELECT Von, Jahr, ROUND(AVG(RateNach), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
 		let results_wegzug = this.props.db(query_wegzug);
 		let query_wegzug_wert = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
 		let results_wegzug_wert = this.props.db(query_wegzug_wert);
@@ -319,13 +320,14 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 			let zuzug_wert = this.getFieldForYear(results_zuzug_wert, year, 'zuzug');
 			let wegzug_wert = this.getFieldForYear(results_wegzug_wert, year, 'wegzug');
 			let population = this.getFieldForYear(populationResultsYear, year, 'population');
-			let saldo = this.state.dataProcessing === "ratevon" ? -(zuzug_wert - wegzug_wert)*1000/population : (zuzug_wert - wegzug_wert)*1000/population;
+			let saldoRate = (zuzug_wert - wegzug_wert)*1000/population;				
+			// let saldoRate = this.state.dataProcessing === "ratevon" ? -(zuzug_wert - wegzug_wert)*1000/population : (zuzug_wert - wegzug_wert)*1000/population;
 			results.push({
 				'Ort': this.state.location,
 				'Jahr': year,
 				'Zuzug': this.standardizeValues(zuzug),
 				'Wegzug': this.standardizeValues(-wegzug),
-				'Saldo': wanderungsRate ?  this.standardizeValues(saldo) : this.standardizeValues(zuzug - wegzug),
+				'Saldo': wanderungsRate ?  this.standardizeValues(saldoRate) : this.standardizeValues(zuzug - wegzug),
 			});
 		}
 		for(let item of results ){
