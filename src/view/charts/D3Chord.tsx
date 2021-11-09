@@ -1036,7 +1036,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     public render() {
         const { width, height } = this.props;
         let [min, max] = this.getMinMax2();
-       
+        max = max-1;
 
         let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
         let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
@@ -1098,15 +1098,15 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
              </div>
              <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
             'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
-            <div className="p-col-12 p-md-12 p-lg-6">
+            <div className="p-col-12 p-md-12 p-lg-9">
                <Legend showCenter='' yearsSelected={this.props.yearsSelected} />
             </div>
-        <div className="p-col-12 p-md-12 p-lg-6 noprint">
+        <div className="p-col-12 p-md-12 p-lg-3 noprint">
           <Checkbox id = "values" name = "values"
             onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
             checked={this.state.checkedLabel}
           />
-          <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Anzahl Umzüge anzeigen</label>
+          <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Werte anzeigen</label>
         </div>
           <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />

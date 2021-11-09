@@ -894,7 +894,8 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
   public render() {
     const { width, height } = this.props;
     let [min, max] = this.getMinMax2();
-        let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
+    max = max - 1;
+    let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
     let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
     // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
     let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
@@ -984,16 +985,16 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
              </div>
              <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
             'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
-        <div className="p-col-12 p-md-12 p-lg-6">
+        <div className="p-col-12 p-md-12 p-lg-9">
                <Legend showCenter='' yearsSelected={this.props.yearsSelected} />
             </div>
-        <div className="p-col-12 p-md-12 p-lg-6 noprint">
+        <div className="p-col-12 p-md-12 p-lg-3 noprint">
           <Checkbox
             onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
             checked={this.state.checkedLabel}
             // disabled= {(this.props.theme === 'Saldi') ? false : true}
           />
-          <label className="p-checkbox-label">Anzahl Umzüge anzeigen</label>
+          <label className="p-checkbox-label">Werte anzeigen</label>
         </div>
         <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />

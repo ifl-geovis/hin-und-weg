@@ -147,13 +147,12 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		let names = nach.concat(von);
 		let maxNameLength = Math.max(...names.map((el) => (el ? el.length : 50)));
 		let heightResponsive =
-			data.length <= 2
-				? data.length * 50
-				: data.length > 2 && data.length <= 5
-				? data.length * 35
-				: data.length > 5 && data.length < 30
-				? data.length * 25
-				: data.length * 20;
+			data.length < 2 ? (this.state.checkedNaN ? data.length * 75 :data.length * 50) : 
+			data.length == 2 ? data.length * 50 :
+			data.length > 2 && data.length <= 5 ? data.length * 35 :
+			data.length > 5 && data.length < 30 ? data.length * 25 :
+			data.length * 20;
+
 
 		// let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength*9}
 		let MARGIN = { TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength > 3 ? maxNameLength * 9 : maxNameLength * 15 };
@@ -789,7 +788,8 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 	public render() {
 		const { width, height } = this.props;
-		const [min, max] = this.getMinMax2();
+		let [min, max] = this.getMinMax2();
+        max = max-1;
 		let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
 		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
 		// let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
