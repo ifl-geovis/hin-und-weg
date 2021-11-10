@@ -1020,7 +1020,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     private getInitialValuesSliderSaldi(): [number, number]
     {
       let [min, max] = this.getMinMax2();
-      
+      max = max - 1;
       let rangeValues: [number, number] = this.state.rangeValues;
       if (this.state.rangeValues[0] == 0) rangeValues[0] = min;
       if (this.state.rangeValues[1] == 0) rangeValues[1] = max;

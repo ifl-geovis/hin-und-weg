@@ -10,6 +10,8 @@ import { select } from 'd3-selection';
 import R from 'ramda';
 import Legend from '../elements/Legend';
 import { InputText } from 'primereact/inputtext';
+// import { Accordion, AccordionTab } from 'primereact/accordion';
+
 
 export interface ID3ChartItem {
 	Von: string;
@@ -101,11 +103,12 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
 
 		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
+
 		if(nextProps.dataProcessing !== this.props.dataProcessing || nextProps.theme !== this.props.theme){
             rangeValues = [min, max];
             this.setState({ rangeValues: [min, max]});
             threshold = min;
-            this.setState({threshold: min});
+			this.setState({threshold: min});		
          }
 		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert))  || (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data);
 		let data2: ID3ChartItem[] = R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= rangeValues[1] && (wanderungsRate? item.Wert*1000 : item.Wert) <= max, this.props.data);
@@ -774,6 +777,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 	}
 	private getInitialValuesSliderSaldi(): [number, number] {
 		let [min2, max2] = this.getMinMax2();
+		max2 = max2 - 1;
 		let rangeValues: [number, number] = this.state.rangeValues;
 		if (this.state.rangeValues[0] == 0) rangeValues[0] = min2;
 		if (this.state.rangeValues[1] == 0) rangeValues[1] = max2;
@@ -799,6 +803,9 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 		return (
 			<div className="p-grid">
+				{/* <Accordion activeIndex={0}>
+					<AccordionTab header="Kontrollelemente">
+					<div className="p-grid"> */}
 				<div className="p-col-4 noprint">
 					<Checkbox
 						onChange={(e: { value: any; checked: boolean }) => this.setState({ checked: e.checked })}
@@ -895,6 +902,9 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				</div>
 				<div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
 						'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
+				{/* </div>
+				</AccordionTab>
+				</Accordion> */}
 				<div className="p-col-12">
 					<Legend showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>
