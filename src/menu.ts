@@ -2,40 +2,53 @@ import { app, Menu, BrowserWindow } from "electron";
 
 import Config from "./config";
 import Log from './log';
-
+import { TFunction } from "i18next";
+import i18nConfig from "./i18n/i18nConfig";
 export default class MainMenu
 {
 
-	private static template: Electron.MenuItemConstructorOptions[] =
-	[
-		{
-			label: 'Anwendung',
+	// private static template: Electron.MenuItemConstructorOptions[] =
+	// [
+	// 	{
+		private static  menuTemplate = (i18n:any) => {
+			let template : Electron.MenuItemConstructorOptions[] = [];
+	
+		template.push
+		({
+			// label: 'Anwendung',
+			label: i18n.t('menu.file'),
 			submenu:
 			[
 				{
-					label: 'Projekt öffnen',
+					// label: 'Projekt öffnen',
+					label: i18n.t('menu.open'),
 					enabled: false,
 				},
 				{
-					label: 'Projekt speichern',
+					// label: 'Projekt speichern',
+					label: i18n.t('menu.save'),
 					enabled: false,
 				},
 				{
-					label: 'Import',
+					// label: 'Import',
+					label: i18n.t('menu.import'),
 					enabled: false,
 				},
 				{
-					label: 'Export',
+					// label: 'Export',
+					label: i18n.t('menu.export'),
 					submenu:
 					[
 						{
 							id: 'export-png',
-							label: 'PNG',
+							label: i18n.t('menu.png'),
+							// label: 'PNG',
 							click(event, window, content) {MainMenu.execute("export-image", "png", event, window, content);},
 						},
 						{
 							id: 'export-jpeg',
-							label: 'JPEG',
+							// label: 'JPEG',
+							label: i18n.t('menu.jpeg'),
 							click(event, window, content) {MainMenu.execute("export-image", "jpeg", event, window, content);},
 						},
 					]
@@ -44,117 +57,140 @@ export default class MainMenu
 					type: 'separator'
 				},
 				{
-					label: 'Vergrößern',
+					// label: 'Vergrößern',
+					label: i18n.t('menu.zoomIn'),
 					accelerator: 'CommandOrControl+=',
 					role: 'zoomIn'
 				},
 				{
-					label: 'Verkleinern',
+					// label: 'Verkleinern',
+					label: i18n.t('menu.zoomOut'),
 					role: 'zoomOut'
 				},
 				{
-					label: 'Zoom zurücksetzen',
+					// label: 'Zoom zurücksetzen',
+					label: i18n.t('menu.zoomReset'),
 					role: 'resetZoom'
 				},
 				{
 					type: 'separator'
 				},
 				{
-					label: 'Drucken',
+					// label: 'Drucken',
+					label: i18n.t('menu.print'),
 					click(event, window, content) {MainMenu.print(event, window, content);}
 				},
 				{
 					type: 'separator'
 				},
 				{
-					label: 'Beenden',
+					// label: 'Beenden',
+					label: i18n.t('menu.quit'),
 					role: 'quit'
 				}
 			]
 		},
 		{
-			label: 'Ansichten',
+			// label: 'Ansichten',
+			label: i18n.t('menu.views'),
 			submenu:
 			[
 				{
-					label: 'Einzelansicht',
+					// label: 'Einzelansicht',
+					label: i18n.t('menu.singleView'),
 					click(event, window, content) {MainMenu.execute("dashboard", "s1", event, window, content);}
 				},
 				{
-					label: 'oben 1 unten 1',
+					// label: 'oben 1 unten 1',
+					label: i18n.t('menu.1up1down'),
 					click(event, window, content) {MainMenu.execute("dashboard", "t1b1", event, window, content);}
 				},
 				{
-					label: 'links 1 rechts 1',
+					// label: 'links 1 rechts 1',
+					label: i18n.t('menu.1left1right'),
 					click(event, window, content) {MainMenu.execute("dashboard", "l1r1", event, window, content);}
 				},
 				{
-					label: 'oben 1 unten 2',
+					// label: 'oben 1 unten 2',
+					label: i18n.t('menu.1up2down'),
 					click(event, window, content) {MainMenu.execute("dashboard", "t1b2", event, window, content);}
 				},
 				{
-					label: 'oben 2 unten 1',
+					// label: 'oben 2 unten 1',
+					label: i18n.t('menu.2up1down'),
 					click(event, window, content) {MainMenu.execute("dashboard", "t2b1", event, window, content);}
 				},
 				{
-					label: 'links 1 rechts 2',
+					// label: 'links 1 rechts 2',
+					label: i18n.t('menu.1left2right'),
 					click(event, window, content) {MainMenu.execute("dashboard", "l1r2", event, window, content);}
 				},
 				{
-					label: '3× vertikal',
+					// label: '3× vertikal',
+					label: i18n.t('menu.3vertical'),
 					click(event, window, content) {MainMenu.execute("dashboard", "v3", event, window, content);}
 				},
 				{
-					label: 'Viertel',
+					// label: 'Viertel',
+					label: i18n.t('menu.4Views'),
 					click(event, window, content) {MainMenu.execute("dashboard", "l2r2", event, window, content);}
 				},
 				{
-					label: 'Vergleich',
+					// label: 'Vergleich',
+					label: i18n.t('menu.comparison'),
 					click(event, window, content) {MainMenu.execute("dashboard", "cls1rs1", event, window, content);}
 				},
 			]
 		},
 		{
-			label: 'Visualisierungen',
+			// label: 'Visualisierungen',
+			label: i18n.t('menu.visualizations'),
 			submenu:
 			[
 				{
 					id: 'map',
-					label: 'Karte',
+					// label: 'Karte',
+					label: i18n.t('menu.map'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "map", event, window, content);},
 				},
 				{
 					id: 'table',
-					label: 'Tabelle',
+					// label: 'Tabelle',
+					label: i18n.t('menu.table'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "table", event, window, content);},
 				},
 				{
 					id: 'd3-timeline',
-					label: 'Zeitreihen',
+					// label: 'Zeitreihen',
+					label: i18n.t('menu.timeline'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "d3-timeline", event, window, content);},
 				},
 				{
-					label: 'Diagramm',
+					// label: 'Diagramm',
+					label: i18n.t('menu.diagrams'),
 					submenu:
 					[
 						{
 							id: 'd3-chord',
-							label: 'Chord',
+							// label: 'Chord',
+							label: i18n.t('menu.chord'),
 							enabled: false,
 							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-chord", event, window, content);},
 						},
 						{
 							id: 'd3-sankey',
-							label: 'Sankey',
+							// label: 'Sankey',
+							label: i18n.t('menu.sankey'),
 							enabled: false,
 							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-sankey", event, window, content);},
 						},
 						{
 							id: 'd3-bar',
-							label: 'Balken',
+							// label: 'Balken',
+							label: i18n.t('menu.barchart'),
 							enabled: false,
 							click(event, window, content) {MainMenu.execute("viewswitcher", "d3-bar", event, window, content);},
 						},
@@ -163,57 +199,95 @@ export default class MainMenu
 			]
 		},
 		{
-			label: 'Analysen',
+			// label: 'Analysen',
+			label: i18n.t('menu.analysis'),
 			submenu:
 			[
 				{
 					id: 'statistics',
-					label: 'Statistiken',
+					// label: 'Statistiken',
+					label: i18n.t('menu.statistics'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
 				},
 				{
 					id: 'db',
-					label: 'Datenbank',
+					// label: 'Datenbank',
+					label: i18n.t('menu.database'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
 				},
 				{
 					id: 'index',
-					label: 'Indexwert',
+					// label: 'Indexwert',
+					label: i18n.t('menu.indexVal'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "index", event, window, content);},
 				},
 			]
 		},
 		{
-			label: 'Einstellungen',
+			label: i18n.t('menu.languages'),
+			// label:'Sprachen',
 			submenu:
 			[
 				{
-					label: 'Einstellungen',
+					// label: 'Deutsch',
+					label: i18n.t('menu.german'),
+					type: 'radio',
+					checked: i18n.language === 'de',
+					click: () => { 
+						console.log ("DEUTSCH!!!!");
+					  i18n.changeLanguage('de');	
+								}
+				},
+				{
+					label: i18n.t('menu.english'),
+					// label: 'English',
+					type: 'radio',
+					checked: i18n.language === 'en',
+					click: () => { 
+						console.log ("ENGLISH!!!!");
+					  i18n.changeLanguage('en');	
+								}
+				}
+			]
+		},
+		{
+			// label: 'Einstellungen',
+			label: i18n.t('menu.settings'),
+			submenu:
+			[
+				{
+					// label: 'Einstellungen',
+					label: i18n.t('menu.settings'),
 					click(event, window, content) {MainMenu.execute("viewswitcher", "settings", event, window, content);},
 				},
 			],
 		},
 		{
-			label: 'Hilfe',
+			// label: 'Hilfe',
+			label: i18n.t('menu.help'),
 			submenu:
 			[
 				{
-					label: 'hin&&weg Webseite',
+					// label: 'hin&&weg Webseite',
+					label: i18n.t('menu.website'),
 					click(event, window, content) {MainMenu.website("https://hin-und-weg.online/", window);}
 				},
 				{
-					label: 'Dokumentation',
+					// label: 'Dokumentation',
+					label: i18n.t('menu.doc'),
 					enabled: false,
 				},
 				{
-					label: 'Tutorials',
+					// label: 'Tutorials',
+					label: i18n.t('menu.tutorials'),
 					enabled: false,
 				},
 				{
-					label: 'Kontexthilfe',
+					// label: 'Kontexthilfe',
+					label: i18n.t('menu.contextHelp'),
 					enabled: false,
 				},
 				{
@@ -221,25 +295,32 @@ export default class MainMenu
 				},
 				{
 					id: 'projektinfo',
-					label: 'Projektinfo',
+					// label: 'Projektinfo',
+					label: i18n.t('menu.projectInfo'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "projektinfo", event, window, content);},
 				},
 				{
 					id: 'systeminfo',
-					label: 'Systeminfo',
+					// label: 'Systeminfo',
+					label: i18n.t('menu.systemInfo'),
 					enabled: false,
 					click(event, window, content) {MainMenu.execute("viewswitcher", "systeminfo", event, window, content);},
 				},
 			]
-		}
-	]
+		});
+		return template;
+	};
+	// 	}
+	// ]
 
 	public static MENU: boolean = Config.getValue("global", "menu");
 
-	public static getMainMenu(): Menu | null
+	// public static getMainMenu(): Menu | null
+	public static getMainMenu(i18n: any): Menu | null
 	{
-		if (MainMenu.MENU) return Menu.buildFromTemplate(MainMenu.template);
+		if (MainMenu.MENU) return Menu.buildFromTemplate(MainMenu.menuTemplate(i18n));
+		// if (MainMenu.MENU) return Menu.buildFromTemplate(MainMenu.template);
 		return null;
 	}
 

@@ -1,0 +1,64 @@
+{
+    "importView": {
+        "geodata": "1. Geodata",
+        "idSelect": "Select ID attribute:",
+        "nameAttrSelect": "Select name attribute:",
+        "ShpButton": "Select the Shapefile...",
+        "idAttr": "Select ID Attribute",
+        "nameAtrr": "Select Name Attribute",
+        "tableData": "2. Table data",
+        "addTableData": "Add table data...",
+        "shpLoaded": "Shapefile is successfully loaded..."
+    },
+    "tableView": {
+        "emptyMessage": "No data available."
+    },
+    "viewSwitcher": {
+        "dataImport": "Data Import",
+        "selectVisOrFunc": "Select Visualisation or Function:",
+        "map": "Map",
+        "table": "Table",
+        "timeline" : "Timeline",
+        "diagram" : "Diagram",
+        "barChart" : "Bar chart",
+        "sankey" : "Sankey Diagram",
+        "chord" : "Chord Diagram",
+        "statistics" : "Statistics",
+         "data" : "Data",
+         "databank" : "Databank",
+         "systeminfo" : "System Information",
+         "projektinfo" : "Project Information",
+         "settings" : "Settings"
+    },
+    "polygon": "Polygon",
+    "theme": "Theme",
+    "von": "From",
+    "nach": "To",
+    "saldi": "Balance",
+    "year": "Year(s)",
+    "selectAll": "select all...",
+    "deselectAll": "deselect all...",
+    "classification": "Classification",
+    "scaleAndColors": "Scale and Color Scheme",
+    "scaleAndColorsPositive": "positive Scale and Color Scheme",
+    "arrowsColor": "Arrows Color",
+    "class": " class",
+    "classes": " classes",
+    "classifications":{
+        "equidistant": "equidistant",
+        "stddeviation": "standard deviation",
+        "arithmetic_progression": "arithmetic progression",
+        "geometric_progression": "geometric progression",
+        "quantile": "quantile",
+        "jenks": "Jenks natural breaks",
+        "custom": "user defined"
+    },
+    "menu": {
+        "languages": "Languages",
+        "german": "German",
+        "english": "English ENG",
+        "help": "Help"
+    },
+    "classesArray": ["1 class", "2 classes", "3 classes", "4 classes", "5 classes", "6 classes", "7 classes", "8 classes", "9 classes"]
+
+}

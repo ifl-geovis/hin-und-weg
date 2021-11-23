@@ -1,10 +1,11 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 import path from 'path';
 import Log from './log';
 import Config from './config';
 import MainMenu from './menu';
 import Settings from './settings';
-
+import i18n from './i18n/i18n';
+import i18nConfig from './i18n/i18nConfig';
 let mainWindow: Electron.BrowserWindow;
 
 function createWindow() {
@@ -27,7 +28,7 @@ function createWindow() {
 	mainWindow.loadFile(path.join(__dirname, './' + style + '.html'));
 
 	// set main menu
-	Menu.setApplicationMenu(MainMenu.getMainMenu());
+	// Menu.setApplicationMenu(MainMenu.getMainMenu());
 
 	// Open the DevTools.
 	if (Config.getValue('global', 'devtools')) {
@@ -39,6 +40,22 @@ function createWindow() {
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
+	});
+	i18n.on('loaded', (loaded:any) => {
+		console.log("loaded from main: " + JSON.stringify(loaded));
+		i18n.changeLanguage('de');
+		i18n.off('loaded');
+	  });
+
+	i18n.on('languageChanged', (lng:any) => {
+		console.log("languageChanged:  " +  lng);
+		// menuFactoryService.buildMenu(app, win, i18n);
+		Menu.setApplicationMenu(MainMenu.getMainMenu(i18n));
+		mainWindow.webContents.send('language-changed', {
+			language: lng,
+			namespace: i18nConfig.namespace,
+			resource: i18n.getResourceBundle(lng, i18nConfig.namespace)
+		  });
 	});
 }
 
@@ -63,6 +80,17 @@ app.on('activate', () => {
 		createWindow();
 	}
 });
+
+ipcMain.on('get-initial-translations', (event:any, arg:any) => {
+	i18n.loadLanguages('de', (err:any, t:any) => {
+	  const initial = {
+		'de': {
+		  'translation': i18n.getResourceBundle('de', i18nConfig.namespace)
+		}
+	  };
+	  event.returnValue = initial;
+	});
+  });
 
 app.setPath("appData", app.getAppPath() + "/../" + Config.getValue('global', 'datadir'));
 

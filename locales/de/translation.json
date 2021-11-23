@@ -1,0 +1,185 @@
+{
+    "importView" : {
+        "geodata": "1. Geodaten",
+        "idSelect": "ID-Attribut auswählen:",
+        "nameAttrSelect": "Namens-Attribut auswählen:",
+        "ShpButton": "Shape Datei auswählen...",
+        "idColumn": "ID Spalte auswählen",
+        "nameColumn": "Namenspalte auswählen",
+        "tableData": "2. Tabellendata",
+        "addTableData": "Tabellendaten hinzufügen...",
+        "shp": "✓ Shape Datei ",
+        "shpLoaded": " wurde erfolgreich geladen...",
+        "shpError": "Es kann nur eine Shape-Datei geladen werden!",
+       
+        "file": "Die Datei ",
+        "notShp": " sieht nicht wie eine Shape-Datei aus.",
+        "shp2": "↺ Shape-Datei ",
+        "shpLoading": " wird geladen. Bitte warten.",
+        "shp3": "Shape-Datei ",
+        "shpLoaded2": " wurde erfolgreich geladen.",
+        "shpProblem1": "Problem beim Einlesen der Shape-Datei ",
+        "shpProblem2": " aufgetreten. Fehlermeldung ist: ",
+        "csv": "CSV-Datei ",
+        "csvRepetition": " wurde bereits zuvor geladen.",
+       
+        "rowsNumber1": "Zeilenzahl (",
+        "rowsNumber2": ") entspricht nicht den Geodaten (",
+        "indexCheck1": "Index '",
+        "indexCheck2": "' (Zeile ",
+        "indexCheck3": ") nicht in den Geodaten gefunden",
+        "indexCheck4": "' (Spalte ",
+       
+        "numberRowsColumns": "Anzahl der Zeilen und Spalten stimmt nicht überein.",
+        "indexRowsColumns1": "Spaltenindex ",
+        "indexRowsColumns2": " stimmt nicht mit Zeilenindex ",
+        "indexRowsColumns3": " überein.",
+        "columnsGeodata1": "Spaltenzahl (",
+        "columnsGeodata2": ") entspricht nicht den Geodaten (",
+        "rowsGeodata1": "Zeilenzahl (",
+        "rowsGeodata2": ") entspricht nicht den Geodaten (",
+        "unknownTimeUnit": "Unbekannte Zeiteinheit für bewegungsdaten: ",
+        "unknownTableData": "Unbekannter Typ von Tabellendaten: ",
+      
+        "metadaten":{
+        "missing": "Metadaten fehlen",
+        "noType": "Metadatenfeld 'type' erwartet",
+        "unknownType": "Unbekannter Inhalt für Metadatenfeld 'type': ",
+        "unknownType2":". Erlaubte Werte sind: population/movement",
+        "noBegin": "Metadatenfeld 'begin' erwartet",
+        "noEnd": "Metadatenfeld 'end' erwartet",
+        "noTimeUnit": "Metadatenfeld 'timeunit' erwartet",
+        "noTime": "Metadatenfeld 'time' erwartet",
+        "unknownTimeUnit": "Unbekannter Inhalt für Metadatenfeld 'timeunit': ",
+        "unknownTimeUnit2": ". Erlaubte Werte sind: year"
+       },
+       "fileLoaded": "Datei erfolgreich geladen",
+       "notYear": "' sieht nicht wie ein Jahr aus",
+       "tabledata1": "Laden der Tabellendateien abgeschlossen. ",
+       "tabledata2": "Es wurden ",
+       "tabledata3": " Tabellendateien erfolgreich geladen. ",
+       "tabledata4": " Tabellendateien hatten Fehler beim Einladen.",
+       "success": "erfolgreich geladen.",
+       "loading": "Laden von",
+       "failed": "gescheitert:",
+       "loading2": "wird geladen"
+    },
+    "messages": "Benachrichtigungen entfernen",
+    "tableView": {
+        "emptyMessage": "Keine Daten vorhanden."
+    },
+    "viewSwitcher": {
+        "fileImport": "Datei-Import",
+        "selectVisOrFunc": "Visualisierung oder Funktion wählen:",
+        "map": "Karte",
+        "table": "Tabelle",
+        "timeline" : "Zeitreihen",
+        "diagram" : "Diagramm",
+        "barChart" : "Balkendiagramm",
+        "sankey" : "Sankey-Diagramm",
+        "chord" : "Chord-Diagramm",
+        "statistics" : "Statistiken",
+         "file" : "Datei",
+         "database" : "Datenbank",
+         "systeminfo" : "Systeminformationen",
+         "projektinfo" : "ProjektInfo",
+         "settings" : "Einstellungen",
+         "index": "Indexwert"
+    },
+
+    "menu": {
+        "file": "Anwendung",
+        "open": "Projekt öffnen",
+        "save": "Projekt speichern",
+        "import": "Import",
+        "export": "Export",
+        "png": "PNG",
+        "jpeg": "JPEG",
+        "zoomIn": "Vergrößern",
+        "zoomOut": "Verkleinern",
+        "zoomReset": "Zoom zurücksetzen",
+        "print": "Drucken",
+        "quit": "Beenden",
+        "views": "Ansichten",
+        "singleView": "Einzelansicht",
+        "1up1down": "oben 1 unten 1",
+        "1left1right": "links 1 rechts 1",
+        "1up2down": "oben 1 unten 2",
+        "2up1down": "oben 2 unten 1",
+        "1left2right": "links 1 rechts 2",
+        "3vertical": "3× vertikal",
+        "4Views": "Viertel",
+        "comparison": "Vergleich",
+        "visualizations": "Visualisierungen",
+        "map": "Karte",
+        "table": "Tabelle",
+        "timeline": "Zeitreihen",
+        "diagrams": "Diagramm",
+        "chord": "Chord",
+        "sankey": "Sankey",
+        "barchart": "Balken",
+        "analysis": "Analysen",
+        "statistics": "Statistiken",
+        "database": "Datenbank",
+        "indexVal": "Indexwert",
+        "languages": "Sprachen",
+        "german": "Deutsch",
+        "english": "English",
+        "settings": "Einstellungen",
+        "help": "Hilfe",
+        "website": "hin&weg Webseite",
+        "doc": "Dokumentation",
+        "tutorials": "Tutorials",
+        "contextHelp": "Kontexhilfe",
+        "projectInfo": "Projektinfo",
+        "systemInfo": "Systeminfo"
+    },
+    "baseView": {
+        "polygon": "Bezugsfläche",
+        "topic": "Thema",
+        "selection": "Auswahl",
+        "representation": "Darstellung"
+    },
+    "topics":{
+        "from": "Von",
+        "to": "Nach",
+        "saldi": "Saldi",
+        "value": "Anzahl Umzüge",
+        "rate": "Wanderungsrate"
+    },
+    "location": {
+        "insideMigration": "Umzüge innerhalb der Fläche berücksichtigen"
+    },
+    "years": {
+        "year": "Jahr(e)",
+        "all": "alle",
+        "none": "keine"
+    },
+    "classificationSelections":{
+        "classification": "Klassifikation",
+        "scaleAndColors": "Skala und Farbscheme",
+        "scaleAndColorsPositive": "positive Skala und Farbschema",
+        "scaleAndColorsNegative": "negative Skala und Farbschema",
+        "arrowsColor": "Pfeilfarbe",
+        "class": " Klasse",
+        "classes": " Klassen",
+        "classifications":{
+            "equidistant": "abstandsgetreu",
+            "stddeviation": "Standardabweichung",
+            "arithmetic_progression": "arithmetische Reihe",
+            "geometric_progression": "geometrische Reihe",
+            "quantile": "Quantile",
+            "jenks": "Brüche nach Jenks",
+            "custom": "benutzerdefiniert"
+        },
+        "classesNumber": "empfohlene Klassenanzahl",
+        "scheme": "Schema",
+        "classesArray": ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"]
+
+
+    }
+    
+       
+
+
+}

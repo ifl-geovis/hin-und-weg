@@ -3,6 +3,11 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import AppView from './view/App';
 import Settings from './settings';
+import electron from 'electron';
+const ipcRenderer = electron.ipcRenderer;
+import {I18nextProvider} from 'react-i18next';
+import i18n from './i18n/i18nClient';
+let initialI18nStore = ipcRenderer.sendSync('get-initial-translations');
 
 function setupDB() {
 	const DB = alasql;
@@ -53,4 +58,14 @@ function setupDB() {
 
 Settings.load();
 
-ReactDOM.render(<AppView db={setupDB()} />, document.getElementById('root'));
+ipcRenderer.on('language-changed', (event:any, message:any) => {
+	if (!i18n.hasResourceBundle(message.language, message.namespace)) {
+	  i18n.addResourceBundle(message.language, message.namespace, message.resource);
+	}
+	i18n.changeLanguage(message.language);
+  });
+
+ReactDOM.render(<I18nextProvider i18n={ i18n } initialI18nStore={ initialI18nStore } initialLanguage="de">
+<AppView db={setupDB()} />
+</I18nextProvider>, document.getElementById('root'));
+// ReactDOM.render(<AppView db={setupDB()} />, document.getElementById('root'));

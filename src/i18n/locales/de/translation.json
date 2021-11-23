@@ -1,0 +1,67 @@
+{
+    "importView" : {
+        "geodata": "1. Geodaten",
+        "idSelect": "ID-Attribut auswählen:",
+        "nameAttrSelect": "Namens-Attribut auswählen:",
+        "ShpButton": "Shape Datei auswählen...",
+        "idAttr": "ID Spalte auswählen",
+        "nameAtrr": "Namenspalte auswählen",
+        "tableData": "2. Tabellendata",
+        "addTableData": "Tabellendaten hinzufügen...",
+        "shpLoaded": "Shape Datei wurde erfolgreich geladen..."
+    },
+    "tableView": {
+        "emptyMessage": "Keine Daten vorhanden."
+    },
+    "viewSwitcher": {
+        "dataImport": "Datei-Import",
+        "selectVisOrFunc": "Visualisierung oder Funktion wählen:",
+        "map": "Karte",
+        "table": "Tabelle",
+        "timeline" : "Zeitreihen",
+        "diagram" : "Diagramm",
+        "barChart" : "Balkendiagramm",
+        "sankey" : "Sankey-Diagramm",
+        "chord" : "Chord-Diagramm",
+        "statistics" : "Statistiken",
+         "data" : "Datei",
+         "databank" : "Datenbank",
+         "systeminfo" : "Systeminformationen",
+         "projektinfo" : "ProjektInfo",
+         "settings" : "Einstellungen"
+    },
+    "polygon": "Bezugsfläche",
+    "theme": "Thema",
+    "von": "Von",
+    "nach": "Nach",
+    "saldi": "Saldi",
+    "year": "Jahr(e)",
+    "selectAll": "alle auswählen...",
+    "deselectAll": "nichts auswählen...",
+    "classification": "Klassifikation",
+    "scaleAndColors": "Skala und Farbscheme",
+    "scaleAndColorsPositive": "positive Skala und Farbscheme",
+    "arrowsColor": "Pfeilfarbe",
+    "class": " Klasse",
+    "classes": " Klassen",
+    "classifications":{
+        "equidistant": "abstandsgetreu",
+        "stddeviation": "Standardabweichung",
+        "arithmetic_progression": "arithmetische Reihe",
+        "geometric_progression": "geometrische Reihe",
+        "quantile": "Quantile",
+        "jenks": "Brüche nach Jenks",
+        "custom": "benutzerdefiniert"
+    },
+    "menu": {
+        "languages": "Sprachen=",
+        "german": "Deutsch",
+        "english": "English DE",
+        "help": "Hilfe"
+    },
+    "classesArray": ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"]
+
+
+
+
+}
