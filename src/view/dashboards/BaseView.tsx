@@ -17,8 +17,11 @@ import DashboardView from './DashboardView';
 
 import Config from '../../config';
 import Log from '../../log';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface IBaseProps {
+export interface IBaseProps extends WithNamespaces {
 	db: alaSQLSpace.AlaSQL;
 	view: string;
 	space: string;
@@ -54,13 +57,16 @@ interface IBaseState {
 	activeLeftTab: number;
 }
 
-export default class BaseView extends React.Component<IBaseProps, IBaseState> {
+// export default 
+class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	constructor(props: IBaseProps) {
+		const {t}:any = props ;
 		super(props);
 		this.state = {
 			years: [],
 			location: null,
+			// theme: t('from'),
 			theme: 'Von',
 			dataProcessing: 'absolute',
 			migrationsInside: true,
@@ -84,6 +90,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	}
 
 	public render(): JSX.Element {
+		const {t}:any = this.props ;
 		const results = this.query();
 		const timeline = this.queryTimeline();
 		const statisticPerYearAusgabe = this.queryStatistics();
@@ -119,9 +126,11 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 						<img src="../assets/blue_huwlogo.png" />
 					</div>
 					<TabView activeIndex={this.state.activeLeftTab} onTabChange={(e) => this.setState({ activeLeftTab: e.index })} className="selectionstab">
-						<TabPanel header="Auswahl" contentClassName="selectionstab">
+						<TabPanel header={t('baseView.selection')} contentClassName="selectionstab">
+						{/* <TabPanel header="Auswahl" contentClassName="selectionstab"> */}
 							<Location
-								title="Bezugsfläche"
+								title={t('baseView.polygon')}
+								// title="Bezugsfläche"
 								locations={locations}
 								selectedLocation={this.state.location}
 								onSelectLocation={(newLocation) => this.setLocation(newLocation) }
@@ -142,7 +151,8 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 								setYears={(newYears) => this.setYears(newYears) }
 							/>
 						</TabPanel>
-						<TabPanel header="Darstellung" contentClassName="selectionstab">
+						<TabPanel header={t('baseView.representation')}contentClassName="selectionstab">
+						{/* <TabPanel header="Darstellung" contentClassName="selectionstab"> */}
 							<ClassificationSelections
 								algorithm={this.state.algorithm}
 								positiveColors={this.state.positiveColors}
@@ -205,6 +215,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	private constructQuery(target: string): string {
 		// disabled because of #2883
 		//const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
+		const {t}:any = this.props ;
 		const years = this.state.years;
 		const stringYears = R.join(
 			', ',
@@ -232,6 +243,7 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	}
 
 	private query(): any[] {
+		const {t}:any = this.props ;
 		let results: any[] = [];
 		if (R.or(R.isNil(this.state.location), R.isEmpty(this.props.yearsAvailable))) {
 			return results;
@@ -566,3 +578,4 @@ export default class BaseView extends React.Component<IBaseProps, IBaseState> {
 	}
 
 }
+export default withNamespaces()(BaseView);

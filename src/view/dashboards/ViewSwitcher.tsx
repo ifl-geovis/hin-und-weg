@@ -21,6 +21,9 @@ import SystemInfo from '../components/SystemInfo';
 import ProjektInfo from '../components/ProjektInfo';
 import StatisticsView from '../components/StatisticsView';
 import SettingsView from '../components/SettingsView';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 export interface TableItem {
 	Von: string;
@@ -40,7 +43,7 @@ export interface StatisticPerYearAusgabe {
 	max: number;
 }
 
-export interface IViewSwitcherProps {
+export interface IViewSwitcherProps extends WithNamespaces {
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
 	items: TableItem[];
@@ -74,7 +77,8 @@ interface IViewSwitcherState {
 	activeView: string;
 }
 
-export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherState> {
+// export default 
+class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherState> {
 
 	constructor(props: IViewSwitcherProps) {
 		super(props);
@@ -93,6 +97,7 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	}
 
 	public render(): JSX.Element {
+		const {t}:any = this.props ;
 		let views = this.getVisibleViews();
 		let showedView = this.selectCurrentView(this.state.activeView);
 		let onlyFile = (((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 )) && (this.state.activeView === 'file') );
@@ -100,7 +105,8 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 			<div className="viewswitcher">
 				<div className="p-grid">
 				<div className="p-col-4 p-component noprint">
-						{onlyFile ? "Datei-Import" : "Visualisierung oder Funktion wählen:"}</div>
+						{onlyFile ? t('viewSwitcher.fileImport') : t('viewSwitcher.selectVisOrFunc')}</div>
+						{/* {onlyFile ? "Datei-Import" : "Visualisierung oder Funktion wählen:"}</div> */}
 					<div className="p-col-8 noprint">
 					{onlyFile ? <div></div>
 					: <ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />}
@@ -130,19 +136,32 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 	}
 
 	private getVisibleViews() {
+		const {t}:any = this.props ;
 		let views: any[] = [];
-		this.addView(views, 'map', 'Karte', this.props.yearsAvailable.length > 0);
-		this.addView(views, 'table', 'Tabelle', this.props.yearsAvailable.length > 0);
-		this.addView(views, 'd3-bar', 'Balkendiagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		this.addView(views, 'd3-sankey', 'Sankey-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		this.addView(views, 'd3-chord', 'Chord-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		this.addView(views, 'd3-timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		this.addView(views, 'index', 'Indexwert', this.props.yearsAvailable.length > 0);
-		this.addView(views, 'statistics', 'Statistiken', (this.props.yearsSelected.length > 0) && (this.props.location != null));
-		this.addView(views, 'file', 'Datei', true);
-		this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
-		this.addView(views, 'systeminfo', 'Systeminformationen', true);
-		this.addView(views, 'projektinfo', 'ProjektInfo', true);
+		this.addView(views, 'map', t('viewSwitcher.map'), this.props.yearsAvailable.length > 0);
+		// this.addView(views, 'map', 'Karte', this.props.yearsAvailable.length > 0);
+		this.addView(views, 'table', t('viewSwitcher.table'), this.props.yearsAvailable.length > 0);
+		// this.addView(views, 'table', 'Tabelle', this.props.yearsAvailable.length > 0);
+		this.addView(views, 'd3-bar', t('viewSwitcher.barChart'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		// this.addView(views, 'd3-bar', 'Balkendiagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'd3-sankey', t('viewSwitcher.sankey'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		// this.addView(views, 'd3-sankey', 'Sankey-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'd3-chord', t('viewSwitcher.chord'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		// this.addView(views, 'd3-chord', 'Chord-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'd3-timeline', t('viewSwitcher.timeline'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		// this.addView(views, 'd3-timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
+		this.addView(views, 'index', t('viewSwitcher.index'), this.props.yearsAvailable.length > 0);
+		// this.addView(views, 'index', 'Indexwert', this.props.yearsAvailable.length > 0);
+		this.addView(views, 'statistics', t('viewSwitcher.statistics'), (this.props.yearsSelected.length > 0) && (this.props.location != null));
+		// this.addView(views, 'statistics', 'Statistiken', (this.props.yearsSelected.length > 0) && (this.props.location != null));
+		this.addView(views, 'file', t('viewSwitcher.file'), true);
+		// this.addView(views, 'file', 'Datei', true);
+		this.addView(views, 'db', t('viewSwitcher.database'), this.props.yearsAvailable.length > 0);
+		// this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
+		this.addView(views, 'systeminfo', t('viewSwitcher.systeminfo'), true);
+		// this.addView(views, 'systeminfo', 'Systeminformationen', true);
+		this.addView(views, 'projektinfo', t('viewSwitcher.projectinfo'), true);
+		// this.addView(views, 'projektinfo', 'ProjektInfo', true);
 		//this.addView(views, 'settings', 'Einstellungen', true);
 		return views;
 	}
@@ -319,3 +338,4 @@ export default class ViewSwitcher extends React.Component<IViewSwitcherProps, IV
 		);
 	}
 }
+export default withNamespaces()(ViewSwitcher);

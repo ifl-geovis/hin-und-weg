@@ -4,12 +4,16 @@ import { Button } from 'primereact/button';
 import MessageList from '../../data/MessageList';
 
 import Message from './Message';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface IMessagesProps {
+export interface IMessagesProps extends WithNamespaces{
 	change: () => void;
 }
 
-export default class Messages extends React.Component<IMessagesProps> {
+// export default 
+class Messages extends React.Component<IMessagesProps> {
 
 	constructor(props: IMessagesProps) {
 		super(props);
@@ -33,8 +37,9 @@ export default class Messages extends React.Component<IMessagesProps> {
 	}
 
 	private createMessageWidget(index: string, message: string, type: string) {
+		const {t}:any = this.props ;
 		return (
-			<Message key={"message-" + index} message={message} type={type} />
+			<Message key={"message-" + index} message={t(message)} type={type} />
 		);
 	}
 
@@ -44,10 +49,12 @@ export default class Messages extends React.Component<IMessagesProps> {
 	}
 
 	private createRemoveButton(visible: boolean) {
+		const {t}:any = this.props ;
 		if (!visible) return (<span></span>);
 		return (
-			<Button key="message-remove-button" label="Benachrichtigungen entfernen" onClick={this.removeMessages} className="p-button-link p-button-sm" />
+			<Button key="message-remove-button" label={t('messages')} onClick={this.removeMessages} className="p-button-link p-button-sm" />
 		);
 	}
 
 }
+export default withNamespaces()(Messages);
