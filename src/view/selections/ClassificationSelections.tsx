@@ -6,8 +6,11 @@ import { Button } from 'primereact/button';
 import SelectInput from "../input/SelectInput";
 import Config from "../../config";
 import Classification from "../../data/Classification";
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface IClassificationSelectionsProps
+export interface IClassificationSelectionsProps extends WithNamespaces
 {
 	algorithm: string;
 	positiveColors: string;
@@ -25,19 +28,21 @@ export interface IClassificationSelectionsProps
 	resetAutomaticClasses: (automatic: boolean) => void;
 }
 
-export default class ClassificationSelections extends React.Component<IClassificationSelectionsProps>
+// export default
+ class ClassificationSelections extends React.Component<IClassificationSelectionsProps>
 {
 
+
 	private algorithms = [
-		{label: "abstandsgetreu", value: "equidistant"},
-		{label: "arithmetische Reihe", value: "arithmetic_progression"},
-		{label: "benutzerdefiniert", value: "custom"},
-		{label: "Brüche nach Jenks", value: "jenks"},
-		{label: "geometrische Reihe", value: "geometric_progression"},
+		{label: "abstandsgetreu", value: "equidistant", translatedLabel: "classificationSelections.classifications.equidistant"},
+		{label: "arithmetische Reihe", value: "arithmetic_progression", translatedLabel: "classificationSelections.classifications.arithmetic_progression"},
+		{label: "benutzerdefiniert", value: "custom", translatedLabel: "classificationSelections.classifications.custom"},
+		{label: "Brüche nach Jenks", value: "jenks", translatedLabel: "classificationSelections.classifications.jenks"},
+		{label: "geometrische Reihe", value: "geometric_progression", translatedLabel: "classificationSelections.classifications.geometric_progression"},
 		//{label: "Standardabweichung", value: "stddeviation"},
-		{label: "Quantile", value: "quantile"},
+		{label: "Quantile", value: "quantile", translatedLabel: "classificationSelections.classifications.quantile"},
 	];
-	private classes : string[] = ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"];
+	// private classes : string[] = ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"];
 
 	constructor(props: IClassificationSelectionsProps)
 	{
@@ -50,17 +55,31 @@ export default class ClassificationSelections extends React.Component<IClassific
 
 	public render(): JSX.Element
 	{
-		const label = (this.props.withNegative) ? 'positive Skala und Farbschema' : 'Skala und Farbschema';
+		const {t}:any = this.props ;
+		const classesRender : string[] = i18n.t('classificationSelections.classesArray', { returnObjects: true });
+		const algorithmsRender = [
+			{label: "abstandsgetreu", value: "equidistant", translatedLabel: t("classificationSelections.classifications.equidistant")},
+			{label: "arithmetische Reihe", value: "arithmetic_progression", translatedLabel: t("classificationSelections.classifications.arithmetic_progression")},
+			{label: "benutzerdefiniert", value: "custom", translatedLabel: t("classificationSelections.classifications.custom")},
+			{label: "Brüche nach Jenks", value: "jenks", translatedLabel: t("classificationSelections.classifications.jenks")},
+			{label: "geometrische Reihe", value: "geometric_progression", translatedLabel: t("classificationSelections.classifications.geometric_progression")},
+			//{label: "Standardabweichung", value: "stddeviation"},
+			{label: "Quantile", value: "quantile", translatedLabel: t("classificationSelections.classifications.quantile")},
+		];const label = (this.props.withNegative) ? t('classificationSelections.scaleAndColorsPositive') : t('classificationSelections.scaleAndColors');
+		// const label = (this.props.withNegative) ? 'positive Skala und Farbschema' : 'Skala und Farbschema';
 		let negativeScale;
 		if (this.props.withNegative) negativeScale = this.getNegativeScale();
 		const automaticClassesButton = this.getAutomaticClassesButton();
 		return (
 			<Accordion activeIndex={0}>
-				<AccordionTab header="Klassifikation">
-					<Dropdown optionLabel="label" value={this.getSelectedAlgorithm()} options={this.algorithms} onChange={this.setAlgorithm} style={{width: "100%"}}/>
+				<AccordionTab header={t('classificationSelections.classification')}>
+				{/* <AccordionTab header="Klassifikation"> */}
+					<Dropdown optionLabel="translatedLabel" value={this.getSelectedAlgorithm()} options={algorithmsRender} onChange={this.setAlgorithm} style={{width: "100%"}}  />
+					{/* <Dropdown optionLabel="label" value={this.getSelectedAlgorithm()} options={this.algorithms} onChange={this.setAlgorithm} style={{width: "100%"}}  /> */}
 					<br /><br />
 					<div>{label}</div>
-					<SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/>
+					<SelectInput options={classesRender} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + t('classificationSelections.class')) : (this.props.positiveClasses + t('classificationSelections.classes'))} onSelected={this.props.setPositiveClasses}/>
+					{/* <SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/> */}
 					<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.positiveColors)} onChange={this.setPositiveColors} style={{ width: "100%" }}/>
 					{negativeScale}
 					{automaticClassesButton}
@@ -68,12 +87,14 @@ export default class ClassificationSelections extends React.Component<IClassific
 			</Accordion>
 		);
 	}
-
+	
 	private createColorOptions(raw: string[]): any[] {
+		const {t}:any = this.props ;
 		let results: any[] = [];
 		for (let colorscheme of raw) {
 			let item = {label: colorscheme, value: colorscheme};
-			if (colorscheme.startsWith('scheme')) item.label = 'Schema ' + colorscheme.substring(6);
+			if (colorscheme.startsWith('scheme')) item.label = t('classificationSelections.scheme') + colorscheme.substring(6);
+			// if (colorscheme.startsWith('scheme')) item.label = 'Schema ' + colorscheme.substring(6);
 			results.push(item);
 		}
 		return results;
@@ -114,24 +135,31 @@ export default class ClassificationSelections extends React.Component<IClassific
 	}
 
 	private getNegativeScale() {
+		const {t}:any = this.props ;
+		const classesRender : string[] = i18n.t('classificationSelections.classesArray', { returnObjects: true });
 		return (
 			<div>
 				<br />
-				<div>negative Skala und Farbschema</div>
-				<SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/>
+				<div>{t('classificationSelections.scaleAndColorsNegative')}</div>
+				{/* <div>negative Skala und Farbschema</div> */}
+				<SelectInput options={classesRender} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + t('classificationSelections.class')) : (this.props.negativeClasses + t('classificationSelections.classes'))} onSelected={this.props.setNegativeClasses}/>
+				{/* <SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/> */}
 				<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.negativeColors)} onChange={this.setNegativeColors} style={{ width: "100%" }}/>
 			</div>
 		);
 	}
 
 	private getAutomaticClassesButton() {
+		const {t}:any = this.props ;
 		if (!this.props.automaticButton) return null;
 		return (
 			<div>
 				<br />
-				<Button onClick={this.resetAutomaticClasses} label="empfohlene Klassenanzahl"/>
+				<Button onClick={this.resetAutomaticClasses} label={t('classificationSelections.classesNumber')}/>
+				{/* <Button onClick={this.resetAutomaticClasses} label="empfohlene Klassenanzahl"/> */}
 			</div>
 		);
 	}
 
 }
+export default withNamespaces()(ClassificationSelections);

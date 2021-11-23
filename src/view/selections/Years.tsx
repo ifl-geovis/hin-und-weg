@@ -5,15 +5,19 @@ import React, {MouseEvent} from "react";
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Button } from 'primereact/button';
 import Log from "../../log";
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface IYearsProps
+export interface IYearsProps extends WithNamespaces
 {
 	availableYears: string[];
 	selected: string[];
 	setYears: (newYears: string[]) => void;
 }
 
-export default class Years extends React.Component<IYearsProps>
+// export default
+ class Years extends React.Component<IYearsProps>
 {
 
 	constructor(props: IYearsProps)
@@ -27,13 +31,17 @@ export default class Years extends React.Component<IYearsProps>
 
 	public render(): JSX.Element
 	{
+		const {t}:any = this.props ;
 		const checkboxes = R.map(this.makeCheckBox, this.props.availableYears.sort());
 		return (
 			<Accordion activeIndex={0}>
-				<AccordionTab header="Jahr(e)">
-					<Button onClick={this.selectAllYears} label="alle"/>
+				<AccordionTab header={t('years.year')}>
+				{/* <AccordionTab header="Jahr(e)"> */}
+					<Button onClick={this.selectAllYears} label={t('years.all')}/>
+					{/* <Button onClick={this.selectAllYears} label="alle"/> */}
 					<span> </span>
-					<Button onClick={this.unselectAllYears} label="keine"/>
+					<Button onClick={this.unselectAllYears} label={t('years.none')}/>
+					{/* <Button onClick={this.unselectAllYears} label="keine"/> */}
 					<div className="p-grid" style={{ margin: "10px" }}>
 						{checkboxes}
 					</div>
@@ -84,3 +92,4 @@ export default class Years extends React.Component<IYearsProps>
 	}
 
 }
+export default withNamespaces()(Years);

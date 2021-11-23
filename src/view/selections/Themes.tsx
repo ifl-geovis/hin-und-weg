@@ -3,8 +3,11 @@ import { RadioButton } from "primereact/radiobutton";
 import R from "ramda";
 import * as React from "react";
 import { Accordion, AccordionTab } from 'primereact/accordion';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface IThemesProps {
+export interface IThemesProps extends WithNamespaces{
 	selectedTheme: string;
 	setTheme: (theme: string) => void;
 	themes: string[];
@@ -13,7 +16,8 @@ export interface IThemesProps {
 	populationDataLoaded: boolean;
 }
 
-export default class Themes extends React.Component<IThemesProps> {
+// export default
+ class Themes extends React.Component<IThemesProps> {
 
 	constructor(props: IThemesProps) {
 		super(props);
@@ -35,9 +39,12 @@ export default class Themes extends React.Component<IThemesProps> {
 	}
 
 	private createWanderungsSelector(): JSX.Element {
+		const {t}:any = this.props ;
 		if (!this.props.populationDataLoaded) return (<span></span>);
-		const absolute = this.makeRadioButton("absolute", "Anzahl Umzüge");
-		const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
+		const absolute = this.makeRadioButton("absolute", t('topics.value'));
+		// const absolute = this.makeRadioButton("absolute", "Anzahl Umzüge");
+		const wanderungsrate = this.makeRadioButton("wanderungsrate", t('topics.rate'));
+		// const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
 		return (
 			<div>
 				<hr />
@@ -48,11 +55,14 @@ export default class Themes extends React.Component<IThemesProps> {
 	}
 
 	private makeRadioButtonTheme(theme: string): JSX.Element {
+		const {t}:any = this.props ;
+		let themeLabel = theme === "Von" ? t('topics.from') : theme === "Nach" ? t('topics.to') : theme === "Saldi" ? t('topics.saldi') : "";
 		return (
 			<div key={theme} className="p-col-12">
 				<RadioButton inputId={theme} name="theme" value={theme}
 							 onChange={(e) => this.props.setTheme(e.value)} checked={this.props.selectedTheme === theme} />
-				<label htmlFor={theme} className="p-radiobutton-label">{theme}</label>
+				<label htmlFor={theme} className="p-radiobutton-label">{themeLabel}</label>
+				
 			</div>
 		);
 	}
@@ -67,3 +77,4 @@ export default class Themes extends React.Component<IThemesProps> {
 	}
 
 }
+export default withNamespaces()(Themes);
