@@ -277,6 +277,12 @@
         "text4": "Am Projekt am IfL beteiligt waren: Francis Harvey, Tim Leibert, Eric Losang, Aura Moldovan, Maria Turchenko, Nicola Simon, Rowenia Bender (Stand 4.2021)",
         "text5": "Ihr Ansprechpartner für weitere Informationen:",
         "text6": "Leibniz-Institut für Länderkunde"
+    },
+    "timeline": {
+        "year": "Jahr",
+        "incoming": "Zuzug",
+        "outgoing": "Wegzug",
+        "saldo": "Saldo"
     }
     
        

@@ -280,6 +280,12 @@
         "text4": "Participants in the project at the IfL were: Francis Harvey, Tim Leibert, Eric Losang, Aura Moldovan, Maria Turchenko, Nicola Simon, Rowenia Bender (State 4.2021)",
         "text5": "Your contact for further information:",
         "text6": "Leibniz Institute for Regional Geography"
+    },
+    "timeline": {
+        "year": "Year",
+        "incoming": "Outgoing flow",
+        "outgoing": "Incoming flow",
+        "saldo": "Saldo"
     }
     
     
