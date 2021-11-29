@@ -4,14 +4,16 @@ import R from 'ramda';
 import { Dropdown } from "primereact/dropdown";
 import * as d3 from 'd3';
 
-import { D3IndexValuesChart} from "./D3IndexValuesChart";
+import D3IndexValuesChart from "./D3IndexValuesChart";
 import ContainerDimensions from 'react-container-dimensions';
 
 import Log from '../../log';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 
-
-export interface ID3IndexViewProps {
+export interface ID3IndexViewProps extends WithNamespaces {
 	db: alaSQLSpace.AlaSQL;
 	location: string | null;
 	theme: string;
@@ -31,7 +33,8 @@ interface ID3IndexViewState {
 	referenceLocation: string;
 }
 
-export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3IndexViewState>
+// export default 
+class D3IndexView extends React.Component<ID3IndexViewProps, ID3IndexViewState>
 {
 
 	private types = [
@@ -57,22 +60,30 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 
 	public render(): JSX.Element
 	{
+		const {t}:any = this.props ;
 		let data = this.queryIndex();
-		Log.debug("index value data: ", data);
+		// Log.debug("index value data: ", data);
 		let selector = null;
 		if (this.state.type === "year") selector = this.createYearSelector();
 		else if (this.state.type === "location") selector = this.createRegionSelector();
 		else selector = this.createYearSelector();
 		let view = this.createView(data);
 		let refText : string = this.state.type === "location" ? this.state.referenceLocation : " Jahr " + this.state.referenceYear;
-		let themeTitel = this.props.theme === "Von" ? "Wegzüge aus" : this.props.theme === "Nach" ? "Zuzüge nach" : this.props.theme === "Saldi" ? "Saldi für" : "";
-		return (
+		let themeTitel = this.props.theme === "Von" ? t('index.themeFrom') : this.props.theme === "Nach" ? t('index.themeTo') : this.props.theme === "Saldi" ? t('index.themeSaldi') : "";
+		// let themeTitel = this.props.theme === "Von" ? "Wegzüge aus" : this.props.theme === "Nach" ? "Zuzüge nach" : this.props.theme === "Saldi" ? "Saldi für" : "";
+		let typesRender = [
+			{label: "Jahr", value: "year", labelTranslated: t('index.labelYear')},
+			{label: "Raumeinheit", value: "location", labelTranslated: t('index.labelSpace')},
+		];return (
 			<div>
-				<h3>{themeTitel}  {this.props.location}, Indexwert: {refText} (=100%) </h3>
+				<h3>{themeTitel}  {this.props.location}, {t('index.indexvalue')}: {refText} (=100%) </h3>
+				{/* <h3>{themeTitel}  {this.props.location}, Indexwert: {refText} (=100%) </h3> */}
 				<div className="noprint">
-					Auswahl Indexwert:
+					{t('index.select')}
+					{/* Auswahl Indexwert: */}
 					&nbsp;
-					<Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} />
+					<Dropdown optionLabel="labelTranslated" value={this.getType()} options={typesRender} onChange={this.setType} />
+					{/* <Dropdown optionLabel="label" value={this.getType()} options={this.types} onChange={this.setType} /> */}
 					&nbsp;
 					{selector}
 					&nbsp;
@@ -450,3 +461,4 @@ export default class D3IndexView extends React.Component<ID3IndexViewProps, ID3I
 	}
 
 }
+export default withNamespaces()(D3IndexView);

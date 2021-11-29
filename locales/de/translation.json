@@ -82,7 +82,7 @@
          "file" : "Datei",
          "database" : "Datenbank",
          "systeminfo" : "Systeminformationen",
-         "projektinfo" : "ProjektInfo",
+         "projectinfo" : "ProjektInfo",
          "settings" : "Einstellungen",
          "index": "Indexwert"
     },
@@ -174,9 +174,109 @@
         },
         "classesNumber": "empfohlene Klassenanzahl",
         "scheme": "Schema",
-        "classesArray": ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"]
+        "classesArray": ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"],
+        "orange": "orange",
+        "red": "rot",
+        "blue": "blau",
+        "green": "grün"
+    },
+    "legend":{
+        "title": "Legende",
+        "for": " für ",
+        "outgoing": "Wegzüge von ",
+        "incoming": "Zuzüge nach ",
+        "saldi": "Saldi für ",
+        "outMovement": "Wegzug",
+        "inMovement": "Zuzug",
+        "negativeSaldi": "negative Saldi ",
+        "positiveSaldi": "positive Saldi ",
+        "titleTimeline": "Zeitreihen"
+    },
+    "geodataView": {
+        "controlElements": "Kontrollelemente",
+        "mapInfo": "Karteninformationen:",
+        "names": "Namen anzeigen",
+        "arrows": "Bewegung visualisieren",
+        "values": "Anzahl der Umzüge anzeigen",
+        "noLabels": "Beschriftungen ausschalten",
+        "transparency": "Transparenz:",
+        "backgroundMap": "Hintergrundkarte:",
+        "onlineMap": "zeige Hintergrundkarte (online)",
+        "offlineMap": "Offline Map auswählen",
+        "arrowsFilter1" : "Es werden alle Werte über ",
+        "arrowsFilter2" : " angezeigt.",
+        "none": "keine"
+    },
+    "table":{
+        "value": "Wert",
+        "noData": "Keine Daten vorhanden.",
+        "filter": "Filtern ...",
+        "pageReport": "({currentPage} von {totalPages})",
+        "year": "Jahr",
+        "rateVon": "RateVon",
+        "rateNach": "RateNach",
+        "queryResult": " Ergebnis der Abfrage",
+        "query": " SQL-Abfrage",
+        "execute": "Ausführen",
+        "NaN": "NaN steht für Not a Number (keine Zahl). Dies betrifft anonymisierte Daten und die Ergebnisse von Berechnungen, die kein Ergebnis haben (wie Division durch Null)."
 
-
+    },
+    "charts":{
+        "scale100": "Skalierung 100%",
+        "scale75": "Skalierung 75%",
+        "scale50": "Skalierung 50%",
+        "reverse": "Umgekehrt filtern",
+        "nofilter": "Kein Filter",
+        "noNaN": "Kein NaN",
+        "sliderSaldi1": "Anzeige Werte in Bereich: ab ",
+        "sliderSaldi2": " bis ",
+        "sliderSaldi3": "und ab ",
+        "slider": "Anzeige ab Wert: ",
+        "values": "Werte anzeigen"
+    },
+    "index":{
+        "labelYear": "Jahr",
+        "labelSpace": "Raumeinheit",
+        "select": "Auswahl Indexwert",
+        "themeFrom": "Wegzüge aus",
+        "themeTo": "Zuzüge nach",
+        "themeSaldi": "Saldi für",
+        "indexvalue": "Indexwert",
+        "warnText": "Achtung, der gewählte Indexwert ist gleich 0. ",
+        "warnText2": "Es kann kein prozentualer Bezug hergestellt werden. ",
+		"warnText3": "Dargestellt sind absolute Werte!",
+		"warnText4": "Achtung, der gewählte Indexwert ist NaN. ",
+		"warnText5": "Achtung, das Bezugsjahr wird nicht unter den verfügbaren Jahren ausgewählt.",
+		"warnText6": "Bitte wählen Sie ein Jahr oder Jahre aus. ",
+		"warnText7": "Achtung, die gewählte Bezugsfläche ist Null. ",
+        "warnText8": "Bitte wählen Sie die Bezugsfläche aus. ",
+        "value": "Wert",
+        "index": "Index"
+    },
+    "statistics":{
+        "title1": "Statistik für",
+        "title2": " in den Jahren ",
+        "mean": "Mittelwert",
+        "median": "Median",
+        "maxIncoming": "Hinzugezogen Maximal:",
+        "maxOutgoing": "Weggezogen Maximal:",
+        "variance": "Varianz:",
+        "stdeviation": "Standardabweichung:",
+        "mode": "Modus:",
+        "year": "Jahr",
+        "most": "Meiste",
+        "saldi": "Saldi",
+        "incoming": "Zuzüge",
+        "outgoing": "Wegzüge"
+    },
+    "projectInfo":{
+        "title": "hin&weg Projektinformationen",
+        "text1": "hin&weg ist eine Anwendung zur Visualisierung von Umzugsbewegungen.",
+        "text2": "Hersteller der Software ist das Leibniz Institut für Länderkunde (IfL), Leipzig, www.leibniz-ifl.de.",
+        "text3": "Die Software wurde von der DELPHI IMM GmbH in Potsdam entwickelt.",
+        "text4": "Am Projekt am IfL beteiligt waren: Francis Harvey, Tim Leibert, Eric Losang, Aura Moldovan, Maria Turchenko, Nicola Simon, Rowenia Bender (Stand 4.2021)",
+        "text5": "Ihr Ansprechpartner für weitere Informationen:",
+        "text6": "Leibniz-Institut für Länderkunde"
     }
     
        

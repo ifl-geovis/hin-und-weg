@@ -4,6 +4,9 @@ import R from 'ramda';
 
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 export interface ID3IndexValuesChartItem {
 	label: string;
@@ -12,7 +15,7 @@ export interface ID3IndexValuesChartItem {
 	yearSelect: string;
 }
 
-export interface ID3IndexValuesChartProps {
+export interface ID3IndexValuesChartProps extends WithNamespaces{
 	db: alaSQLSpace.AlaSQL;
 	location: string | null;
 	theme: string;
@@ -32,7 +35,8 @@ interface ID3IndexValuesChartState {
 	percent: boolean;
 }
 
-export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3IndexValuesChartState> {
+// export 
+class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3IndexValuesChartState> {
 	private svgRef?: SVGElement | null;
 	private svgID?: string;
 
@@ -68,7 +72,6 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 	}
 
 	public componentDidUpdate() {
-
 		let data = this.props.data;
 		let dataSorted =  this.sortData(data);
 		this.removePreviousChart(this.svgID);
@@ -110,6 +113,10 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 	// DRAW D3 CHART
 	private drawIndxValChart(data: ID3IndexValuesChartItem[], theme: string) {
+		const {t}:any = this.props ;
+		let titleIndex = t('index.index');
+		let titleValue = t('index.value');
+
 		const svgIndxValChart = select(this.svgRef!);
 
 		const labels = data.map((d) => d.label);
@@ -149,9 +156,9 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const refLabelIndx = checkRef(labels, this.props.referenceYear , this.props.referenceLocation  );
 		const results = data.map((d) => d.result);
 		const calculateIfRefNaN: any = () =>  {if (typeof(refLabelIndx) === "number"){   return typeof results[refLabelIndx]  !== 'number' || !results[refLabelIndx] && results[refLabelIndx] !== 0 }};
-		console.log("refLabelIndx: " + refLabelIndx);
+		// console.log("refLabelIndx: " + refLabelIndx);
 		const ifRefNaN = calculateIfRefNaN();
-		  console.log("ifRefNaN: " + ifRefNaN);
+		//   console.log("ifRefNaN: " + ifRefNaN);
 		const calculateIfYearSelected : any = () =>  { return ( R.contains(this.props.referenceYear, this.props.yearsSelected)) ? true : false};
 		const ifYearSelected = calculateIfYearSelected();
 
@@ -172,20 +179,28 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		const calculateIfZeroResult: any = (results: number[] ) => { if(results) {return results.includes(0) ? true :false}  };
 		const ifZeroResult :boolean  = calculateIfZeroResult(results);
 
-		const warnText = "Achtung, der gewählte Indexwert ist gleich 0. ";
-		const warnText2 = "Es kann kein prozentualer Bezug hergestellt werden. ";
-		const warnText3 = "Dargestellt sind absolute Werte!";
-		const warnText4 = "Achtung, der gewählte Indexwert ist NaN. ";
-		const warnText5 = "Achtung, das Bezugsjahr wird nicht unter den verfügbaren Jahren ausgewählt."
-		const warnText6 = "Bitte wählen Sie ein Jahr oder Jahre aus. "
-		const warnText7 = "Achtung, die gewählte Bezugsfläche ist Null. "
-		const warnText8 = "Bitte wählen Sie die Bezugsfläche aus. "
+		const warnText = t('index.warnText');
+		// const warnText = "Achtung, der gewählte Indexwert ist gleich 0. ";
+		const warnText2 = t('index.warnText2');
+		// const warnText2 = "Es kann kein prozentualer Bezug hergestellt werden. ";
+		const warnText3 = t('index.warnText3');
+		// const warnText3 = "Dargestellt sind absolute Werte!";
+		const warnText4 = t('index.warnText4');
+		// const warnText4 = "Achtung, der gewählte Indexwert ist NaN. ";
+		const warnText5 = t('index.warnText5');
+		// const warnText5 = "Achtung, das Bezugsjahr wird nicht unter den verfügbaren Jahren ausgewählt."
+		const warnText6 = t('index.warnText');
+		// const warnText6 = "Bitte wählen Sie ein Jahr oder Jahre aus. "
+		const warnText7 = t('index.warnText7');
+		// const warnText7 = "Achtung, die gewählte Bezugsfläche ist Null. "
+		const warnText8 = t('index.warnText8');
+		// const warnText8 = "Bitte wählen Sie die Bezugsfläche aus. "
 
 
-		console.log("this.props.location: " + this.props.location); 
-		console.log("!refLabelIndx: " + !refLabelIndx); 
-		console.log("this.props.yearsSelected: " + this.props.yearsSelected); 
-		console.log("!this.props.yearsSelected: " + !this.props.yearsSelected); 
+		// console.log("this.props.location: " + this.props.location); 
+		// console.log("!refLabelIndx: " + !refLabelIndx); 
+		// console.log("this.props.yearsSelected: " + this.props.yearsSelected); 
+		// console.log("!this.props.yearsSelected: " + !this.props.yearsSelected); 
 
 
 		  let textWidth = 0;
@@ -411,7 +426,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("x",0 - (HEIGHT / 2))
 				.attr("dy", "1em")
 				.style("text-anchor", "middle")
-				.text(percentage === true ? "%" : "Wert");
+				.text(percentage === true ? "%" : t('index.value'));
+				// .text(percentage === true ? "%" : "Wert");
 
 			// add the X gridlines
 			indxValChart
@@ -488,8 +504,10 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 						circlesGraph.select("title")
 							.text(function(d, i) {
 							let t:string
-							t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-							+ "\n" + "Wert: " + d.result
+							t =  d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+							// t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+							+ "\n" + titleValue + ": " + d.result
+							// + "\n" + "Wert: " + d.result
 							return t
 						})
 					
@@ -582,9 +600,11 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				circlesGraph.append("title")
 				circlesGraph.select("title")
 						.text(function(d, i) {
-						let t:string
-						t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-						+ "\n" + "Wert: " + d.result
+						let t:string 
+						t =  d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+						// t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+						+ "\n" + titleValue + ": " + d.result
+						// + "\n" + "Wert: " + d.result
 						return t
 					})
 				}
@@ -650,7 +670,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("x",0 - (HEIGHT / 2))
 				.attr("dy", "1em")
 				.style("text-anchor", "middle")
-				.text(percentage === true ? "%" : "Wert");
+				.text(percentage === true ? "%" : titleValue);
+				// .text(percentage === true ? "%" : "Wert");
 
 			// add the X gridlines
 			indxValChart
@@ -725,9 +746,11 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 							 circlesGraph.append("title")
 							 circlesGraph.select("title")
 										.text(function(d, i) {
-										let t:string
-										t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-										+ "\n" + "Wert: " + d.result
+										let t:string 
+										t = d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+										// t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+										+ "\n" + titleValue + ": " + d.result
+										// + "\n" + "Wert: " + d.result
 										return t
 								  })
 					
@@ -820,9 +843,11 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					 circlesGraph.append("title")
 					 circlesGraph.select("title")
 								.text(function(d, i) {
-								let t:string
-								t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-								+ "\n" + "Wert: " + d.result
+								let t:string  //titleIndex
+								t = d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								// t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								+ "\n" + titleValue + ": " + d.result
+								// + "\n" + "Wert: " + d.result
 								return t
 						  })
 						}
@@ -888,7 +913,8 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 				.attr("x",0 - (HEIGHT / 2))
 				.attr("dy", "1em")
 				.style("text-anchor", "middle")
-				.text(percentage === true ? "%" : "Wert");
+				.text(percentage === true ? "%" : titleValue);
+				// .text(percentage === true ? "%" : "Wert");
 
 			// add the X gridlines
 			indxValChart
@@ -964,8 +990,10 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string
-								t = d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-							+ "\n" + "Wert: " + d.result
+								t = d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								// t = d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+							+ "\n" + titleValue + ": " + d.result
+							// + "\n" + "Wert: " + d.result
 								return t
 						  })
 		}else if (this.props.type === 'year'){	
@@ -1062,8 +1090,10 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 					 circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string
-								t =  d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-								+ "\n" + "Wert: " + d.result
+								t =  d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								// t =  d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								+ "\n" + titleValue + ": " + d.result
+								// + "\n" + "Wert: " + d.result
 								return t
 						  })
 				}
@@ -1081,6 +1111,7 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 
 	public render() {
 		const { width, height } = this.props;
+		const {t}:any = this.props ;
 
 		return (
 			<div className="p-grid">
@@ -1094,3 +1125,4 @@ export class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps
 		);
 	}
 }
+export default withNamespaces()(D3IndexValuesChart);

@@ -1,10 +1,13 @@
 import React from "react";
 // import ChartConfigView from "./ChartConfigView";
-import { D3Sankey, ID3SankeyItem} from "./D3Sankey";
+import D3Sankey, {ID3SankeyItem} from "./D3Sankey";
 import ContainerDimensions from 'react-container-dimensions';
 import { RadioButton } from "primereact/radiobutton";
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface ID3SankeyViewProps
+export interface ID3SankeyViewProps extends WithNamespaces
 {
 	items: ID3SankeyItem[];
 	theme: string;
@@ -18,7 +21,8 @@ interface ID3SankeyViewState
 {
   scale: string,
 }
-export default class D3SankeyChartsView extends React.Component<ID3SankeyViewProps, ID3SankeyViewState>
+// export default 
+class D3SankeyView extends React.Component<ID3SankeyViewProps, ID3SankeyViewState>
 {
 
 	constructor(props: ID3SankeyViewProps)
@@ -33,15 +37,12 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 
 	public render(): JSX.Element
 	{
-		console.log("D3SankeyView data: " + JSON.stringify(this.props.items));
-
-
-
+		const {t}:any = this.props ;
 		return (
 			<div className="p-grid">
-				<div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">Skalierung 100%</label> </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='rb2' value='width75' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width75'} /> <label className="p-checkbox-label">Skalierung 75%</label>  </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='rb3' value='width50' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width50'} /> <label className="p-checkbox-label">Skalierung 50%</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">{t('charts.scale100')}</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='rb2' value='width75' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width75'} /> <label className="p-checkbox-label">{t('charts.scale75')}</label>  </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='rb3' value='width50' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width50'} /> <label className="p-checkbox-label">{t('charts.scale50')}</label> </div>
 				{/* <div className="p-col-3"> <RadioButton inputId='rb4' value='width25' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width25'} /> <label className="p-checkbox-label">Skalierung 25%</label> </div> */}
 
 
@@ -68,3 +69,4 @@ export default class D3SankeyChartsView extends React.Component<ID3SankeyViewPro
 	// }
 
 }
+export default withNamespaces()(D3SankeyView);

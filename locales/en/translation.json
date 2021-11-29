@@ -84,7 +84,7 @@
          "file" : "File",
          "database" : "Database",
          "systeminfo" : "System Information",
-         "projektinfo" : "Project Information",
+         "projectinfo" : "Project Information",
          "settings" : "Settings",
          "index": "Index Value"
     },
@@ -150,7 +150,7 @@
         "rate": "Migration Rate"
     },
     "location": {
-        "insideMigration": "Consider moves within the area"
+        "insideMigration": "Include the moves within the area"
     },
     "years": {
         "year": "Year(s)",
@@ -176,8 +176,112 @@
         },
         "classesNumber": "recommended number of classes",
         "scheme": "Scheme",
-        "classesArray": ["1 class", "2 classes", "3 classes", "4 classes", "5 classes", "6 classes", "7 classes", "8 classes", "9 classes"]
-    
+        "classesArray": ["1 class", "2 classes", "3 classes", "4 classes", "5 classes", "6 classes", "7 classes", "8 classes", "9 classes"],
+        "orange": "orange",
+        "red": "red",
+        "blue": "blue",
+        "green": "green"
+    },
+    "legend":{
+        "title": "Legend",
+        "for": " for ",
+        "outgoing": "Outgoing Flows from ",
+        "incoming": "Incoming Flows to ",
+        "saldi": "Saldi for ",
+        "outMovement": "outgoing flow",
+        "inMovement": "incoming flow",
+        "negativeSaldi": "negative Saldi ",
+        "positiveSaldi": "positive Saldi ",
+        "titleTimeline": "Timeline"
+
+    },
+    "geodataView": {
+        "controlElements": "Control Elements",
+        "mapInfo": "map Information:",
+        "names": "show names",
+        "arrows": "visualize movement",
+        "values": "show number of moves",
+        "noLabels": "disable labels",
+        "transparency": "transparency:",
+        "backgroundMap": "background map:",
+        "onlineMap": "show background map (online)",
+        "offlineMap": "select offline map",
+        "arrowsFilter1" : "All values above ",
+        "arrowsFilter2" : " are displayed.",
+        "none": "none"
+    },
+    "table":{
+        "value": "Value",
+        "noData": "No data available.",
+        "filter": "filter ...",
+        "pageReport": "({currentPage} out of {totalPages})",
+        "year": "Year",
+        "rateVon": "Rate From",
+        "rateNach": "Rate To",
+        "queryResult": " Result of the query",
+        "query": " SQL Query",
+        "execute": "Execute",
+        "NaN": "NaN stands for Not a Number. This affects anonymized data and the results of the calculations that have no result (such as division by zero)."
+
+    },
+    "charts":{
+        "scale100": "Scale 100%",
+        "scale75": "Scale 75%",
+        "scale50": "Scale 50%",
+        "reverse": "Reverse filter",
+        "nofilter": "No filter",
+        "noNaN": "No NaN",
+        "sliderSaldi1": "Display values in range: from ",
+        "sliderSaldi2": " to ",
+        "sliderSaldi3": "and from ",
+        "slider": "Display from value: ",
+        "values": "Show values"
+    },
+    "index":{
+        "labelYear": "Year",
+        "labelSpace": "Area",
+        "select": "Select an index value",
+        "themeFrom": "Outgoing movement from",
+        "themeTo": "Incoming movement to",
+        "themeSaldi": "Saldi for",
+        "indexvalue": "Index Value",
+        "warnText": "Attention, the selected index value is equal to 0. ",
+        "warnText2": "It is not possible to establish a percentage reference. ",
+		"warnText3": "Shown are absolute values!",
+		"warnText4": "Attention, the selected index value is NaN. ",
+		"warnText5": "Attention, the reference year is not selected from the available years.",
+		"warnText6": "Please select a year or years. ",
+		"warnText7": "Attention, the selected reference area is zero. ",
+        "warnText8": "Please select the reference area. ",
+        "value": "Value",
+        "index": "Index"
+    },
+    "statistics":{
+        "title1": "Statistics for",
+        "title2": " in the years" ,
+        "mean": "Mean",
+        "median": "Median",
+        "maxIncoming": "Maximum incoming flow:",
+        "maxOutgoing": "Maximum outgoing flow:",
+        "variance": "Variance:",
+        "stdeviation": "Standard deviation:",
+        "mode": "Mode:",
+        "year": "Year",
+        "most": "The Most",
+        "saldi": "Saldi",
+        "incoming": "Incoming Flows",
+        "outgoing": "Outgoing Flows"
+    },
+    "projectInfo":{
+        "title": "hin&weg Project Information",
+        "text1": "hin&weg is an application for the visualization of the movement data.",
+        "text2": "The software producer is the Leibniz Institute for Regional Geography (IfL), Leipzig, www.leibniz-ifl.de.",
+        "text3": "The software was developed by DELPHI IMM GmbH in Potsdam.",
+        "text4": "Participants in the project at the IfL were: Francis Harvey, Tim Leibert, Eric Losang, Aura Moldovan, Maria Turchenko, Nicola Simon, Rowenia Bender (State 4.2021)",
+        "text5": "Your contact for further information:",
+        "text6": "Leibniz Institute for Regional Geography"
     }
+    
+    
 
 }

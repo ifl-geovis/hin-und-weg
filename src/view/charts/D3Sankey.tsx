@@ -2,14 +2,15 @@ import * as React from "react";
 import {Slider as Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
 import { InputText } from 'primereact/inputtext';
-
-
 import * as d3 from 'd3';
 import * as d3Sankey from 'd3-sankey';
 import { select } from 'd3-selection';
 import R from "ramda";
 import Classification from '../../data/Classification';
 import Legend from "../elements/Legend";
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 export interface ID3SankeyItem
 {
@@ -19,7 +20,7 @@ export interface ID3SankeyItem
   Absolutwert: number;
 }
 
-export interface ID3SankeyProps {
+export interface ID3SankeyProps extends WithNamespaces{
    data: ID3SankeyItem[];
     theme: string;
     jahr?: string;
@@ -63,7 +64,8 @@ interface DAG {
 }
 
 
-export class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
+// export 
+class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     private svgRef?: SVGElement | null;
     private svgID?: string;
     private heightResponsive?: number;
@@ -902,6 +904,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
     let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
     let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
     let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
+		const {t}:any = this.props ;
 
     return (
       <div className="p-grid">
@@ -912,7 +915,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
             checked={this.state.checked}
             disabled= {(this.props.theme === 'Saldi') ? false : true}
           />
-          <label className="p-checkbox-label">Umgekehrt filtern</label>
+          <label className="p-checkbox-label">{t('charts.reverse')}</label>
           </div>
           <div className="p-col-6 noprint">
             <Checkbox
@@ -921,7 +924,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
               onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
               checked={this.state.checkedNoFilter}
             />
-            <label className="p-checkbox-label">Kein Filter</label>
+            <label className="p-checkbox-label">{t('charts.nofilter')}</label>
           </div>
 
 
@@ -953,8 +956,8 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
             {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
         <div className="p-col-2 noprint">
           {this.props.theme == "Saldi" ? this.state.checked ?
-            'Anzeige Werte in Bereich: ab ' + (wanderungsRate ? min/1000 : min) + ' bis ' :
-            'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
+            t('charts.sliderSaldi1') + (wanderungsRate ? min/1000 : min) +t('charts.sliderSaldi2')  :
+            t('charts.sliderSaldi1')  : t('charts.slider') }
             </div>
             <div className="p-col-2 noprint">
               {this.props.theme == "Saldi" ?
@@ -973,7 +976,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
              }
              </div>
             <div className="p-col-2 noprint">{this.props.theme == "Saldi" ? this.state.checked === true?
-              'und ab ' : 'bis ' : ' '}
+              t('charts.sliderSaldi3')  : t('charts.sliderSaldi2')  : ' '}
             </div>
              <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
               <InputText
@@ -995,7 +998,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
             checked={this.state.checkedLabel}
             // disabled= {(this.props.theme === 'Saldi') ? false : true}
           />
-          <label className="p-checkbox-label">Werte anzeigen</label>
+          <label className="p-checkbox-label">{t('charts.values')}</label>
         </div>
         <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
@@ -1007,3 +1010,4 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
 
 }
 
+export default withNamespaces()(D3Sankey);

@@ -2,16 +2,15 @@ import * as React from 'react';
 import { Slider } from 'primereact/slider';
 import { Checkbox } from 'primereact/checkbox';
 import Classification from '../../data/Classification';
-
-
-
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import R from 'ramda';
 import Legend from '../elements/Legend';
 import { InputText } from 'primereact/inputtext';
 // import { Accordion, AccordionTab } from 'primereact/accordion';
-
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 export interface ID3ChartItem {
 	Von: string;
@@ -20,7 +19,7 @@ export interface ID3ChartItem {
 	Absolutwert: number;
 }
 
-export interface ID3ChartProps {
+export interface ID3ChartProps extends WithNamespaces{
 	data: ID3ChartItem[];
 	theme: string;
 	width: number;
@@ -42,7 +41,8 @@ interface ID3ChartState {
 
 }
 
-export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
+// export 
+class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 	private svgRef?: SVGElement | null;
 	private svgID?: string;
 
@@ -800,6 +800,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
 		let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
 		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
+		const {t}:any = this.props ;
 
 		return (
 			<div className="p-grid">
@@ -812,7 +813,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 						checked={this.state.checked}
 						disabled={this.props.theme === 'Saldi' ? false : true}
 					/>
-					<label className="p-checkbox-label">Umgekehrt filtern</label>
+					<label className="p-checkbox-label">{t('charts.reverse')}</label>
 				</div>
 				<div className="p-col-4 noprint">
 				<Checkbox
@@ -821,7 +822,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
 				  checked={this.state.checkedNoFilter}
 				/>
-				<label className="p-checkbox-label">Kein Filter</label>
+				<label className="p-checkbox-label">{t('charts.nofilter')}</label>
 			 </div>
 		  <div className="p-col-4 noprint">
 				<Checkbox
@@ -830,7 +831,7 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNaN: e.checked})}
 				  checked={this.state.checkedNaN}
 				/>
-				<label className="p-checkbox-label">Kein NaN</label>
+				<label className="p-checkbox-label">{t('charts.noNaN')}</label>
 			 </div>
 
 				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
@@ -865,8 +866,10 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				{/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
 				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ? this.state.checked ?
-					'Anzeige Werte in Bereich: ab ' + (wanderungsRate ?  min/1000 : min) + ' bis ' :
-					'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
+					t('charts.sliderSaldi1') + (wanderungsRate ?  min/1000 : min) + t('charts.sliderSaldi2') :
+					// 'Anzeige Werte in Bereich: ab ' + (wanderungsRate ?  min/1000 : min) + ' bis ' :
+					t('charts.sliderSaldi1') : t('charts.slider')}
+					{/* 'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '} */}
 					</div>
 				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ?
@@ -886,7 +889,8 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					}
 				</div>
 				<div className="p-col-2 noprint">{this.props.theme == 'Saldi' ? this.state.checked === true?
-						'und ab ' : 'bis ' : ' '}
+						t('charts.sliderSaldi3') : t('charts.sliderSaldi2') : ' '}
+						{/* 'und ab ' : 'bis ' : ' '} */}
 				</div>
 				<div className="p-col-2 noprint">
 					{this.props.theme == 'Saldi' ?
@@ -915,3 +919,4 @@ export class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		);
 	}
 }
+export default withNamespaces()(D3Chart);

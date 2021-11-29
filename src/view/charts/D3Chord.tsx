@@ -2,14 +2,14 @@ import * as React from "react";
 import {Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
 import { InputText } from 'primereact/inputtext';
-
-
-
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import R from "ramda";
 import Classification from '../../data/Classification';
 import Legend from "../elements/Legend";
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 export interface ID3ChordItem
 {
@@ -19,7 +19,7 @@ export interface ID3ChordItem
   Absolutwert: number;
 }
 
-export interface ID3ChordProps {
+export interface ID3ChordProps extends WithNamespaces{
   data: ID3ChordItem[];
   theme: string;
   width: number;
@@ -40,7 +40,8 @@ interface ID3ChordState
   checkedNoFilter: boolean,
 }
 
-export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
+// export 
+class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     private svgRef?: SVGElement | null;
     private svgID?: string;
     private checkedLabel?: boolean;
@@ -1034,7 +1035,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     }
 
     public render() {
-        const { width, height } = this.props;
+		  const {t}:any = this.props ;
+      const { width, height } = this.props;
         let [min, max] = this.getMinMax2();
         max = max-1;
 
@@ -1056,7 +1058,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               checked={this.state.checked}
               disabled= {(this.props.theme === 'Saldi') ? false : true}
             />
-            <label className="p-checkbox-label">Umgekehrt filtern</label>
+            <label className="p-checkbox-label">{t('charts.reverse')}</label>
+            {/* <label className="p-checkbox-label">Umgekehrt filtern</label> */}
           </div>
           <div className="p-col-6 noprint">
             <Checkbox
@@ -1065,7 +1068,7 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
               checked={this.state.checkedNoFilter}
             />
-            <label className="p-checkbox-label">Kein Filter</label>
+            <label className="p-checkbox-label">{t('charts.nofilter')}</label>
           </div>
 
           <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
@@ -1083,8 +1086,10 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
               {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
               <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?  this.state.checked === true?
-          'Anzeige Werte in Bereich: ab ' + (wanderungsRate ? min/1000 : min) + ' bis ' :
-          'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '}
+          t('charts.sliderSaldi1') + (wanderungsRate ? min/1000 : min) + t('charts.sliderSaldi2') :
+          // 'Anzeige Werte in Bereich: ab ' + (wanderungsRate ? min/1000 : min) + ' bis ' :
+          t('charts.sliderSaldi1') : t('charts.slider')}
+          {/* 'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '} */}
             </div>
             <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?
              <InputText value={wanderungsRate ? rangeValue1/1000 : rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
@@ -1092,7 +1097,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             }
              </div>
              <div className="p-col-2 noprint">{this.props.theme == "Saldi" ? this.state.checked === true?
-            'und ab ' : 'bis ' : ' '} </div>
+            t('charts.sliderSaldi3') : t('charts.sliderSaldi2') : ' '} </div>
+            {/* 'und ab ' : 'bis ' : ' '} </div> */}
             <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
              <InputText  value={wanderungsRate ? rangeValue2/1000 : rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
              </div>
@@ -1106,7 +1112,8 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
             checked={this.state.checkedLabel}
           />
-          <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Werte anzeigen</label>
+          <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>{t('charts.values')}</label>
+          {/* <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Werte anzeigen</label> */}
         </div>
           <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
@@ -1117,4 +1124,5 @@ export class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
 
 }
+export default withNamespaces()(D3Chord);
 
