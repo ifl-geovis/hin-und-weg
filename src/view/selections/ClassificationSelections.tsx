@@ -65,7 +65,8 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 			{label: "geometrische Reihe", value: "geometric_progression", translatedLabel: t("classificationSelections.classifications.geometric_progression")},
 			//{label: "Standardabweichung", value: "stddeviation"},
 			{label: "Quantile", value: "quantile", translatedLabel: t("classificationSelections.classifications.quantile")},
-		];const label = (this.props.withNegative) ? t('classificationSelections.scaleAndColorsPositive') : t('classificationSelections.scaleAndColors');
+		];
+		const label = (this.props.withNegative) ? t('classificationSelections.scaleAndColorsPositive') : t('classificationSelections.scaleAndColors');
 		// const label = (this.props.withNegative) ? 'positive Skala und Farbschema' : 'Skala und Farbschema';
 		let negativeScale;
 		if (this.props.withNegative) negativeScale = this.getNegativeScale();
@@ -89,11 +90,17 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 	}
 	
 	private createColorOptions(raw: string[]): any[] {
+		console.log("ClassSelections color schemes: " + this.props.colorSchemes);
 		const {t}:any = this.props ;
 		let results: any[] = [];
 		for (let colorscheme of raw) {
 			let item = {label: colorscheme, value: colorscheme};
 			if (colorscheme.startsWith('scheme')) item.label = t('classificationSelections.scheme') + colorscheme.substring(6);
+			if (colorscheme === "orange") item.label = t('classificationSelections.orange');
+			if (colorscheme === "rot") item.label = t('classificationSelections.red');
+			if (colorscheme === "blau") item.label = t('classificationSelections.blue');
+			if (colorscheme === "grün") item.label = t('classificationSelections.green');
+
 			// if (colorscheme.startsWith('scheme')) item.label = 'Schema ' + colorscheme.substring(6);
 			results.push(item);
 		}

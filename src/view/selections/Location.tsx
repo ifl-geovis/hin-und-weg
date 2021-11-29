@@ -29,13 +29,14 @@ class Location extends React.Component<ILocationProps>
 
 	public render(): JSX.Element
 	{
+		const {t}:any = this.props ;
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header={this.props.title}>
 					<SelectInput options={this.props.locations} selected={this.props.selectedLocation} onSelected={this.props.onSelectLocation}/>
 					<div className="p-col-12">
 						<Checkbox inputId="migrationsInside" value="migrationsInside" onChange={this.onMigrationsInsideChange} checked={this.props.migrationsInside}></Checkbox>
-						<label htmlFor="migrationsInside" className="p-checkbox-label">Umzüge innerhalb der Fläche berücksichtigen</label>
+		<label htmlFor="migrationsInside" className="p-checkbox-label">{t('location.insideMigration')}</label>
 						{/* <label htmlFor="migrationsInside" className="p-checkbox-label">Umzüge innerhalb der Fläche berücksichtigen</label> */}
 					</div>
 				</AccordionTab>

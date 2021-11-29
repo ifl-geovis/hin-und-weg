@@ -3,13 +3,17 @@ import React from 'react';
 
 import Log from '../../log';
 import Classification from '../../data/Classification';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface ILegendProps {
+export interface ILegendProps extends WithNamespaces {
 	showCenter: string;
 	yearsSelected: string[];
 }
 
-export default class Legend extends React.Component<ILegendProps> {
+// export default 
+class Legend extends React.Component<ILegendProps> {
 	private stroke_color = '#4d4d4d';
 	private box_width = 50;
 	private box_height = 20;
@@ -51,14 +55,20 @@ export default class Legend extends React.Component<ILegendProps> {
 	}
 
 	private createLegendTitle(classification: Classification): string {
-		let title = 'Legende';
+		const {t}:any = this.props ;
+		let title = t('legend.title');
+		// let title = 'Legende';
 		const location = classification.getLocation();
 		const theme = classification.getTheme();
 		if (location && theme) {
-			title += ' für ';
-			if (theme == 'Von') title += 'Wegzüge von ';
-			else if (theme == 'Nach') title += 'Zuzüge nach ';
-			else if (theme == 'Saldi') title += 'Saldi für ';
+			title += t('legend.for');
+			// title += ' für ';
+			if (theme == 'Von') title += t('legend.outgoing');
+			// if (theme == 'Von') title += 'Wegzüge von ';
+			else if (theme == 'Nach') title += t('legend.incoming');
+			// else if (theme == 'Nach') title += 'Zuzüge nach ';
+			else if (theme == 'Saldi') title += t('legend.saldi');
+			// else if (theme == 'Saldi') title += 'Saldi für ';
 			title += location;
 			title += " (";
 			let first: boolean = true;
@@ -210,3 +220,4 @@ export default class Legend extends React.Component<ILegendProps> {
 	}
 
 }
+export default withNamespaces()(Legend);

@@ -1,13 +1,17 @@
 import React from 'react';
 
 import Classification from '../../data/Classification';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface ILegendTimelineProps {
+export interface ILegendTimelineProps extends WithNamespaces{
     yearsSelected: string[];
 
 }
 
-export default class LegendTimeline extends React.Component<ILegendTimelineProps> {
+// export default 
+class LegendTimeline extends React.Component<ILegendTimelineProps> {
 	private stroke_color = '#4d4d4d';
 	private box_size = 20;
 	private label_offset = 15;
@@ -21,6 +25,7 @@ export default class LegendTimeline extends React.Component<ILegendTimelineProps
 	}
 
 	private createLegend(): JSX.Element {
+		const {t}:any = this.props ;
 		const classification = Classification.getCurrentClassification();
 
 		let timelinePositiveColors = classification.getZeitreihenPositiveColors();
@@ -30,10 +35,14 @@ export default class LegendTimeline extends React.Component<ILegendTimelineProps
 		const zuzug = this.createBox(timelinePositiveColors[0], 121, 0, "zuzug")
 		const negative_circle = this.createCircle(timelineNegativeColors[1], 2 + this.box_size/2, this.box_size + 5+ this.box_size/2 )
 		const positive_circle = this.createCircle(timelinePositiveColors[1], 121 + this.box_size/2, this.box_size + 5+ this.box_size/2 )
-		const wegzugLabel = this.createLabel(' - Wegzug', this.box_size + 7,  this.label_offset, 'wegzugLabel');
-		const zuzugLabel = this.createLabel(' - Zuzug', this.box_size + 126, this.label_offset, 'zuzugLabel');
-		const positiveSaldiLabel = this.createLabel(' - positive Saldi ', this.box_size + 126, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');
-		const negativeSaldiLabel = this.createLabel(' - negative Saldi ', this.box_size + 7, this.box_size + 5 + this.label_offset, 'negativeSaldiLabel');
+		const wegzugLabel = this.createLabel(' - ' + t('legend.outMovement'), this.box_size + 7,  this.label_offset, 'wegzugLabel');
+		// const wegzugLabel = this.createLabel(' - Wegzug', this.box_size + 7,  this.label_offset, 'wegzugLabel');
+		const zuzugLabel = this.createLabel(' - ' + t('legend.inMovement'), this.box_size + 126, this.label_offset, 'zuzugLabel');
+		// const zuzugLabel = this.createLabel(' - Zuzug', this.box_size + 126, this.label_offset, 'zuzugLabel');
+		const positiveSaldiLabel = this.createLabel(' - ' + t('legend.positiveSaldi'), this.box_size + 126, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');
+		// const positiveSaldiLabel = this.createLabel(' - positive Saldi ', this.box_size + 126, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');
+		const negativeSaldiLabel = this.createLabel(' - ' + t('legend.negativeSaldi'), this.box_size + 7, this.box_size + 5 + this.label_offset, 'negativeSaldiLabel');
+		// const negativeSaldiLabel = this.createLabel(' - negative Saldi ', this.box_size + 7, this.box_size + 5 + this.label_offset, 'negativeSaldiLabel');
 
 
 		
@@ -58,11 +67,14 @@ export default class LegendTimeline extends React.Component<ILegendTimelineProps
 
 
 	private createLegendTitle(classification: Classification): string {
-		let title = 'Zeitreihen';
+		const {t}:any = this.props ;
+		let title = t('legend.titleTimeline');
+		// let title = 'Zeitreihen';
 		const location = classification.getLocation();
 		const theme = classification.getTheme();
 		if (location && theme) {
-			title += ' für ';
+			title +=  t('legend.for');
+			// title += ' für ';
 
             title += location;
 			title += " (";
@@ -117,3 +129,4 @@ export default class LegendTimeline extends React.Component<ILegendTimelineProps
 
 	
 }
+export default withNamespaces()(LegendTimeline);

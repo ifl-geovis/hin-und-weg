@@ -10,8 +10,12 @@ import { Slider } from 'primereact/slider';
 import Classification from '../../data/Classification';
 import OfflineMaps, { IOfflineMaps } from '../../data/OfflineMaps';
 import Settings from '../../settings';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface IGeodataProps {
+
+export interface IGeodataProps extends WithNamespaces{
 	items?: Array<{ [name: string]: any }> | null;
 	geodata: Geodata | null;
 	geoName: string | null;
@@ -31,7 +35,8 @@ interface IGeodataState {
 	offlineMap: IOfflineMaps;
 }
 
-export default class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
+// export default 
+class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	constructor(props: IGeodataProps) {
 		super(props);
 		this.onShowCenterChange = this.onShowCenterChange.bind(this);
@@ -55,16 +60,19 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 
 	public render(): JSX.Element {
 		// console.log('GeodataView render');
+		const {t}:any = this.props ;
 		const classification = Classification.getCurrentClassification();
 		let fractions: boolean = (this.props.dataProcessing === 'absolute') ? false : true;
 		return (
 			<div className="p-grid p-component">
 				<Accordion activeIndex={0}>
-					<AccordionTab header="Kontrollelemente">
+					<AccordionTab header={t('geodataView.controlElements')}>
+					{/* <AccordionTab header="Kontrollelemente"> */}
 						<div className="p-grid p-component">
 							<div className="p-col noprint">
 								<div className="p-grid p-dir-col">
-									<strong className="p-col">Karteninformationen:</strong>
+									<strong className="p-col">{t('geodataView.mapInfo')}</strong>
+									{/* <strong className="p-col">Karteninformationen:</strong> */}
 									<div className="p-col rdBtnContainer">
 										<RadioButton
 											inputId="rb1"
@@ -74,7 +82,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 											checked={this.state.showCenter === '1'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb1">
-											Namen anzeigen
+											{t('geodataView.names')}
+											{/* Namen anzeigen */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
@@ -86,7 +95,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 											checked={this.state.showCenter === '2'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb2">
-											Bewegung visualisieren
+											{t('geodataView.arrows')}
+											{/* Bewegung visualisieren */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
@@ -98,7 +108,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 											checked={this.state.showCenter === '3'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb3">
-											Anzahl der Umzüge anzeigen
+											{t('geodataView.values')}
+											{/* Anzahl der Umzüge anzeigen */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
@@ -110,11 +121,13 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 											checked={this.state.showCenter === '4'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb4">
-											Beschriftungen ausschalten
+											{t('geodataView.noLabels')}
+											{/* Beschriftungen ausschalten */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
-										<label>Transparenz:</label>
+										<label>{t('geodataView.transparency')}</label>
+										{/* <label>Transparenz:</label> */}
 										<Slider
 											className="transparencySlider"
 											min={0}
@@ -129,11 +142,13 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 							</div>
 							<div className="p-col noprint">
 								<div className="p-grid p-dir-col">
-									<strong className="p-col">Hintergrundkarte:</strong>
+									<strong className="p-col">{t('geodataView.backgroundMap')}</strong>
+									{/* <strong className="p-col">Hintergrundkarte:</strong> */}
 									<div className="p-col rdBtnContainer">
 										<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 										<label className="p-checkbox-label pointer" htmlFor="showMap">
-											zeige Hintergrundkarte (online)
+											{t('geodataView.onlineMap')}
+											{/* zeige Hintergrundkarte (online) */}
 										</label>
 									</div>
 									<div className="p-col">
@@ -141,7 +156,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 											optionLabel="label"
 											options={OfflineMaps.getCurrentOfflineMaps().getData()}
 											onChange={this.onOfflineMapChange}
-											placeholder={this.state.offlineMap.label}
+											placeholder={this.state.offlineMap.label === "Offline Map auswählen" ? t('geodataView.offlineMap') : this.state.offlineMap.label === "keine" ? t('geodataView.none') :this.state.offlineMap.label  }
+											// placeholder={this.state.offlineMap.label}
 											disabled={OfflineMaps.getCurrentOfflineMaps().getData().length - 1 === 0}
 										/>
 									</div>
@@ -150,7 +166,8 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 							<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
 								<hr className={`noprint`} />
 								<div className="p-grid p-align-center noprint">
-									<p className="p-col-4">Es werden alle Werte über {(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold} angezeigt.</p>
+									<p className="p-col-4">{t('geodataView.arrowsFilter1')} {(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold}{t('geodataView.arrowsFilter2')}</p>
+									{/* <p className="p-col-4">Es werden alle Werte über {(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold} angezeigt.</p> */}
 									<div className="p-col-8">
 										<Slider
 											min={0}
@@ -220,3 +237,4 @@ export default class GeodataView extends React.Component<IGeodataProps, IGeodata
 		});
 	}
 }
+export default withNamespaces()(GeodataView);
