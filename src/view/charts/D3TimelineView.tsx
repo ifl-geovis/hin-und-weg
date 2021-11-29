@@ -1,5 +1,5 @@
 import React from "react";
-import { D3Timeline, ITimelineD3Item} from "./D3Timeline";
+import D3Timeline,{ITimelineD3Item} from "./D3Timeline";
 import ContainerDimensions from 'react-container-dimensions';
 
 export interface ID3TimelinrViewProps

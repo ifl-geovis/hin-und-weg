@@ -4,6 +4,9 @@ import { select } from 'd3-selection';
 import ContainerDimensions from 'react-container-dimensions';
 import Classification from '../../data/Classification';
 import LegendTimeline from "../elements/LegendTimeline";
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 export interface ITimelineD3Item
 {
@@ -14,7 +17,7 @@ export interface ITimelineD3Item
 	Saldo: number;
 }
 
-export interface ITimelineD3Props
+export interface ITimelineD3Props extends WithNamespaces
 {
 	data: ITimelineD3Item[];
     width: number;
@@ -25,7 +28,8 @@ export interface ITimelineD3Props
 	dataProcessing: string;
 }
 
-export class D3Timeline extends React.Component<ITimelineD3Props>
+// export 
+class D3Timeline extends React.Component<ITimelineD3Props>
 {
 	private svgRef?: SVGElement | null;
     private svgID?: string;
@@ -73,6 +77,12 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 
 	private createTimeline(data: ITimelineD3Item[])
 	{
+		const {t}:any = this.props ;
+		let titleYear = t('timeline.year');
+		let titleZuzug = t('timeline.incoming');
+		let titleWegzug = t('timeline.outgoing');
+		let titleSaldo = t('timeline.saldo');
+		
 		const svg = select(this.svgRef!);        
 
 		let MARGIN = {TOP: 10, RIGHT: 100, BOTTOM: 10, LEFT: 100}
@@ -307,20 +317,28 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 			rectsZuzug.select("title")
 			  .text(function(d, i) {
 				let t:string
-				t = "Jahr: " + d.Jahr
-				+ "\n" +"Zuzug: "  + d.Zuzug
-				+ "\n" + "Wegzug: "  + d.Wegzug
-				+ "\n" + "Saldo: "  + d.Saldo
+				t = titleYear + ": " + d.Jahr
+				// t = "Jahr: " + d.Jahr
+				+ "\n" + titleZuzug + ": "  + d.Zuzug
+				// + "\n" +"Zuzug: "  + d.Zuzug
+				+ "\n" + titleWegzug + ": "  + d.Wegzug
+				// + "\n" + "Wegzug: "  + d.Wegzug
+				+ "\n" + titleSaldo + ": "  + d.Saldo
+				// + "\n" + "Saldo: "  + d.Saldo
 				return t
 			  }) 
 			rectsWegzug.append("title")
 			rectsWegzug.select("title")
 				.text(function(d, i) {
 					let t:string
-					  t = "Jahr: " + d.Jahr
-					  + "\n" +"Zuzug: "  + d.Zuzug
-					  + "\n" + "Wegzug: "  + d.Wegzug
-					  + "\n" + "Saldo: "  + d.Saldo
+					t = titleYear + ": " + d.Jahr
+					// t = "Jahr: " + d.Jahr
+					+ "\n" + titleZuzug + ": "  + d.Zuzug
+					// + "\n" +"Zuzug: "  + d.Zuzug
+					+ "\n" + titleWegzug + ": "  + d.Wegzug
+					// + "\n" + "Wegzug: "  + d.Wegzug
+					+ "\n" + titleSaldo + ": "  + d.Saldo
+					// + "\n" + "Saldo: "  + d.Saldo
 					  return t
 					}) 
 
@@ -374,10 +392,14 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 			circlesGraph.select("title")
 					.text(function(d, i) {
 					let t:string
-					t = "Jahr: " + d.Jahr
-					+ "\n" +"Zuzug: "  + d.Zuzug
-					+ "\n" + "Wegzug: "  + d.Wegzug
-					+ "\n" + "Saldo: "  + d.Saldo
+					t = titleYear + ": " + d.Jahr
+				// t = "Jahr: " + d.Jahr
+				+ "\n" + titleZuzug + ": "  + d.Zuzug
+				// + "\n" +"Zuzug: "  + d.Zuzug
+				+ "\n" + titleWegzug + ": "  + d.Wegzug
+				// + "\n" + "Wegzug: "  + d.Wegzug
+				+ "\n" + titleSaldo + ": "  + d.Saldo
+				// + "\n" + "Saldo: "  + d.Saldo
 					return t
 				}) 
 
@@ -400,3 +422,4 @@ export class D3Timeline extends React.Component<ITimelineD3Props>
 	}
 
 }
+export default withNamespaces()(D3Timeline);
