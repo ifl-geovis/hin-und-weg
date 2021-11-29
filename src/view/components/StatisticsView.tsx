@@ -3,6 +3,9 @@ import R from "ramda";
 import D3HistogramView from '../charts/D3HistogramView';
 
 import Log from '../../log';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
 // Does not work in electronjs, so we use the @ts-ignore annotation
 // For development (hint types, autocompletion) uncomment this 2 lines below
@@ -29,7 +32,7 @@ export interface IStatisticPerYearAusgabe
 	max: number;
 }
 
-export interface IStatisticsViewProps
+export interface IStatisticsViewProps extends WithNamespaces
 {
 	items: IStatisticsItem[];
 	location: string | null;
@@ -40,7 +43,8 @@ export interface IStatisticsViewProps
 	baseViewId: number;
 }
 
-export default class StatisticsView extends React.Component<IStatisticsViewProps>
+// export default 
+class StatisticsView extends React.Component<IStatisticsViewProps>
 {
 
 	constructor(props: IStatisticsViewProps)
@@ -50,6 +54,7 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 
 	public render(): JSX.Element
 	{
+		const {t}:any = this.props ;
 		Log.debug("render input", this.props.items);
 		let maxzuzüge: string;
 		let maxwegzüge: string;
@@ -70,11 +75,13 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 			maxwegzüge = this.calculateMinimum(count);
 		}
 		let mode: number = this.determineMode();
-		let title_text = "Statistik für";
+		let title_text = t('statistics.title1');
+		// let title_text = "Statistik für";
 		if (this.props.theme) title_text += " " + this.props.theme;
 		if (this.props.location) title_text += " " + this.props.location;
 		if (this.props.yearsSelected) {
-			title_text += " in den Jahren ";
+			title_text += t('statistics.title2');
+			// title_text += " in den Jahren ";
 			let first: boolean = true;
 			for (let year of this.props.yearsSelected) {
 				if (!first) title_text += ", ";
@@ -91,31 +98,38 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 				<table className="p-col-4">
 					<tbody>
 						<tr>
-							<th align="right">Mittelwert:</th>
+							<th align="right">{t('statistics.mean')}:</th>
+							{/* <th align="right">Mittelwert:</th> */}
 							<td>{this.standardizeOutput(mean)}</td>
 						</tr>
 						<tr>
-							<th align="right">Median:</th>
+							<th align="right">{t('statistics.median')}:</th>
+							{/* <th align="right">Median:</th> */}
 							<td>{this.standardizeOutput(median)}</td>
 						</tr>
 						<tr>
-							<th align="right">Hinzugezogen Maximal:</th>
+							<th align="right">{t('statistics.maxIncoming')}</th>
+							{/* <th align="right">Hinzugezogen Maximal:</th> */}
 							<td>{maxzuzüge}</td>
 						</tr>
 						<tr>
-							<th align="right">Weggezogen Maximal:</th>
+							<th align="right">{t('statistics.maxOutgoing')}</th>
+							{/* <th align="right">Weggezogen Maximal:</th> */}
 							<td>{maxwegzüge}</td>
 						</tr>
 						<tr>
-							<th align="right">Varianz:</th>
+							<th align="right">{t('statistics.variance')}</th>
+							{/* <th align="right">Varianz:</th> */}
 							<td>{this.standardizeOutput(variance)}</td>
 						</tr>
 						<tr>
-							<th align="right">Standardabweichung:</th>
+							<th align="right">{t('statistics.stdeviation')}</th>
+							{/* <th align="right">Standardabweichung:</th> */}
 							<td>{this.standardizeOutput(stddev)}</td>
 						</tr>
 						<tr>
-							<th align="right">Modus:</th>
+							<th align="right">{t('statistics.mode')}</th>
+							{/* <th align="right">Modus:</th> */}
 							<td>{this.standardizeOutput(mode)}</td>
 						</tr>
 					</tbody>
@@ -131,19 +145,30 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 					<table className="year-statistics">
 						<tbody>
 							<tr>
-								<th rowSpan={2}>Jahr</th>
-								<th colSpan={3}>Mittelwert</th>
-								<th colSpan={2}>Median</th>
-								<th colSpan={2}>Meiste</th>
+								<th rowSpan={2}>{t('statistics.year')}</th>
+								{/* <th rowSpan={2}>Jahr</th> */}
+								<th colSpan={3}>{t('statistics.mean')}</th>
+								{/* <th colSpan={3}>Mittelwert</th> */}
+								<th colSpan={2}>{t('statistics.median')}</th>
+								{/* <th colSpan={2}>Median</th> */}
+								<th colSpan={2}>{t('statistics.most')}</th>
+								{/* <th colSpan={2}>Meiste</th> */}
 							</tr>
 							<tr>
-								<th>Saldi</th>
-								<th>Zuzüge</th>
-								<th>Wegzüge</th>
-								<th>Zuzüge</th>
-								<th>Wegzüge</th>
-								<th>Zuzüge</th>
-								<th>Wegzüge</th>
+								<th>{t('statistics.saldi')}</th>
+								{/* <th>Saldi</th> */}
+								<th>{t('statistics.incoming')}</th>
+								{/* <th>Zuzüge</th> */}
+								<th>{t('statistics.outgoing')}</th>
+								{/* <th>Wegzüge</th> */}
+								<th>{t('statistics.incoming')}</th>
+								{/* <th>Zuzüge</th> */}
+								<th>{t('statistics.outgoing')}</th>
+								{/* <th>Wegzüge</th> */}
+								<th>{t('statistics.incoming')}</th>
+								{/* <th>Zuzüge</th> */}
+								<th>{t('statistics.outgoing')}</th>
+								{/* <th>Wegzüge</th> */}
 							</tr>
 
 							{years}
@@ -293,3 +318,4 @@ export default class StatisticsView extends React.Component<IStatisticsViewProps
 	}
 
 }
+export default withNamespaces()(StatisticsView);
