@@ -28,8 +28,13 @@ class ProjektInfo extends React.Component<IProjektInfoProps, {}, {}>
 					{/* Hersteller der Software ist das Leibniz Institut für Länderkunde (IfL), Leipzig, www.leibniz-ifl.de.<br/> */}
 					{t('projectInfo.text3')}<br/>
 					{/* Die Software wurde von der DELPHI IMM GmbH in Potsdam entwickelt.<br/> */}
-					{t('projectInfo.text4')}<br/><br/><br/><br/>
+					{t('projectInfo.text4')}<br/><br/>
 					{/* Am Projekt am IfL beteiligt waren: Francis Harvey, Tim Leibert, Eric Losang, Aura Moldovan, Maria Turchenko, Nicola Simon, Rowenia Bender (Stand 4.2021)<br/><br/><br/><br/> */}
+					<div>
+						{t('projectInfo.text7')}<br/><br/>
+						{t('projectInfo.text8')}<br/><br/>
+						{t('projectInfo.text9')}<br/><br/>
+					</div><br/><br/><br/>
 					<div>
 						{t('projectInfo.text5')}<br/><br/>
 						{/* Ihr Ansprechpartner für weitere Informationen:<br/><br/> */}

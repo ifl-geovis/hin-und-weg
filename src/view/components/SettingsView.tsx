@@ -8,8 +8,11 @@ import { Button } from 'primereact/button';
 
 import Settings from '../../settings';
 import OfflineMaps from '../../data/OfflineMaps';
+import { withNamespaces,WithNamespaces } from 'react-i18next';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 
-export interface ISettingsProps {
+export interface ISettingsProps extends WithNamespaces{
 	change: () => void;
 }
 
@@ -18,7 +21,8 @@ interface ISettingsState {
 	activeTab: number;
 }
 
-export default class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
+// export default 
+class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 
 	private legendPlacementSelections = [
 		{ label: 'Unter der Karte', value: 'bottom' },
@@ -52,16 +56,21 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	public render(): JSX.Element {
+		const {t}:any = this.props ;
 		const map = this.getMapSettings();
 		const colorschemes = this.getColorSchemes();
 		const classification = this.getClassification();
 		const styles = this.getStyles();
 		return (
 			<TabView className="p-tabview-right" activeIndex={this.state.activeTab} onTabChange={(e) => this.tabChanged(e)}>
-				<TabPanel header="Karte">{map}</TabPanel>
-				<TabPanel header="Farbschemata">{colorschemes}</TabPanel>
-				<TabPanel header="Klassen">{classification}</TabPanel>
-				<TabPanel header="Styles">{styles}</TabPanel>
+				<TabPanel header={t('settings.map')}>{map}</TabPanel>
+				{/* <TabPanel header="Karte">{map}</TabPanel> */}
+				<TabPanel header={t('settings.colors')}>{colorschemes}</TabPanel>
+				{/* <TabPanel header="Farbschemata">{colorschemes}</TabPanel> */}
+				<TabPanel header={t('settings.classes')}>{classification}</TabPanel>
+				{/* <TabPanel header="Klassen">{classification}</TabPanel> */}
+				<TabPanel header={t('settings.styles')}>{styles}</TabPanel>
+				{/* <TabPanel header="Styles">{styles}</TabPanel> */}
 			</TabView>
 		);
 	}
@@ -74,24 +83,34 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	private getMapSettings() {
+		const {t}:any = this.props ;
+		const legendPlacementSelectionsTranslated = [
+			{ label: t('settings.underMap'), value: 'bottom' },
+			{ label: t('settings.aboveMap'), value: 'top' },
+		];
 		OfflineMaps.getCurrentOfflineMaps().readOfflineMapsFile();
 		const dropdownLegendPlacement = this.createDropdownInput(
-			'Platzierung der Legende: ',
+			t('settings.legendPlacement'),
+			// 'Platzierung der Legende: ',
 			'map',
 			'legendPlacement',
-			this.legendPlacementSelections
+			legendPlacementSelectionsTranslated
+			// this.legendPlacementSelections
 		);
 		let positivePicker = this.getPicker(true);
 		let negativePicker = this.getPicker(false);
 		return (
 			<div>
-				<h1>Karte</h1>
+				<h1>{t('settings.map')}</h1>
+				{/* <h1>Karte</h1> */}
 				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<h4 style={{ marginRight: '1em' }}>Ordner für Offline Karten:</h4>
+					<h4 style={{ marginRight: '1em' }}>{t('settings.offlineFolder')}</h4>
+					{/* <h4 style={{ marginRight: '1em' }}>Ordner für Offline Karten:</h4> */}
 					<span style={{ wordBreak: 'break-word' }}>{Settings.getValue('map', 'offlinePath')}</span>
 					<label htmlFor="selectDirectory" className="customSelectDirectory" style={{ marginLeft: '1.5em' }}>
 						<i className="pi pi-folder-open" style={{ fontSize: '1.5em' }}></i>
-						<span>Ordner ändern</span>
+						<span>{t('settings.changeFolder')}</span>
+						{/* <span>Ordner ändern</span> */}
 					</label>
 					<input
 						style={{ marginBottom: '1em' }}
@@ -103,16 +122,19 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 					/>
 				</div>
 				<p className="offlineMapHintSuccess">
-					Es wurden {OfflineMaps.getCurrentOfflineMaps().getData().length - 1} OfflineKarten importiert.
+				{t('settings.offlineImported1')} {OfflineMaps.getCurrentOfflineMaps().getData().length - 1} {t('settings.offlineImported2')}
+					{/* Es wurden {OfflineMaps.getCurrentOfflineMaps().getData().length - 1} OfflineKarten importiert. */}
 				</p>
 				<div className={`offlineMapHintError ${OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().length && 'show'} }`}>
 					<p>
-						Fehlende Bilddateien, die in der Konfigurationsdatei angegeben sind:{' '}
+					{t('settings.missingOffline')}{' '}
+						{/* Fehlende Bilddateien, die in der Konfigurationsdatei angegeben sind:{' '} */}
 						{OfflineMaps.getCurrentOfflineMaps().getMissingImageFiles().join(', ')}
 					</p>
 
 					<Button
-						label="Ordner erneut prüfen ..."
+						label={t('settings.checkFolder')}
+						// label="Ordner erneut prüfen ..."
 						onClick={this.refreshOfflineMapsCheck}
 						className="p-button-danger p-button-rounded p-button-sm btnRefreshOfflineMaps"
 					/>
@@ -132,13 +154,16 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 				<hr style={{ margin: '2em 0' }} />
 				{positivePicker}
 				{negativePicker}
-				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+				<Button label={t('settings.save')} onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+				{/* <Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} /> */}
 			</div>
 		);
 	}
 
 	private getPicker(positive: boolean) {
-		const label = (positive) ? 'Pfeilfarbe Von' : 'Pfeilfarbe Nach';
+		const {t}:any = this.props ;
+		const label = (positive) ? t('settings.arrowsFrom') : t('settings.arrowsTo') ;
+		// const label = (positive) ? 'Pfeilfarbe Von' : 'Pfeilfarbe Nach';
 		const id = (positive) ? 'positiveArrowColor' : 'negativeArrowColor';
 		const value = (positive) ? Settings.getValue('user-colors', 'arrow-positive-color') : Settings.getValue('user-colors', 'arrow-negative-color');
 		return (
@@ -156,6 +181,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	private getColorSchemes() {
+		const {t}:any = this.props ;
 		const scheme1 = this.getColorSchemePickers('scheme1');
 		const scheme2 = this.getColorSchemePickers('scheme2');
 		const scheme3 = this.getColorSchemePickers('scheme3');
@@ -166,15 +192,18 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		const missingcolor = Settings.getValue('user-colors', 'missing-color');
 		return (
 			<div>
-				<h1>Benutzerdefinierte Farben</h1>
-				<h2>Spezialfarben</h2>
+				<h1>{t('settings.colorsUser')}</h1>
+				{/* <h1>Benutzerdefinierte Farben</h1> */}
+				<h2>{t('settings.colorsSpecial')}</h2>
+				{/* <h2>Spezialfarben</h2> */}
 				<div>
 					<ColorPicker
 						id={'colorpicker-neutral'}
 						value={neutralcolor}
 						onChange={(e) => this.processSpecialColorInput('user-colors', 'neutral-color', e)}
 					/>
-					&nbsp;neutrale Farbe (0)
+					&nbsp;{t('settings.colorNeutral')}
+					{/* &nbsp;neutrale Farbe (0) */}
 				</div>
 				<div>
 					<ColorPicker
@@ -182,21 +211,24 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 						value={missingcolor}
 						onChange={(e) => this.processSpecialColorInput('user-colors', 'missing-color', e)}
 					/>
-					&nbsp;Farbe für fehlende oder anonymisierte Werte (NaN)
+					&nbsp;{t('settings.colorNaN')}
+					{/* &nbsp;Farbe für fehlende oder anonymisierte Werte (NaN) */}
 				</div>
-				<h2>Schema 1</h2>
+				<h2>{t('settings.scheme')} 1</h2>
+				{/* <h2>Schema 1</h2> */}
 				{scheme1}
-				<h2>Schema 2</h2>
+				<h2>{t('settings.scheme')} 2</h2>
 				{scheme2}
-				<h2>Schema 3</h2>
+				<h2>{t('settings.scheme')} 3</h2>
 				{scheme3}
-				<h2>Schema 4</h2>
+				<h2>{t('settings.scheme')} 4</h2>
 				{scheme4}
-				<h2>Schema 5</h2>
+				<h2>{t('settings.scheme')} 5</h2>
 				{scheme5}
-				<h2>Schema 6</h2>
+				<h2>{t('settings.scheme')} 6</h2>
 				{scheme6}
-				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+				<Button label={t('settings.save')} onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+				{/* <Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} /> */}
 			</div>
 		);
 	}
@@ -227,6 +259,7 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	private getClassification() {
+		const {t}:any = this.props ;
 		const inputpositive1 = this.createClassificationInput('classification', 'positive', 0, true);
 		const inputpositive2 = this.createClassificationInput('classification', 'positive', 1, true);
 		const inputpositive3 = this.createClassificationInput('classification', 'positive', 2, true);
@@ -245,9 +278,12 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 		const inputnegative8 = this.createClassificationInput('classification', 'negative', 7, false);
 		return (
 			<div>
-				<h1>Benutzerdefinierte Klassengrenzen</h1>
-				<div>Füllen Sie die Eingabefelder mit den Werten für Klassengrenzen entsprechend der von Ihnen gewählten Anzahl der Klassen aus.</div>
-				<h2>positive Werte</h2>
+				<h1>{t('settings.classesUser')}</h1>
+				{/* <h1>Benutzerdefinierte Klassengrenzen</h1> */}
+				<div>{t('settings.classesUser2')}</div>
+				{/* <div>Füllen Sie die Eingabefelder mit den Werten für Klassengrenzen entsprechend der von Ihnen gewählten Anzahl der Klassen aus.</div> */}
+				<h2>{t('settings.positiveValues')}</h2>
+				{/* <h2>positive Werte</h2> */}
 				{inputpositive1}
 				{inputpositive2}
 				{inputpositive3}
@@ -256,7 +292,8 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 				{inputpositive6}
 				{inputpositive7}
 				{inputpositive8}
-				<h2>negative Werte</h2>
+				<h2>{t('settings.negativeValues')}</h2>
+				{/* <h2>negative Werte</h2> */}
 				{inputnegative1}
 				{inputnegative2}
 				{inputnegative3}
@@ -266,7 +303,8 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 				{inputnegative7}
 				{inputnegative8}
 				<div>
-					<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+					<Button label={t('settings.save')} onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+					{/* <Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} /> */}
 				</div>
 			</div>
 		);
@@ -413,20 +451,26 @@ export default class SettingsView extends React.Component<ISettingsProps, ISetti
 	}
 
 	private getStyles() {
+		const {t}:any = this.props ;
 		const dropdownStyles = this.createDropdownInput(
-			'Style: ',
+			t('settings.style'),
+			// 'Style: ',
 			'global',
 			'style',
 			this.styles
 		);
 		return (
 			<div>
-				<h1>Styles</h1>
-				<div>Hinweis: Die Änderung des Styles wird erst nach dem Neustart der Anwendung wirksam.</div>
+				<h1>{t('settings.styles')}</h1>
+				{/* <h1>Styles</h1> */}
+				<div>{t('settings.stylesNote')}</div>
+				{/* <div>Hinweis: Die Änderung des Styles wird erst nach dem Neustart der Anwendung wirksam.</div> */}
 				{dropdownStyles}
-				<Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+				<Button label={t('settings.save')} onClick={this.saveSettings} style={{ marginTop: '2em' }} />
+				{/* <Button label="Speichern" onClick={this.saveSettings} style={{ marginTop: '2em' }} /> */}
 			</div>
 		);
 	}
 
 }
+export default withNamespaces()(SettingsView);
