@@ -26,11 +26,13 @@ export interface IThemesProps extends WithNamespaces{
 	}
 
 	public render(): JSX.Element {
+		const {t}:any = this.props ;
 		const radioButtons = R.map(this.makeRadioButtonTheme, this.props.themes);
 		const wanderungsselector = this.createWanderungsSelector();
 		return (
 			<Accordion activeIndex={0}>
-				<AccordionTab header="Thema">
+				<AccordionTab header={t('baseView.theme')}>
+				{/* <AccordionTab header="Thema"> */}
 					{radioButtons}
 					{wanderungsselector}
 				</AccordionTab>
@@ -41,9 +43,9 @@ export interface IThemesProps extends WithNamespaces{
 	private createWanderungsSelector(): JSX.Element {
 		const {t}:any = this.props ;
 		if (!this.props.populationDataLoaded) return (<span></span>);
-		const absolute = this.makeRadioButton("absolute", t('topics.value'));
+		const absolute = this.makeRadioButton("absolute", t('themes.value'));
 		// const absolute = this.makeRadioButton("absolute", "Anzahl Umzüge");
-		const wanderungsrate = this.makeRadioButton("wanderungsrate", t('topics.rate'));
+		const wanderungsrate = this.makeRadioButton("wanderungsrate", t('themes.rate'));
 		// const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
 		return (
 			<div>
@@ -56,7 +58,7 @@ export interface IThemesProps extends WithNamespaces{
 
 	private makeRadioButtonTheme(theme: string): JSX.Element {
 		const {t}:any = this.props ;
-		let themeLabel = theme === "Von" ? t('topics.from') : theme === "Nach" ? t('topics.to') : theme === "Saldi" ? t('topics.saldi') : "";
+		let themeLabel = theme === "Von" ? t('themes.from') : theme === "Nach" ? t('themes.to') : theme === "Saldi" ? t('themes.saldi') : "";
 		return (
 			<div key={theme} className="p-col-12">
 				<RadioButton inputId={theme} name="theme" value={theme}

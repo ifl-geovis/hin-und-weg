@@ -189,7 +189,7 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 		// const warnText4 = "Achtung, der gewählte Indexwert ist NaN. ";
 		const warnText5 = t('index.warnText5');
 		// const warnText5 = "Achtung, das Bezugsjahr wird nicht unter den verfügbaren Jahren ausgewählt."
-		const warnText6 = t('index.warnText');
+		const warnText6 = t('index.warnText6');
 		// const warnText6 = "Bitte wählen Sie ein Jahr oder Jahre aus. "
 		const warnText7 = t('index.warnText7');
 		// const warnText7 = "Achtung, die gewählte Bezugsfläche ist Null. "

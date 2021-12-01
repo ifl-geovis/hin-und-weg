@@ -73,7 +73,7 @@ class TableView extends React.Component<ITableViewProps> {
 
 	private createColumn(fieldName: string): JSX.Element {
 		const {t}:any = this.props ;
-		let fieldNameTranslated = fieldName === "Von" ? t('topics.from') : fieldName === "Nach" ?  t('topics.to') : fieldName === "Wert" ? t('table.value') : fieldName === "Jahr" ? t('table.year') : fieldName === "RateVon" ? t('table.rateVon') : fieldName === "RateNach" ? t('table.rateNach') : fieldName;
+		let fieldNameTranslated = fieldName === "Von" ? t('themes.from') : fieldName === "Nach" ?  t('themes.to') : fieldName === "Wert" ? t('table.value') : fieldName === "Jahr" ? t('table.year') : fieldName === "RateVon" ? t('table.rateVon') : fieldName === "RateNach" ? t('table.rateNach') : fieldName;
 		const numberValue = (fieldName === "Wert") || (fieldName === "RateVon") || (fieldName === "RateNach");
 		let filterMatchMode = "contains";
 		if (numberValue) {

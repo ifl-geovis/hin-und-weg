@@ -32,14 +32,14 @@ class LegendTimeline extends React.Component<ILegendTimelineProps> {
 		let timelineNegativeColors = classification.getZeitreihenNegativeColors();
 
 		const wegzug = this.createBox(timelineNegativeColors[0], 2, 0, "wegzug")
-		const zuzug = this.createBox(timelinePositiveColors[0], 121, 0, "zuzug")
+		const zuzug = this.createBox(timelinePositiveColors[0], 171, 0, "zuzug") //121
 		const negative_circle = this.createCircle(timelineNegativeColors[1], 2 + this.box_size/2, this.box_size + 5+ this.box_size/2 )
-		const positive_circle = this.createCircle(timelinePositiveColors[1], 121 + this.box_size/2, this.box_size + 5+ this.box_size/2 )
+		const positive_circle = this.createCircle(timelinePositiveColors[1], 171 + this.box_size/2, this.box_size + 5+ this.box_size/2 )//121
 		const wegzugLabel = this.createLabel(' - ' + t('legend.outMovement'), this.box_size + 7,  this.label_offset, 'wegzugLabel');
 		// const wegzugLabel = this.createLabel(' - Wegzug', this.box_size + 7,  this.label_offset, 'wegzugLabel');
-		const zuzugLabel = this.createLabel(' - ' + t('legend.inMovement'), this.box_size + 126, this.label_offset, 'zuzugLabel');
+		const zuzugLabel = this.createLabel(' - ' + t('legend.inMovement'), this.box_size + 176, this.label_offset, 'zuzugLabel'); //126
 		// const zuzugLabel = this.createLabel(' - Zuzug', this.box_size + 126, this.label_offset, 'zuzugLabel');
-		const positiveSaldiLabel = this.createLabel(' - ' + t('legend.positiveSaldi'), this.box_size + 126, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');
+		const positiveSaldiLabel = this.createLabel(' - ' + t('legend.positiveSaldi'), this.box_size + 176, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');//126
 		// const positiveSaldiLabel = this.createLabel(' - positive Saldi ', this.box_size + 126, this.box_size + 5 + this.label_offset, 'positiveSaldiLabel');
 		const negativeSaldiLabel = this.createLabel(' - ' + t('legend.negativeSaldi'), this.box_size + 7, this.box_size + 5 + this.label_offset, 'negativeSaldiLabel');
 		// const negativeSaldiLabel = this.createLabel(' - negative Saldi ', this.box_size + 7, this.box_size + 5 + this.label_offset, 'negativeSaldiLabel');
@@ -47,9 +47,10 @@ class LegendTimeline extends React.Component<ILegendTimelineProps> {
 
 		
 		return (
+			//width={300} 
 			<div>
 				<h4>{this.createLegendTitle(classification)}</h4>
-				<svg key="legend" width={300} height={3*this.box_size } style={{ display: 'block' }}>
+				<svg key="legend" width={400} height={3*this.box_size } style={{ display: 'block' }}>
 					{' '}
 					{zuzug}
 					{zuzugLabel}		

@@ -11,7 +11,6 @@
         "shp": "✓ Shapefile ",
         "shpLoaded": " is successfully loaded...",
         "shpError": "Only one shapefile can be loaded!",
-
         "file": "The file ",
         "notShp": " does not look like a shape file.",
         "shp2": "↺ Shapefile ",
@@ -22,14 +21,12 @@
         "shpProblem2": " . Error message is: ",
         "csv": "CSV file ",
         "csvRepetition": " has already been loaded.",
-       
         "rowsNumber1": "Number of rows (",
         "rowsNumber2": ") does not correspond to the geospatial data (",
         "indexCheck1": "Index '",
         "indexCheck2": "' (Row ",
         "indexCheck3": ") not found in the geospatial data",
-        "indexCheck4": "' (Column ",
-       
+        "indexCheck4": "' (Column ",  
         "numberRowsColumns": "Number of rows and columns does not match.",
         "indexRowsColumns1": "Column index ",
         "indexRowsColumns2": " does not match row index ",
@@ -39,8 +36,7 @@
         "rowsGeodata1": "Number of lines (",
         "rowsGeodata2": ") does not correspond to the geospatial data (",
         "unknownTimeUnit": "Unknown time unit for movement data: ",
-        "unknownTableData": "Unknown type of table data: ",
-      
+        "unknownTableData": "Unknown type of table data: ",   
         "metadaten":{
         "missing": "Metadata is missing",
         "noType": "Metadata field 'type' expected",
@@ -63,8 +59,6 @@
        "loading": "Loading of the file",
        "failed": "failed:",
        "loading2": "is loading"
-
-
     },
     "messages": "Remove notifications",
     "tableView": {
@@ -136,21 +130,20 @@
         "systemInfo": "System Info"
     },
     "baseView": {
-        "polygon": "Polygon",
-        "topic": "Theme",
-        "selection": "Selection",
-        "representation": "Representation"
-       
+        "polygon": "Reference Area",
+        "theme": "Theme",
+        "selection": "Select",
+        "representation": "Represent"
     },
-    "topics":{
+    "themes":{
         "from": "From",
         "to": "To",
-        "saldi": "Saldi",
+        "saldi": "Total",
         "value": "Migration Values",
         "rate": "Migration Rate"
     },
     "location": {
-        "insideMigration": "Include the moves within the area"
+        "insideMigration": "Include  moves within the area"
     },
     "years": {
         "year": "Year(s)",
@@ -187,13 +180,12 @@
         "for": " for ",
         "outgoing": "Outgoing Flows from ",
         "incoming": "Incoming Flows to ",
-        "saldi": "Saldi for ",
+        "saldi": "Total for ",
         "outMovement": "outgoing flow",
         "inMovement": "incoming flow",
-        "negativeSaldi": "negative Saldi ",
-        "positiveSaldi": "positive Saldi ",
+        "negativeSaldi": "negative total result ",
+        "positiveSaldi": "positive total result ",
         "titleTimeline": "Timeline"
-
     },
     "geodataView": {
         "controlElements": "Control Elements",
@@ -222,7 +214,6 @@
         "query": " SQL Query",
         "execute": "Execute",
         "NaN": "NaN stands for Not a Number. This affects anonymized data and the results of the calculations that have no result (such as division by zero)."
-
     },
     "charts":{
         "scale100": "Scale 100%",
@@ -243,7 +234,7 @@
         "select": "Select an index value",
         "themeFrom": "Outgoing movement from",
         "themeTo": "Incoming movement to",
-        "themeSaldi": "Saldi for",
+        "themeSaldi": "Total for",
         "indexvalue": "Index Value",
         "warnText": "Attention, the selected index value is equal to 0. ",
         "warnText2": "It is not possible to establish a percentage reference. ",
@@ -268,9 +259,11 @@
         "mode": "Mode:",
         "year": "Year",
         "most": "The Most",
-        "saldi": "Saldi",
+        "saldi": "Total",
         "incoming": "Incoming Flows",
-        "outgoing": "Outgoing Flows"
+        "outgoing": "Outgoing Flows",
+        "to": " to ",
+        "from": " from "
     },
     "projectInfo":{
         "title": "hin&weg Project Information",
@@ -279,15 +272,44 @@
         "text3": "The software was developed by DELPHI IMM GmbH in Potsdam.",
         "text4": "Participants in the project at the IfL were: Francis Harvey, Tim Leibert, Eric Losang, Aura Moldovan, Maria Turchenko, Nicola Simon, Rowenia Bender (State 4.2021)",
         "text5": "Your contact for further information:",
-        "text6": "Leibniz Institute for Regional Geography"
+        "text6": "Leibniz Institute for Regional Geography",
+        "text7": "Any person who receives a copy of the software \"hin & weg\" (hereinafter: \"the software\") is granted permission free of charge to use the software without restriction, including (but not limited to) the rights to the software use, reproduce, change, combine, publish, distribute and sub-license. The Apache License, Version 2.0, made available by the Free Software Foundation (https://webacc.leibniz-ifl.de/PT/https://opensource.org/licenses/Apache-2.0) describes more details. All provided software documentation is made available under a Creative Commons By license (https://webacc.leibniz-ifl.de/PT/https://creativecommons.org/licenses/by/4.0/legalcode).",
+        "text8": "The note “2021 Leibniz Institute for Regional Geography” and this text in its entirety must be clearly indicated in all copies or essential parts of the software and documentation. Further information is available on the website hinundweg-online.leibniz-ifl.de.",
+        "text9": "THE SOFTWARE IS PROVIDED \"AS IS\" WITHOUT ANY WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR CLAIMS, DAMAGES, OR OTHER LIABILITIES, WHETHER THROUGH A CONTRACT, IMPROPER ACTING OR OTHERWISE THAT ACHIEVED OUT OF OR IN CONNECTION WITH THE SOFTWARE OR USED IN THE SOFTWARE."
     },
     "timeline": {
         "year": "Year",
         "incoming": "Outgoing flow",
         "outgoing": "Incoming flow",
-        "saldo": "Saldo"
+        "saldo": "Total"
+    },
+    "settings":{
+        "map": "Map",
+        "colors": "Color Schemes",
+        "classes": " Classes",
+        "styles": "Styles",
+        "legendPlacement": "Legend placement: ",
+        "underMap": "Under the Map",
+        "aboveMap": "Above the Map",
+        "offlineFolder": "Folder for offline maps:", 
+        "changeFolder": "Change folder",
+        "offlineImported1": " ",
+        "offlineImported2": " offline maps have been imported.",
+        "missingOffline": "Missing image files specified in the configuration file:",
+        "checkFolder": "Check the folder again ...",
+        "save": "Save",
+        "arrowsFrom": "Arrow color for the theme From",
+        "arrowsTo": "Arrow color for the theme To",
+        "colorsUser": "Custom colors",
+        "colorsSpecial": "Special colors",
+        "colorNeutral": "neutral color (0)",
+        "colorNaN": "color for missing or anonymized values (NaN)",
+        "scheme": "Scheme",
+        "classesUser": "Custom class boundaries",
+        "classesUser2": "Fill in the input fields with the values for class boundaries according to the number of classes you selected.",
+        "positiveValues": "positive values",
+        "negativeValues": "negative values",
+        "style": "Style: ",
+        "stylesNote": "Note: The change of style will take effect only after restarting the application."
     }
-    
-    
-
 }

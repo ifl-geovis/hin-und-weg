@@ -11,7 +11,6 @@
         "shp": "✓ Shape Datei ",
         "shpLoaded": " wurde erfolgreich geladen...",
         "shpError": "Es kann nur eine Shape-Datei geladen werden!",
-       
         "file": "Die Datei ",
         "notShp": " sieht nicht wie eine Shape-Datei aus.",
         "shp2": "↺ Shape-Datei ",
@@ -22,14 +21,12 @@
         "shpProblem2": " aufgetreten. Fehlermeldung ist: ",
         "csv": "CSV-Datei ",
         "csvRepetition": " wurde bereits zuvor geladen.",
-       
         "rowsNumber1": "Zeilenzahl (",
         "rowsNumber2": ") entspricht nicht den Geodaten (",
         "indexCheck1": "Index '",
         "indexCheck2": "' (Zeile ",
         "indexCheck3": ") nicht in den Geodaten gefunden",
         "indexCheck4": "' (Spalte ",
-       
         "numberRowsColumns": "Anzahl der Zeilen und Spalten stimmt nicht überein.",
         "indexRowsColumns1": "Spaltenindex ",
         "indexRowsColumns2": " stimmt nicht mit Zeilenindex ",
@@ -40,7 +37,6 @@
         "rowsGeodata2": ") entspricht nicht den Geodaten (",
         "unknownTimeUnit": "Unbekannte Zeiteinheit für bewegungsdaten: ",
         "unknownTableData": "Unbekannter Typ von Tabellendaten: ",
-      
         "metadaten":{
         "missing": "Metadaten fehlen",
         "noType": "Metadatenfeld 'type' erwartet",
@@ -86,7 +82,6 @@
          "settings" : "Einstellungen",
          "index": "Indexwert"
     },
-
     "menu": {
         "file": "Anwendung",
         "open": "Projekt öffnen",
@@ -136,11 +131,11 @@
     },
     "baseView": {
         "polygon": "Bezugsfläche",
-        "topic": "Thema",
+        "theme": "Thema",
         "selection": "Auswahl",
         "representation": "Darstellung"
     },
-    "topics":{
+    "themes":{
         "from": "Von",
         "to": "Nach",
         "saldi": "Saldi",
@@ -219,7 +214,6 @@
         "query": " SQL-Abfrage",
         "execute": "Ausführen",
         "NaN": "NaN steht für Not a Number (keine Zahl). Dies betrifft anonymisierte Daten und die Ergebnisse von Berechnungen, die kein Ergebnis haben (wie Division durch Null)."
-
     },
     "charts":{
         "scale100": "Skalierung 100%",
@@ -267,7 +261,9 @@
         "most": "Meiste",
         "saldi": "Saldi",
         "incoming": "Zuzüge",
-        "outgoing": "Wegzüge"
+        "outgoing": "Wegzüge",
+        "to": " nach ",
+        "from": " von "
     },
     "projectInfo":{
         "title": "hin&weg Projektinformationen",
@@ -276,16 +272,44 @@
         "text3": "Die Software wurde von der DELPHI IMM GmbH in Potsdam entwickelt.",
         "text4": "Am Projekt am IfL beteiligt waren: Francis Harvey, Tim Leibert, Eric Losang, Aura Moldovan, Maria Turchenko, Nicola Simon, Rowenia Bender (Stand 4.2021)",
         "text5": "Ihr Ansprechpartner für weitere Informationen:",
-        "text6": "Leibniz-Institut für Länderkunde"
+        "text6": "Leibniz-Institut für Länderkunde",
+        "text7": "Hiermit wird jeder Person, die eine Kopie der Software „hin&weg“ (nachfolgend: „die Software“) erhält, kostenfrei die Erlaubnis erteilt, mit der Software uneingeschränkt umzugehen, einschließlich (aber nicht beschränkt auf) die Rechte die Software zu nutzen, vervielfältigen, verändern, vereinigen, veröffentlichen, vertreiben und zu unterlizensieren. Die Apache Lizenz, Version 2.0, die von der Free Software Foundation zur Verfügung gestellt wird (https://opensource.org/licenses/Apache-2.0), beschreibt weitere Einzelheiten. Die Dokumentation der Software wird unter einer Creative-Commons-By Lizenz (https://creativecommons.org/licenses/by/4.0/legalcode) zur Verfügung gestellt.  ",
+        "text8": "Der Hinweis “2021 Leibniz-Institut für Länderkunde” und dieser Text im vollen Umfang sind in allen Kopien oder wesentlichen Teilen der Software und Dokumentation kenntlich anzugeben. Weitere Informationen sind über die Website hinundweg-online.leibniz-ifl.de erhältlich. ",
+        "text9": "DIE SOFTWARE WIRD \"WIE VORHANDEN\" BEREITGESTELLT, OHNE JEGLICHE AUSDRÜCKLICHE ODER STILLSCHWEIGENDE GEWÄHRLEISTUNG, EINSCHLIESSLICH, ABER NICHT BESCHRÄNKT AUF DIE GEWÄHRLEISTUNG DER MARKTGÄNGIGKEIT, DER EIGNUNG FÜR EINEN BESTIMMTEN ZWECK UND DER NICHTVERLETZUNG VON RECHTEN. IN KEINEM FALL SIND DIE AUTOREN ODER URHEBERRECHTSINHABER HAFTBAR FÜR ANSPRÜCHE, SCHÄDEN ODER ANDERE HAFTUNGEN, SEI ES AUS EINER VERTRAGSHANDLUNG, UNERLAUBTER HANDLUNG ODER ANDERWEITIG, DIE SICH AUS ODER IN VERBINDUNG MIT DER SOFTWARE ODER DER NUTZUNG ODER ANDEREN VERFAHREN IN DER SOFTWARE ERGEBEN. "
     },
     "timeline": {
         "year": "Jahr",
         "incoming": "Zuzug",
         "outgoing": "Wegzug",
         "saldo": "Saldo"
+    },
+    "settings":{
+        "map": "Karte",
+        "colors": "Farbschemata",
+        "classes": " Klassen",
+        "styles": "Styles",
+        "legendPlacement": "Platzierung der Legende: ",
+        "underMap": "Unter der Karte",
+        "aboveMap": "Über der Karte",
+        "offlineFolder": "Ordner für Offline Karten:", 
+        "changeFolder": "Ordner ändern",
+        "offlineImported1": "Es wurden ",
+        "offlineImported2": " OfflineKarten importiert.",
+        "missingOffline": "Fehlende Bilddateien, die in der Konfigurationsdatei angegeben sind:",
+        "checkFolder": "Ordner erneut prüfen ...",
+        "save": "Speichern",
+        "arrowsFrom": "Pfeilfarbe Von",
+        "arrowsTo": "Pfeilfarbe Nach",
+        "colorsUser": "Benutzerdefinierte Farben",
+        "colorsSpecial": "Spezialfarben",
+        "colorNeutral": "neutrale Farbe (0)",
+        "colorNaN": "Farbe für fehlende oder anonymisierte Werte (NaN)",
+        "scheme": "Schema",
+        "classesUser": "Benutzerdefinierte Klassengrenzen",
+        "classesUser2": "Füllen Sie die Eingabefelder mit den Werten für Klassengrenzen entsprechend der von Ihnen gewählten Anzahl der Klassen aus.",
+        "positiveValues": "positive Werte",
+        "negativeValues": "negative Werte",
+        "style": "Style: ",
+        "stylesNote": "Hinweis: Die Änderung des Styles wird erst nach dem Neustart der Anwendung wirksam."
     }
-    
-       
-
-
 }

@@ -199,6 +199,7 @@ class StatisticsView extends React.Component<IStatisticsViewProps>
 
 	private calculateMaximum(count: number): string
 	{
+		const {t}:any = this.props ;
 		let maxwert = 0;
 		let ort = "";
 		for (let item of this.props.items)
@@ -206,9 +207,11 @@ class StatisticsView extends React.Component<IStatisticsViewProps>
 			if(item.Wert > maxwert){
 				maxwert = item.Wert;
 				if(this.props.theme == "Von"){
-					ort = " nach " + item.Nach;
+					ort = t('statistics.to') + item.Nach;
+					// ort = " nach " + item.Nach;
 				}else{
-					ort = " von " + item.Von;
+					ort = t('statistics.from') + item.Von;
+					// ort = " von " + item.Von;
 				}
 			}
 		}
@@ -217,6 +220,7 @@ class StatisticsView extends React.Component<IStatisticsViewProps>
 
 	private calculateMinimum(count: number): string
 	{
+		const {t}:any = this.props ;
 		let minwert = 5000;
 		let ort = "";
 		for (let item of this.props.items)
@@ -225,7 +229,8 @@ class StatisticsView extends React.Component<IStatisticsViewProps>
 			{
 				minwert = item.Wert;
 				if(item.Von != undefined)
-				ort = " nach " + item.Von;
+				ort = t('statistics.to') + item.Von;
+				// ort = " nach " + item.Von;
 			}
 		}
 		return this.standardizeOutput(Math.abs(minwert)) + ort;
