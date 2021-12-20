@@ -11,6 +11,9 @@ rm -rf hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/testdata/
 mv hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/distdata hin-und-weg-darwin-x64/Beispieldaten
 mv hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/offline hin-und-weg-darwin-x64/
 cp -r hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/locales/ hin-und-weg-darwin-x64/
+cp -r hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/locales/ hin-und-weg-darwin-x64/hin-und-weg.app/
+cp -r hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/locales/ hin-und-weg-darwin-x64/hin-und-weg.app/Contents/
+cp -r hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/locales/ hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/
 # cleanup and fix win installation
 rm -rf hin-und-weg-win32-x64/resources/app/.*
 rm -rf hin-und-weg-win32-x64/resources/app/testdata/
