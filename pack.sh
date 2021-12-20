@@ -5,21 +5,24 @@ VERSION=1.8.4
 npm run build
 # create installations
 electron-packager --platform=win32,darwin,linux .
-# cleanup mac installation
+# cleanup and fix mac installation
 rm -rf hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/.*
 rm -rf hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/testdata/
 mv hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/distdata hin-und-weg-darwin-x64/Beispieldaten
 mv hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/offline hin-und-weg-darwin-x64/
-# cleanup win installation
+cp -r hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/locales/ hin-und-weg-darwin-x64/
+# cleanup and fix win installation
 rm -rf hin-und-weg-win32-x64/resources/app/.*
 rm -rf hin-und-weg-win32-x64/resources/app/testdata/
 mv hin-und-weg-win32-x64/resources/app/distdata hin-und-weg-win32-x64/Beispieldaten
 mv hin-und-weg-win32-x64/resources/app/offline hin-und-weg-win32-x64/
-# cleanup linux installation
+cp -r hin-und-weg-win32-x64/resources/app/locales/ hin-und-weg-win32-x64/
+# cleanup and fix linux installation
 rm -rf hin-und-weg-linux-x64/resources/app/.*
 rm -rf hin-und-weg-linux-x64/resources/app/testdata/
 mv hin-und-weg-linux-x64/resources/app/distdata hin-und-weg-linux-x64/Beispieldaten
 mv hin-und-weg-linux-x64/resources/app/offline hin-und-weg-linux-x64/
+cp -r hin-und-weg-linux-x64/resources/app/locales/ hin-und-weg-linux-x64/
 # package distributions
 zip -r "hin&weg-$VERSION-linux.zip" hin-und-weg-linux-x64/
 zip -r "hin&weg-$VERSION-windows.zip" hin-und-weg-win32-x64/
