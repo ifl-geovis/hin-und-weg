@@ -45,17 +45,16 @@ function createWindow() {
 		console.log("loaded from main: " + JSON.stringify(loaded));
 		i18n.changeLanguage('de');
 		i18n.off('loaded');
-	  });
+	});
 
 	i18n.on('languageChanged', (lng:any) => {
 		console.log("languageChanged:  " +  lng);
-		// menuFactoryService.buildMenu(app, win, i18n);
 		Menu.setApplicationMenu(MainMenu.getMainMenu(i18n));
 		mainWindow.webContents.send('language-changed', {
 			language: lng,
 			namespace: i18nConfig.namespace,
 			resource: i18n.getResourceBundle(lng, i18nConfig.namespace)
-		  });
+		});
 	});
 }
 
@@ -83,14 +82,14 @@ app.on('activate', () => {
 
 ipcMain.on('get-initial-translations', (event:any, arg:any) => {
 	i18n.loadLanguages('de', (err:any, t:any) => {
-	  const initial = {
-		'de': {
-		  'translation': i18n.getResourceBundle('de', i18nConfig.namespace)
-		}
-	  };
-	  event.returnValue = initial;
+		const initial = {
+			'de': {
+			  'translation': i18n.getResourceBundle('de', i18nConfig.namespace)
+			}
+		};
+		event.returnValue = initial;
 	});
-  });
+});
 
 app.setPath("appData", app.getAppPath() + "/../" + Config.getValue('global', 'datadir'));
 

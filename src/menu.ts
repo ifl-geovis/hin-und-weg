@@ -9,12 +9,10 @@ import i18nConfig from "./i18n/i18nConfig";
 export default class MainMenu
 {
 
-	// private static template: Electron.MenuItemConstructorOptions[] =
-	// [
-	// 	{
-		private static  menuTemplate = (i18n:any) => {
-			let template : Electron.MenuItemConstructorOptions[] = [];
+	public static MENU: boolean = Config.getValue("global", "menu");
 
+	private static  menuTemplate = (i18n:any) => {
+		let template : Electron.MenuItemConstructorOptions[] = [];
 		template.push
 		({
 			// label: 'Anwendung',
@@ -313,16 +311,10 @@ export default class MainMenu
 		});
 		return template;
 	};
-	// 	}
-	// ]
 
-	public static MENU: boolean = Config.getValue("global", "menu");
-
-	// public static getMainMenu(): Menu | null
 	public static getMainMenu(i18n: any): Menu | null
 	{
 		if (MainMenu.MENU) return Menu.buildFromTemplate(MainMenu.menuTemplate(i18n));
-		// if (MainMenu.MENU) return Menu.buildFromTemplate(MainMenu.template);
 		return null;
 	}
 
