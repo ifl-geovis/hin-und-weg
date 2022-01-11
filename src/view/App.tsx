@@ -1,3 +1,5 @@
+import Config from '../config';
+
 import React from "react";
 import { exportComponentAsJPEG, exportComponentAsPNG } from 'react-component-export-image';
 import { Panel } from 'primereact/panel';
@@ -50,8 +52,10 @@ export default class App extends React.Component<IAppProps, IAppState>
 	}
 
 	private exportImage(format: string) {
-		if (format === 'png') exportComponentAsPNG(this.imageref);
-		if (format === 'jpeg') exportComponentAsJPEG(this.imageref);
+		const time = new Date();
+		const basename = 'hin&weg-' + Config.getVersion() + "-" + time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+		if (format === 'png') exportComponentAsPNG(this.imageref, {fileName: basename + '.png'});
+		if (format === 'jpeg') exportComponentAsJPEG(this.imageref, {fileName: basename + '.jpg'});
 	}
 
 }
