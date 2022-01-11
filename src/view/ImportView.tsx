@@ -38,7 +38,7 @@ interface IImportState
 	newtableloading: boolean;
 }
 
-// export default 
+// export default
 class ImportView extends React.Component<IImportProps, IImportState>
 {
 
@@ -72,26 +72,19 @@ class ImportView extends React.Component<IImportProps, IImportState>
 
 		return (
 			<div>
-				{/* <Panel header="1. Geodaten"> */}
 				<Panel header={t('importView.geodata')} >
 					<div className="p-grid p-justify-around">
 						{shapefilebutton}
-						{/* <div className="p-col-3">ID-Attribut auswählen:</div> */}
 						<div className="p-col-3">{t('importView.idSelect')}</div>
 						<Dropdown className="p-col-3" key="geoId" value={this.props.geoId} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder={t('importView.idColumn')} onChange={(e) => {this.props.setGeoId(e.value); } }/>
-						{/* <Dropdown className="p-col-3" key="geoId" value={this.props.geoId} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="ID Spalte auswählen" onChange={(e) => {this.props.setGeoId(e.value); } }/> */}
 						<div className="p-col-3">{t('importView.nameAttrSelect')}</div>
-						{/* <div className="p-col-3">Namens-Attribut auswählen:</div> */}
 						<Dropdown className="p-col-3" key="geoName" value={this.props.geoName} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder={t('importView.nameColumn')} onChange={(e) => {this.props.setGeoName(e.value); } }/>
-						{/* <Dropdown className="p-col-3" key="geoName" value={this.props.geoName} options={geoFieldOptions} disabled={this.props.geodata == null} placeholder="Namenspalte auswählen" onChange={(e) => {this.props.setGeoName(e.value); } }/> */}
 					</div>
 				</Panel>
 				<Panel header={t('importView.tableData')}  style={((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0)) ? {display: "none"} : {display: "block"}}>
-				{/* <Panel header="2. Tabellendaten" style={((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0)) ? {display: "none"} : {display: "block"}}> */}
 					<div className="p-grid">
 						<div className="p-col-12">
 							<FileInput label={t('importView.addTableData')} filesSelected={this.onSelectTabledataFiles} disabled={false} accept=".csv"/>
-							{/* <FileInput label={"Tabellendaten hinzufügen..."} filesSelected={this.onSelectTabledataFiles} disabled={false} accept=".csv"/> */}
 						</div>
 						{tablesfiles}
 					</div>
@@ -104,12 +97,10 @@ class ImportView extends React.Component<IImportProps, IImportState>
 		const {t}:any = this.props ;
 		if (this.props.geodata) return (
 			<div className="p-col-12 status-success">{t('importView.shp')} {this.props.shapefilename} {t('importView.shpLoaded')}</div>
-			// <div className="p-col-12 status-success">✓ Shape Datei {this.props.shapefilename} wurde erfolgreich geladen...</div>
 		);
 		return (
 			<div className="p-col-12">
 				<FileInput label={t('importView.ShpButton')} filesSelected={this.onSelectGeodataFile} disabled={false} accept=".shp"/>
-				{/* <FileInput label="Shape Datei auswählen..." filesSelected={this.onSelectGeodataFile} disabled={false} accept=".shp"/> */}
 				<div className="status-progress">{this.state.shapeloadmessage}</div>
 			</div>
 		);
@@ -120,25 +111,20 @@ class ImportView extends React.Component<IImportProps, IImportState>
 		const {t}:any = this.props ;
 		Log.debug("ImportView.onSelectGeodataFile", files);
 		if (files.length != 1) MessageList.getMessageList().addMessage(t('importView.shpError') , 'error');
-		// if (files.length != 1) MessageList.getMessageList().addMessage('Es kann nur eine Shape-Datei geladen werden!', 'error');
 		else if (!files[0].name.endsWith(".shp")) MessageList.getMessageList().addMessage(t('importView.file') + files[0].name + t('importView.notShp'), 'error');
-		// else if (!files[0].name.endsWith(".shp")) MessageList.getMessageList().addMessage('Die Datei ' + files[0].name + ' sieht nicht wie eine Shape-Datei aus.', 'error');
 		else
 		{
 			this.setState({ shapeloadmessage: t('importView.shp2') + files[0].name + t('importView.shpLoading') });
-			// this.setState({ shapeloadmessage: "↺ Shape-Datei " + files[0].name + " wird geladen. Bitte warten." });
 			this.props.setShapefileName(files[0].name);
 			Geodata.read(files[0].path, (newGeodata) => {
 				Log.trace("ImportView.onSelectGeodataFile setGeodata", newGeodata);
 				this.setState({ shapeloadmessage: ""});
 				MessageList.getMessageList().addMessage(t('importView.shp3') + this.props.shapefilename + t('importView.shpLoaded2'), 'success');
-				// MessageList.getMessageList().addMessage("Shape-Datei " + this.props.shapefilename + " wurde erfolgreich geladen.", 'success');
 				this.props.setGeodata(newGeodata.transformToWGS84());
 			}, (reason) => {
 				Log.debug("ImportView.onSelectGeodataFile failure", reason);
 				this.setState({ shapeloadmessage: ""});
 				MessageList.getMessageList().addMessage(t('importView.shpProblem1') + this.props.shapefilename + t('importView.shpProblem2') + reason, 'error');
-				// MessageList.getMessageList().addMessage("Problem beim Einlesen der Shape-Datei " + this.props.shapefilename + " aufgetreten. Fehlermeldung ist: " + reason, 'error');
 				this.props.change();
 			});
 		}
@@ -225,14 +211,10 @@ class ImportView extends React.Component<IImportProps, IImportState>
 		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
 		const geocount = this.props.geodata!.count();
 		if (rowNames.length != geocount) filestatus.failure(t('importView.rowsNumber1') + rowNames.length + t('importView.rowsNumber2')  + geocount + ")");
-		// if (rowNames.length != geocount) filestatus.failure(t('importView.rowsNum') + " (" + rowNames.length + ") " + t('importView.notInGeo') + " (" + geocount + ")");
-		// if (rowNames.length != geocount) filestatus.failure("Zeilenzahl (" + rowNames.length + ") entspricht nicht den Geodaten (" + geocount + ")");
 		for (let i in rowNames)
 		{
 			const rownum = parseInt(i, 10) + 4;
 			if (rowNames[i] == null) filestatus.failure(t('importView.indexCheck1') + rowHeaders[i] + t('importView.indexCheck2') + rownum + t('importView.indexCheck3'));
-			// if (rowNames[i] == null) filestatus.failure(t('importView.indx')+ " '" + rowHeaders[i] + "' (" + t('importView.row') + rownum + ") " + t('importView.notInGeo'));
-			// if (rowNames[i] == null) filestatus.failure("Index '" + rowHeaders[i] + "' (Zeile " + rownum + ") nicht in den Geodaten gefunden");
 		}
 		return [columnHeaders, rowNames];
 	}
@@ -242,30 +224,24 @@ class ImportView extends React.Component<IImportProps, IImportState>
 		const {t}:any = this.props ;
 		const [columnHeaders, rowHeaders] = this.loadHeaderNames(tabledata);
 		if (columnHeaders.length != rowHeaders.length) filestatus.failure(t('importView.numberRowsColumns'));
-		// if (columnHeaders.length != rowHeaders.length) filestatus.failure("Anzahl der Zeilen und Spalten stimmt nicht überein.");
 		else for (let i in columnHeaders)
 		{
 			if (columnHeaders[i] != rowHeaders[i]) filestatus.failure(t('importView.indexRowsColumns1') + columnHeaders[i] + t('importView.indexRowsColumns2') + rowHeaders[i] + t('importView.indexRowsColumns3'));
-			// if (columnHeaders[i] != rowHeaders[i]) filestatus.failure("Spaltenindex " + columnHeaders[i] + " stimmt nicht mit Zeilenindex " + rowHeaders[i] + " überein.");
 		}
 		const columnNames = R.map(this.getNameForId.bind(this), columnHeaders);
 		const rowNames = R.map(this.getNameForId.bind(this), rowHeaders);
 		const geocount = this.props.geodata!.count();
 		if (columnNames.length != geocount) filestatus.failure(t('importView.columnsGeodata1') + columnNames.length + t('importView.columnsGeodata2')  + geocount + ")");
-		// if (columnNames.length != geocount) filestatus.failure("Spaltenzahl (" + columnNames.length + ") entspricht nicht den Geodaten (" + geocount + ")");
 		if (rowNames.length != geocount) filestatus.failure(t('importView.rowsGeodata1') + rowNames.length + t('importView.rowsGeodata2')  + geocount + ")");
-		// if (rowNames.length != geocount) filestatus.failure("Zeilenzahl (" + rowNames.length + ") entspricht nicht den Geodaten (" + geocount + ")");
 		for (let i in columnNames)
 		{
 			const colnum = parseInt(i, 10) + 2;
 			if (columnNames[i] == null) filestatus.failure(t('importView.indexCheck1')+ columnHeaders[i] + t('importView.indexCheck4') + colnum + t('importView.indexCheck3'));
-			// if (columnNames[i] == null) filestatus.failure("Index '" + columnHeaders[i] + "' (Spalte " + colnum + ") nicht in den Geodaten gefunden");
 		}
 		for (let j in rowNames)
 		{
 			const rownum = parseInt(j, 10) + 4;
 			if (rowNames[j] == null) filestatus.failure(t('importView.indexCheck1') + rowHeaders[j] + t('importView.indexCheck2') + rownum + t('importView.indexCheck3'));
-			// if (rowNames[j] == null) filestatus.failure("Index '" + rowHeaders[j] + "' (Zeile " + rownum + ") nicht in den Geodaten gefunden");
 		}
 		return [columnNames, rowNames];
 	}
@@ -286,9 +262,7 @@ class ImportView extends React.Component<IImportProps, IImportState>
 				else if (metadata.type === 'movement') {
 					if (metadata.timeunit === 'year') this.addMovementYearDataToDB(metadata.time.toString(), tabledata, filestatus);
 					else filestatus.failure(t('importView.unknownTimeUnit') + metadata.timeunit);
-					// else filestatus.failure("Unbekannte Zeiteinheit für bewegungsdaten: " + metadata.timeunit);
 				} else filestatus.failure(t('importView.unknownTableData')  + metadata.type);
-			// } else filestatus.failure("Unbekannter Typ von Tabellendaten: " + metadata.type);
 			}
 			this.generateSummaryMessage();
 			this.setState({ tablefiles: this.state.tablefiles });
@@ -299,26 +273,18 @@ class ImportView extends React.Component<IImportProps, IImportState>
 	{
 		const {t}:any = this.props ;
 		if (!metadata) return t('importView.metadaten.missing');
-		// if (!metadata) return "Metadaten fehlen";
 		if (!metadata.type) return t('importView.metadaten.noType');
-		// if (!metadata.type) return "Metadatenfeld 'type' erwartet";
 		if ((metadata.type != 'population') && (metadata.type != 'movement')) return t('importView.metadaten.unknownType') + metadata.type + t('importView.metadaten.unknownType2');
-		// if ((metadata.type != 'population') && (metadata.type != 'movement')) return "Unbekannter Inhalt für Metadatenfeld 'type': " + metadata.type + ". Erlaubte Werte sind: population/movement";
 		if (metadata.type === 'population')
 		{
 			if (!metadata.begin) return t('importView.metadaten.noBegin');
-			// if (!metadata.begin) return "Metadatenfeld 'begin' erwartet";
 			if (!metadata.end) return t('importView.metadaten.noEnd');
-			// if (!metadata.end) return "Metadatenfeld 'end' erwartet";
 		}
 		if (metadata.type === 'movement')
 		{
 			if (!metadata.timeunit) return t('importView.metadaten.noTimeUnit');
-			// if (!metadata.timeunit) return "Metadatenfeld 'timeunit' erwartet";
 			if (!metadata.time) return t('importView.metadaten.noTime');
-			// if (!metadata.time) return "Metadatenfeld 'time' erwartet";
 			if (metadata.timeunit != 'year') return t('importView.metadaten.unknownTimeUnit') + metadata.type + t('importView.metadaten.unknownTimeUnit2');
-			// if (metadata.timeunit != 'year') return "Unbekannter Inhalt für Metadatenfeld 'timeunit': " + metadata.type + ". Erlaubte Werte sind: year";
 		}
 		return null;
 	}
@@ -345,7 +311,6 @@ class ImportView extends React.Component<IImportProps, IImportState>
 			}
 			this.props.setPopulationDataLoaded();
 			filestatus.success(t('importView.fileLoaded'));
-			// filestatus.success("Datei erfolgreich geladen");
 		}
 		this.generateSummaryMessage();
 		this.setState({ tablefiles: this.state.tablefiles });
@@ -357,7 +322,6 @@ class ImportView extends React.Component<IImportProps, IImportState>
 		const regexp = new RegExp('^[1-9][01-9]{3}$');
 		const test = regexp.test(year);
 		if (!test) filestatus.failure("'" + year + t('importView.notYear'));
-		// if (!test) filestatus.failure("'" + year + "' sieht nicht wie ein Jahr aus");
 		const [columnNames, rowNames] = this.loadHeaderNamesForMovement(tabledata, filestatus);
 		Log.debug("columnNames: ", columnNames);
 		Log.debug("rowNames: ", rowNames);
@@ -377,7 +341,6 @@ class ImportView extends React.Component<IImportProps, IImportState>
 				}
 			}
 			filestatus.success(t('importView.fileLoaded'));
-			// filestatus.success("Datei erfolgreich geladen");
 			this.props.addYear(year);
 		}
 		this.generateSummaryMessage();
@@ -404,11 +367,8 @@ class ImportView extends React.Component<IImportProps, IImportState>
 		if ((errorcount > 0) && (successcount == 0)) summarystatus = 'error';
 		if ((errorcount == 0) && (successcount > 0)) summarystatus = 'success';
 		let summary = t('importView.tabledata1');
-		// let summary = 'Laden der Tabellendateien abgeschlossen. ';
 		if (successcount > 0) summary += t('importView.tabledata2') + successcount + t('importView.tabledata3');
-		// if (successcount > 0) summary += 'Es wurden ' + successcount + ' Tabellendateien erfolgreich geladen. ';
 		if (errorcount > 0) summary += errorcount + t('importView.tabledata4');
-		// if (errorcount > 0) summary += errorcount + ' Tabellendateien hatten Fehler beim Einladen.';
 		this.recalculateWanderungsrate();
 		MessageList.getMessageList().addMessage(summary, summarystatus);
 		this.setState({ newtableloading: false });
@@ -432,17 +392,13 @@ class ImportView extends React.Component<IImportProps, IImportState>
 		if (tablefile.getStatus() == "success")
 		{
 			return (<div key={tablefile.getPath()} className="p-col-12 status-success">✓ {tablefile.getPath()} {t('importView.success')}</div>);
-			// return (<div key={tablefile.getPath()} className="p-col-12 status-success">✓ {tablefile.getPath()} erfolgreich geladen.</div>);
 		}
 		if (tablefile.getStatus() == "failure")
 		{
 			return (<div key={tablefile.getPath()} className="p-col-12 status-failure">✗ {t('importView.loading')} {tablefile.getPath()} {t('importView.failed')} {tablefile.getMessage()}.</div>);
-			// return (<div key={tablefile.getPath()} className="p-col-12 status-failure">✗ Laden von {tablefile.getPath()} gescheitert: {tablefile.getMessage()}.</div>);
 		}
 		return (<div key={tablefile.getPath()} className="p-col-12 status-progress">↺ {tablefile.getPath()} {t('importView.loading2')}…</div>);
-		// return (<div key={tablefile.getPath()} className="p-col-12 status-progress">↺ {tablefile.getPath()} wird geladen…</div>);
 	}
 
 }
 export default withNamespaces()(ImportView);
- 
