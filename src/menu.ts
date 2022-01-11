@@ -344,13 +344,15 @@ export default class MainMenu
 
 }
 
-const ipc = require('electron').ipcMain;
-ipc.on
-(
-	'menuenable', (event: any, message: string) =>
-	{
-		// @ts-ignore
-		const menuitem = Menu.getApplicationMenu().getMenuItemById(message);
-		if (menuitem) menuitem.enabled = true;
-	}
-)
+if (MainMenu.MENU) {
+	const ipc = require('electron').ipcMain;
+	ipc.on
+	(
+		'menuenable', (event: any, message: string) =>
+		{
+			// @ts-ignore
+			const menuitem = Menu.getApplicationMenu().getMenuItemById(message);
+			if (menuitem) menuitem.enabled = true;
+		}
+	)
+}
