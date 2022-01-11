@@ -2,8 +2,10 @@ import { app, Menu, BrowserWindow } from "electron";
 
 import Config from "./config";
 import Log from './log';
+
 import { TFunction } from "i18next";
 import i18nConfig from "./i18n/i18nConfig";
+
 export default class MainMenu
 {
 
@@ -12,7 +14,7 @@ export default class MainMenu
 	// 	{
 		private static  menuTemplate = (i18n:any) => {
 			let template : Electron.MenuItemConstructorOptions[] = [];
-	
+
 		template.push
 		({
 			// label: 'Anwendung',
@@ -236,20 +238,20 @@ export default class MainMenu
 					label: i18n.t('menu.german'),
 					type: 'radio',
 					checked: i18n.language === 'de',
-					click: () => { 
-						console.log ("DEUTSCH!!!!");
-					  i18n.changeLanguage('de');	
-								}
+					click: () => {
+						Log.debug("DEUTSCH!!!!");
+						i18n.changeLanguage('de');
+					}
 				},
 				{
 					label: i18n.t('menu.english'),
 					// label: 'English',
 					type: 'radio',
 					checked: i18n.language === 'en',
-					click: () => { 
-						console.log ("ENGLISH!!!!");
-					  i18n.changeLanguage('en');	
-								}
+					click: () => {
+						Log.debug("ENGLISH!!!!");
+						i18n.changeLanguage('en');
+					}
 				}
 			]
 		},
