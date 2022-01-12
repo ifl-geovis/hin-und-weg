@@ -51,6 +51,11 @@ export default class Tabledata {
         return this.data.length;
     }
 
+    public getMetadataColumnCount(): number {
+        assert(this.data.length > 0, "data should has a length > 0");
+        return this.data[0].length;
+    }
+
     public getColumnCount(): number {
         assert(this.data.length > 0, "data should has a length > 0");
         return this.data[2].length;
@@ -71,8 +76,8 @@ export default class Tabledata {
 
     public getValueAt(rowIndex: number, columnIndex: number): string {
         assert(rowIndex >= 0 && rowIndex < this.getRowCount(), `rowIndex should between 0 and ${this.getRowCount()} (exclusive)`);
-        assert(columnIndex >= 0 && columnIndex < this.getColumnCount(),
-              `columnIndex should between 0 and ${this.getColumnCount()} (exclusive)`);
+        if (rowIndex > 1) assert(columnIndex >= 0 && columnIndex < this.getColumnCount(), `columnIndex should between 0 and ${this.getColumnCount()} (exclusive)`);
+        else assert(columnIndex >= 0 && columnIndex < this.getMetadataColumnCount(), `columnIndex should between 0 and ${this.getMetadataColumnCount()} (exclusive)`);
         return R.defaultTo("", R.nth(columnIndex, this.getRowAt(rowIndex)));
     }
 

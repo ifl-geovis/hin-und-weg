@@ -161,10 +161,10 @@ class ImportView extends React.Component<IImportProps, IImportState>
 
 	private loadMetadata(tabledata: Tabledata, filestatus: TableFileStatus): any
 	{
-		Log.trace('Header 1:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(0)));
-		Log.trace('Header 2:', R.slice(0, tabledata.getColumnCount(), tabledata.getRowAt(1)));
+		Log.trace('Header 1:', R.slice(0, tabledata.getMetadataColumnCount(), tabledata.getRowAt(0)));
+		Log.trace('Header 2:', R.slice(0, tabledata.getMetadataColumnCount(), tabledata.getRowAt(1)));
 		let metadata = new Object();
-		for (let i = 0; i < tabledata.getColumnCount(); i++)
+		for (let i = 0; i < tabledata.getMetadataColumnCount(); i++)
 		{
 			const key = tabledata.getValueAt(0, i);
 			const value = tabledata.getValueAt(1, i);
