@@ -15,6 +15,10 @@ export default class AppData {
 		this.db = db;
 	}
 
+	public setChange(change: () => void) {
+		this.change = change;
+	}
+
 	public setDB(db: alaSQLSpace.AlaSQL) {
 		this.db = db;
 	}

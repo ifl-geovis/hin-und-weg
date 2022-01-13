@@ -49,6 +49,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 			change: true,
 		};
 		this.change = this.change.bind(this);
+		this.props.data.setChange(this.change);
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
 		(

@@ -1,3 +1,5 @@
+import BaseData from "../../data/BaseData";
+
 import { Panel } from "primereact/panel";
 import { RadioButton } from "primereact/radiobutton";
 import R from "ramda";
@@ -8,16 +10,14 @@ import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
 
 export interface IThemesProps extends WithNamespaces{
-	selectedTheme: string;
-	setTheme: (theme: string) => void;
+	basedata: BaseData;
 	themes: string[];
 	selected: string;
 	setDataProcessing: (data: string) => void;
 	populationDataLoaded: boolean;
 }
 
-// export default
- class Themes extends React.Component<IThemesProps> {
+class Themes extends React.Component<IThemesProps> {
 
 	constructor(props: IThemesProps) {
 		super(props);
@@ -32,7 +32,6 @@ export interface IThemesProps extends WithNamespaces{
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header={t('baseView.theme')}>
-				{/* <AccordionTab header="Thema"> */}
 					{radioButtons}
 					{wanderungsselector}
 				</AccordionTab>
@@ -44,9 +43,7 @@ export interface IThemesProps extends WithNamespaces{
 		const {t}:any = this.props ;
 		if (!this.props.populationDataLoaded) return (<span></span>);
 		const absolute = this.makeRadioButton("absolute", t('themes.value'));
-		// const absolute = this.makeRadioButton("absolute", "Anzahl Umzüge");
 		const wanderungsrate = this.makeRadioButton("wanderungsrate", t('themes.rate'));
-		// const wanderungsrate = this.makeRadioButton("wanderungsrate", "Wanderungsrate");
 		return (
 			<div>
 				<hr />
@@ -61,10 +58,9 @@ export interface IThemesProps extends WithNamespaces{
 		let themeLabel = theme === "Von" ? t('themes.from') : theme === "Nach" ? t('themes.to') : theme === "Saldi" ? t('themes.saldi') : "";
 		return (
 			<div key={theme} className="p-col-12">
-				<RadioButton inputId={theme} name="theme" value={theme}
-							 onChange={(e) => this.props.setTheme(e.value)} checked={this.props.selectedTheme === theme} />
+				<RadioButton inputId={theme} name="theme" value={theme} onChange={(e) => this.props.basedata.setTheme(e.value)} checked={this.props.basedata.getTheme() === theme} />
 				<label htmlFor={theme} className="p-radiobutton-label">{themeLabel}</label>
-				
+
 			</div>
 		);
 	}

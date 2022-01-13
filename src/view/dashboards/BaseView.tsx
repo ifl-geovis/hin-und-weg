@@ -46,9 +46,10 @@ export interface IBaseProps extends WithNamespaces {
 
 interface IBaseState {
 	basedata: BaseData;
+	change: boolean;
 	years: string[];
 	location: string | null;
-	theme: string;
+	//theme: string;
 	dataProcessing: string;
 	migrationsInside: boolean;
 	algorithm: string;
@@ -56,7 +57,6 @@ interface IBaseState {
 	negativeColors: string;
 	positiveClasses: string;
 	negativeClasses: string;
-	change: boolean;
 	classcountset: boolean;
 	updateclasscount: boolean;
 	activeLeftTab: number;
@@ -70,10 +70,10 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		super(props);
 		this.state = {
 			basedata:  new BaseData(props.appdata),
+			change: true,
 			years: [],
 			location: null,
-			// theme: t('from'),
-			theme: 'Von',
+			//theme: 'Von',
 			dataProcessing: 'absolute',
 			migrationsInside: true,
 			algorithm: 'equidistant',
@@ -81,7 +81,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			negativeColors: 'blau',
 			positiveClasses: '5',
 			negativeClasses: '5',
-			change: true,
 			classcountset: false,
 			updateclasscount: false,
 			activeLeftTab: 0,
@@ -91,8 +90,9 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		this.setGeoName = this.setGeoName.bind(this);
 		this.setClassCount = this.setClassCount.bind(this);
 		this.setLocation = this.setLocation.bind(this);
-		this.setTheme = this.setTheme.bind(this);
+		//this.setTheme = this.setTheme.bind(this);
 		this.setYears = this.setYears.bind(this);
+		this.state.basedata.setChange(this.change);
 	}
 
 	public render(): JSX.Element {
@@ -102,7 +102,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		const statisticPerYearAusgabe = this.queryStatistics();
 		const classification = Classification.getCurrentClassification();
 		classification.setLocation(this.state.location);
-		classification.setTheme(this.state.theme);
+		classification.setTheme(this.state.basedata.getTheme());
 		classification.setQuery(results);
 		classification.setAlgorithm(this.state.algorithm);
 		classification.setDataProcessing(this.state.dataProcessing);
@@ -145,8 +145,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 							/>
 							<Themes
 								themes={['Von', 'Nach', 'Saldi']}
-								selectedTheme={this.state.theme}
-								setTheme={(newTheme) => this.setTheme(newTheme) }
+								basedata={this.state.basedata}
 								selected={this.state.dataProcessing}
 								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
 								populationDataLoaded={this.props.populationDataLoaded}
@@ -165,7 +164,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 								negativeColors={this.state.negativeColors}
 								positiveClasses={this.state.positiveClasses}
 								negativeClasses={this.state.negativeClasses}
-								withNegative={this.state.theme == 'Saldi'}
+								withNegative={this.state.basedata.getTheme() == 'Saldi'}
 								automaticButton={this.state.classcountset}
 								colorSchemes={classification.getColorSchemes()}
 								setAlgorithm={(newAlgorithm) => this.setState({ algorithm: newAlgorithm })}
@@ -193,7 +192,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 						shapefilename={this.props.shapefilename}
 						locations={locations}
 						location={this.state.location}
-						theme={this.state.theme}
+						theme={this.state.basedata.getTheme()}
 						yearsAvailable={this.props.yearsAvailable}
 						yearsSelected={this.state.years}
 						onSelectLocation={(newLocation) => this.setLocation(newLocation) }
@@ -255,11 +254,11 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			return results;
 		}
 		let query = '';
-		if (this.state.theme === 'Von') {
+		if (this.state.basedata.getTheme() === 'Von') {
 			query = this.constructQuery('Von');
-		} else if (this.state.theme === 'Nach') {
+		} else if (this.state.basedata.getTheme() === 'Nach') {
 			query = this.constructQuery('Nach');
-		} else if (this.state.theme === 'Saldi') {
+		} else if (this.state.basedata.getTheme() === 'Saldi') {
 			const years = this.state.years;
 			const stringYears = R.join(
 				', ',
@@ -560,10 +559,10 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		this.setState({ updateclasscount: true });
 	}
 
-	private setTheme(newTheme: string) {
+	/*private setTheme(newTheme: string) {
 		this.setState({ theme: newTheme });
 		this.setState({ updateclasscount: true });
-	}
+	}*/
 
 	private setYears(newYears: string[]) {
 		this.setState({ years: newYears });
