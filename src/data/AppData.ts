@@ -2,13 +2,6 @@ import Log from '../log';
 import Config from '../config';
 import Settings from '../settings';
 
-export interface Item {
-	Von: string;
-	Nach: string;
-	Wert: number;
-	Absolutwert: number;
-}
-
 /**
 	Represents the application data (loaded geometries and migration and population data).
  */

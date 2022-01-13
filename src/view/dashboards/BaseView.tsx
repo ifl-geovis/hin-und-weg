@@ -5,6 +5,9 @@ import { TabView,TabPanel } from 'primereact/tabview';
 import Geodata from '../../model/Geodata';
 import { GeoJsonProperties } from 'geojson';
 
+import AppData from "../../data/AppData";
+import BaseData from "../../data/BaseData";
+
 import Classification from '../../data/Classification';
 import MessageList from '../../data/MessageList';
 
@@ -22,6 +25,7 @@ import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
 
 export interface IBaseProps extends WithNamespaces {
+	appdata: AppData;
 	db: alaSQLSpace.AlaSQL;
 	view: string;
 	space: string;
@@ -41,6 +45,7 @@ export interface IBaseProps extends WithNamespaces {
 }
 
 interface IBaseState {
+	basedata: BaseData;
 	years: string[];
 	location: string | null;
 	theme: string;
@@ -57,13 +62,14 @@ interface IBaseState {
 	activeLeftTab: number;
 }
 
-// export default 
+// export default
 class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	constructor(props: IBaseProps) {
 		const {t}:any = props ;
 		super(props);
 		this.state = {
+			basedata:  new BaseData(props.appdata),
 			years: [],
 			location: null,
 			// theme: t('from'),
@@ -178,7 +184,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 						baseViewId={this.props.baseViewId}
 						view={this.props.view}
 						geodata={this.props.geodata}
-						db={this.props.db}
+						db={this.props.appdata.getDB()}
 						items={results}
 						statisticPerYearAusgabe={statisticPerYearAusgabe}
 						timeline={timeline}
