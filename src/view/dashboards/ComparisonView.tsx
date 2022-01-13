@@ -30,13 +30,12 @@ interface IComparisonState
 	yearsAvailable: string[];
 	shapefilename: string;
 	populationDataLoaded: boolean;
+	change: boolean;
 }
 
-export default class ComparisonView extends React.Component<IComparisonProps, IComparisonState>
-{
+export default class ComparisonView extends React.Component<IComparisonProps, IComparisonState> {
 
-	constructor(props: IComparisonProps)
-	{
+	constructor(props: IComparisonProps) {
 		super(props);
 		this.state =
 		{
@@ -47,7 +46,9 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 			yearsAvailable: [],
 			shapefilename: "",
 			populationDataLoaded: false,
+			change: true,
 		};
+		this.change = this.change.bind(this);
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
 		(
@@ -58,19 +59,16 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 		)
 	}
 
-	public render(): JSX.Element
-	{
+	public render(): JSX.Element {
 		return this.selectCurrentView(this.state.dashboard_configuration);
 	}
 
-	private selectCurrentView(view: string): JSX.Element
-	{
+	private selectCurrentView(view: string): JSX.Element {
 		if (view == "cls1rs1") return this.select_cls1rs1();
 		return this.getBaseView(view, "wide", 0);
 	}
 
-	private getBaseView(view: string, space: string, id: number): JSX.Element
-	{
+	private getBaseView(view: string, space: string, id: number): JSX.Element {
 		return (
 			<BaseView baseViewId={id} view={view} space={space} appdata={this.props.data} db={this.props.data.getDB()} geodata={this.state.geodata} geoName={this.state.geoName} geoId={this.state.geoId} yearsAvailable={this.state.yearsAvailable} shapefilename={this.state.shapefilename}
 				setGeodata={(newGeodata) => { this.setState({ geodata: newGeodata }); }}
@@ -84,8 +82,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 		);
 	}
 
-	private select_cls1rs1(): JSX.Element
-	{
+	private select_cls1rs1(): JSX.Element {
 		let comparison1 = this.getBaseView("s1", "narrow",1);
 		let comparison2 = this.getBaseView("s1", "narrow",2);
 		return (
@@ -98,6 +95,10 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 				</div>
 			</div>
 		);
+	}
+
+	private change() {
+		this.setState({ change: this.state.change ? false : true });
 	}
 
 }

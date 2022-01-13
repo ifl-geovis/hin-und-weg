@@ -7,9 +7,11 @@ import Settings from '../settings';
  */
 export default class AppData {
 
+	private change: () => void;
 	private db: alaSQLSpace.AlaSQL;
 
 	constructor(db: alaSQLSpace.AlaSQL) {
+		this.change = () => {};
 		this.db = db;
 	}
 
