@@ -9,7 +9,7 @@ import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
 
-export interface IThemesProps extends WithNamespaces{
+export interface IThemesProps extends WithNamespaces {
 	basedata: BaseData;
 	themes: string[];
 	populationDataLoaded: boolean;
