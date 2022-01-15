@@ -30,6 +30,10 @@ export default class BaseData {
 		this.change = change;
 	}
 
+	public update() {
+		this.change();
+	}
+
 	public setAppData(appdata: AppData) {
 		this.appdata = appdata;
 	}
@@ -40,7 +44,7 @@ export default class BaseData {
 
 	public setTheme(theme: string) {
 		this.theme = theme;
-		this.change();
+		this.update();
 	}
 
 	public getTheme(): string {
