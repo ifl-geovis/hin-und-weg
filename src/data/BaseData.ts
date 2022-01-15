@@ -19,11 +19,13 @@ export default class BaseData {
 	private change: () => void;
 	private appdata: AppData;
 	private theme: string;
+	private dataprocessing: string;
 
 	constructor(appdata: AppData) {
 		this.change = () => {};
 		this.appdata = appdata;
 		this.theme = 'Von';
+		this.dataprocessing = 'absolute';
 	}
 
 	public setChange(change: () => void) {
@@ -49,6 +51,15 @@ export default class BaseData {
 
 	public getTheme(): string {
 		return this.theme;
+	}
+
+	public setDataProcessing(dataprocessing: string) {
+		this.dataprocessing = dataprocessing;
+		this.update();
+	}
+
+	public getDataProcessing(): string {
+		return this.dataprocessing;
 	}
 
 }

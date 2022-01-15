@@ -49,8 +49,6 @@ interface IBaseState {
 	change: boolean;
 	years: string[];
 	location: string | null;
-	//theme: string;
-	dataProcessing: string;
 	migrationsInside: boolean;
 	algorithm: string;
 	positiveColors: string;
@@ -73,8 +71,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			change: true,
 			years: [],
 			location: null,
-			//theme: 'Von',
-			dataProcessing: 'absolute',
 			migrationsInside: true,
 			algorithm: 'equidistant',
 			positiveColors: 'rot',
@@ -90,7 +86,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		this.setGeoName = this.setGeoName.bind(this);
 		this.setClassCount = this.setClassCount.bind(this);
 		this.setLocation = this.setLocation.bind(this);
-		//this.setTheme = this.setTheme.bind(this);
 		this.setYears = this.setYears.bind(this);
 		this.state.basedata.setChange(this.change);
 	}
@@ -105,7 +100,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		classification.setTheme(this.state.basedata.getTheme());
 		classification.setQuery(results);
 		classification.setAlgorithm(this.state.algorithm);
-		classification.setDataProcessing(this.state.dataProcessing);
+		classification.setDataProcessing(this.state.basedata.getDataProcessing());
 		classification.setPositiveColors(classification.getColorScheme(this.state.positiveColors, this.state.positiveClasses));
 		classification.setNegativeColors(classification.getColorScheme(this.state.negativeColors, this.state.negativeClasses));
 		classification.calculateClassification();
@@ -146,8 +141,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 							<Themes
 								themes={['Von', 'Nach', 'Saldi']}
 								basedata={this.state.basedata}
-								selected={this.state.dataProcessing}
-								setDataProcessing={(value) => this.setState({ dataProcessing: value }) }
 								populationDataLoaded={this.props.populationDataLoaded}
 							/>
 							<Years
@@ -179,7 +172,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-10' : 'p-col-8'}>
 					<DashboardView
-						dataProcessing={this.state.dataProcessing}
+						dataProcessing={this.state.basedata.getDataProcessing()}
 						baseViewId={this.props.baseViewId}
 						view={this.props.view}
 						geodata={this.props.geodata}
@@ -212,8 +205,8 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private standardizeValues(value: number): number
 	{
-		if ((this.state.dataProcessing === 'wanderungsrate') || (this.state.dataProcessing === 'ratevon') || (this.state.dataProcessing === 'ratenach')) return Math.round((value + Number.EPSILON) * 1000) / 1000;
-		if (this.state.dataProcessing === 'absolute') return Math.round(value);
+		if ((this.state.basedata.getDataProcessing() === 'wanderungsrate') || (this.state.basedata.getDataProcessing() === 'ratevon') || (this.state.basedata.getDataProcessing() === 'ratenach')) return Math.round((value + Number.EPSILON) * 1000) / 1000;
+		if (this.state.basedata.getDataProcessing() === 'absolute') return Math.round(value);
 		return value;
 	}
 
@@ -230,17 +223,17 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		//const location = ` ('${this.state.location}') `;
 		if (target === 'Von')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-			if (this.state.dataProcessing === 'ratevon') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-			if (this.state.dataProcessing === 'ratenach') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			if (this.state.basedata.getDataProcessing() === 'wanderungsrate') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			if (this.state.basedata.getDataProcessing() === 'ratevon') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			if (this.state.basedata.getDataProcessing() === 'ratenach') return `SELECT '${this.state.location}' as Von, Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 			// fallback for absolute and other values
 			return `SELECT '${this.state.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
 		}
 		if (target === 'Nach')
 		{
-			if (this.state.dataProcessing === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-			if (this.state.dataProcessing === 'ratevon') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-			if (this.state.dataProcessing === 'ratenach') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			if (this.state.basedata.getDataProcessing() === 'wanderungsrate') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			if (this.state.basedata.getDataProcessing() === 'ratevon') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			if (this.state.basedata.getDataProcessing() === 'ratenach') return `SELECT Von, '${this.state.location}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 			// fallback for absolute and other values
 			return `SELECT Von, '${this.state.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 		}
@@ -278,7 +271,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 					if (isNaN(nachResults[i].Wert)) value = 0 - vonResults[i].Wert;
 					if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
 				}
-				if ((this.state.dataProcessing === 'wanderungsrate') || (this.state.dataProcessing === 'ratevon') || (this.state.dataProcessing === 'ratenach')) {
+				if ((this.state.basedata.getDataProcessing() === 'wanderungsrate') || (this.state.basedata.getDataProcessing() === 'ratevon') || (this.state.basedata.getDataProcessing() === 'ratenach')) {
 					value = value * 1000 / popResults[0].population;
 
 				}
@@ -312,22 +305,22 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			R.map((year) => `'${year}'`, years)
 		);
 		let query_zuzug = `SELECT Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
-		if (this.state.dataProcessing === 'wanderungsrate') query_zuzug = `SELECT Nach, Jahr, ROUND(MYAVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
-		// if (this.state.dataProcessing === 'ratevon') query_zuzug = `SELECT Nach, Jahr, ROUND(MYAVG(RateVon), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
-		// if (this.state.dataProcessing === 'ratenach') query_zuzug = `SELECT Nach, Jahr, ROUND(MYAVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
+		if (this.state.basedata.getDataProcessing() === 'wanderungsrate') query_zuzug = `SELECT Nach, Jahr, ROUND(MYAVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
+		// if (this.state.basedata.getDataProcessing() === 'ratevon') query_zuzug = `SELECT Nach, Jahr, ROUND(MYAVG(RateVon), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
+		// if (this.state.basedata.getDataProcessing() === 'ratenach') query_zuzug = `SELECT Nach, Jahr, ROUND(MYAVG(RateNach), 3) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
 		let results_zuzug = this.props.db(query_zuzug);
 		let query_zuzug_wert = `SELECT Nach, Jahr, sum(Wert) as zuzug FROM matrices where Nach = '${this.state.location}' AND Von <> Nach GROUP BY Nach, Jahr`;
 		let results_zuzug_wert = this.props.db(query_zuzug_wert);
 
 		let query_wegzug = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
-		if (this.state.dataProcessing === 'wanderungsrate') query_wegzug = `SELECT Von, Jahr, ROUND(MYAVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
-		// if (this.state.dataProcessing === 'ratevon') query_wegzug = `SELECT Von, Jahr, ROUND(MYAVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
-		// if (this.state.dataProcessing === 'ratenach') query_wegzug = `SELECT Von, Jahr, ROUND(MYAVG(RateNach), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
+		if (this.state.basedata.getDataProcessing() === 'wanderungsrate') query_wegzug = `SELECT Von, Jahr, ROUND(MYAVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
+		// if (this.state.basedata.getDataProcessing() === 'ratevon') query_wegzug = `SELECT Von, Jahr, ROUND(MYAVG(RateVon), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
+		// if (this.state.basedata.getDataProcessing() === 'ratenach') query_wegzug = `SELECT Von, Jahr, ROUND(MYAVG(RateNach), 3) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
 		let results_wegzug = this.props.db(query_wegzug);
 		let query_wegzug_wert = `SELECT Von, Jahr, sum(Wert) as wegzug FROM matrices where Von = '${this.state.location}' AND Von <> Nach GROUP BY Von, Jahr`;
 		let results_wegzug_wert = this.props.db(query_wegzug_wert);
 
-		let wanderungsRate: boolean = (this.state.dataProcessing === "wanderungsrate") || (this.state.dataProcessing === "ratevon") || (this.state.dataProcessing === "ratenach");
+		let wanderungsRate: boolean = (this.state.basedata.getDataProcessing() === "wanderungsrate") || (this.state.basedata.getDataProcessing() === "ratevon") || (this.state.basedata.getDataProcessing() === "ratenach");
 		const populationqueryYear = `SELECT Jahr as Jahr, MYSUM(Wert) as population FROM population WHERE Area = '${this.state.location}' AND Jahr IN (${stringYears}) GROUP BY Jahr`;
 		const populationResultsYear = this.props.db(populationqueryYear);
 
@@ -338,7 +331,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			let wegzug_wert = this.getFieldForYear(results_wegzug_wert, year, 'wegzug');
 			let population = this.getFieldForYear(populationResultsYear, year, 'population');
 			let saldoRate = (zuzug_wert - wegzug_wert)*1000/population;
-			// let saldoRate = this.state.dataProcessing === "ratevon" ? -(zuzug_wert - wegzug_wert)*1000/population : (zuzug_wert - wegzug_wert)*1000/population;
+			// let saldoRate = this.state.basedata.getDataProcessing() === "ratevon" ? -(zuzug_wert - wegzug_wert)*1000/population : (zuzug_wert - wegzug_wert)*1000/population;
 			results.push({
 				'Ort': this.state.location,
 				'Jahr': year,
@@ -380,15 +373,15 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			return results;
 		}
 		let query_zuzug = `SELECT Von, Nach, Jahr, Wert as zuzug FROM matrices where Nach = '${this.state.location}' ORDER BY Jahr asc`;
-		if (this.state.dataProcessing === 'wanderungsrate') query_zuzug = `SELECT Von, Nach, Jahr, ROUND(RateNach, 3) as zuzug FROM matrices where Nach = '${this.state.location}' ORDER BY Jahr asc`;
-		if (this.state.dataProcessing === 'ratevon') query_zuzug = `SELECT Von, Nach, Jahr, ROUND(RateVon, 3) as zuzug FROM matrices where Nach = '${this.state.location}' ORDER BY Jahr asc`;
-		if (this.state.dataProcessing === 'ratenach') query_zuzug = `SELECT Von, Nach, Jahr, ROUND(RateNach, 3) as zuzug FROM matrices where Nach = '${this.state.location}' ORDER BY Jahr asc`;
+		if (this.state.basedata.getDataProcessing() === 'wanderungsrate') query_zuzug = `SELECT Von, Nach, Jahr, ROUND(RateNach, 3) as zuzug FROM matrices where Nach = '${this.state.location}' ORDER BY Jahr asc`;
+		if (this.state.basedata.getDataProcessing() === 'ratevon') query_zuzug = `SELECT Von, Nach, Jahr, ROUND(RateVon, 3) as zuzug FROM matrices where Nach = '${this.state.location}' ORDER BY Jahr asc`;
+		if (this.state.basedata.getDataProcessing() === 'ratenach') query_zuzug = `SELECT Von, Nach, Jahr, ROUND(RateNach, 3) as zuzug FROM matrices where Nach = '${this.state.location}' ORDER BY Jahr asc`;
 		const results_zuzug = this.props.db(query_zuzug);
 		Log.debug('queryStatistics()→results_zuzug', results_zuzug);
 		let query_wegzug = `SELECT Von, Nach, Jahr, Wert as wegzug FROM matrices where Von = '${this.state.location}' ORDER BY Jahr asc`;
-		if (this.state.dataProcessing === 'wanderungsrate') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateVon, 3) as wegzug FROM matrices where Von = '${this.state.location}' ORDER BY Jahr asc`;
-		if (this.state.dataProcessing === 'ratevon') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateVon, 3) as wegzug FROM matrices where Von = '${this.state.location}' ORDER BY Jahr asc`;
-		if (this.state.dataProcessing === 'ratenach') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateNach, 3) as wegzug FROM matrices where Von = '${this.state.location}' ORDER BY Jahr asc`;
+		if (this.state.basedata.getDataProcessing() === 'wanderungsrate') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateVon, 3) as wegzug FROM matrices where Von = '${this.state.location}' ORDER BY Jahr asc`;
+		if (this.state.basedata.getDataProcessing() === 'ratevon') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateVon, 3) as wegzug FROM matrices where Von = '${this.state.location}' ORDER BY Jahr asc`;
+		if (this.state.basedata.getDataProcessing() === 'ratenach') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateNach, 3) as wegzug FROM matrices where Von = '${this.state.location}' ORDER BY Jahr asc`;
 		const results_wegzug = this.props.db(query_wegzug);
 		if ((results_zuzug == null) || (results_wegzug == null)) return results;
 		Log.debug('queryStatistics()→results_wegzug', results_wegzug);

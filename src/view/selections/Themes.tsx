@@ -12,8 +12,6 @@ import { TFunction } from "i18next";
 export interface IThemesProps extends WithNamespaces{
 	basedata: BaseData;
 	themes: string[];
-	selected: string;
-	setDataProcessing: (data: string) => void;
 	populationDataLoaded: boolean;
 }
 
@@ -68,7 +66,7 @@ class Themes extends React.Component<IThemesProps> {
 	private makeRadioButton(id: string, label: string): JSX.Element {
 		return (
 			<div key={id} className="p-col-12">
-				<RadioButton inputId={id} name="data" value={id} onChange={(e) => this.props.setDataProcessing(e.value)} checked={this.props.selected === id} />
+				<RadioButton inputId={id} name="data" value={id} onChange={(e) => this.props.basedata.setDataProcessing(e.value)} checked={this.props.basedata.getDataProcessing() === id} />
 				<label htmlFor={id} className="p-radiobutton-label">{label}</label>
 			</div>
 		);
