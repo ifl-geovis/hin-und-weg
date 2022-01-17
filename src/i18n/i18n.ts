@@ -1,18 +1,24 @@
 import i18n from 'i18next';
 import i18nextBackend from 'i18next-node-fs-backend';
 import i18nConfig from'./i18nConfig';
+import { platform } from 'process';
 
-import translationDE from './locales/de/translation.json';
+// import translationDE from './locales/de/translation.json';
+const isDev = require('electron-is-dev');
+const isMac = platform === "darwin";
+const path = isMac && !isDev ? process.resourcesPath + '/app/locales/{{lng}}/{{ns}}.json' : './locales/{{lng}}/{{ns}}.json';
 
 
 const i18nextOptions = {
   backend:{
     // path where resources get loaded from
-    loadPath:  './locales/{{lng}}/{{ns}}.json',
+    loadPath: path,
+    // loadPath:  './locales/{{lng}}/{{ns}}.json',
    
 
     // path to post missing resources
-    addPath: './locales/{{lng}}/{{ns}}.missing.json',
+    addPath: path,
+    // addPath: './locales/{{lng}}/{{ns}}.missing.json',
 
     // jsonIndent to use when storing json files
     jsonIndent: 2,
