@@ -195,35 +195,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		return value;
 	}
 
-	private constructQuery(target: string): string {
-		// disabled because of #2883
-		//const years = R.isEmpty(this.state.basedata.getYears()) ? this.state.yearsAvailable : this.state.basedata.getYears();
-		const {t}:any = this.props ;
-		const years = this.state.basedata.getYears();
-		const stringYears = R.join(
-			', ',
-			R.map((year) => `'${year}'`, years)
-		);
-		const migrationsInsideClause = (this.state.basedata.getMigrationsInside()) ? `` : ` AND Von <> Nach `;
-		if (target === 'Von')
-		{
-			if (this.state.basedata.getDataProcessing() === 'wanderungsrate') return `SELECT '${this.state.basedata.getLocation()}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-			if (this.state.basedata.getDataProcessing() === 'ratevon') return `SELECT '${this.state.basedata.getLocation()}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-			if (this.state.basedata.getDataProcessing() === 'ratenach') return `SELECT '${this.state.basedata.getLocation()}' as Von, Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Von = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-			// fallback for absolute and other values
-			return `SELECT '${this.state.basedata.getLocation()}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-		}
-		if (target === 'Nach')
-		{
-			if (this.state.basedata.getDataProcessing() === 'wanderungsrate') return `SELECT Von, '${this.state.basedata.getLocation()}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-			if (this.state.basedata.getDataProcessing() === 'ratevon') return `SELECT Von, '${this.state.basedata.getLocation()}' as Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Nach = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-			if (this.state.basedata.getDataProcessing() === 'ratenach') return `SELECT Von, '${this.state.basedata.getLocation()}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-			// fallback for absolute and other values
-			return `SELECT Von, '${this.state.basedata.getLocation()}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-		}
-		return '';
-	}
-
 	private query(): any[] {
 		const {t}:any = this.props ;
 		let results: any[] = [];
@@ -232,13 +203,9 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		}
 		let query = '';
 		if (this.state.basedata.getTheme() === 'Von') {
-			query = this.constructQuery('Von');
-			Log.debug('original query: ', query);
-			Log.debug('basedata query: ', this.state.basedata.constructQuery());
+			query = this.state.basedata.constructQuery();
 		} else if (this.state.basedata.getTheme() === 'Nach') {
-			query = this.constructQuery('Nach');
-			Log.debug('original query: ', query);
-			Log.debug('basedata query: ', this.state.basedata.constructQuery());
+			query = this.state.basedata.constructQuery();
 		} else if (this.state.basedata.getTheme() === 'Saldi') {
 			const years = this.state.basedata.getYears();
 			const stringYears = R.join(
