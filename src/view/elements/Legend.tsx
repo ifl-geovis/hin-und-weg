@@ -58,18 +58,13 @@ class Legend extends React.Component<ILegendProps> {
 	private createLegendTitle(classification: Classification): string {
 		const {t}:any = this.props ;
 		let title = t('legend.title');
-		// let title = 'Legende';
-		const location = classification.getLocation();
-		const theme = classification.getTheme();
+		const location = this.props.basedata.getLocation();
+		const theme = this.props.basedata.getTheme();
 		if (location && theme) {
 			title += t('legend.for');
-			// title += ' für ';
 			if (theme == 'Von') title += t('legend.outgoing');
-			// if (theme == 'Von') title += 'Wegzüge von ';
 			else if (theme == 'Nach') title += t('legend.incoming');
-			// else if (theme == 'Nach') title += 'Zuzüge nach ';
 			else if (theme == 'Saldi') title += t('legend.saldi');
-			// else if (theme == 'Saldi') title += 'Saldi für ';
 			title += location;
 			title += " (";
 			let first: boolean = true;

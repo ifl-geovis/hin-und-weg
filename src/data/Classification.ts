@@ -1,5 +1,6 @@
 import geostats from 'geostats';
 
+import BaseData from './BaseData';
 import Log from '../log';
 import Config from '../config';
 import Settings from '../settings';
@@ -24,11 +25,9 @@ export default class Classification {
 	private selected_color = '#cbf719';
 	private error_color = '#000000';
 
-	private location: string | null = null;
-	private theme: string | null = null;
-	private query: { [name: string]: any }[] = [];
+	private basedata: BaseData;
+
 	private algorithm: string = 'equidistant';
-	private dataProcessing: string = 'absolute';
 
 	private positive_stats: any;
 	private negative_stats: any;
@@ -52,6 +51,10 @@ export default class Classification {
 	private classificationNegativeDefault = [-1, -2, -3, -4, -5, -6, -7, -8, -9];
 
 	private userDefinedColorSchemes = ['scheme1', 'scheme2', 'scheme3', 'scheme4', 'scheme5', 'scheme6'];
+
+	constructor(basedata: BaseData) {
+		this.basedata = basedata;
+	}
 
 	public getBorderColor(item: { [name: string]: any }) {
 		if (item == null) return this.error_color;
@@ -151,24 +154,8 @@ export default class Classification {
 		return [negativeColorBright, negativeColorDark];
 	}
 
-	public setLocation(location: string | null) {
-		this.location = location;
-	}
-
-	public setTheme(theme: string | null) {
-		this.theme = theme;
-	}
-
-	public setQuery(query: { [name: string]: any }[]) {
-		this.query = query;
-	}
-
 	public setAlgorithm(algorithm: string) {
 		this.algorithm = algorithm;
-	}
-
-	public setDataProcessing(dataProcessing: string) {
-		this.dataProcessing = dataProcessing;
 	}
 
 	public setPositiveColors(colorScheme: string[]) {
@@ -219,11 +206,11 @@ export default class Classification {
 	}
 
 	public getTheme(): string | null {
-		return this.theme;
+		return this.basedata.getTheme();
 	}
 
 	public getLocation(): string | null {
-		return this.location;
+		return this.basedata.getLocation();
 	}
 
 	public getAlgorithm(): string | null {
@@ -243,7 +230,7 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
-		if ((this.dataProcessing === 'wanderungsrate') || (this.dataProcessing === 'ratevon') || (this.dataProcessing === 'ratenach')) {
+		if ((this.basedata.getDataProcessing() === 'wanderungsrate') || (this.basedata.getDataProcessing() === 'ratevon') || (this.basedata.getDataProcessing() === 'ratenach')) {
 			for (let i = 0; i < ranges.length; i++) this.positive_scales.push(this.roundValueThree(ranges[i]));
 		} else {
 			this.positive_scales.push(Math.floor(ranges[0]));
@@ -257,7 +244,7 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(true, this.positive_colors.length);
 		else ranges = this.getRanges(this.positive_stats, this.positive_colors.length);
-		if ((this.dataProcessing === 'wanderungsrate') || (this.dataProcessing === 'ratevon') || (this.dataProcessing === 'ratenach')) {
+		if ((this.basedata.getDataProcessing() === 'wanderungsrate') || (this.basedata.getDataProcessing() === 'ratevon') || (this.basedata.getDataProcessing() === 'ratenach')) {
 			for (let i = 0; i < ranges.length; i++) this.positive_scales_d3labels.push(this.roundValueThree(ranges[i]));
 		} else {
 			for (let i = 0; i < ranges.length; i++) this.positive_scales_d3labels.push(this.roundValue(ranges[i]));
@@ -269,7 +256,7 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		if ((this.dataProcessing === 'wanderungsrate') || (this.dataProcessing === 'ratevon') || (this.dataProcessing === 'ratenach')) {
+		if ((this.basedata.getDataProcessing() === 'wanderungsrate') || (this.basedata.getDataProcessing() === 'ratevon') || (this.basedata.getDataProcessing() === 'ratenach')) {
 			for (let i = ranges.length - 1; i >= 0; i--) this.negative_scales.push(this.roundValueThree(ranges[i]));
 		} else {
 			this.negative_scales.push(Math.ceil(ranges[ranges.length - 1]));
@@ -283,7 +270,7 @@ export default class Classification {
 		let ranges = [];
 		if (this.algorithm == 'custom') ranges = this.getCustomRanges(false, this.negative_colors.length);
 		else ranges = this.getRanges(this.negative_stats, this.negative_colors.length);
-		if ((this.dataProcessing === 'wanderungsrate') || (this.dataProcessing === 'ratevon') || (this.dataProcessing === 'ratenach')) {
+		if ((this.basedata.getDataProcessing() === 'wanderungsrate') || (this.basedata.getDataProcessing() === 'ratevon') || (this.basedata.getDataProcessing() === 'ratenach')) {
 			for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValueThree(ranges[i]));
 		} else {
 			for (let i = 0; i < ranges.length; i++) this.negative_scales_d3labels.push(this.roundValue(ranges[i]));
@@ -299,7 +286,7 @@ export default class Classification {
 		this.nan_values = false;
 		let positives = [];
 		let negatives = [];
-		for (let item of this.query) {
+		for (let item of this.basedata.query()) {
 			if (!isNaN(item.Wert)) {
 				if (item.Wert > 0) positives.push(item.Wert);
 				if (item.Wert < 0) negatives.push(item.Wert);

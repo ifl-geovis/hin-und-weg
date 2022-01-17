@@ -19,7 +19,7 @@ export default class BaseData {
 
 	private change: () => void;
 	private appdata: AppData;
-	private classification: Classification = new Classification();
+	private classification: Classification;
 
 	private theme: string;
 	private dataprocessing: string;
@@ -33,6 +33,7 @@ export default class BaseData {
 	constructor(appdata: AppData) {
 		this.change = () => {};
 		this.appdata = appdata;
+		this.classification = new Classification(this);
 		this.theme = 'Von';
 		this.dataprocessing = 'absolute';
 		this.location = null;
@@ -63,13 +64,11 @@ export default class BaseData {
 	}
 
 	public getClassification(): Classification {
-		this.classification.setQuery(this.query());
 		return this.classification;
 	}
 
 	public setTheme(theme: string) {
 		this.theme = theme;
-		this.classification.setTheme(this.theme);
 		this.update();
 	}
 
@@ -79,7 +78,6 @@ export default class BaseData {
 
 	public setDataProcessing(dataprocessing: string) {
 		this.dataprocessing = dataprocessing;
-		this.classification.setDataProcessing(this.dataprocessing);
 		this.update();
 	}
 
@@ -89,7 +87,6 @@ export default class BaseData {
 
 	public setLocation(location: string | null) {
 		this.location = location;
-		this.classification.setLocation(this.location);
 		this.update();
 	}
 
@@ -128,7 +125,7 @@ export default class BaseData {
 		return value;
 	}
 
-	public constructQuery(): string {
+	private constructQuery(): string {
 		if (this.cached_query != null) return this.cached_query;
 		this.cached_query = this.constructNewQuery();
 		return this.cached_query;
