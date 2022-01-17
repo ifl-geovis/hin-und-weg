@@ -1,3 +1,5 @@
+import BaseData from "../../data/BaseData";
+
 import { Panel } from "primereact/panel";
 import * as React from "react";
 import { Accordion, AccordionTab } from 'primereact/accordion';
@@ -9,15 +11,11 @@ import { TFunction } from "i18next";
 
 export interface ILocationProps extends WithNamespaces
 {
+	basedata: BaseData;
 	title: string;
 	locations: string[];
-	selectedLocation: string | null;
-	onSelectLocation: (newLocation: string) => void;
-	migrationsInside: boolean;
-	setMigrationsInside: (on: boolean) => void;
 }
 
-// export default 
 class Location extends React.Component<ILocationProps>
 {
 
@@ -33,11 +31,10 @@ class Location extends React.Component<ILocationProps>
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header={this.props.title}>
-					<SelectInput options={this.props.locations} selected={this.props.selectedLocation} onSelected={this.props.onSelectLocation}/>
+					<SelectInput options={this.props.locations} selected={this.props.basedata.getLocation()} onSelected={(newlocation) => this.props.basedata.setLocation(newlocation)}/>
 					<div className="p-col-12">
-						<Checkbox inputId="migrationsInside" value="migrationsInside" onChange={this.onMigrationsInsideChange} checked={this.props.migrationsInside}></Checkbox>
-		<label htmlFor="migrationsInside" className="p-checkbox-label">{t('location.insideMigration')}</label>
-						{/* <label htmlFor="migrationsInside" className="p-checkbox-label">Umzüge innerhalb der Fläche berücksichtigen</label> */}
+						<Checkbox inputId="migrationsInside" value="migrationsInside" onChange={this.onMigrationsInsideChange} checked={this.props.basedata.getMigrationsInside()}></Checkbox>
+						<label htmlFor="migrationsInside" className="p-checkbox-label">{t('location.insideMigration')}</label>
 					</div>
 				</AccordionTab>
 			</Accordion>
@@ -45,7 +42,7 @@ class Location extends React.Component<ILocationProps>
 	}
 
 	private onMigrationsInsideChange(e: { originalEvent: Event, value: string, checked: boolean}) {
-		this.props.setMigrationsInside(e.checked);
+		this.props.basedata.setMigrationsInside(e.checked);
 	}
 
 }

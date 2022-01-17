@@ -20,12 +20,16 @@ export default class BaseData {
 	private appdata: AppData;
 	private theme: string;
 	private dataprocessing: string;
+	private location: string | null;
+	private migrationsinside: boolean;
 
 	constructor(appdata: AppData) {
 		this.change = () => {};
 		this.appdata = appdata;
 		this.theme = 'Von';
 		this.dataprocessing = 'absolute';
+		this.location = null;
+		this.migrationsinside = true;
 	}
 
 	public setChange(change: () => void) {
@@ -60,6 +64,24 @@ export default class BaseData {
 
 	public getDataProcessing(): string {
 		return this.dataprocessing;
+	}
+
+	public setLocation(location: string | null) {
+		this.location = location;
+		this.update();
+	}
+
+	public getLocation(): string | null {
+		return this.location;
+	}
+
+	public setMigrationsInside(migrationsinside: boolean) {
+		this.migrationsinside = migrationsinside;
+		this.update();
+	}
+
+	public getMigrationsInside(): boolean {
+		return this.migrationsinside;
 	}
 
 }
