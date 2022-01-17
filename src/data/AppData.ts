@@ -27,4 +27,13 @@ export default class AppData {
 		return this.db;
 	}
 
+	public getAvailableYears(): string[] {
+		let years = [];
+		const results = this.db('SELECT DISTINCT Jahr FROM matrices ORDER BY Jahr');
+		for (let row of results) {
+			if (row.Jahr) years.push(row.Jahr);
+		}
+		return years;
+	}
+
 }

@@ -132,7 +132,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 							/>
 							<Years
 								basedata={this.state.basedata}
-								availableYears={this.props.yearsAvailable}
+								availableYears={this.state.basedata.getAvailableYears()}
 							/>
 						</TabPanel>
 						<TabPanel header={t('baseView.representation')}contentClassName="selectionstab">
@@ -171,7 +171,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 						locations={locations}
 						location={this.state.basedata.getLocation()}
 						theme={this.state.basedata.getTheme()}
-						yearsAvailable={this.props.yearsAvailable}
+						yearsAvailable={this.state.basedata.getAvailableYears()}
 						yearsSelected={this.state.basedata.getYears()}
 						onSelectLocation={(newLocation) => this.setLocation(newLocation) }
 						setGeodata={this.props.setGeodata}
@@ -198,7 +198,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 	private query(): any[] {
 		const {t}:any = this.props ;
 		let results: any[] = [];
-		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.props.yearsAvailable))) {
+		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.state.basedata.getAvailableYears()))) {
 			return results;
 		}
 		let query = '';
@@ -251,7 +251,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 	private queryTimeline(): any[] {
 		let results: any[] = [];
 		let resultsFiltered : any[] = [];
-		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.props.yearsAvailable))) {
+		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.state.basedata.getAvailableYears()))) {
 			return results;
 		}
 		const years = this.state.basedata.getYears();
@@ -279,7 +279,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		const populationqueryYear = `SELECT Jahr as Jahr, MYSUM(Wert) as population FROM population WHERE Area = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) GROUP BY Jahr`;
 		const populationResultsYear = this.props.db(populationqueryYear);
 
-		for (let year of this.props.yearsAvailable.sort()) {
+		for (let year of this.state.basedata.getAvailableYears().sort()) {
 			let zuzug = this.getFieldForYear(results_zuzug, year, 'zuzug');
 			let wegzug = this.getFieldForYear(results_wegzug, year, 'wegzug');
 			let zuzug_wert = this.getFieldForYear(results_zuzug_wert, year, 'zuzug');
@@ -324,7 +324,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		let results: any[] = [];
 		let medianZuzügeArray: any[] = [];
 		let medianWegzügeArray: any[] = [];
-		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.props.yearsAvailable))) {
+		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.state.basedata.getAvailableYears()))) {
 			return results;
 		}
 		let query_zuzug = `SELECT Von, Nach, Jahr, Wert as zuzug FROM matrices where Nach = '${this.state.basedata.getLocation()}' ORDER BY Jahr asc`;

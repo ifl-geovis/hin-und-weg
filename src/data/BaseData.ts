@@ -102,6 +102,11 @@ export default class BaseData {
 	}
 
 
+	public getAvailableYears(): string[] {
+		return this.appdata.getAvailableYears();
+	}
+
+
 	public constructQuery(): string {
 		if (this.cached_query != null) return this.cached_query;
 		let stringYears = '';
