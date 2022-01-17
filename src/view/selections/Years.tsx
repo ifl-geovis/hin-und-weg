@@ -1,3 +1,5 @@
+import BaseData from "../../data/BaseData";
+
 import { Checkbox } from "primereact/checkbox";
 import { Panel } from "primereact/panel";
 import R from "ramda";
@@ -11,13 +13,11 @@ import { TFunction } from "i18next";
 
 export interface IYearsProps extends WithNamespaces
 {
+	basedata: BaseData;
 	availableYears: string[];
-	selected: string[];
-	setYears: (newYears: string[]) => void;
 }
 
-// export default
- class Years extends React.Component<IYearsProps>
+class Years extends React.Component<IYearsProps>
 {
 
 	constructor(props: IYearsProps)
@@ -36,12 +36,9 @@ export interface IYearsProps extends WithNamespaces
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header={t('years.year')}>
-				{/* <AccordionTab header="Jahr(e)"> */}
 					<Button onClick={this.selectAllYears} label={t('years.all')}/>
-					{/* <Button onClick={this.selectAllYears} label="alle"/> */}
 					<span> </span>
 					<Button onClick={this.unselectAllYears} label={t('years.none')}/>
-					{/* <Button onClick={this.unselectAllYears} label="keine"/> */}
 					<div className="p-grid" style={{ margin: "10px" }}>
 						{checkboxes}
 					</div>
@@ -54,7 +51,7 @@ export interface IYearsProps extends WithNamespaces
 	{
 		return (
 			<div key={year} className="p-col-12">
-				<Checkbox inputId={year} value={year} onChange={this.onYearsChange} checked={R.includes(year, this.props.selected)}></Checkbox>
+				<Checkbox inputId={year} value={year} onChange={this.onYearsChange} checked={R.includes(year, this.props.basedata.getYears())}></Checkbox>
 				<label htmlFor="cb-{year}" className="p-checkbox-label">{year}</label>
 			</div>
 		);
@@ -62,7 +59,7 @@ export interface IYearsProps extends WithNamespaces
 
 	private onYearsChange(e: { originalEvent: Event, value: string, checked: boolean})
 	{
-		let selectedYears = this.props.selected;
+		let selectedYears = this.props.basedata.getYears();
 		const selectedYear = e.value;
 		if (e.checked)
 		{
@@ -73,14 +70,14 @@ export interface IYearsProps extends WithNamespaces
 			selectedYears = R.reject(R.equals(selectedYear), selectedYears);
 		}
 		const compare = function(a: string, b: string) { return a.localeCompare(b); };
-		this.props.setYears(R.sort(compare, R.uniq(selectedYears)));
+		this.props.basedata.setYears(R.sort(compare, R.uniq(selectedYears)));
 	}
 
 	private selectAllYears(e: MouseEvent)
 	{
 		Log.debug("e: " + e);
 		e.preventDefault();
-		this.props.setYears(R.uniq(this.props.availableYears));
+		this.props.basedata.setYears(R.uniq(this.props.availableYears));
 	}
 
 	private unselectAllYears(e: MouseEvent)
@@ -88,7 +85,7 @@ export interface IYearsProps extends WithNamespaces
 		Log.debug("e: " + e);
 		e.preventDefault();
 		let selectedYears : string[] = [];
-		this.props.setYears(selectedYears);
+		this.props.basedata.setYears(selectedYears);
 	}
 
 }

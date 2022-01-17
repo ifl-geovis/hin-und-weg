@@ -22,6 +22,7 @@ export default class BaseData {
 	private dataprocessing: string;
 	private location: string | null;
 	private migrationsinside: boolean;
+	private years: string[];
 
 	constructor(appdata: AppData) {
 		this.change = () => {};
@@ -30,6 +31,7 @@ export default class BaseData {
 		this.dataprocessing = 'absolute';
 		this.location = null;
 		this.migrationsinside = true;
+		this.years = [];
 	}
 
 	public setChange(change: () => void) {
@@ -82,6 +84,20 @@ export default class BaseData {
 
 	public getMigrationsInside(): boolean {
 		return this.migrationsinside;
+	}
+
+	public setYears(years: string[]) {
+		this.years = years;
+		this.update();
+	}
+
+	public getYears(): string[] {
+		return this.years;
+	}
+
+
+	public constructQuery(): string {
+		return '';
 	}
 
 }

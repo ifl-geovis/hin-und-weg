@@ -47,7 +47,6 @@ export interface IBaseProps extends WithNamespaces {
 interface IBaseState {
 	basedata: BaseData;
 	change: boolean;
-	years: string[];
 	algorithm: string;
 	positiveColors: string;
 	negativeColors: string;
@@ -66,7 +65,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		this.state = {
 			basedata:  new BaseData(props.appdata),
 			change: true,
-			years: [],
 			algorithm: 'equidistant',
 			positiveColors: 'rot',
 			negativeColors: 'blau',
@@ -81,7 +79,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		this.setGeoName = this.setGeoName.bind(this);
 		this.setClassCount = this.setClassCount.bind(this);
 		this.setLocation = this.setLocation.bind(this);
-		this.setYears = this.setYears.bind(this);
 		this.state.basedata.setChange(this.change);
 	}
 
@@ -134,9 +131,8 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 								populationDataLoaded={this.props.populationDataLoaded}
 							/>
 							<Years
+								basedata={this.state.basedata}
 								availableYears={this.props.yearsAvailable}
-								selected={this.state.years}
-								setYears={(newYears) => this.setYears(newYears) }
 							/>
 						</TabPanel>
 						<TabPanel header={t('baseView.representation')}contentClassName="selectionstab">
@@ -176,7 +172,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 						location={this.state.basedata.getLocation()}
 						theme={this.state.basedata.getTheme()}
 						yearsAvailable={this.props.yearsAvailable}
-						yearsSelected={this.state.years}
+						yearsSelected={this.state.basedata.getYears()}
 						onSelectLocation={(newLocation) => this.setLocation(newLocation) }
 						setGeodata={this.props.setGeodata}
 						setShapefileName={this.props.setShapefileName}
@@ -201,9 +197,9 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private constructQuery(target: string): string {
 		// disabled because of #2883
-		//const years = R.isEmpty(this.state.years) ? this.state.yearsAvailable : this.state.years;
+		//const years = R.isEmpty(this.state.basedata.getYears()) ? this.state.yearsAvailable : this.state.basedata.getYears();
 		const {t}:any = this.props ;
-		const years = this.state.years;
+		const years = this.state.basedata.getYears();
 		const stringYears = R.join(
 			', ',
 			R.map((year) => `'${year}'`, years)
@@ -244,7 +240,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			Log.debug('original query: ', query);
 			Log.debug('basedata query: ', this.state.basedata.constructQuery());
 		} else if (this.state.basedata.getTheme() === 'Saldi') {
-			const years = this.state.years;
+			const years = this.state.basedata.getYears();
 			const stringYears = R.join(
 				', ',
 				R.map((year) => `'${year}'`, years)
@@ -291,7 +287,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.props.yearsAvailable))) {
 			return results;
 		}
-		const years = this.state.years;
+		const years = this.state.basedata.getYears();
 		const stringYears = R.join(
 			', ',
 			R.map((year) => `'${year}'`, years)
@@ -505,7 +501,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private addYear(year: string) {
 		this.props.addYear(year);
-		if (this.state.years.length === 0) this.setState({ years: [year]});
+		if (this.state.basedata.getYears().length === 0) this.state.basedata.setYears([year]);
 		this.setState({ updateclasscount: true });
 	}
 
@@ -518,7 +514,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 	{
 		let optimal = Classification.getCurrentClassification().calculateSturgesRule(positive);
 		let result = count.substring(0, 1);
-		if ((this.props.geodata != null) && (this.state.years.length > 0) && (optimal != parseInt(result, 10)) && (!this.state.classcountset)) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen ist ' + optimal + '. Zu viele Klassen können eventuell zu gleichen Werten oder NaN bei Klassengrenzen führen.', 'warning');
+		if ((this.props.geodata != null) && (this.state.basedata.getYears().length > 0) && (optimal != parseInt(result, 10)) && (!this.state.classcountset)) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen ist ' + optimal + '. Zu viele Klassen können eventuell zu gleichen Werten oder NaN bei Klassengrenzen führen.', 'warning');
 		this.setState({ classcountset: true });
 		if (positive) this.setState({ positiveClasses: result });
 		else this.setState({ negativeClasses: result });
@@ -541,11 +537,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private setLocation(newLocation: string) {
 		this.state.basedata.setLocation(newLocation);
-		this.setState({ updateclasscount: true });
-	}
-
-	private setYears(newYears: string[]) {
-		this.setState({ years: newYears });
 		this.setState({ updateclasscount: true });
 	}
 
