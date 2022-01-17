@@ -1,9 +1,11 @@
+import BaseData from "../../data/BaseData";
 import React from "react";
 import D3Timeline,{ITimelineD3Item} from "./D3Timeline";
 import ContainerDimensions from 'react-container-dimensions';
 
 export interface ID3TimelinrViewProps
 {
+	basedata: BaseData;
 	items: ITimelineD3Item[];
 	vizID: number;
 	baseViewId: number;
@@ -47,7 +49,7 @@ export default class TimelineViewD3 extends React.Component<ID3TimelinrViewProps
 				<div id="chartDiv" className="p-col-12">
                     <ContainerDimensions>
                         { ({ width, height }) =>
-                            <D3Timeline dataProcessing={this.props.dataProcessing} yearsSelected={this.props.yearsSelected} baseViewId={this.props.baseViewId} vizID={this.props.vizID}  width={width} height={width/2} data={this.props.items}/>
+                            <D3Timeline basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} yearsSelected={this.props.yearsSelected} baseViewId={this.props.baseViewId} vizID={this.props.vizID}  width={width} height={width/2} data={this.props.items}/>
                         }
                     </ContainerDimensions>
 

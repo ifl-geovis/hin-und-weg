@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import * as React from 'react';
 import { Slider } from 'primereact/slider';
 import { Checkbox } from 'primereact/checkbox';
@@ -20,6 +21,7 @@ export interface ID3ChartItem {
 }
 
 export interface ID3ChartProps extends WithNamespaces{
+	basedata: BaseData;
 	data: ID3ChartItem[];
 	theme: string;
 	width: number;
@@ -164,7 +166,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		const neutralcolor = '#f7f7f7';
 		const bordercolor = '#525252';
 
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 
 		let classColors = (data: ID3ChartItem[]) => {
 			let colors = new Array(data.length);
@@ -910,7 +912,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				</AccordionTab>
 				</Accordion> */}
 				<div className="p-col-12">
-					<Legend showCenter="" yearsSelected={this.props.yearsSelected} />
+					<Legend basedata={this.props.basedata} showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>
 				<div className="p-col-12">
 					<svg id={this.svgID} width={width} height={height} ref={(ref) => (this.svgRef = ref)} />

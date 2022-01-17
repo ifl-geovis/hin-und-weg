@@ -1,11 +1,13 @@
 import React from 'react';
 
+import BaseData from "../../data/BaseData";
 import Classification from '../../data/Classification';
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
 
 export interface ILegendTimelineProps extends WithNamespaces{
+    basedata: BaseData;
     yearsSelected: string[];
 
 }
@@ -26,7 +28,7 @@ class LegendTimeline extends React.Component<ILegendTimelineProps> {
 
 	private createLegend(): JSX.Element {
 		const {t}:any = this.props ;
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 
 		let timelinePositiveColors = classification.getZeitreihenPositiveColors();
 		let timelineNegativeColors = classification.getZeitreihenNegativeColors();

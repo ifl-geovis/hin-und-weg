@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import React from 'react';
 import Geodata from '../../model/Geodata';
 import Legend from '../elements/Legend';
@@ -16,6 +17,7 @@ import { TFunction } from "i18next";
 
 
 export interface IGeodataProps extends WithNamespaces{
+	basedata: BaseData;
 	items?: Array<{ [name: string]: any }> | null;
 	geodata: Geodata | null;
 	geoName: string | null;
@@ -35,7 +37,6 @@ interface IGeodataState {
 	offlineMap: IOfflineMaps;
 }
 
-// export default 
 class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	constructor(props: IGeodataProps) {
 		super(props);
@@ -61,18 +62,16 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	public render(): JSX.Element {
 		// console.log('GeodataView render');
 		const {t}:any = this.props ;
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		let fractions: boolean = (this.props.dataProcessing === 'absolute') ? false : true;
 		return (
 			<div className="p-grid p-component">
 				<Accordion activeIndex={0}>
 					<AccordionTab header={t('geodataView.controlElements')}>
-					{/* <AccordionTab header="Kontrollelemente"> */}
 						<div className="p-grid p-component">
 							<div className="p-col noprint">
 								<div className="p-grid p-dir-col">
 									<strong className="p-col">{t('geodataView.mapInfo')}</strong>
-									{/* <strong className="p-col">Karteninformationen:</strong> */}
 									<div className="p-col rdBtnContainer">
 										<RadioButton
 											inputId="rb1"
@@ -83,7 +82,6 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb1">
 											{t('geodataView.names')}
-											{/* Namen anzeigen */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
@@ -96,7 +94,6 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb2">
 											{t('geodataView.arrows')}
-											{/* Bewegung visualisieren */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
@@ -109,7 +106,6 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb3">
 											{t('geodataView.values')}
-											{/* Anzahl der Umzüge anzeigen */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
@@ -122,12 +118,10 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb4">
 											{t('geodataView.noLabels')}
-											{/* Beschriftungen ausschalten */}
 										</label>
 									</div>
 									<div className="p-col rdBtnContainer">
 										<label>{t('geodataView.transparency')}</label>
-										{/* <label>Transparenz:</label> */}
 										<Slider
 											className="transparencySlider"
 											min={0}
@@ -143,12 +137,10 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 							<div className="p-col noprint">
 								<div className="p-grid p-dir-col">
 									<strong className="p-col">{t('geodataView.backgroundMap')}</strong>
-									{/* <strong className="p-col">Hintergrundkarte:</strong> */}
 									<div className="p-col rdBtnContainer">
 										<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
 										<label className="p-checkbox-label pointer" htmlFor="showMap">
 											{t('geodataView.onlineMap')}
-											{/* zeige Hintergrundkarte (online) */}
 										</label>
 									</div>
 									<div className="p-col">
@@ -156,8 +148,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											optionLabel="label"
 											options={OfflineMaps.getCurrentOfflineMaps().getData()}
 											onChange={this.onOfflineMapChange}
-											placeholder={this.state.offlineMap.label === "Offline Map auswählen" ? t('geodataView.offlineMap') : this.state.offlineMap.label === "keine" ? t('geodataView.none') :this.state.offlineMap.label  }
-											// placeholder={this.state.offlineMap.label}
+											placeholder={this.state.offlineMap.label === "Offline Map auswählen" ? t('geodataView.offlineMap') : this.state.offlineMap.label === "keine" ? t('geodataView.none') :this.state.offlineMap.label}
 											disabled={OfflineMaps.getCurrentOfflineMaps().getData().length - 1 === 0}
 										/>
 									</div>
@@ -167,7 +158,6 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 								<hr className={`noprint`} />
 								<div className="p-grid p-align-center noprint">
 									<p className="p-col-4">{t('geodataView.arrowsFilter1')} {(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold}{t('geodataView.arrowsFilter2')}</p>
-									{/* <p className="p-col-4">Es werden alle Werte über {(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold} angezeigt.</p> */}
 									<div className="p-col-8">
 										<Slider
 											min={0}
@@ -185,11 +175,12 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 				</Accordion>
 				{Settings.getValue('map', 'legendPlacement') === 'top' && (
 					<div className="p-col-12">
-						<Legend showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
+						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
 					</div>
 				)}
 				<div className="p-col-12">
 					<LeafletMapView
+						basedata={this.props.basedata}
 						geodata={this.props.geodata}
 						nameField={this.props.geoName}
 						items={this.props.items}
@@ -205,7 +196,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'bottom' && (
 					<div className="p-col-12">
-						<Legend showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
+						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
 					</div>
 				)}
 			</div>

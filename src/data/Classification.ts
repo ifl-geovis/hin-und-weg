@@ -16,8 +16,6 @@ export interface Item {
  */
 export default class Classification {
 
-	private static current: Classification = new Classification();
-
 	// Taken from http://colorbrewer2.org/
 	//http://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
 	private positive_colors = ['#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
@@ -54,10 +52,6 @@ export default class Classification {
 	private classificationNegativeDefault = [-1, -2, -3, -4, -5, -6, -7, -8, -9];
 
 	private userDefinedColorSchemes = ['scheme1', 'scheme2', 'scheme3', 'scheme4', 'scheme5', 'scheme6'];
-
-	public static getCurrentClassification(): Classification {
-		return Classification.current;
-	}
 
 	public getBorderColor(item: { [name: string]: any }) {
 		if (item == null) return this.error_color;

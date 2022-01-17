@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import React from "react";
 import { D3Histogram} from "./D3Histogram";
 import ContainerDimensions from 'react-container-dimensions';
@@ -6,6 +7,7 @@ import Classification from '../../data/Classification';
 
 export interface ID3HistogramViewProps
 {
+	basedata: BaseData;
 	theme: string;
 	vizID: number;
 	baseViewId: number;
@@ -22,7 +24,7 @@ export default class HistogramView extends React.Component<ID3HistogramViewProps
 
 	public render(): JSX.Element
 	{
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		const algorithm_ = classification.getAlgorithm();
 		const positive_scales = classification.getPositiveScales();
         const positive_scales_d3labels = classification.getPositiveScalesD3Labels();

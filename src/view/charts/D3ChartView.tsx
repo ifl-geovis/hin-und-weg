@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import React from "react";
 import  D3Chart, {ID3ChartItem} from "./D3Chart";
 import ContainerDimensions from 'react-container-dimensions';
@@ -8,6 +9,7 @@ import { TFunction } from "i18next";
 
 export interface ID3ChartViewProps extends WithNamespaces
 {
+	basedata: BaseData;
 	items: ID3ChartItem[];
 	theme: string;
 	vizID: number;
@@ -58,7 +60,7 @@ class D3ChartView extends React.Component<ID3ChartViewProps, ID3ChartViewState>
 				<div id="chartDiv" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-							<D3Chart baseViewId={this.props.baseViewId} vizID={this.props.vizID}
+							<D3Chart basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 							yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={heightResponsive}

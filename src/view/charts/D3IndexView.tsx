@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import * as React from "react";
 import R from 'ramda';
 
@@ -14,6 +15,7 @@ import { TFunction } from "i18next";
 
 
 export interface ID3IndexViewProps extends WithNamespaces {
+	basedata: BaseData;
 	db: alaSQLSpace.AlaSQL;
 	location: string | null;
 	theme: string;
@@ -134,6 +136,7 @@ class D3IndexView extends React.Component<ID3IndexViewProps, ID3IndexViewState>
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
 							<D3IndexValuesChart
+							basedata={this.props.basedata}
 							db={this.props.db}
 							theme={this.props.theme}
 							location={this.props.location} locations={this.props.locations}

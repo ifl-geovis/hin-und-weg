@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import React from "react";
 // import ChartConfigView from "./ChartConfigView";
 import D3Chord, {ID3ChordItem} from "./D3Chord";
@@ -9,6 +10,7 @@ import { TFunction } from "i18next";
 
 export interface ID3ChordViewProps extends WithNamespaces
 {
+	basedata: BaseData;
 	items: ID3ChordItem[];
 	theme: string;
 	vizID: number;
@@ -49,7 +51,7 @@ class D3ChordView extends React.Component<ID3ChordViewProps, ID3ChordViewState>
 				<div id="chartDivChord" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-						<D3Chord  dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
+						<D3Chord basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 						yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}

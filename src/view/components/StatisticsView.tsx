@@ -2,6 +2,7 @@ import React from "react";
 import R from "ramda";
 import D3HistogramView from '../charts/D3HistogramView';
 
+import BaseData from "../../data/BaseData";
 import Log from '../../log';
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
@@ -34,6 +35,7 @@ export interface IStatisticPerYearAusgabe
 
 export interface IStatisticsViewProps extends WithNamespaces
 {
+	basedata: BaseData;
 	items: IStatisticsItem[];
 	location: string | null;
 	theme: string;
@@ -43,7 +45,7 @@ export interface IStatisticsViewProps extends WithNamespaces
 	baseViewId: number;
 }
 
-// export default 
+// export default
 class StatisticsView extends React.Component<IStatisticsViewProps>
 {
 
@@ -135,7 +137,7 @@ class StatisticsView extends React.Component<IStatisticsViewProps>
 					</tbody>
 				</table>
 				<div className="p-col-8">
-				<D3HistogramView  baseViewId={this.props.baseViewId} vizID={this.props.vizID} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
+				<D3HistogramView basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
 				</div>
 
 				<br></br>

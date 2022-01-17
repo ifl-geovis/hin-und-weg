@@ -1,3 +1,5 @@
+import BaseData from "../../data/BaseData";
+
 import React from 'react';
 
 import Config from '../../config';
@@ -44,6 +46,7 @@ export interface StatisticPerYearAusgabe {
 }
 
 export interface IViewSwitcherProps extends WithNamespaces {
+	basedata: BaseData;
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
 	items: TableItem[];
@@ -70,14 +73,13 @@ export interface IViewSwitcherProps extends WithNamespaces {
 	migrationsInside: boolean;
 	dataProcessing: string;
 	setPopulationDataLoaded: () => void;
-
 }
 
 interface IViewSwitcherState {
 	activeView: string;
 }
 
-// export default 
+// export default
 class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherState> {
 
 	constructor(props: IViewSwitcherProps) {
@@ -106,7 +108,6 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 				<div className="p-grid">
 				<div className="p-col-4 p-component noprint">
 						{onlyFile ? t('viewSwitcher.fileImport') : t('viewSwitcher.selectVisOrFunc')}</div>
-						{/* {onlyFile ? "Datei-Import" : "Visualisierung oder Funktion wählen:"}</div> */}
 					<div className="p-col-8 noprint">
 					{onlyFile ? <div></div>
 					: <ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />}
@@ -139,30 +140,17 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		const {t}:any = this.props ;
 		let views: any[] = [];
 		this.addView(views, 'map', t('viewSwitcher.map'), this.props.yearsAvailable.length > 0);
-		// this.addView(views, 'map', 'Karte', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'table', t('viewSwitcher.table'), this.props.yearsAvailable.length > 0);
-		// this.addView(views, 'table', 'Tabelle', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'd3-bar', t('viewSwitcher.barChart'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		// this.addView(views, 'd3-bar', 'Balkendiagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-sankey', t('viewSwitcher.sankey'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		// this.addView(views, 'd3-sankey', 'Sankey-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-chord', t('viewSwitcher.chord'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		// this.addView(views, 'd3-chord', 'Chord-Diagramm', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'd3-timeline', t('viewSwitcher.timeline'), (this.props.yearsAvailable.length > 0) && (this.props.location != null));
-		// this.addView(views, 'd3-timeline', 'Zeitreihen', (this.props.yearsAvailable.length > 0) && (this.props.location != null));
 		this.addView(views, 'index', t('viewSwitcher.index'), this.props.yearsAvailable.length > 0);
-		// this.addView(views, 'index', 'Indexwert', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'statistics', t('viewSwitcher.statistics'), (this.props.yearsSelected.length > 0) && (this.props.location != null));
-		// this.addView(views, 'statistics', 'Statistiken', (this.props.yearsSelected.length > 0) && (this.props.location != null));
 		this.addView(views, 'file', t('viewSwitcher.file'), true);
-		// this.addView(views, 'file', 'Datei', true);
 		this.addView(views, 'db', t('viewSwitcher.database'), this.props.yearsAvailable.length > 0);
-		// this.addView(views, 'db', 'Datenbank', this.props.yearsAvailable.length > 0);
 		this.addView(views, 'systeminfo', t('viewSwitcher.systeminfo'), true);
-		// this.addView(views, 'systeminfo', 'Systeminformationen', true);
 		this.addView(views, 'projektinfo', t('viewSwitcher.projectinfo'), true);
-		// this.addView(views, 'projektinfo', 'ProjektInfo', true);
-		//this.addView(views, 'settings', 'Einstellungen', true);
 		return views;
 	}
 
@@ -200,6 +188,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		return (
 			<div className="p-col-12">
 				<GeodataView
+					basedata={this.props.basedata}
 					geodata={this.props.geodata}
 					items={this.props.items}
 					locations={this.props.locations}
@@ -225,7 +214,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	private selectD3BarView() {
 		return (
 			<div className="p-col-12">
-				<D3ChartView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
+				<D3ChartView basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
 			</div>
 		);
 	}
@@ -234,7 +223,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		return (
 			<div className="p-col-12">
 				<div className="sankey1">
-					<D3SankeyView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
+					<D3SankeyView basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing} />
 				</div>
 			</div>
 		);
@@ -244,7 +233,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		if (this.props.yearsAvailable.length > 0) {
 			return (
 				<div className="p-col-12">
-					<D3ChordView dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
+					<D3ChordView basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.items} theme={this.props.theme} yearsSelected={this.props.yearsSelected} />
 				</div>
 			);
 		}
@@ -254,7 +243,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		if (this.props.yearsAvailable.length > 0) {
 			return (
 				<div className="p-col-12">
-					<D3TimelineView dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.timeline} yearsSelected={this.props.yearsSelected}  />
+					<D3TimelineView basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.props.timeline} yearsSelected={this.props.yearsSelected}  />
 				</div>
 			);
 		}
@@ -263,7 +252,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	private selectIndexView() {
 		return (
 			<div className="p-col-12">
-				<D3IndexView migrationsInside={this.props.migrationsInside} baseViewId={this.props.baseViewId} vizID={this.props.vizID} db={this.props.db} theme={this.props.theme} location={this.props.location} locations={this.props.locations} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing}/>
+				<D3IndexView basedata={this.props.basedata} migrationsInside={this.props.migrationsInside} baseViewId={this.props.baseViewId} vizID={this.props.vizID} db={this.props.db} theme={this.props.theme} location={this.props.location} locations={this.props.locations} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} dataProcessing={this.props.dataProcessing}/>
 			</div>
 		);
 	}
@@ -271,7 +260,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	private selectStatisticsView() {
 		return (
 			<div className="p-col-12">
-				<StatisticsView baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.omitNaN(this.props.items)} theme={this.props.theme} location={this.props.location} yearsSelected={this.props.yearsSelected} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} />
+				<StatisticsView basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID} items={this.omitNaN(this.props.items)} theme={this.props.theme} location={this.props.location} yearsSelected={this.props.yearsSelected} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} />
 			</div>
 		);
 	}

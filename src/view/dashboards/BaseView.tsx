@@ -84,15 +84,11 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	public render(): JSX.Element {
 		const {t}:any = this.props ;
-		const results = this.query();
+		const results = this.state.basedata.query();
 		const timeline = this.queryTimeline();
 		const statisticPerYearAusgabe = this.queryStatistics();
-		const classification = Classification.getCurrentClassification();
-		classification.setLocation(this.state.basedata.getLocation());
-		classification.setTheme(this.state.basedata.getTheme());
-		classification.setQuery(results);
+		const classification = this.state.basedata.getClassification();
 		classification.setAlgorithm(this.state.algorithm);
-		classification.setDataProcessing(this.state.basedata.getDataProcessing());
 		classification.setPositiveColors(classification.getColorScheme(this.state.positiveColors, this.state.positiveClasses));
 		classification.setNegativeColors(classification.getColorScheme(this.state.negativeColors, this.state.negativeClasses));
 		classification.calculateClassification();
@@ -157,6 +153,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 				</div>
 				<div className={this.props.space == 'wide' ? 'p-col-10' : 'p-col-8'}>
 					<DashboardView
+						basedata={this.state.basedata}
 						dataProcessing={this.state.basedata.getDataProcessing()}
 						baseViewId={this.props.baseViewId}
 						view={this.props.view}
@@ -193,59 +190,6 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		if ((this.state.basedata.getDataProcessing() === 'wanderungsrate') || (this.state.basedata.getDataProcessing() === 'ratevon') || (this.state.basedata.getDataProcessing() === 'ratenach')) return Math.round((value + Number.EPSILON) * 1000) / 1000;
 		if (this.state.basedata.getDataProcessing() === 'absolute') return Math.round(value);
 		return value;
-	}
-
-	private query(): any[] {
-		const {t}:any = this.props ;
-		let results: any[] = [];
-		if (R.or(R.isNil(this.state.basedata.getLocation()), R.isEmpty(this.state.basedata.getAvailableYears()))) {
-			return results;
-		}
-		let query = '';
-		if (this.state.basedata.getTheme() === 'Von') {
-			query = this.state.basedata.constructQuery();
-		} else if (this.state.basedata.getTheme() === 'Nach') {
-			query = this.state.basedata.constructQuery();
-		} else if (this.state.basedata.getTheme() === 'Saldi') {
-			const years = this.state.basedata.getYears();
-			const stringYears = R.join(
-				', ',
-				R.map((year) => `'${year}'`, years)
-			);
-			const migrationsInsideClause = (this.state.basedata.getMigrationsInside()) ? `` : ` AND Von <> Nach `;
-			const vonQuery = `SELECT '${this.state.basedata.getLocation()}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
-			const nachQuery = `SELECT Von, '${this.state.basedata.getLocation()}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
-			const vonResults = this.props.db(vonQuery);
-			const nachResults = this.props.db(nachQuery);
-			const popquery = `SELECT MYSUM(Wert) as population FROM population WHERE Area = '${this.state.basedata.getLocation()}' AND Jahr IN (${stringYears}) GROUP BY Area`;
-			const popResults = this.props.db(popquery);
-			for (let i = 0; i < nachResults.length; i++) {
-				let value = nachResults[i].Wert - vonResults[i].Wert;
-				if (isNaN(value))
-				{
-					if (isNaN(nachResults[i].Wert)) value = 0 - vonResults[i].Wert;
-					if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
-				}
-				if ((this.state.basedata.getDataProcessing() === 'wanderungsrate') || (this.state.basedata.getDataProcessing() === 'ratevon') || (this.state.basedata.getDataProcessing() === 'ratenach')) {
-					value = value * 1000 / popResults[0].population;
-
-				}
-				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: this.standardizeValues(value) };
-				results = R.append(saldiItem, results);
-			}
-			for (let i = 0; i < results.length; i++) {
-				if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
-			}
-			return results;
-		}
-		Log.debug('Query: ', query);
-		results = this.props.db(query);
-		for (let i = 0; i < results.length; i++) {
-			if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
-			results[i].Wert = this.standardizeValues(results[i].Wert);
-		}
-		Log.debug('results: ', query);
-		return results;
 	}
 
 	private queryTimeline(): any[] {
@@ -479,7 +423,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private setClassCount(positive: boolean, count: string)
 	{
-		let optimal = Classification.getCurrentClassification().calculateSturgesRule(positive);
+		let optimal = this.state.basedata.getClassification().calculateSturgesRule(positive);
 		let result = count.substring(0, 1);
 		if ((this.props.geodata != null) && (this.state.basedata.getYears().length > 0) && (optimal != parseInt(result, 10)) && (!this.state.classcountset)) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen ist ' + optimal + '. Zu viele Klassen können eventuell zu gleichen Werten oder NaN bei Klassengrenzen führen.', 'warning');
 		this.setState({ classcountset: true });
@@ -511,7 +455,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		if (!this.state.updateclasscount) return;
 		this.setState({ updateclasscount: false });
 		if (this.state.classcountset) return;
-		const classification = Classification.getCurrentClassification();
+		const classification = this.state.basedata.getClassification();
 		let positiveClassCount = '' + classification.calculateSturgesRule(true);
 		Log.trace('positiveClassCount:', positiveClassCount);
 		this.setState({ positiveClasses: positiveClassCount });

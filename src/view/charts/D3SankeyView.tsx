@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import React from "react";
 // import ChartConfigView from "./ChartConfigView";
 import D3Sankey, {ID3SankeyItem} from "./D3Sankey";
@@ -9,6 +10,7 @@ import { TFunction } from "i18next";
 
 export interface ID3SankeyViewProps extends WithNamespaces
 {
+	basedata: BaseData;
 	items: ID3SankeyItem[];
 	theme: string;
 	vizID: number;
@@ -49,7 +51,7 @@ class D3SankeyView extends React.Component<ID3SankeyViewProps, ID3SankeyViewStat
 				<div id="chartDiv" className="p-col-12">
 						  <ContainerDimensions>
 								{ ({ width, height }) =>
-									<D3Sankey baseViewId={this.props.baseViewId} vizID={this.props.vizID}
+									<D3Sankey basedata={this.props.basedata} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 									 yearsSelected={this.props.yearsSelected }
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={(this.props.items.length <= 15)? 700 : 1100}

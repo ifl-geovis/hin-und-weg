@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import React from "react";
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
@@ -19,6 +20,7 @@ export interface ITimelineD3Item
 
 export interface ITimelineD3Props extends WithNamespaces
 {
+	basedata: BaseData;
 	data: ITimelineD3Item[];
     width: number;
 	height: number;
@@ -96,7 +98,7 @@ class D3Timeline extends React.Component<ITimelineD3Props>
 		const neutralcolor = "#f7f7f7"
 		const bordercolor = "#525252"
 
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 
 		let timelinePositiveColors = classification.getZeitreihenPositiveColors();
 		let timelineNegativeColors = classification.getZeitreihenNegativeColors();
@@ -410,7 +412,7 @@ class D3Timeline extends React.Component<ITimelineD3Props>
 		return (
 			<div className="p-grid">
 				<div className="p-col-12">
-					<LegendTimeline  yearsSelected={this.props.yearsSelected} />
+					<LegendTimeline basedata={this.props.basedata} yearsSelected={this.props.yearsSelected} />
 				</div>
 				<ContainerDimensions>
                         { ({ width, height }) => 

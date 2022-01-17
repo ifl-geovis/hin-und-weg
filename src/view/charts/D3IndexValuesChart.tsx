@@ -1,3 +1,4 @@
+import BaseData from "../../data/BaseData";
 import * as React from 'react';
 import Classification from '../../data/Classification';
 import R from 'ramda';
@@ -16,6 +17,7 @@ export interface ID3IndexValuesChartItem {
 }
 
 export interface ID3IndexValuesChartProps extends WithNamespaces{
+	basedata: BaseData;
 	db: alaSQLSpace.AlaSQL;
 	location: string | null;
 	theme: string;
@@ -126,7 +128,7 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 				let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
 		let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
 
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		let positiveColor = classification.getZeitreihenPositiveColors()[0];
 		let negativeColor = classification.getZeitreihenNegativeColors()[0];
 		let NaNcolor = classification.getMissingColor();

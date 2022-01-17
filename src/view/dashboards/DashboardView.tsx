@@ -1,3 +1,5 @@
+import BaseData from "../../data/BaseData";
+
 import React from "react";
 
 import Config from "../../config";
@@ -30,6 +32,7 @@ export interface StatisticPerYearAusgabe
 
 export interface IDashboardProps
 {
+	basedata: BaseData;
 	view:string;
 	geodata: Geodata | null;
 	db: alaSQLSpace.AlaSQL;
@@ -84,7 +87,7 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 	private getViewSwitcher(): JSX.Element
 	{
 		return (
-			<ViewSwitcher dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.state.count} onSwitchView={this.updateCounter} geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} shapefilename={this.props.shapefilename} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} setShapefileName={this.props.setShapefileName} addYear={this.props.addYear} change={this.props.change}
+			<ViewSwitcher basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.state.count} onSwitchView={this.updateCounter} geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} shapefilename={this.props.shapefilename} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} setShapefileName={this.props.setShapefileName} addYear={this.props.addYear} change={this.props.change}
 			migrationsInside={this.props.migrationsInside} setPopulationDataLoaded={this.props.setPopulationDataLoaded}
 			/>
 		);

@@ -2,17 +2,18 @@ import { Polyline } from 'leaflet';
 import React from 'react';
 
 import Log from '../../log';
+import BaseData from "../../data/BaseData";
 import Classification from '../../data/Classification';
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
 
 export interface ILegendProps extends WithNamespaces {
+	basedata: BaseData;
 	showCenter: string;
 	yearsSelected: string[];
 }
 
-// export default 
 class Legend extends React.Component<ILegendProps> {
 	private stroke_color = '#4d4d4d';
 	private box_width = 50;
@@ -29,7 +30,7 @@ class Legend extends React.Component<ILegendProps> {
 	}
 
 	private createLegend(): JSX.Element {
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		let i = 0;
 		const negative_scales = classification.getNegativeScales();
 		const negative_colors = classification.getNegativeColors();
@@ -153,7 +154,7 @@ class Legend extends React.Component<ILegendProps> {
 
 	private createPositiveScale(scales: number[] | null, colors: string[], arrows: boolean): object {
 		if (scales == null) return <svg key="legend-positive" width={0} height={0}></svg>;
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		Log.debug("positive scales: ", scales);
 		let boxes = [];
 		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i * this.box_width + this.label_offset, 0, 'positive-' + i));
@@ -184,7 +185,7 @@ class Legend extends React.Component<ILegendProps> {
 
 	private createNegativeScale(scales: number[] | null, colors: string[], arrows: boolean): object {
 		if (scales == null) return <svg key="legend-negative" width={0} height={0}></svg>;
-		const classification = Classification.getCurrentClassification();
+		const classification = this.props.basedata.getClassification();
 		Log.debug("negative scales: ", scales);
 		let boxes = [];
 		for (let i = 0; i < colors.length; i++)
