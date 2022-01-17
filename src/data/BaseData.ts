@@ -1,4 +1,5 @@
 import AppData from './AppData';
+import Classification from './Classification';
 
 import Log from '../log';
 import Config from '../config';
@@ -18,6 +19,8 @@ export default class BaseData {
 
 	private change: () => void;
 	private appdata: AppData;
+	private classification: Classification = new Classification();
+
 	private theme: string;
 	private dataprocessing: string;
 	private location: string | null;
@@ -25,6 +28,7 @@ export default class BaseData {
 	private years: string[];
 
 	private cached_query: string | null;
+	private cached_results: any[] | null;
 
 	constructor(appdata: AppData) {
 		this.change = () => {};
@@ -36,6 +40,7 @@ export default class BaseData {
 		this.years = [];
 		// cached values initialized with null
 		this.cached_query = null;
+		this.cached_results = null;
 	}
 
 	public setChange(change: () => void) {
@@ -46,6 +51,7 @@ export default class BaseData {
 		this.change();
 		// set cached values back to null
 		this.cached_query = null;
+		this.cached_results = null;
 	}
 
 	public setAppData(appdata: AppData) {
@@ -56,8 +62,14 @@ export default class BaseData {
 		return this.appdata;
 	}
 
+	public getClassification(): Classification {
+		this.classification.setQuery(this.query());
+		return this.classification;
+	}
+
 	public setTheme(theme: string) {
 		this.theme = theme;
+		this.classification.setTheme(this.theme);
 		this.update();
 	}
 
@@ -67,6 +79,7 @@ export default class BaseData {
 
 	public setDataProcessing(dataprocessing: string) {
 		this.dataprocessing = dataprocessing;
+		this.classification.setDataProcessing(this.dataprocessing);
 		this.update();
 	}
 
@@ -76,6 +89,7 @@ export default class BaseData {
 
 	public setLocation(location: string | null) {
 		this.location = location;
+		this.classification.setLocation(this.location);
 		this.update();
 	}
 
@@ -107,8 +121,20 @@ export default class BaseData {
 	}
 
 
+	private standardizeValues(value: number): number
+	{
+		if ((this.dataprocessing === 'wanderungsrate') || (this.dataprocessing === 'ratevon') || (this.dataprocessing === 'ratenach')) return Math.round((value + Number.EPSILON) * 1000) / 1000;
+		if (this.dataprocessing === 'absolute') return Math.round(value);
+		return value;
+	}
+
 	public constructQuery(): string {
 		if (this.cached_query != null) return this.cached_query;
+		this.cached_query = this.constructNewQuery();
+		return this.cached_query;
+	}
+
+	private constructNewQuery(): string {
 		let stringYears = '';
 		for (let year of this.years) {
 			if (stringYears != '') stringYears += ', ';
@@ -132,6 +158,65 @@ export default class BaseData {
 			return `SELECT Von, '${this.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
 		}
 		return '';
+	}
+
+	public query(): any[] {
+		if (this.cached_results != null) return this.cached_results;
+		this.cached_results = this.newQuery();
+		return this.cached_results;
+	}
+
+	private newQuery(): any[] {
+		const db = this.appdata.getDB();
+		let results: any[] = [];
+		if (this.location == null) return results;
+		if (this.getAvailableYears().length == 0) return results;
+		let query = '';
+		if (this.theme === 'Von') {
+			query = this.constructQuery();
+		} else if (this.theme === 'Nach') {
+			query = this.constructQuery();
+		} else if (this.theme === 'Saldi') {
+			const years = this.years;
+			let stringYears = '';
+			for (let year of this.years) {
+				if (stringYears != '') stringYears += ', ';
+				stringYears += `'${year}'`;
+			}
+			const migrationsInsideClause = (this.migrationsinside) ? `` : ` AND Von <> Nach `;
+			const vonQuery = `SELECT '${this.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			const nachQuery = `SELECT Von, '${this.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			const vonResults = db(vonQuery);
+			const nachResults = db(nachQuery);
+			const popquery = `SELECT MYSUM(Wert) as population FROM population WHERE Area = '${this.location}' AND Jahr IN (${stringYears}) GROUP BY Area`;
+			const popResults = db(popquery);
+			for (let i = 0; i < nachResults.length; i++) {
+				let value = nachResults[i].Wert - vonResults[i].Wert;
+				if (isNaN(value))
+				{
+					if (isNaN(nachResults[i].Wert)) value = 0 - vonResults[i].Wert;
+					if (isNaN(vonResults[i].Wert)) value = nachResults[i].Wert;
+				}
+				if ((this.dataprocessing === 'wanderungsrate') || (this.dataprocessing === 'ratevon') || (this.dataprocessing === 'ratenach')) {
+					value = value * 1000 / popResults[0].population;
+
+				}
+				const saldiItem = { Von: nachResults[i].Von, Nach: nachResults[i].Nach, Wert: this.standardizeValues(value) };
+				results.push(saldiItem);
+			}
+			for (let i = 0; i < results.length; i++) {
+				if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
+			}
+			Log.trace('results: ', results);
+			return results;
+		}
+		results = db(query);
+		for (let i = 0; i < results.length; i++) {
+			if (typeof results[i].Wert == 'undefined') results[i].Wert = Number.NaN;
+			results[i].Wert = this.standardizeValues(results[i].Wert);
+		}
+		Log.trace('results: ', results);
+		return results;
 	}
 
 }
