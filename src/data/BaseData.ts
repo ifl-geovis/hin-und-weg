@@ -97,6 +97,28 @@ export default class BaseData {
 
 
 	public constructQuery(): string {
+		let stringYears = '';
+		for (let year of this.years) {
+			if (stringYears != '') stringYears += ', ';
+			stringYears += `'${year}'`;
+		}
+		const migrationsInsideClause = (this.migrationsinside) ? `` : ` AND Von <> Nach `;
+		if (this.theme === 'Von')
+		{
+			if (this.dataprocessing === 'wanderungsrate') return `SELECT '${this.location}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			if (this.dataprocessing === 'ratevon') return `SELECT '${this.location}' as Von, Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Von = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			if (this.dataprocessing === 'ratenach') return `SELECT '${this.location}' as Von, Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Von = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+			// fallback for absolute and other values
+			return `SELECT '${this.location}' as Von, Nach, MYSUM(Wert) as Wert FROM matrices WHERE Von = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Nach ORDER BY Nach`;
+		}
+		if (this.theme === 'Nach')
+		{
+			if (this.dataprocessing === 'wanderungsrate') return `SELECT Von, '${this.location}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			if (this.dataprocessing === 'ratevon') return `SELECT Von, '${this.location}' as Nach, ROUND(MYAVG(RateVon), 3) as Wert FROM matrices WHERE Nach = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			if (this.dataprocessing === 'ratenach') return `SELECT Von, '${this.location}' as Nach, ROUND(MYAVG(RateNach), 3) as Wert FROM matrices WHERE Nach = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+			// fallback for absolute and other values
+			return `SELECT Von, '${this.location}' as Nach, MYSUM(Wert) as Wert FROM matrices WHERE Nach = '${this.location}' AND Jahr IN (${stringYears}) ${migrationsInsideClause} GROUP BY Von ORDER BY Von`;
+		}
 		return '';
 	}
 
