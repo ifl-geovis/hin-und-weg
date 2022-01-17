@@ -237,8 +237,12 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		let query = '';
 		if (this.state.basedata.getTheme() === 'Von') {
 			query = this.constructQuery('Von');
+			Log.debug('original query: ', query);
+			Log.debug('basedata query: ', this.state.basedata.constructQuery());
 		} else if (this.state.basedata.getTheme() === 'Nach') {
 			query = this.constructQuery('Nach');
+			Log.debug('original query: ', query);
+			Log.debug('basedata query: ', this.state.basedata.constructQuery());
 		} else if (this.state.basedata.getTheme() === 'Saldi') {
 			const years = this.state.years;
 			const stringYears = R.join(
@@ -395,8 +399,8 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 				}
 				if ((!isNaN(results_zuzug[i].zuzug)) || (!isNaN(results_wegzug[i].wegzug))) indexPerYear += 1;
 			} else {
-				Log.debug('medianZuzügeArray', medianZuzügeArray);
-				Log.debug('medianWegzügeArray', medianWegzügeArray);
+				Log.trace('medianZuzügeArray', medianZuzügeArray);
+				Log.trace('medianWegzügeArray', medianWegzügeArray);
 				mean = (zuzüge - wegzüge) / indexPerYear;
 				meanZuzüge = zuzüge / indexPerYearZuzug;
 				meanWegzüge = wegzüge / indexPerYearWegzug;
@@ -408,8 +412,8 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 				let lowerwegzug: number = valueswegzug[Math.floor((indexPerYearWegzug - 1) / 2)];
 				let higherwegzug: number = valueswegzug[Math.ceil((indexPerYearWegzug - 1) / 2)];
 				medianWegzüge = (lowerwegzug + higherwegzug) / 2;
-				Log.debug('valueszuzug', valueszuzug);
-				Log.debug('valueswegzug', valueswegzug);
+				Log.trace('valueszuzug', valueszuzug);
+				Log.trace('valueswegzug', valueswegzug);
 				const saldiItem = {
 					Jahr: letztesJahr,
 					Mean: mean,
@@ -421,10 +425,10 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 					max: meisteZuzüge,
 				};
 				results = R.append(saldiItem, results);
-				Log.debug('letztesJahr', letztesJahr);
-				Log.debug('MeanZuzüge', meanZuzüge);
-				Log.debug('summe', (zuzüge - wegzüge));
-				Log.debug('indexperYear', indexPerYear);
+				Log.trace('letztesJahr', letztesJahr);
+				Log.trace('MeanZuzüge', meanZuzüge);
+				Log.trace('summe', (zuzüge - wegzüge));
+				Log.trace('indexperYear', indexPerYear);
 				indexPerYear = 0;
 				indexPerYearZuzug = 0;
 				indexPerYearWegzug = 0;
@@ -454,8 +458,8 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			}
 			letztesJahr = results_zuzug[i].Jahr;
 		}
-		Log.debug('medianZuzügeArray', medianZuzügeArray);
-		Log.debug('medianWegzügeArray', medianWegzügeArray);
+		Log.trace('medianZuzügeArray', medianZuzügeArray);
+		Log.trace('medianWegzügeArray', medianWegzügeArray);
 		mean = (zuzüge - wegzüge) / indexPerYear;
 		meanZuzüge = zuzüge / indexPerYearZuzug;
 		meanWegzüge = wegzüge / indexPerYearWegzug;
@@ -467,8 +471,8 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		let lowerwegzug: number = valueswegzug[Math.floor((indexPerYearWegzug - 1) / 2)];
 		let higherwegzug: number = valueswegzug[Math.ceil((indexPerYearWegzug - 1) / 2)];
 		medianWegzüge = (lowerwegzug + higherwegzug) / 2;
-		Log.debug('valueszuzug', valueszuzug);
-		Log.debug('valueswegzug', valueswegzug);
+		Log.trace('valueszuzug', valueszuzug);
+		Log.trace('valueswegzug', valueswegzug);
 		const saldiItem = {
 			Jahr: letztesJahr,
 			Mean: mean,
@@ -480,9 +484,9 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 			max: meisteZuzüge,
 		};
 		results = R.append(saldiItem, results);
-		Log.debug('letztesJahr', letztesJahr);
-		Log.debug('summe', (zuzüge - wegzüge));
-		Log.debug('indexperYear', indexPerYear);
+		Log.trace('letztesJahr', letztesJahr);
+		Log.trace('summe', (zuzüge - wegzüge));
+		Log.trace('indexperYear', indexPerYear);
 		return results;
 	}
 
