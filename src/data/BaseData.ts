@@ -24,6 +24,8 @@ export default class BaseData {
 	private migrationsinside: boolean;
 	private years: string[];
 
+	private cached_query: string | null;
+
 	constructor(appdata: AppData) {
 		this.change = () => {};
 		this.appdata = appdata;
@@ -32,6 +34,8 @@ export default class BaseData {
 		this.location = null;
 		this.migrationsinside = true;
 		this.years = [];
+		// cached values initialized with null
+		this.cached_query = null;
 	}
 
 	public setChange(change: () => void) {
@@ -40,6 +44,8 @@ export default class BaseData {
 
 	public update() {
 		this.change();
+		// set cached values back to null
+		this.cached_query = null;
 	}
 
 	public setAppData(appdata: AppData) {
@@ -97,6 +103,7 @@ export default class BaseData {
 
 
 	public constructQuery(): string {
+		if (this.cached_query != null) return this.cached_query;
 		let stringYears = '';
 		for (let year of this.years) {
 			if (stringYears != '') stringYears += ', ';
