@@ -90,24 +90,33 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 		let arrows2;
 		let offlinemap;
 		let centerMarker;
-		let featureBorder;
+		let featureBorder1;
+		let featureBorder2;
 
 		if (this.props.geodata) {
 			geoDataJson = this.props.geodata.getFeatureCollection();
 			boundsOfGeodata = this.calcGeodataBounds(geoDataJson);
 			if (this.props.showCenter === '1') labelsNames = this.getLabelsNames();
 			else if (this.props.showCenter === '2') {
-				if (LeafletMapView.odd){ arrows1 = this.getArrows();
+				if (LeafletMapView.odd) {
+					arrows1 = this.getArrows();
 					labelsPopUpArrows1 = this.getLabelsArrows();
-				}else{ 	arrows2 = this.getArrows();
-						labelsPopUpArrows2 = this.getLabelsArrows();
+				} else {
+					arrows2 = this.getArrows();
+					labelsPopUpArrows2 = this.getLabelsArrows();
 				}
 			} else if (this.props.showCenter === '3') {
 				if (LeafletMapView.odd) labelsValues1 = this.getLabelsValues();
 				else labelsValues2 = this.getLabelsValues();
 			}
 			if (this.centerpoint.Center1 != null && this.props.showCenter === '2') centerMarker = this.CenterMarker();
-			if (this.props.selectedLocation) featureBorder = this.setFeatureBorder(geoDataJson);
+			if (this.props.selectedLocation) {
+				if (LeafletMapView.odd) {
+					featureBorder1 = this.setFeatureBorder(geoDataJson);
+				} else {
+					featureBorder2 = this.setFeatureBorder(geoDataJson);
+				}
+			}
 			if (this.props.showMap) geomap = this.getMapLayer();
 			if (this.props.offlineMap.file.length) offlinemap = this.getOfflineMap();
 
@@ -151,8 +160,11 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 				<Pane name="PopUpArrowsPane2" style={{ zIndex: 800 }}>
 					{labelsPopUpArrows2}
 				</Pane>
-				<Pane name="borderSelectedFeature" style={{ zIndex: 350 }}>
-					{featureBorder}
+				<Pane name="borderSelectedFeature1" style={{ zIndex: 500 }}>
+					{featureBorder1}
+				</Pane>
+				<Pane name="borderSelectedFeature2" style={{ zIndex: 500 }}>
+					{featureBorder2}
 				</Pane>
 				<Button className="p-button-raised btnMapExtent" icon="pi pi-home" onClick={this.extentMap} />
 			</Map>
