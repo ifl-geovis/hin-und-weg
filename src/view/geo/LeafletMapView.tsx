@@ -160,10 +160,10 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 				<Pane name="PopUpArrowsPane2" style={{ zIndex: 800 }}>
 					{labelsPopUpArrows2}
 				</Pane>
-				<Pane name="borderSelectedFeature1" style={{ zIndex: 500 }}>
+				<Pane name="borderSelectedFeature1" style={{ zIndex: 350 }}>
 					{featureBorder1}
 				</Pane>
-				<Pane name="borderSelectedFeature2" style={{ zIndex: 500 }}>
+				<Pane name="borderSelectedFeature2" style={{ zIndex: 350 }}>
 					{featureBorder2}
 				</Pane>
 				<Button className="p-button-raised btnMapExtent" icon="pi pi-home" onClick={this.extentMap} />
@@ -673,7 +673,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 									factor: 0.75,
 									weight: this.classification.getArrowWidth(item.Wert),
 									hideArrowHead: true,
-									label: item.Wert,
 								}).openTooltip();
 								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
@@ -709,7 +708,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 								factor: 0.75,
 								weight: this.classification.getArrowWidth(item.Wert),
 								arrowId: '#arrowHead',
-								label: item.Wert,
 							}).openTooltip();
 							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Nach, value: item.Wert, color: this.classification.getPositiveArrowColor(),
 									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getPositiveArrowColor(),
@@ -730,7 +728,6 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 								factor: 0.75,
 								weight: this.classification.getArrowWidth(item.Wert),
 								hideArrowHead: true,
-								label: item.Wert,
 							}).openTooltip();
 							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
