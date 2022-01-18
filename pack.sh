@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION=1.8.5
+VERSION=1.9.0-test
 ./clean.sh
 ./setup.sh
 npm run build
