@@ -19,6 +19,7 @@ export interface ILeafletMapViewProps {
 	items?: Array<{ [name: string]: any }> | null;
 	geodata: Geodata | null;
 	nameField?: string | null;
+	geoId: string | null;
 	selectedLocation?: string | null;
 	onSelectLocation: (newLocation: string) => void;
 	showCenter: String;
@@ -57,6 +58,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 		this.style = this.style.bind(this);
 		this.pointToLayerNames = this.pointToLayerNames.bind(this);
 		this.pointToLayerValues = this.pointToLayerValues.bind(this);
+		this.pointToLayerIDs = this.pointToLayerIDs.bind(this);
 		this.pointToLayerArrowValues = this.pointToLayerArrowValues.bind(this);
 		this.ArrowToLayer = this.ArrowToLayer.bind(this);
 		this.classification = this.props.basedata.getClassification();
@@ -108,6 +110,9 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 			} else if (this.props.showCenter === '3') {
 				if (LeafletMapView.odd) labelsValues1 = this.getLabelsValues();
 				else labelsValues2 = this.getLabelsValues();
+			} else if (this.props.showCenter === '4') {
+				if (LeafletMapView.odd) labelsValues1 = this.getLabelsIDs();
+				else labelsValues2 = this.getLabelsIDs();
 			}
 			if (this.centerpoint.Center1 != null && this.props.showCenter === '2') centerMarker = this.CenterMarker();
 			if (this.props.selectedLocation) {
@@ -345,6 +350,18 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 		return <GeoJSON data={centerpoints} pointToLayer={this.pointToLayerValues}></GeoJSON>;
 	}
 
+	public getLabelsIDs() {
+		let geoDataJson;
+		let centerpoints;
+
+		if (this.props.geodata) {
+			geoDataJson = this.props.geodata.getFeatureCollection();
+			centerpoints = this.generateCenterPoints(geoDataJson);
+		}
+
+		return <GeoJSON data={centerpoints} pointToLayer={this.pointToLayerIDs}></GeoJSON>;
+	}
+
 	public CenterMarker() {
 		return <Circle center={this.centerpoint.Center1} radius={200} color="#c7c7c7" fillOpacity="1"></Circle>;
 	}
@@ -501,6 +518,32 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 
 		if (this.props.showCenter === '1') {
 			if (feature1.properties && this.props.nameField) label = String(feature1.properties[this.props.nameField]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
+
+			return new L.CircleMarker(latlng, {
+				radius: 1,
+				fill: false,
+				stroke: false,
+			})
+				.bindTooltip(label, {
+					permanent: true,
+					opacity: 0.7,
+					className: 'district-label',
+					direction: 'center',
+				})
+				.openTooltip();
+		} else {
+			return;
+		}
+	}
+
+	public pointToLayerIDs(feature1: Feature, latlng: LatLngExpression) {
+		let label = '';
+		let name = 'Fehler!!!';
+		if (feature1.properties) name = String(feature1.properties.Name);
+		if (feature1.properties && this.props.geoId) name = String(feature1.properties[this.props.geoId]);
+
+		if (this.props.showCenter === '4') {
+			if (feature1.properties && this.props.geoId) label = String(feature1.properties[this.props.geoId]); // Must convert to string, .bindTooltip can't use straight 'feature.properties.attribute'
 
 			return new L.CircleMarker(latlng, {
 				radius: 1,

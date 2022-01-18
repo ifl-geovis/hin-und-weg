@@ -195,6 +195,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 					selectedLocation={this.props.location}
 					yearsSelected={this.props.yearsSelected}
 					geoName={this.props.geoName}
+					geoId={this.props.geoId}
 					theme={this.props.theme}
 					dataProcessing={this.props.dataProcessing}
 					onSelectLocation={this.props.onSelectLocation}

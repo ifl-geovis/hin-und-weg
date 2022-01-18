@@ -21,6 +21,7 @@ export interface IGeodataProps extends WithNamespaces{
 	items?: Array<{ [name: string]: any }> | null;
 	geodata: Geodata | null;
 	geoName: string | null;
+	geoId: string | null;
 	locations: string[];
 	selectedLocation?: string | null;
 	yearsSelected: string[];
@@ -117,6 +118,18 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											checked={this.state.showCenter === '4'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb4">
+											{t('geodataView.ids')}
+										</label>
+									</div>
+									<div className="p-col rdBtnContainer">
+										<RadioButton
+											inputId="rb5"
+											name="center"
+											value="5"
+											onChange={this.onShowCenterChange}
+											checked={this.state.showCenter === '5'}
+										/>
+										<label className="p-checkbox-label pointer" htmlFor="rb5">
 											{t('geodataView.noLabels')}
 										</label>
 									</div>
@@ -183,6 +196,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 						basedata={this.props.basedata}
 						geodata={this.props.geodata}
 						nameField={this.props.geoName}
+						geoId={this.props.geoId}
 						items={this.props.items}
 						selectedLocation={this.props.selectedLocation}
 						onSelectLocation={this.props.onSelectLocation}

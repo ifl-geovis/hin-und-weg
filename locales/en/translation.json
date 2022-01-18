@@ -194,6 +194,7 @@
         "arrows": "visualize movement",
         "values": "show number of moves",
         "noLabels": "disable labels",
+        "ids": "show ids",
         "transparency": "transparency:",
         "backgroundMap": "background map:",
         "onlineMap": "show background map (online)",

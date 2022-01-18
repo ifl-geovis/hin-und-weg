@@ -194,6 +194,7 @@
         "arrows": "Bewegung visualisieren",
         "values": "Anzahl der Umzüge anzeigen",
         "noLabels": "Beschriftungen ausschalten",
+        "ids": "IDs anzeigen",
         "transparency": "Transparenz:",
         "backgroundMap": "Hintergrundkarte:",
         "onlineMap": "zeige Hintergrundkarte (online)",
