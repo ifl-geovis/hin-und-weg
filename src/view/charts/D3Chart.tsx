@@ -2,13 +2,13 @@ import BaseData from "../../data/BaseData";
 import * as React from 'react';
 import { Slider } from 'primereact/slider';
 import { Checkbox } from 'primereact/checkbox';
+import { RadioButton } from "primereact/radiobutton";
 import Classification from '../../data/Classification';
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import R from 'ramda';
 import Legend from '../elements/Legend';
 import { InputText } from 'primereact/inputtext';
-// import { Accordion, AccordionTab } from 'primereact/accordion';
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
@@ -40,6 +40,7 @@ interface ID3ChartState {
 	checked: boolean;
 	checkedNoFilter: boolean;
 	checkedNaN: boolean;
+	sort: string;
 
 }
 
@@ -59,8 +60,11 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 			checked: false,
 			checkedNoFilter: false,
 			checkedNaN: false,
+			sort: "alphabetical",
 
 		};
+		this.sortData = this.sortData.bind(this);
+
 	}
 
 	public componentDidMount() {
@@ -68,17 +72,14 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 		const [min, max] = this.getMinMax2();
 		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
-
-		// let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
-
 		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert/1000 : item.Wert)) || (wanderungsRate? item.Wert/1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data);
 		let data2: ID3ChartItem[] = R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[1] && (wanderungsRate? item.Wert*1000 : item.Wert) <= max, this.props.data);
-
 		let dataFilterSmall: ID3ChartItem[] = R.concat(data1, data2);
 		let dataFilterLarge: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1],this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1] || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
 		let dataSaldi = this.state.checked === false ? dataFilterLarge : dataFilterSmall;
 		let normalizedData: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.threshold , this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.threshold || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
 		let data = this.props.theme == 'Saldi' ? dataSaldi : normalizedData;
+		this.sortData(data) 
 		if (data) {
 			this.drawBarChartH(data, this.props.theme);
 		}
@@ -95,7 +96,9 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 			nextState.rangeValues !== this.state.rangeValues ||
 			nextState.selectedRadio !== this.state.selectedRadio ||
 			nextState.checkedNaN !== this.state.checkedNaN ||
-			nextProps.dataProcessing !== this.props.dataProcessing 
+			nextProps.dataProcessing !== this.props.dataProcessing ||
+			nextState.sort !== this.state.sort ||
+			nextProps.yearsSelected !== this.props.yearsSelected
 		);
 	}
 
@@ -103,7 +106,6 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		const [min, max] = this.getMinMax2();
 		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 		let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
-
 		let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
 
 		if(nextProps.dataProcessing !== this.props.dataProcessing || nextProps.theme !== this.props.theme){
@@ -119,7 +121,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		let dataSaldi = this.state.checked === false ? dataFilterLarge : dataFilterSmall;
 		let normalizedData: ID3ChartItem[] = this.state.checkedNaN ?  R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= threshold , this.props.data)  : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= threshold || Number.isNaN( item.Wert) , this.props.data);
 		let data = this.props.theme == 'Saldi' ? dataSaldi : normalizedData;
-
+		this.sortData(data) 
 		this.removePreviousChart(this.svgID);
 		this.drawBarChartH(data, this.props.theme);
 	}
@@ -143,9 +145,10 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 	// DRAW D3 CHART
 	private drawBarChartH(data: ID3ChartItem[], theme: string) {
-		// console.log("data BAR CHART: " + JSON.stringify(data));
-
-
+		let ascending: boolean = this.state.sort === "ascending";
+        let descending: boolean = this.state.sort === "descending";
+        let alphabetical: boolean = this.state.sort === "alphabetical";
+		console.log("data D3 Chart start: " + JSON.stringify(data))
 		const svgBarChart = select(this.svgRef!);
 		let nach = data.map((d) => d.Nach);
 		let von = data.map((d) => d.Von);
@@ -251,6 +254,9 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 						.tickFormat(() => '')
 				);
 			let rects = barChart.append('g').attr('class', 'rects').selectAll('.bar').data(data);
+			
+		
+			
 
 			function select_axis_label(datum: ID3ChartItem) {
 				return d3
@@ -339,7 +345,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				.attr('x', 0)
 				.attr('width', (d) => x(d.Wert));
 
-			const values = barChart
+				const values = barChart
 				.selectAll('.value')
 				.data(data)
 				.enter()
@@ -363,6 +369,9 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					'x',
 					(d) => x(d.Wert) + 1 // ((x(d.Wert)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1)
 				);
+				
+				 
+
 		} else if (theme === 'Nach') {
 			const x = d3
 				.scaleLinear()
@@ -490,11 +499,11 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 						return hexcolor[i];
 					});
 					// .attr("fill", colorsRed[0]);
-					values.attr('font-weight', 'regular').style('fill', (d) => (x(d.Wert) - x(0) > 30 ? '#ffffff' : '#3a403d'));
+					values.attr('font-weight', 'regular').style('fill', (d) => (x(d.Wert) - x(0) > 30 ? '#000000' : '#3a403d'));
 					select_axis_label(d).attr('style', 'font-weight: regular;').style('font-size', '12px');
 				})
 				.attr('width', (d) => x(d.Wert));
-
+				
 			const values = barChart
 				.selectAll('.value')
 				.data(data)
@@ -792,6 +801,38 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		return rangeValues;
 	}
 
+	private sortData(data: ID3ChartItem[]): any[] {
+		let ascending: boolean = this.state.sort === "ascending";
+      	let descending: boolean = this.state.sort === "descending";
+		let alphabetical: boolean = this.state.sort === "alphabetical";
+		if(ascending){data.sort((data1: any, data2: any) => {
+			let result; 
+			if(isFinite(data1.Wert - data2.Wert)) {
+				 result = data1.Wert - data2.Wert;
+			  } else {
+				isFinite(data1.Wert) ? result = 1 : result = -1;
+			  }
+			return (result); 
+		});}
+		if(descending){data.sort((data1: any, data2: any) => {
+			let result; 
+			if(isFinite(data2.Wert - data1.Wert)) {
+				 result = data2.Wert - data1.Wert;
+			  } else {
+				isFinite(data1.Wert) ? result = -1 : result = 1;
+			  }
+			return (result); 
+		});}
+		if(alphabetical){data.sort((data1: any, data2: any) => {
+			let dataField1 = this.props.theme ==="Von" ? data1.Nach : data1.Von;
+			let dataField2 = this.props.theme ==="Von" ? data2.Nach : data2.Von;
+			let result = dataField1 - dataField2;
+			return (result); 
+		});}
+		return data;
+	}
+
+
 	public render() {
 		const { width, height } = this.props;
 		let [min, max] = this.getMinMax2();
@@ -806,9 +847,6 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 		return (
 			<div className="p-grid">
-				{/* <Accordion activeIndex={0}>
-					<AccordionTab header="Kontrollelemente">
-					<div className="p-grid"> */}
 				<div className="p-col-4 noprint">
 					<Checkbox
 						onChange={(e: { value: any; checked: boolean }) => this.setState({ checked: e.checked })}
@@ -908,12 +946,13 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				</div>
 				<div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
 						'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
-				{/* </div>
-				</AccordionTab>
-				</Accordion> */}
+				
 				<div className="p-col-12">
 					<Legend basedata={this.props.basedata} showCenter="" yearsSelected={this.props.yearsSelected} />
 				</div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='s1' value='alphabetical' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='s2' value='ascending' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='s3' value='descending' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
 				<div className="p-col-12">
 					<svg id={this.svgID} width={width} height={height} ref={(ref) => (this.svgRef = ref)} />
 				</div>

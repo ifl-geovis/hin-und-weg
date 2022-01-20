@@ -227,7 +227,10 @@
         "sliderSaldi2": " to ",
         "sliderSaldi3": "and from ",
         "slider": "Display from value: ",
-        "values": "Show values"
+        "values": "Show values",
+        "alphabetical": "alphabetically",
+        "ascending": "ascending",
+        "descending": "descending"
     },
     "index":{
         "labelYear": "Year",

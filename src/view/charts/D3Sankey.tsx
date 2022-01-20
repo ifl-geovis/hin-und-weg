@@ -2,6 +2,7 @@ import BaseData from "../../data/BaseData";
 import * as React from "react";
 import {Slider as Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
+import { RadioButton } from "primereact/radiobutton";
 import { InputText } from 'primereact/inputtext';
 import * as d3 from 'd3';
 import * as d3Sankey from 'd3-sankey';
@@ -12,6 +13,7 @@ import Legend from "../elements/Legend";
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
+import any from "ramda/es/any";
 
 export interface ID3SankeyItem
 {
@@ -43,6 +45,7 @@ interface ID3SankeyState
   checked: boolean,
   checkedLabel: boolean,
   checkedNoFilter: boolean,
+  sort: string
 }
 
 interface SNodeExtra {
@@ -86,6 +89,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
       checked: false,
       checkedLabel: false,
       checkedNoFilter: false,
+      sort: "alphabetical"
     }
   }
 
@@ -94,7 +98,29 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
   
       const [min, max] = this.getMinMax2();
       let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
-      let normalizedData:ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.threshold   , this.props.data); //   
+      let ascending: boolean = this.state.sort === "ascending";
+      let descending: boolean = this.state.sort === "descending";
+      let alphabetical: boolean = this.state.sort === "alphabetical";
+      if (this.props.theme === "Von"){ 
+        ascending ? this.props.data.sort(function(x, y){
+          return d3.ascending(x.Wert, y.Wert);
+        }) : 
+        descending ? this.props.data.sort(function(x, y){
+          return d3.descending(x.Wert, y.Wert);
+        }) :
+        alphabetical ?  this.props.data.sort(function(x, y){
+          return d3.ascending (x.Nach, y.Nach );}) : this.props.data ;}
+      if (this.props.theme === "Nach"  || this.props.theme === "Saldi"){
+        ascending ? this.props.data.sort(function(x, y){
+          return d3.ascending(x.Wert, y.Wert);
+        }) : 
+        descending ? this.props.data.sort(function(x, y){
+          return d3.descending(x.Wert, y.Wert);
+        }) : 
+        alphabetical ?  this.props.data.sort(function(x, y){
+          return d3.ascending (x.Von, y.Von );}) : this.props.data ;
+        }
+         let normalizedData:ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.threshold   , this.props.data); //   
 
       let data1 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert) >= min   , this.props.data) ;
       let data2 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.rangeValues[1] && (wanderungsRate ? item.Wert*1000 : item.Wert) <= max, this.props.data);
@@ -108,7 +134,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
       public shouldComponentUpdate (nextProps: ID3SankeyProps, nextState: ID3SankeyState) {
 
-        return  nextProps.data !== null || nextProps.data !== undefined  || nextProps.data !== this.props.data || nextProps.theme !== this.props.theme || nextState.threshold !==this.state.threshold  || nextState.rangeValues !==this.state.rangeValues || nextState.checkedNoFilter !== this.state.checkedNoFilter || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.dataProcessing !== this.props.dataProcessing
+        return  nextProps.data !== null || nextProps.data !== undefined  || nextProps.data !== this.props.data || nextProps.theme !== this.props.theme || nextState.threshold !==this.state.threshold  || nextState.rangeValues !==this.state.rangeValues || nextState.checkedNoFilter !== this.state.checkedNoFilter || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.dataProcessing !== this.props.dataProcessing || nextState.sort !== this.state.sort
         // || nextProps.height !== this.props.height
         }
 
@@ -116,7 +142,29 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           const [min, max] = this.getMinMax2();
           let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
     
-          let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
+          let ascending: boolean = this.state.sort === "ascending";
+          let descending: boolean = this.state.sort === "descending";
+          let alphabetical: boolean = this.state.sort === "alphabetical";
+          if (this.props.theme === "Von" ){
+            ascending ? this.props.data.sort(function(x, y){
+              return d3.ascending(x.Wert, y.Wert);
+            }) : 
+            descending ? this.props.data.sort(function(x, y){
+              return d3.descending(x.Wert, y.Wert);
+            }) : 
+            alphabetical ?  this.props.data.sort(function(x, y){
+              return d3.ascending (x.Nach, y.Nach );}) : this.props.data ;}
+          if (this.props.theme === "Nach" || this.props.theme === "Saldi" ){
+            ascending ? this.props.data.sort(function(x, y){
+              return d3.ascending(x.Wert, y.Wert);
+            }) :  
+            descending ? this.props.data.sort(function(x, y){
+              return d3.descending(x.Wert, y.Wert);
+            }) : 
+            alphabetical ?  this.props.data.sort(function(x, y){
+              return d3.ascending (x.Von, y.Von );}) : this.props.data ; 
+            }
+             let threshold: number = this.state.checkedNoFilter ? min:  this.calculateCurrentThreshold();
           let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max]:  this.getInitialValuesSliderSaldi();
           if(nextProps.dataProcessing !== this.props.dataProcessing || nextProps.theme !== this.props.theme){
             rangeValues = [min, max];
@@ -306,6 +354,18 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
             .nodePadding(12)
             .extent([[1, 1], [WIDTH - 1 , HEIGHT - 6 ]]);
 
+            let ascending: boolean = this.state.sort === "ascending";
+            let descending: boolean = this.state.sort === "descending";
+            // let alphabetical: boolean = this.state.sort === "alphabetical";
+            ascending ? sankey.nodeSort(function(x, y){
+              return d3.ascending(x.value, y.value);
+            }) :
+            descending ? sankey.nodeSort(function(x, y){
+              return d3.descending(x.value, y.value);
+            })  : //  sankey.nodeSort()  ;
+            // to suppress the error on one line:
+            // @ts-expect-error
+            sankey.nodeSort(null)  
 
             let link:any = chart.append("g")
             .attr("class", "links")
@@ -497,6 +557,19 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
           .nodeWidth(24)
           .nodePadding(12)
           .extent([[1, 1], [WIDTH - 1 , HEIGHT - 6 ]]);
+
+           let ascending: boolean = this.state.sort === "ascending";
+          let descending: boolean = this.state.sort === "descending";
+          // let alphabetical: boolean = this.state.sort === "alphabetical";
+
+          ascending ? sankey.nodeSort(function(x, y){
+            return d3.ascending(x.value, y.value);
+          }) : descending ? sankey.nodeSort(function(x, y){
+            return d3.descending(x.value, y.value);
+          })  : //  sankey.nodeSort()  ;
+          // to suppress the error on one line:
+          // @ts-expect-error
+          sankey.nodeSort(null) 
 
           let link:any = chart.append("g")
           .attr("class", "links")
@@ -691,7 +764,20 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
           .nodePadding(12)
           .extent([[1, 1], [WIDTH - 1 , HEIGHT - 6 ]]);
 
+          // let ascending: boolean = this.state.sort === "ascending";
+          // let descending: boolean = this.state.sort === "descending";
+          // let alphabetical: boolean = this.state.sort === "alphabetical";
 
+          //     ascending ? sankey.nodeSort(function(x, y){
+          //       return d3.ascending(x.value, y.value);
+          //    }) : descending ? sankey.nodeSort(function(x, y){
+          //     return d3.descending(x.value, y.value);
+          //  })  : // sankey.nodeSort()  ;
+
+          // to suppress the error on one line:
+          // @ts-expect-error
+          sankey.nodeSort(null) 
+          
           let link:any = chart.append("g")
           .attr("class", "links")
           .attr("fill", "none")
@@ -1002,6 +1088,10 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
           />
           <label className="p-checkbox-label">{t('charts.values')}</label>
         </div>
+        <div className="p-col-4 noprint"> <RadioButton inputId='s1' value='alphabetical' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='s2' value='ascending' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='s3' value='descending' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
+				
         <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
         </div>

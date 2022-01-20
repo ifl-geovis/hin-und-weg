@@ -2,6 +2,7 @@ import BaseData from "../../data/BaseData";
 import * as React from "react";
 import {Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
+import { RadioButton } from "primereact/radiobutton";
 import { InputText } from 'primereact/inputtext';
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
@@ -40,6 +41,7 @@ interface ID3ChordState
   checked: boolean,
   checkedLabel: boolean,
   checkedNoFilter: boolean,
+	sort: string;
 }
 
 // export 
@@ -61,8 +63,9 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       checked: false,
       checkedLabel: false,
       checkedNoFilter: false,
-
+			sort: "alphabetical",
     }
+		this.sortData = this.sortData.bind(this);
   }
 
     public componentDidMount() {
@@ -79,14 +82,25 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.threshold, this.props.data);
 
       let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
-
+      this.sortData(data) 
       if (data) {this.drawChordChart(data, this.props.theme, this.svgID) }
 
       }
 
     public shouldComponentUpdate (nextProps: ID3ChordProps, nextState: ID3ChordState) {
 
-      return nextProps.data !== this.props.data || nextProps.theme !== this.props.theme|| nextState.checkedNoFilter !== this.state.checkedNoFilter || nextState.checkedLabel !== this.state.checkedLabel  || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextState.threshold !==this.state.threshold || nextState.rangeValues !== this.state.rangeValues || nextProps.dataProcessing !== this.props.dataProcessing
+      return nextProps.data !== this.props.data || 
+      nextProps.theme !== this.props.theme|| 
+      nextState.checkedNoFilter !== this.state.checkedNoFilter || 
+      nextState.checkedLabel !== this.state.checkedLabel  || 
+      nextState.checked !== this.state.checked || 
+      nextProps.width !== this.props.width || 
+      nextProps.height !== this.props.height || 
+      nextState.threshold !==this.state.threshold || 
+      nextState.rangeValues !== this.state.rangeValues || 
+      nextProps.dataProcessing !== this.props.dataProcessing ||
+      nextState.sort !== this.state.sort ||
+			nextProps.yearsSelected !== this.props.yearsSelected
       }
 
       public componentDidUpdate(nextProps: ID3ChordProps, nextState: ID3ChordState){
@@ -108,7 +122,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
         let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= threshold, this.props.data);
         let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
-
+        this.sortData(data) 
       this.removePreviousChart(this.svgID);
       this.drawChordChart(data, this.props.theme, this.svgID);
       }
@@ -1036,6 +1050,37 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       return rangeValues;
     }
 
+    private sortData(data: ID3ChordItem[]): any[] {
+      let ascending: boolean = this.state.sort === "ascending";
+      let descending: boolean = this.state.sort === "descending";
+      let alphabetical: boolean = this.state.sort === "alphabetical";
+      if(ascending){data.sort((data1: any, data2: any) => {
+        let result; 
+        if(isFinite(data1.Wert - data2.Wert)) {
+           result = data1.Wert - data2.Wert;
+          } else {
+          isFinite(data1.Wert) ? result = 1 : result = -1;
+          }
+        return (result); 
+      });}
+      if(descending){data.sort((data1: any, data2: any) => {
+        let result; 
+        if(isFinite(data2.Wert - data1.Wert)) {
+           result = data2.Wert - data1.Wert;
+          } else {
+          isFinite(data1.Wert) ? result = -1 : result = 1;
+          }
+        return (result); 
+      });}
+      if(alphabetical){data.sort((data1: any, data2: any) => {
+        let dataField1 = this.props.theme ==="Von" ? data1.Nach : data1.Von;
+        let dataField2 = this.props.theme ==="Von" ? data2.Nach : data2.Von;
+        let result = dataField1 - dataField2;
+        return (result); 
+      });}
+      return data;
+    }
+
     public render() {
 		  const {t}:any = this.props ;
       const { width, height } = this.props;
@@ -1117,7 +1162,10 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>{t('charts.values')}</label>
           {/* <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Werte anzeigen</label> */}
         </div>
-          <div className="p-col-12" >
+        <div className="p-col-4 noprint"> <RadioButton inputId='s1' value='alphabetical' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='s2' value='ascending' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='s3' value='descending' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
+				 <div className="p-col-12" >
                 <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
           </div>
            </div>
