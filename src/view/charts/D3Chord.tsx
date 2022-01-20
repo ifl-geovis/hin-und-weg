@@ -148,9 +148,10 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     // DRAW D3 CHART
     private drawChordChart (data: ID3ChordItem[], theme: string, id: string | undefined) {
       const [min, max] = this.getMinMax2();
+      const ascending = this.state.sort === "ascending";
+      // const descending = this.state.sort === "descending";
+      // const alphabetical = this.state.sort === "alphabetical";
       let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
-
-
 
       this.checkedLabel = this.state.checkedLabel;
       const svgChord = select(this.svgRef!);
@@ -335,7 +336,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let chord = d3.chord()
           .padAngle(0.05)
           .sortSubgroups(d3.descending)
-          .sortChords(d3.descending);
+          .sortChords(ascending ? d3.ascending : d3.descending);
+          // .sortChords(d3.descending);
 
         let arc:any = d3.arc()
           .innerRadius(innerRadius)
