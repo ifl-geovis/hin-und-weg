@@ -1,6 +1,7 @@
 import BaseData from "../../data/BaseData";
 import React from "react";
 import  D3Chart, {ID3ChartItem} from "./D3Chart";
+import Classification from '../../data/Classification';
 import ContainerDimensions from 'react-container-dimensions';
 import { RadioButton } from "primereact/radiobutton";
 import { withNamespaces,WithNamespaces } from 'react-i18next';
@@ -50,7 +51,13 @@ class D3ChartView extends React.Component<ID3ChartViewProps, ID3ChartViewState>
 			: this.props.items.length > 5 && this.props.items.length < 30
 			? this.props.items.length * 25
 			: this.props.items.length * 20;
-		return (
+		
+			const classification = this.props.basedata.getClassification();
+			const positive_scales = classification.getPositiveScales();
+			const positive_colors = classification.getPositiveColors();
+			const negative_scales = classification.getNegativeScales();
+			const negative_colors = classification.getNegativeColors();
+			return (
 			<div className="p-grid">
 				<div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">{t('charts.scale100')}</label> </div>
 				<div className="p-col-4 noprint"> <RadioButton inputId='rb2' value='width75' name='scaleSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width75'} /> <label className="p-checkbox-label">{t('charts.scale75')}</label>  </div>
@@ -64,7 +71,8 @@ class D3ChartView extends React.Component<ID3ChartViewProps, ID3ChartViewState>
 							yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={heightResponsive}
-							data={this.props.items} theme={this.props.theme} dataProcessing={this.props.dataProcessing} />
+							data={this.props.items} theme={this.props.theme} dataProcessing={this.props.dataProcessing} 
+							positive_colors={positive_colors} negative_colors={negative_colors} positive_scales={positive_scales} negative_scales={negative_scales} />
 								}
 						  </ContainerDimensions>
 

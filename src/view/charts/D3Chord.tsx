@@ -31,6 +31,10 @@ export interface ID3ChordProps extends WithNamespaces{
   baseViewId: number;
   yearsSelected: string[];
   dataProcessing:string;
+	positive_scales: number[] | null;
+	negative_scales: number[] | null;
+	positive_colors: string[];
+  negative_colors: string[];
 }
 interface ID3ChordState
 {
@@ -100,7 +104,11 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       nextState.rangeValues !== this.state.rangeValues || 
       nextProps.dataProcessing !== this.props.dataProcessing ||
       nextState.sort !== this.state.sort ||
-			nextProps.yearsSelected !== this.props.yearsSelected
+			nextProps.yearsSelected !== this.props.yearsSelected ||
+			nextProps.positive_scales !== this.props.positive_scales ||
+			nextProps.negative_scales !== this.props.negative_scales ||
+			nextProps.positive_colors !== this.props.positive_colors ||
+			nextProps.negative_colors !== this.props.negative_colors 
       }
 
       public componentDidUpdate(nextProps: ID3ChordProps, nextState: ID3ChordState){

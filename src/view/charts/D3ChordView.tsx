@@ -40,7 +40,11 @@ class D3ChordView extends React.Component<ID3ChordViewProps, ID3ChordViewState>
 	public render(): JSX.Element
 	{
 		const {t}:any = this.props ;
-
+		const classification = this.props.basedata.getClassification();
+		const positive_scales = classification.getPositiveScales();
+		const positive_colors = classification.getPositiveColors();
+		const negative_scales = classification.getNegativeScales();
+		const negative_colors = classification.getNegativeColors();
 		return (
 			<div className="p-grid">
 				<div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleChord' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">{t('charts.scale100')}</label> </div>
@@ -55,7 +59,9 @@ class D3ChordView extends React.Component<ID3ChordViewProps, ID3ChordViewState>
 						yearsSelected={this.props.yearsSelected}
 							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							height={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
-							data={this.props.items} theme={this.props.theme}/>                        }
+							data={this.props.items} theme={this.props.theme}
+							positive_colors={positive_colors} negative_colors={negative_colors} positive_scales={positive_scales} negative_scales={negative_scales} />
+							}
 						  </ContainerDimensions>
 
 				</div>
