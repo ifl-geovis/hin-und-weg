@@ -59,7 +59,6 @@ export default class MainMenu
 				{
 					// label: 'Vergrößern',
 					label: i18n.t('menu.zoomIn'),
-					accelerator: 'CommandOrControl+=',
 					role: 'zoomIn'
 				},
 				{
