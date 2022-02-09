@@ -186,6 +186,7 @@ class StatisticsView extends React.Component<IStatisticsViewProps>
 	private standardizeOutput(value: number): string
 	{
 		if (Number.isInteger(value)) return "" + value;
+		if (i18n.language == "en") return value.toFixed(3);
 		return value.toFixed(3).replace("\.", ",");
 	}
 

@@ -212,6 +212,7 @@ class Legend extends React.Component<ILegendProps> {
 
 	private standardizeOutput(label: string): string
 	{
+		if (i18n.language == "en") return label.replace(",", ".");
 		return label.replace("\.", ",");
 	}
 

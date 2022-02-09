@@ -11,6 +11,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import * as turf from '@turf/turf';
 import Classification from '../../data/Classification';
 import { IOfflineMaps } from '../../data/OfflineMaps';
+import i18n from './../../i18n/i18nClient';
+import { TFunction } from "i18next";
 // @ts-ignore
 import 'leaflet-swoopy';
 
@@ -629,6 +631,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 	private standardizeOutput(value: number): string
 	{
 		if (Number.isInteger(value)) return "" + value;
+		if (i18n.language == "en") return value.toFixed(3);
 		return value.toFixed(3).replace("\.", ",");
 	}
 
