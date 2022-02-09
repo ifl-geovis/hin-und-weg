@@ -134,7 +134,7 @@ class ImportView extends React.Component<IImportProps, IImportState>
 	private isAlreadyLoaded(path: string)
 	{
 		for (let tablefile of this.state.tablefiles) {
-			if (tablefile.getPath() === path) return true;
+			if ((tablefile.getStatus() != "failure") && (tablefile.getPath() === path)) return true;
 		}
 		return false;
 	}
