@@ -253,7 +253,7 @@
     },
     "statistics":{
         "title1": "Statistics for",
-        "title2": " in the years" ,
+        "title2": " in the years ",
         "mean": "Mean",
         "median": "Median",
         "maxIncoming": "Maximum incoming flow:",
