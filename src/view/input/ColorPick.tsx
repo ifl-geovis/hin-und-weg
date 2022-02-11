@@ -14,7 +14,7 @@ export default class ColorPick extends React.Component<IColorPickProps> {
 	}
 
 	public render(): JSX.Element {
-		const color = (this.props.value.startsWith("#")) ? this.props.value : "#" + this.props.value;
+		const color = ((this.props.value == null) || (this.props.value.startsWith("#"))) ? this.props.value : "#" + this.props.value;
 		const colorisstyle =
 		{
 			color: color,
