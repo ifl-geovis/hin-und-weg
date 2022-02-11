@@ -2,9 +2,9 @@ import * as React from 'react';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import { ColorPicker } from 'primereact/colorpicker';
 import { Slider } from 'primereact/slider';
 import { Button } from 'primereact/button';
+import ColorPick from '../input/ColorPick';
 
 import Settings from '../../settings';
 import OfflineMaps from '../../data/OfflineMaps';
@@ -149,7 +149,7 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 		return (
 			<div>
 				<div>{label}</div>
-				<ColorPicker id={id} value={value} onChange={(event) => this.setArrowColor(positive, event.value)} />
+				<ColorPick id={id} value={value} onChange={(event) => this.setArrowColor(positive, event.target.value)} />
 			</div>
 		);
 	}
@@ -158,6 +158,7 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 		if (positive) Settings.setValue('user-colors', 'arrow-positive-color', value);
 		else Settings.setValue('user-colors', 'arrow-negative-color', value);
 		Settings.save();
+		this.setState({ change: this.state.change ? false : true });
 	}
 
 	private getColorSchemes() {
@@ -175,7 +176,7 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 				<h1>{t('settings.colorsUser')}</h1>
 				<h2>{t('settings.colorsSpecial')}</h2>
 				<div>
-					<ColorPicker
+					<ColorPick
 						id={'colorpicker-neutral'}
 						value={neutralcolor}
 						onChange={(e) => this.processSpecialColorInput('user-colors', 'neutral-color', e)}
@@ -183,7 +184,7 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 					&nbsp;{t('settings.colorNeutral')}
 				</div>
 				<div>
-					<ColorPicker
+					<ColorPick
 						id={'colorpicker-missing'}
 						value={missingcolor}
 						onChange={(e) => this.processSpecialColorInput('user-colors', 'missing-color', e)}
@@ -327,7 +328,7 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 		let scheme = Settings.getValue(section, key);
 		if (scheme == null) scheme = this.colorSchemeDefault;
 		return (
-			<ColorPicker
+			<ColorPick
 				id={'colorpicker-' + key + '-color' + index}
 				value={scheme[index]}
 				onChange={(e) => this.processColorInput(section, key, e, index)}
@@ -369,6 +370,10 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 	}
 
 	private processSpecialColorInput(section: string, key: string, event: any) {
+		console.log("processSpecialColorInput");
+		console.log(section);
+		console.log(key);
+		console.log(event);
 		// @ts-ignore
 		const value = event.target.value;
 		Settings.setValue(section, key, value);
