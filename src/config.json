@@ -18,6 +18,7 @@
 			"datadir": "distdata"
 		},
 		"components": {
+			"db": true,
 			"systeminfo": true,
 		},
 		"logging": {
@@ -47,7 +48,7 @@
 			"index": true,
 			"statistics": true,
 			"file": true,
-			"db": true,
+			"db": false,
 			"systeminfo": false,
 			"projektinfo": true,
 			"settings": true,
