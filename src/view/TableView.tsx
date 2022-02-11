@@ -15,7 +15,7 @@ export interface ITableViewProps extends WithNamespaces {
 	maxRows?: number | null;
 }
 
-// export default 
+// export default
 class TableView extends React.Component<ITableViewProps> {
 
 	constructor(props: ITableViewProps) {
@@ -28,7 +28,11 @@ class TableView extends React.Component<ITableViewProps> {
 		const {t}:any = this.props ;
 		if (R.isEmpty(this.props.items)) {
 			return <div>{t('table.noData')}</div>;
-			// return <div>Keine Daten vorhanden.</div>;
+		}
+		let values = this.props.items;
+		for (let value of values)
+		{
+			if (value != null) value.Wert = this.standardizeOutput(value.Wert);
 		}
 		const fieldNames = R.keys(this.props.items[0]);
 		var name;
@@ -42,15 +46,20 @@ class TableView extends React.Component<ITableViewProps> {
 
 		const columns = R.map(this.createColumn, fieldNames);
 		return (
-			<DataTable value={this.props.items} paginator={true} rows={this.props.maxRows || 10}
+			<DataTable value={values} paginator={true} rows={this.props.maxRows || 10}
 				paginatorTemplate="FirstPageLink PrevPageLink PageLinks CurrentPageReport NextPageLink LastPageLink"
 				currentPageReportTemplate={t('table.pageReport')}
-				// currentPageReportTemplate="({currentPage} von {totalPages})"
 				emptyMessage={t('table.noData')}>
-				{/* emptyMessage="Keine Daten vorhanden."> */}
 				{columns}
 			</DataTable>
 		);
+	}
+
+	private standardizeOutput(value: number): string
+	{
+		if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+		if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+		return value.toFixed(3).replace("\.", ",");
 	}
 
 	private sortByNumberValue(event: any): any[] {
@@ -79,8 +88,7 @@ class TableView extends React.Component<ITableViewProps> {
 		if (numberValue) {
 			filterMatchMode = "equals";
 		}
-		return <Column key={fieldName}  field={`${fieldName}`} header={fieldNameTranslated} filterPlaceholder={t('table.filter') }
-		// return <Column key={fieldName}  field={`${fieldName}`} header={fieldNameTranslated} filterPlaceholder="Filtern ..."
+		return <Column key={fieldName} field={`${fieldName}`} header={fieldNameTranslated} filterPlaceholder={t('table.filter') }
 							// @ts-ignore
 							sortable={true} sortFunction={numberValue ? this.sortByNumberValue : null} filter={true} filterMatchMode={filterMatchMode}/>;
 	}
