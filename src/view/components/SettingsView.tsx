@@ -370,10 +370,6 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 	}
 
 	private processSpecialColorInput(section: string, key: string, event: any) {
-		console.log("processSpecialColorInput");
-		console.log(section);
-		console.log(key);
-		console.log(event);
 		// @ts-ignore
 		const value = event.target.value;
 		Settings.setValue(section, key, value);

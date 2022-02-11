@@ -20,16 +20,12 @@ export default class ColorPick extends React.Component<IColorPickProps> {
 			color: color,
 			backgroundColor: color,
 		};
-		console.log(this.props.value);
-		console.log(colorisstyle);
 		return (
 			<input id={this.props.id} className="coloris" type="text" value={"#" + this.props.value} onChange={this.change} onInput={this.change} style={colorisstyle} data-coloris />
 		);
 	}
 
 	private change(event: any) {
-		console.log("onChange");
-		console.log(event);
 		this.props.onChange(event);
 	}
 }
