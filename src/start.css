@@ -282,8 +282,8 @@ div.negativebar {
 .HoverBox {
 	position: absolute;
 	opacity: 80%;
-	 background-color: #007ad9;
-	 width: fit-content;
+	background-color: #007ad9;
+	width: fit-content;
 	height: 25px;
 	z-index: 1000;
 	top: 70px;
@@ -310,6 +310,17 @@ table.year-statistics th
 	background-color: #dddddd;
 }
 
-.popup-label-arrow{
+.popup-label-arrow
+{
 	display: none;
+}
+
+input.coloris
+{
+	width: 25px;
+	height: 25px;
+	border-radius: 5px;
+	border-style: none;
+	border-width: 0px;
+	margin: 1px;
 }
