@@ -407,6 +407,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 	}
 
 	private change() {
+		this.setState({ updateclasscount: true });
 		this.setState({ change: this.state.change ? false : true });
 	}
 
