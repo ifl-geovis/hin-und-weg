@@ -1,6 +1,6 @@
 {
-	"profile": "development",
-	"version": "1.9.0",
+	"profile": "production",
+	"version": "1.10.0",
 
 	"production": {
 		"logging": {
@@ -28,6 +28,7 @@
 
 	"default": {
 		"global": {
+			"version-addon": "test version 1 - 2022-02-11",
 			"devtools": false,
 			"menu": true,
 			"datadir": "../../Beispieldaten",
