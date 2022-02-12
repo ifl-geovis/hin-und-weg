@@ -155,8 +155,10 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 	}
 
 	private setArrowColor(positive: boolean, value: string) {
-		if (positive) Settings.setValue('user-colors', 'arrow-positive-color', value);
-		else Settings.setValue('user-colors', 'arrow-negative-color', value);
+		let color = value;
+		if ((value != null) && (value.startsWith("#"))) color = value.substring(1);
+		if (positive) Settings.setValue('user-colors', 'arrow-positive-color', color);
+		else Settings.setValue('user-colors', 'arrow-negative-color', color);
 		Settings.save();
 		this.setState({ change: this.state.change ? false : true });
 	}
@@ -361,9 +363,11 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 	private processColorInput(section: string, key: string, event: any, index: number) {
 		// @ts-ignore
 		const value = event.target.value;
+		let color = value;
+		if ((value != null) && (value.startsWith("#"))) color = value.substring(1);
 		let scheme = Settings.getValue(section, key);
 		if (scheme == null) scheme = this.colorSchemeDefault;
-		scheme[index] = value;
+		scheme[index] = color;
 		Settings.setValue(section, key, scheme);
 		Settings.save();
 		this.setState({ change: this.state.change ? false : true });
@@ -372,7 +376,9 @@ class SettingsView extends React.Component<ISettingsProps, ISettingsState> {
 	private processSpecialColorInput(section: string, key: string, event: any) {
 		// @ts-ignore
 		const value = event.target.value;
-		Settings.setValue(section, key, value);
+		let color = value;
+		if ((value != null) && (value.startsWith("#"))) color = value.substring(1);
+		Settings.setValue(section, key, color);
 		Settings.save();
 		this.setState({ change: this.state.change ? false : true });
 	}
