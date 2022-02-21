@@ -236,7 +236,10 @@
         "descending": "absteigend",
         "scaleWidth": "Breite anpassen:",
         "dataFilter": "Daten nach Wert filtern:",
-        "sort": "Sortieren"
+        "sort": "Sortieren",
+        "smallView1": "Die Ansicht ist zu klein für dieses Diagramm.",
+        "smallView2": "Bitte vergrößern Sie das Fenster",
+        "smallView3": "oder passen Sie die Diagrammbreite an."
     },
     "index":{
         "labelYear": "Jahr",

@@ -77,6 +77,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
     public componentDidMount() {
       this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
+
       const [min, max] = this.getMinMax2();
       let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
@@ -159,6 +160,11 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
     // DRAW D3 CHART
     private drawChordChart (data: ID3ChordItem[], theme: string, id: string | undefined) {
+      const {t}:any = this.props ;
+      let smallViewtext1 = t('charts.smallView1');
+      let smallViewtext2 = t('charts.smallView2');
+      let smallViewtext3 = t('charts.smallView3');
+      console.log("smallViewtext1: " +  smallViewtext1);
       const [min, max] = this.getMinMax2();
       const ascending = this.state.sort === "ascending";
       // const descending = this.state.sort === "descending";
@@ -171,8 +177,10 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let von = data.map(d => d.Von);
       let names = nach.concat(von);
       let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
-      let marginResponsive = this.props.dataProcessing === "absolute" ? this.props.width < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
-      this.props.width < 700 && this.props.width >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 :
+      let marginResponsive = this.props.dataProcessing === "absolute" ? this.state.chartWidth < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
+      // let marginResponsive = this.props.dataProcessing === "absolute" ? this.props.width < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
+      this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 :
+      // this.props.width < 700 && this.props.width >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 :
       this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 :
       this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 ; // +10
 
@@ -214,16 +222,36 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           .attr("transform", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
           .attr("id", "circle")
 
+      let smallViewText = svgChord.append("g")
+          .attr("transform", `translate(${MARGIN.LEFT/4}, ${MARGIN.TOP/4})`)
+          .attr("id", "smallViewText")
+
       const outerRadius = Math.min(WIDTH, HEIGHT) / 2 - 15;
       const innerRadius = outerRadius - 24;
+      const smallView: boolean = outerRadius <= 0 || innerRadius <= 0; 
 
-      if (outerRadius <= 0 || innerRadius <= 0){
-        chartChord.append("text")
+      if (smallView){
+        smallViewText.append("text")
         .attr("x", 0)
         .attr("y", 0)
-        .attr("dy", ".35em")
+        .attr("dy", "0em") //.35em
         .attr("width", WIDTH)
-        .text("Die Ansicht ist zu klein für dieses Diagramm. Bitte vergrößern Sie das Fenster.");
+        .style("font-size", "12px")
+        .text(smallViewtext1);
+        smallViewText.append("text")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("dy", "1.2em")
+        .attr("width", WIDTH)
+        .style("font-size", "12px")
+        .text(smallViewtext2);
+        smallViewText.append("text")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("dy", "2.4em")
+        .attr("width", WIDTH)
+        .style("font-size", "12px")
+        .text(smallViewtext3);
       } else {
       // creates input matrix with 0 values
         function Matrix(r:any, c:any, v:any[], n:any[], value:number) {

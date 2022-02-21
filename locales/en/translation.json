@@ -235,7 +235,10 @@
         "descending": "descending",
         "scaleWidth": "Adjust width:",
         "dataFilter": "Filter data by value:",
-        "sort": "Sortieren"
+        "sort": "Sortieren",
+        "smallView1": "The view is too small for this chart.",
+        "smallView2": "Please enlarge the window ",
+        "smallView3": "or adjust the chart width."
     },
     "index":{
         "labelYear": "Year",
