@@ -230,7 +230,10 @@
         "values": "Show values",
         "alphabetical": "alphabetically",
         "ascending": "ascending",
-        "descending": "descending"
+        "descending": "descending",
+        "scaleWidth": "Adjust width:",
+        "dataFilter": "Filter data by value:",
+        "sort": "Sortieren"
     },
     "index":{
         "labelYear": "Year",

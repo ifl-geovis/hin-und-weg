@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Slider } from 'primereact/slider';
 import { Checkbox } from 'primereact/checkbox';
 import { RadioButton } from "primereact/radiobutton";
+import { Accordion, AccordionTab } from 'primereact/accordion';
 import Classification from '../../data/Classification';
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
@@ -46,6 +47,7 @@ interface ID3ChartState {
 	checkedNoFilter: boolean;
 	checkedNaN: boolean;
 	sort: string;
+    chartWidth: number;
 
 }
 
@@ -66,7 +68,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 			checkedNoFilter: false,
 			checkedNaN: false,
 			sort: "alphabetical",
-
+			chartWidth: this.props.width,
 		};
 		this.sortData = this.sortData.bind(this);
 
@@ -107,7 +109,8 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 			nextProps.positive_scales !== this.props.positive_scales ||
 			nextProps.negative_scales !== this.props.negative_scales ||
 			nextProps.positive_colors !== this.props.positive_colors ||
-			nextProps.negative_colors !== this.props.negative_colors 
+			nextProps.negative_colors !== this.props.negative_colors ||
+			nextState.chartWidth !== this.state.chartWidth
 		);
 	}
 
@@ -122,7 +125,11 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
             this.setState({ rangeValues: [min, max]});
             threshold = min;
 			this.setState({threshold: min});		
-         }
+		 }
+		//  if(nextProps.width !== nextProps.width){
+       
+		// 	this.setState({chartWidth: nextProps.width});		
+        //  }
 		let data1: ID3ChartItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert))  || (wanderungsRate? item.Wert*1000 : item.Wert) <= rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) >= min, this.props.data);
 		let data2: ID3ChartItem[] = R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= rangeValues[1] && (wanderungsRate? item.Wert*1000 : item.Wert) <= max, this.props.data);
 		let dataFilterSmall: ID3ChartItem[] =  R.concat(data1, data2);
@@ -173,7 +180,8 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 		// let MARGIN = {TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength*9}
 		let MARGIN = { TOP: 20, RIGHT: 15, BOTTOM: 30, LEFT: maxNameLength > 3 ? maxNameLength * 9 : maxNameLength * 15 };
-		let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
+		let WIDTH = this.state.chartWidth > this.props.width? this.props.width - MARGIN.LEFT - MARGIN.RIGHT : this.state.chartWidth - MARGIN.LEFT - MARGIN.RIGHT;
+		// let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
 		let HEIGHT = heightResponsive - MARGIN.TOP - MARGIN.BOTTOM;
 		const neutralcolor = '#f7f7f7';
 		const bordercolor = '#525252';
@@ -841,6 +849,16 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		});}
 		return data;
 	}
+	private calculateCurrentThresholdWidth(): number {
+		let [min, max] = [this.props.width/2, this.props.width];
+		// min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+		// max = Math.round((max + Number.EPSILON) * 1000) / 1000;
+		let chartWidth: number = this.state.chartWidth;
+		if (this.state.chartWidth == 0) chartWidth = min;
+		if (this.state.chartWidth < min) chartWidth = min;
+		if (this.state.chartWidth > max) chartWidth = max;
+		return chartWidth;
+	}
 
 
 	public render() {
@@ -854,40 +872,69 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
 		let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 		const {t}:any = this.props ;
+		let chartWidth: number = this.calculateCurrentThresholdWidth();
 
 		return (
 			<div className="p-grid">
-				<div className="p-col-4 noprint">
-					<Checkbox
-						onChange={(e: { value: any; checked: boolean }) => this.setState({ checked: e.checked })}
-						checked={this.state.checked}
-						disabled={this.props.theme === 'Saldi' ? false : true}
-					/>
-					<label className="p-checkbox-label">{t('charts.reverse')}</label>
-				</div>
-				<div className="p-col-4 noprint">
-				<Checkbox
-				  name = "saldiChordNoFilter"
-				  id	= "saldiChordNoFilter"
-				  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
-				  checked={this.state.checkedNoFilter}
-				/>
-				<label className="p-checkbox-label">{t('charts.nofilter')}</label>
-			 </div>
-		  <div className="p-col-4 noprint">
-				<Checkbox
-				  name = "noNaN"
-				  id	= "noNaN"
-				  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNaN: e.checked})}
-				  checked={this.state.checkedNaN}
-				/>
-				<label className="p-checkbox-label">{t('charts.noNaN')}</label>
-			 </div>
+				<Accordion activeIndex={0}>
+					<AccordionTab header={t('geodataView.controlElements')}>
+						<div className="p-grid p-component">
+							<div className="p-col-2 noprint rdBtnContainer">
+								{t('charts.scaleWidth')}
+								</div>
+							<div className="p-col-10 noprint">
+								<div className={`banner  ''}`}>
+									{
+										<Slider
+											// disabled={this.state.checkedNoFilter   ? true : false}
+											min={width/2}
+											max={width}
+											value={chartWidth}
+											orientation="horizontal"
+											onChange={(e) => this.setState({  chartWidth: e.value as number })}
+										/>
+									}
+								</div>
+							</div>
+				{/* <div className="p-grid p-dir-col">		 */}
+					{/* <div className="p-col-4 noprint"> */}
+					{/* <div className="p-col rdBtnContainer">
+						<Checkbox
+							onChange={(e: { value: any; checked: boolean }) => this.setState({ checked: e.checked })}
+							checked={this.state.checked}
+							disabled={this.props.theme === 'Saldi' ? false : true}
+						/>
+						<label className="p-checkbox-label">{t('charts.reverse')}</label>
+					</div>
+					<div className="p-col rdBtnContainer"> */}
+					{/* <div className="p-col-4 noprint"> */}
+						{/* <Checkbox
+							name = "saldiChordNoFilter"
+							id	= "saldiChordNoFilter"
+							onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
+							checked={this.state.checkedNoFilter}
+						/>
+						<label className="p-checkbox-label">{t('charts.nofilter')}</label>
+					</div>
+					<div className="p-col rdBtnContainer"> */}
+					{/* <div className="p-col-4 noprint"> */}
+						{/* <Checkbox
+							name = "noNaN"
+							id	= "noNaN"
+							onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNaN: e.checked})}
+							checked={this.state.checkedNaN}
+						/>
+						<label className="p-checkbox-label">{t('charts.noNaN')}</label>
+					</div>
+			 	</div> */}
+				 <div className="p-col-2 noprint rdBtnContainer">
+								{t('charts.dataFilter')}
+								</div>
 
-				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
+				<div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>
 					{wanderungsRate ? min/1000 : min}
 				</div>
-				<div className="p-col-10 noprint">
+				<div className="p-col-8 noprint">
 					<div className={`banner ${this.props.theme == 'Saldi' ? this.state.checked === true ? 'slider-reversed' : "slider-saldi" : ''}`}>
 						{this.props.theme == 'Saldi' ? (
 							<Slider
@@ -910,18 +957,21 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 						)}
 					</div>
 				</div>
-				<div className="p-col-1 noprint" style={{ width: '3.5em' }}>
+				<div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>
 					{wanderungsRate ? max/1000 : max}
 				</div>
+
+				
+
 				{/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-				<div className="p-col-2 noprint">
+				<div className="p-col-2 noprint rdBtnContainer">
 					{this.props.theme == 'Saldi' ? this.state.checked ?
 					t('charts.sliderSaldi1') + (wanderungsRate ?  min/1000 : min) + t('charts.sliderSaldi2') :
 					// 'Anzeige Werte in Bereich: ab ' + (wanderungsRate ?  min/1000 : min) + ' bis ' :
 					t('charts.sliderSaldi1') : t('charts.slider')}
 					{/* 'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '} */}
 					</div>
-				<div className="p-col-2 noprint">
+				<div className="p-col-2 noprint ">
 					{this.props.theme == 'Saldi' ?
 						<InputText
 							value={wanderungsRate ? rangeValue1/1000 : rangeValue1}
@@ -938,11 +988,11 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 						/>
 					}
 				</div>
-				<div className="p-col-2 noprint">{this.props.theme == 'Saldi' ? this.state.checked === true?
+				<div className="p-col-2 noprint rdBtnContainer">{this.props.theme == 'Saldi' ? this.state.checked === true?
 						t('charts.sliderSaldi3') : t('charts.sliderSaldi2') : ' '}
 						{/* 'und ab ' : 'bis ' : ' '} */}
 				</div>
-				<div className="p-col-2 noprint">
+				<div className="p-col-2 noprint ">
 					{this.props.theme == 'Saldi' ?
 						<InputText
 							value={wanderungsRate ? rangeValue2/1000 : rangeValue2}
@@ -957,14 +1007,66 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				<div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
 						'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
 				
-				<div className="p-col-12">
-					<Legend basedata={this.props.basedata} showCenter="" yearsSelected={this.props.yearsSelected} />
+				<div className="p-col-2 noprint"> </div>
+
+
+				<div className="p-grid p-col-3 p-dir-col">		
+					{/* <div className="p-col-4 noprint"> */}
+					<div className="p-col rdBtnContainer">
+						<Checkbox
+							onChange={(e: { value: any; checked: boolean }) => this.setState({ checked: e.checked })}
+							checked={this.state.checked}
+							disabled={this.props.theme === 'Saldi' ? false : true}
+						/>
+						<label className="p-checkbox-label">{t('charts.reverse')}</label>
+					</div>
+					<div className="p-col rdBtnContainer">
+					{/* <div className="p-col-4 noprint"> */}
+						<Checkbox
+							name = "saldiChordNoFilter"
+							id	= "saldiChordNoFilter"
+							onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
+							checked={this.state.checkedNoFilter}
+						/>
+						<label className="p-checkbox-label">{t('charts.nofilter')}</label>
+					</div>
+					<div className="p-col rdBtnContainer">
+					{/* <div className="p-col-4 noprint"> */}
+						<Checkbox
+							name = "noNaN"
+							id	= "noNaN"
+							onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNaN: e.checked})}
+							checked={this.state.checkedNaN}
+						/>
+						<label className="p-checkbox-label">{t('charts.noNaN')}</label>
+					</div>
+			 	</div>
+
+
+				 <div className="p-grid p-col-3  p-dir-col">		
+
+				 <div className="p-col rdBtnContainer">
+				 	{t('charts.sort')}
 				</div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='s1' value='alphabetical' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='s2' value='ascending' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='s3' value='descending' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
+				<div className="p-col rdBtnContainer">
+					{/* <div className="p-col-4 noprint"> */}
+						 <RadioButton inputId='s1' value='alphabetical' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
+						 <div className="p-col rdBtnContainer">
+					{/* <div className="p-col-4 noprint"> */}
+						 <RadioButton inputId='s2' value='ascending' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
+						 <div className="p-col rdBtnContainer">
+					{/* <div className="p-col-4 noprint"> */}
+						 <RadioButton inputId='s3' value='descending' name='sortBalken' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
+				</div>
+				</div>
+
+					</AccordionTab>
+				</Accordion>
 				<div className="p-col-12">
-					<svg id={this.svgID} width={width} height={height} ref={(ref) => (this.svgRef = ref)} />
+					<Legend noNaN={this.state.checkedNaN} basedata={this.props.basedata} showCenter="" yearsSelected={this.props.yearsSelected} />
+				</div>
+				<div className="p-col-12">
+					<svg id={this.svgID} width={this.state.chartWidth} height={height} ref={(ref) => (this.svgRef = ref)} />
 				</div>
 			</div>
 		);

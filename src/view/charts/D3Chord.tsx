@@ -3,6 +3,7 @@ import * as React from "react";
 import {Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
 import { RadioButton } from "primereact/radiobutton";
+import { Accordion, AccordionTab } from 'primereact/accordion';
 import { InputText } from 'primereact/inputtext';
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
@@ -45,7 +46,8 @@ interface ID3ChordState
   checked: boolean,
   checkedLabel: boolean,
   checkedNoFilter: boolean,
-	sort: string;
+  sort: string;
+  chartWidth: number;
 }
 
 // export 
@@ -67,7 +69,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       checked: false,
       checkedLabel: false,
       checkedNoFilter: false,
-			sort: "alphabetical",
+      sort: "alphabetical",
+			chartWidth: this.props.width,
     }
 		this.sortData = this.sortData.bind(this);
   }
@@ -108,7 +111,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 			nextProps.positive_scales !== this.props.positive_scales ||
 			nextProps.negative_scales !== this.props.negative_scales ||
 			nextProps.positive_colors !== this.props.positive_colors ||
-			nextProps.negative_colors !== this.props.negative_colors 
+      nextProps.negative_colors !== this.props.negative_colors ||
+      nextState.chartWidth !== this.state.chartWidth
       }
 
       public componentDidUpdate(nextProps: ID3ChordProps, nextState: ID3ChordState){
@@ -173,8 +177,10 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 ; // +10
 
       let MARGIN = {TOP: marginResponsive, RIGHT: marginResponsive, BOTTOM: marginResponsive, LEFT: marginResponsive}
-      let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
-      let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
+		  let WIDTH = this.state.chartWidth > this.props.width? this.props.width - MARGIN.LEFT - MARGIN.RIGHT : this.state.chartWidth - MARGIN.LEFT - MARGIN.RIGHT;
+      // let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
+      let HEIGHT = WIDTH + MARGIN.LEFT + MARGIN.RIGHT - MARGIN.TOP - MARGIN.BOTTOM;
+      // let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
 
       const colorsBlue = ["#92c5de", "#2166ac"]
       const colorsRed = ["#b2182b", "#f4a582"]
@@ -508,7 +514,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               + "translate(" + (outerRadius + 10) + ")"
               + (d.angle > Math.PI ? "rotate(180)" : "");
             })
-            .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px" )
+            .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "11px" : "13px" )
+            // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px" )
             .attr("font-family", "Open Sans")
             .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing ==="absolute" ?
             d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
@@ -529,7 +536,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               + "translate(" + (outerRadius + 10) + ")"
               + (d.angle > Math.PI ? "rotate(180)" : "");
             })
-            .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px" )
+            .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "10px" : "13px" )
+            // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px" )
             .attr("font-family", "Open Sans")
             .style("font-weight", "bold")
             .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((d.value + Number.EPSILON) * 1000) / 1000 : Math.round((d.value + Number.EPSILON) * 1000) / 1000+ " : " ; });
@@ -694,7 +702,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px")
+        .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "11px" : "13px")
+        // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px")
         .attr("font-family", "Open Sans")
         .attr("dx", function(d:any) { return labelText === 0 ? "" :  dataProcessing ==="absolute" ?
         d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
@@ -715,7 +724,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
+        .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "10px" : "13px")
+        // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
         .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((d.value + Number.EPSILON) * 1000) / 1000 : Math.round((d.value + Number.EPSILON) * 1000) / 1000 + " : " ; });
@@ -926,7 +936,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" :  "13px" )
+        .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "11px" :  "13px" )
+        // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" :  "13px" )
         .attr("font-family", "Open Sans")
         .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing === "absolute" ?
         d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
@@ -948,7 +959,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
           + "translate(" + (outerRadius + 10) + ")"
           + (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
+        .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "10px" : "13px")
+        // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
         .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000  : Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000  + " : " ; });
@@ -1091,96 +1103,159 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       return data;
     }
 
+    private calculateCurrentThresholdWidth(): number {
+      let [min, max] = [this.props.width/2, this.props.width];
+      // min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+      // max = Math.round((max + Number.EPSILON) * 1000) / 1000;
+      let chartWidth: number = this.state.chartWidth;
+      if (this.state.chartWidth == 0) chartWidth = min;
+      if (this.state.chartWidth < min) chartWidth = min;
+      if (this.state.chartWidth > max) chartWidth = max;
+      return chartWidth;
+    }
+
     public render() {
 		  const {t}:any = this.props ;
       const { width, height } = this.props;
-        let [min, max] = this.getMinMax2();
-        max = max-1;
+      let [min, max] = this.getMinMax2();
+      max = max-1;
 
-        let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
-        let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
-                // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
-        let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
-        let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
+      let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
+      let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
+      // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
+      let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
+      let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
       let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
+      let chartWidth: number = this.calculateCurrentThresholdWidth();
 
-        return (
-        <div className="p-grid">
+      return (
+      <div className="p-grid">
+        <Accordion activeIndex={0}>
+					<AccordionTab header={t('geodataView.controlElements')}>
+						<div className="p-grid p-component">
+              <div className="p-col-2 noprint rdBtnContainer">
+								{t('charts.scaleWidth')}
+							</div>
+							<div className="p-col-10 noprint">
+								<div className={`banner  ''}`}>
+									{
+										<Slider
+											// disabled={this.state.checkedNoFilter   ? true : false}
+											min={width/2}
+											max={width}
+											value={chartWidth}
+											orientation="horizontal"
+											onChange={(e) => this.setState({  chartWidth: e.value as number })}
+										/>
+									}
+								</div>
+							</div>
 
-          <div className="p-col-6 noprint">
-            <Checkbox
-              name = "saldiChord"
-              id	= "saldiChord"
-              onChange={(e: { value: any, checked: boolean }) => this.setState({checked: e.checked})}
-              checked={this.state.checked}
-              disabled= {(this.props.theme === 'Saldi') ? false : true}
-            />
-            <label className="p-checkbox-label">{t('charts.reverse')}</label>
-            {/* <label className="p-checkbox-label">Umgekehrt filtern</label> */}
-          </div>
-          <div className="p-col-6 noprint">
-            <Checkbox
-              name = "saldiChordNoFilter"
-              id	= "saldiChordNoFilter"
-              onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
-              checked={this.state.checkedNoFilter}
-            />
-            <label className="p-checkbox-label">{t('charts.nofilter')}</label>
-          </div>
-
-          <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
-            <div className="p-col-10 noprint">
-            <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
-
-                {
+              <div className="p-col-2 noprint rdBtnContainer">
+								{t('charts.dataFilter')}
+							</div>
+              <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
+              <div className="p-col-8 noprint">
+                <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
+                  {
                     this.props.theme == "Saldi" ?
                     <Slider disabled={this.state.checkedNoFilter ? true : false} min={min} max={max} value={this.state.checkedNoFilter ? [min, max] :rangeValues } onChange={(e) => this.state.checkedNoFilter ? this.setState({rangeValues: [min, max  ]as [number, number]}) : this.setState({rangeValues: e.value as [number, number]})} range={true}  />
                     :
                     <Slider disabled={this.state.checkedNoFilter ? true : false} min={min} max={max} value={this.state.checkedNoFilter ? min : threshold} orientation="horizontal" onChange={(e) => this.state.checkedNoFilter ? this.setState({  threshold: min as number}) : this.setState({  threshold: e.value as number}) }/>
-                }
-          </div>
-          </div>
-            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
+                  }
+                </div>
+              </div>
+              <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
+              
+              
+              
               {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-              <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?  this.state.checked === true?
-          t('charts.sliderSaldi1') + (wanderungsRate ? min/1000 : min) + t('charts.sliderSaldi2') :
-          // 'Anzeige Werte in Bereich: ab ' + (wanderungsRate ? min/1000 : min) + ' bis ' :
-          t('charts.sliderSaldi1') : t('charts.slider')}
-          {/* 'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '} */}
+              <div className="p-col-2 noprint rdBtnContainer">
+                {this.props.theme == "Saldi" ?  this.state.checked === true?
+                t('charts.sliderSaldi1') + (wanderungsRate ? min/1000 : min) + t('charts.sliderSaldi2') :
+                // 'Anzeige Werte in Bereich: ab ' + (wanderungsRate ? min/1000 : min) + ' bis ' :
+                t('charts.sliderSaldi1') : t('charts.slider')}
+                {/* 'Anzeige Werte in Bereich: ab ' : 'Anzeige ab Wert: '} */}
+              </div>
+            <div className="p-col-2 noprint">
+              {this.props.theme == "Saldi" ?
+                <InputText value={wanderungsRate ? rangeValue1/1000 : rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
+                : <InputText value={ this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min: wanderungsRate ? threshold/1000 : threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
+              }
             </div>
-            <div className="p-col-2 noprint">{this.props.theme == "Saldi" ?
-             <InputText value={wanderungsRate ? rangeValue1/1000 : rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
-             : <InputText value={ this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min: wanderungsRate ? threshold/1000 : threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
-            }
-             </div>
-             <div className="p-col-2 noprint">{this.props.theme == "Saldi" ? this.state.checked === true?
-            t('charts.sliderSaldi3') : t('charts.sliderSaldi2') : ' '} </div>
-            {/* 'und ab ' : 'bis ' : ' '} </div> */}
+            <div className="p-col-2 noprint rdBtnContainer">{this.props.theme == "Saldi" ? this.state.checked === true?
+              t('charts.sliderSaldi3') : t('charts.sliderSaldi2') : ' '} 
+            </div>
+              {/* 'und ab ' : 'bis ' : ' '} </div> */}
             <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
              <InputText  value={wanderungsRate ? rangeValue2/1000 : rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
-             </div>
-             <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
-            'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
-            <div className="p-col-12 p-md-12 p-lg-9">
-               <Legend basedata={this.props.basedata} showCenter='' yearsSelected={this.props.yearsSelected} />
             </div>
-        <div className="p-col-12 p-md-12 p-lg-3 noprint">
-          <Checkbox id = "values" name = "values"
-            onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
-            checked={this.state.checkedLabel}
-          />
-          <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>{t('charts.values')}</label>
-          {/* <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Werte anzeigen</label> */}
-        </div>
-        <div className="p-col-4 noprint"> <RadioButton inputId='s1' value='alphabetical' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='s2' value='ascending' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='s3' value='descending' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
-				 <div className="p-col-12" >
-                <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
+            <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
+            'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
+
+            <div className="p-col-2 noprint"> </div>
+
+            <div className="p-grid p-col-3 p-dir-col">		
+            {/* <div className="p-col-6 noprint"> */}
+					    <div className="p-col rdBtnContainer">
+                <Checkbox
+                  name = "saldiChord"
+                  id	= "saldiChord"
+                  onChange={(e: { value: any, checked: boolean }) => this.setState({checked: e.checked})}
+                  checked={this.state.checked}
+                  disabled= {(this.props.theme === 'Saldi') ? false : true}
+                />
+                <label className="p-checkbox-label">{t('charts.reverse')}</label>
+                {/* <label className="p-checkbox-label">Umgekehrt filtern</label> */}
+              </div>
+          {/* <div className="p-col-6 noprint"> */}
+					    <div className="p-col rdBtnContainer">
+                <Checkbox
+                  name = "saldiChordNoFilter"
+                  id	= "saldiChordNoFilter"
+                  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
+                  checked={this.state.checkedNoFilter}
+                />
+                <label className="p-checkbox-label">{t('charts.nofilter')}</label>
+              </div>
+            
+					    <div className="p-col rdBtnContainer">
+              {/* <div className="p-col-12 p-md-12 p-lg-3 noprint"> */}
+                <Checkbox id = "values" name = "values"
+                  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
+                  checked={this.state.checkedLabel}
+                />
+              <label className="p-checkbox-label">{t('charts.values')}</label>
+              {/* <label className="p-checkbox-label" style={{ font: '14px Open Sans' }}>Werte anzeigen</label> */}
+              </div>
+            </div>
+
+            <div className="p-grid p-col-3  p-dir-col">		
+				      <div className="p-col rdBtnContainer">
+				 	      {t('charts.sort')}
+				      </div>
+				      <div className="p-col rdBtnContainer">
+              {/* <div className="p-col-4 noprint">  */}
+              <RadioButton inputId='s1' value='alphabetical' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
+				      <div className="p-col rdBtnContainer">
+              {/* <div className="p-col-4 noprint">  */}
+              <RadioButton inputId='s2' value='ascending' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
+				      <div className="p-col rdBtnContainer">
+              {/* <div className="p-col-4 noprint">  */}
+              <RadioButton inputId='s3' value='descending' name='sortChord' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
+            </div>
           </div>
-           </div>
-        );
-      }
+        </AccordionTab>
+			</Accordion>
+      <div className="p-col-12 p-md-12 p-lg-9">
+        <Legend basedata={this.props.basedata} showCenter='' yearsSelected={this.props.yearsSelected} />
+      </div>
+      <div className="p-col-12" >
+        <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
+      </div>
+    </div>
+    );
+  }
 
 
 }

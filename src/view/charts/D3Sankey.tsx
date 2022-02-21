@@ -3,6 +3,7 @@ import * as React from "react";
 import {Slider as Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
 import { RadioButton } from "primereact/radiobutton";
+import { Accordion, AccordionTab } from 'primereact/accordion';
 import { InputText } from 'primereact/inputtext';
 import * as d3 from 'd3';
 import * as d3Sankey from 'd3-sankey';
@@ -45,7 +46,8 @@ interface ID3SankeyState
   checked: boolean,
   checkedLabel: boolean,
   checkedNoFilter: boolean,
-  sort: string
+  sort: string,
+  chartWidth: number;
 }
 
 interface SNodeExtra {
@@ -89,7 +91,8 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
       checked: false,
       checkedLabel: false,
       checkedNoFilter: false,
-      sort: "alphabetical"
+      sort: "alphabetical",
+      chartWidth: this.props.width,
     }
   }
 
@@ -120,7 +123,9 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
         alphabetical ?  this.props.data.sort(function(x, y){
           return d3.ascending (x.Von, y.Von );}) : this.props.data ;
         }
-         let normalizedData:ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.threshold   , this.props.data); //   
+
+      console.log("this.props.data DidMount: " + JSON.stringify(this.props.data));
+      let normalizedData:ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.threshold   , this.props.data); //   
 
       let data1 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert) >= min   , this.props.data) ;
       let data2 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.rangeValues[1] && (wanderungsRate ? item.Wert*1000 : item.Wert) <= max, this.props.data);
@@ -128,17 +133,31 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
       let dataFilterLarge :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1]   , this.props.data);
       let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
       let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
+      console.log("this.props.data DidMount FILTERED: " + JSON.stringify(data));
 
       if (data) {this.drawSankeyChart(data, this.props.theme)}
       }
 
       public shouldComponentUpdate (nextProps: ID3SankeyProps, nextState: ID3SankeyState) {
 
-        return  nextProps.data !== null || nextProps.data !== undefined  || nextProps.data !== this.props.data || nextProps.theme !== this.props.theme || nextState.threshold !==this.state.threshold  || nextState.rangeValues !==this.state.rangeValues || nextState.checkedNoFilter !== this.state.checkedNoFilter || nextState.checked !== this.state.checked || nextProps.width !== this.props.width || nextProps.dataProcessing !== this.props.dataProcessing || nextState.sort !== this.state.sort
-        // || nextProps.height !== this.props.height
+        return  nextProps.data !== null || 
+          nextProps.data !== undefined  || 
+          nextProps.data !== this.props.data || 
+          nextProps.theme !== this.props.theme || 
+          nextState.threshold !==this.state.threshold  || 
+          nextState.rangeValues !==this.state.rangeValues || 
+          nextState.checkedNoFilter !== this.state.checkedNoFilter || 
+          nextState.checked !== this.state.checked || 
+          nextProps.width !== this.props.width || 
+          nextProps.dataProcessing !== this.props.dataProcessing || 
+          nextState.sort !== this.state.sort ||
+          nextState.chartWidth !== this.state.chartWidth
+          // || nextProps.height !== this.props.height
         }
 
         public componentDidUpdate(nextProps: ID3SankeyProps, nextState: ID3SankeyState){
+          console.log("this.props.data DidUpdate: " + JSON.stringify(this.props.data));
+
           const [min, max] = this.getMinMax2();
           let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
     
@@ -173,13 +192,14 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             this.setState({threshold: min});
          }
 
-let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.Wert*1000 : item.Wert)   >= threshold   , this.props.data);
+          let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.Wert*1000 : item.Wert)   >= threshold   , this.props.data);
           let data1 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  <= rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert)  >= min   , this.props.data);
           let data2 :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  >= rangeValues[1] && (wanderungsRate ? item.Wert*1000 : item.Wert)  <= max, this.props.data);
           let dataFilterSmall: ID3SankeyItem[] = R.concat(data1, data2);
           let dataFilterLarge :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  >= rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert)  <= rangeValues[1]   , this.props.data);
           let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
           let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
+          console.log("this.props.data DidUpdate FILTERED: " + JSON.stringify(data));
 
           this.removePreviousChart(this.svgID);
           this.drawSankeyChart(data, this.props.theme);
@@ -216,7 +236,8 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
           // let marginResponsivePrevious : number =  this.props.width < 600 ? 35 : 100;
 
           let MARGIN = {TOP: 10, RIGHT: marginResponsive, BOTTOM: 10, LEFT: marginResponsive}
-          let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
+          let WIDTH = this.state.chartWidth > this.props.width? this.props.width - MARGIN.LEFT - MARGIN.RIGHT : this.state.chartWidth - MARGIN.LEFT - MARGIN.RIGHT;
+          // let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
           let HEIGHT = this.heightResponsive - MARGIN.TOP - MARGIN.BOTTOM;
 
           // const colorsBlue = ["#92c5de", "#2166ac","#4393c3"]
@@ -260,6 +281,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
              }
 
           let values =data.map(d=> d.Wert);
+          console.log("values: " + values);
           let indx = checkIndx(von, nach)
 
           let maxIdx: any = d3.max(data, (d,i) => { if (d) return i})
@@ -280,11 +302,11 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
           // let colorsNach:string[] = colorsFunction(von.length, colorsRed)
 
           if (theme === "Von")
-          {
+          { 
             let nodesAr = data.map((d,i) => ({
               nodeId: i,
               name: d["Nach"],
-              negative: +d.Wert
+              negative: d.Wert === null ? 0 : +d.Wert
             }))
             let nameSource = von[0]
             let valueSource = ()=> {
@@ -303,7 +325,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
             let nodesArPlus = data.map((d,i) => ({
               nodeId: i,
               name: d["Nach"],
-              negative: +d.Wert
+              negative: d.Wert === null ? 0 : +d.Wert
             }))
 
             let nodeVonZero = {
@@ -313,7 +335,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
             }
 
             nodesArPlus.push(nodeVon, nodeVonZero)
-
+            console.log("nodesArPlus: " + JSON.stringify(nodesArPlus));
 
             let vonValues = data.map( d => +d.Wert);
             let vonSum = vonValues.reduce(function(a, b) { return a + b; }, 0);
@@ -339,6 +361,7 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
             let linksAr = linksF(data);
             let linksArPlus = linksF(data);
             linksArPlus.push(linkVonZero);
+            console.log("linksArPlus: " + JSON.stringify(linksArPlus));
 
             const dataSankey:DAG = (indx === undefined)? {
               "nodes" : nodesArPlus,
@@ -386,8 +409,8 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
               .data(dataSankey.links)
               .enter().append("path")
               .attr("d", d3Sankey.sankeyLinkHorizontal())
-              .attr("stroke-width", function (d: any) { return d.negative === 0 ? 0 : Math.max(1, d.width); })
-              .style("stroke", function(d:any,i:number){ return d.negative === 0 ? bordercolor : hexcolor[i]})
+              .attr("stroke-width", function (d: any) { return d.negative === 0 || d .negative === null ? 0 : Math.max(1, d.width); })
+              .style("stroke", function(d:any,i:number){ return d.negative === 0 || d .negative === null ? bordercolor : hexcolor[i]})
               // .style("stroke", colorsBlue[2])
               .on('mouseover', function() {
                   d3.select(d3.event.currentTarget).style('stroke-opacity', 0.9);
@@ -404,11 +427,11 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
               .enter().append("g");
 
             node.append("rect")
-              .attr("x", function (d: any) { return d.x0; })
-              .attr("y", function (d: any) { return d.y0; })
-              .attr("height", function (d: any) { return d.y1 - d.y0 === 0 ? 2 : d.y1 - d.y0; })
+              .attr("x", function (d: any) {  return d.x0; })
+              .attr("y", function (d: any) { console.log("d.y0 = " + (d.y0) + " index: " + d.index + " d.y1 = " + d.y1 ); return d.y0; })
+              .attr("height", function (d: any) { console.log("d.y1 - d.y0 = " + (d.y1 - d.y0) + " index: " + d.index );return d.y1 - d.y0 === 0 ? 2 : d.y1 - d.y0; })
               .attr("width", function (d: any) { return d.x1 - d.x0; })
-              .attr("fill", function (d: any) { return hexcolorAdd[d.index] })
+              .attr("fill", function (d: any) {console.log("hexcolorAdd[d.index] " + hexcolorAdd[d.index] + " index: " + d.index ); return hexcolorAdd[d.index] })
               // .attr("fill", function (d: any) { return colorsVon[d.index] })
               .style("stroke", function(d:any, i:number) { let col:any = d3.rgb(hexcolor[i]); return col.darker(); })
               // .style("stroke", function(d:any) { let col:any = d3.rgb(colorsBlue[1]); return col.darker(); })
@@ -981,6 +1004,16 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
     if (this.state.rangeValues[0] > this.state.rangeValues[1]) rangeValues[1] = max , rangeValues[0] = min;
     return rangeValues;
   }
+  private calculateCurrentThresholdWidth(): number {
+    let [min, max] = [this.props.width/2, this.props.width];
+    // min = Math.round((min + Number.EPSILON) * 1000) / 1000;
+    // max = Math.round((max + Number.EPSILON) * 1000) / 1000;
+    let chartWidth: number = this.state.chartWidth;
+    if (this.state.chartWidth == 0) chartWidth = min;
+    if (this.state.chartWidth < min) chartWidth = min;
+    if (this.state.chartWidth > max) chartWidth = max;
+    return chartWidth;
+  }
 
   public render() {
     const { width, height } = this.props;
@@ -993,33 +1026,40 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
     let rangeValue2: number = this.state.checkedNoFilter ? max : rangeValues[1];
     let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 		const {t}:any = this.props ;
+    let chartWidth: number = this.calculateCurrentThresholdWidth();
 
     return (
       <div className="p-grid">
+        <Accordion activeIndex={0}>
+					<AccordionTab header={t('geodataView.controlElements')}>
+						<div className="p-grid p-component">
+              <div className="p-col-2 noprint rdBtnContainer">
+								{t('charts.scaleWidth')}
+							</div>
+							<div className="p-col-10 noprint">
+								<div className={`banner  ''}`}>
+									{
+										<Slider
+											// disabled={this.state.checkedNoFilter   ? true : false}
+											min={width/2}
+											max={width}
+											value={chartWidth}
+											orientation="horizontal"
+											onChange={(e) => this.setState({  chartWidth: e.value as number })}
+										/>
+									}
+								</div>
+							</div>
 
-        <div className="p-col-6 noprint">
-          <Checkbox
-            onChange={(e: { value: any, checked: boolean }) => this.setState({checked: e.checked})}
-            checked={this.state.checked}
-            disabled= {(this.props.theme === 'Saldi') ? false : true}
-          />
-          <label className="p-checkbox-label">{t('charts.reverse')}</label>
-          </div>
-          <div className="p-col-6 noprint">
-            <Checkbox
-              name = "saldiChordNoFilter"
-              id	= "saldiChordNoFilter"
-              onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
-              checked={this.state.checkedNoFilter}
-            />
-            <label className="p-checkbox-label">{t('charts.nofilter')}</label>
-          </div>
+              <div className="p-col-2 noprint rdBtnContainer">
+								{t('charts.dataFilter')}
+							</div>
 
+       
 
-            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
-            <div className="p-col-10 noprint">
-        <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
-
+            <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
+            <div className="p-col-8 noprint">
+              <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
                 {
                     this.props.theme == "Saldi" ?
                     <Slider
@@ -1038,64 +1078,100 @@ let normalizedData:ID3SankeyItem[] = R.filter((item) =>  (wanderungsRate ? item.
                     orientation="horizontal"
                     onChange={(e) => this.state.checkedNoFilter  ? this.setState({  threshold: min as number}) : this.setState({ threshold: e.value as number})}/>
                 }
-                </div>
-                </div>
-            <div className="p-col-1 noprint" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
-            {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
-        <div className="p-col-2 noprint">
-          {this.props.theme == "Saldi" ? this.state.checked ?
-            t('charts.sliderSaldi1') + (wanderungsRate ? min/1000 : min) +t('charts.sliderSaldi2')  :
-            t('charts.sliderSaldi1')  : t('charts.slider') }
+              </div>
             </div>
-            <div className="p-col-2 noprint">
+            <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
+            {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
+        
+            <div className="p-col-2 noprint rdBtnContainer">
+              {this.props.theme == "Saldi" ? this.state.checked ?
+                t('charts.sliderSaldi1') + (wanderungsRate ? min/1000 : min) +t('charts.sliderSaldi2')  :
+                t('charts.sliderSaldi1')  : t('charts.slider') }
+            </div>
+            <div className="p-col-2 noprint ">
               {this.props.theme == "Saldi" ?
-             <InputText
-              value={wanderungsRate ? rangeValue1/1000 : rangeValue1 }
-              style={{ width: '6em' }}
-              type='number'
-              onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
-             />
-            : <InputText
-              value={this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min : wanderungsRate ? threshold/1000 :threshold}
-              style={{ width: '10em' }}
-              type='number'
-              onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
-            />
+                <InputText
+                  value={wanderungsRate ? rangeValue1/1000 : rangeValue1 }
+                  style={{ width: '6em' }}
+                  type='number'
+                  onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
+                />
+                : <InputText
+                  value={this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min : wanderungsRate ? threshold/1000 :threshold}
+                  style={{ width: '10em' }}
+                  type='number'
+                  onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
+                />
              }
-             </div>
-            <div className="p-col-2 noprint">{this.props.theme == "Saldi" ? this.state.checked === true?
+            </div>
+            <div className="p-col-2 noprint rdBtnContainer ">{this.props.theme == "Saldi" ? this.state.checked === true?
               t('charts.sliderSaldi3')  : t('charts.sliderSaldi2')  : ' '}
             </div>
-             <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
+            <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
               <InputText
                 value={wanderungsRate ? rangeValue2/1000 : rangeValue2}
                 style={{ width: '6em' }}
                 type='number'
                 onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
               /> :
-             <div className="p-col-2 p-offset-1"></div>}
-             </div>
-             <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
-            'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
-        <div className="p-col-12 p-md-12 p-lg-9">
-               <Legend basedata={this.props.basedata} showCenter='' yearsSelected={this.props.yearsSelected} />
+            <div className="p-col-2 p-offset-1"></div>}
             </div>
-        <div className="p-col-12 p-md-12 p-lg-3 noprint">
-          <Checkbox
-            onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
-            checked={this.state.checkedLabel}
-            // disabled= {(this.props.theme === 'Saldi') ? false : true}
-          />
-          <label className="p-checkbox-label">{t('charts.values')}</label>
+            <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
+              'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
+            
+            <div className="p-grid p-col-3 p-dir-col">		
+            {/* <div className="p-col-6 noprint"> */}
+					    <div className="p-col rdBtnContainer">
+                <Checkbox
+                  onChange={(e: { value: any, checked: boolean }) => this.setState({checked: e.checked})}
+                  checked={this.state.checked}
+                  disabled= {(this.props.theme === 'Saldi') ? false : true}
+                />
+                <label className="p-checkbox-label">{t('charts.reverse')}</label>
+              </div>
+              {/* <div className="p-col-6 noprint"> */}
+					    <div className="p-col rdBtnContainer">
+                <Checkbox
+                  name = "saldiChordNoFilter"
+                  id	= "saldiChordNoFilter"
+                  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNoFilter: e.checked})}
+                  checked={this.state.checkedNoFilter}
+                />
+                <label className="p-checkbox-label">{t('charts.nofilter')}</label>
+              </div>
+            
+              {/* <div className="p-col-12 p-md-12 p-lg-3 noprint"> */}
+					    <div className="p-col rdBtnContainer">
+                <Checkbox
+                  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedLabel: e.checked})}
+                  checked={this.state.checkedLabel}
+                  // disabled= {(this.props.theme === 'Saldi') ? false : true}
+                />
+              <label className="p-checkbox-label">{t('charts.values')}</label>
+            </div>
+          </div>
+
+          <div className="p-grid p-col-3  p-dir-col">		
+				    <div className="p-col rdBtnContainer">
+            {/* <div className="p-col-4 noprint">  */}
+              <RadioButton inputId='s1' value='alphabetical' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
+				    <div className="p-col rdBtnContainer">
+            {/* <div className="p-col-4 noprint">  */}
+              <RadioButton inputId='s2' value='ascending' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
+				    <div className="p-col rdBtnContainer">
+            {/* <div className="p-col-4 noprint">  */}
+              <RadioButton inputId='s3' value='descending' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
+          </div>
         </div>
-        <div className="p-col-4 noprint"> <RadioButton inputId='s1' value='alphabetical' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})}  checked={this.state.sort === 'alphabetical'}  />  <label className="p-checkbox-label">{t('charts.alphabetical')}</label> </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='s2' value='ascending' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'ascending'} /> <label className="p-checkbox-label">{t('charts.ascending')}</label>  </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='s3' value='descending' name='sortSankey' onChange={(e: { value: string, checked: boolean }) => this.setState({sort: e.value})} checked={this.state.sort === 'descending'} /> <label className="p-checkbox-label">{t('charts.descending')}</label> </div>
-				
-        <div className="p-col-12" >
-                <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
-        </div>
-         </div>
+      </AccordionTab>
+		</Accordion>
+    <div className="p-col-12 p-md-12 p-lg-9">
+      <Legend basedata={this.props.basedata} showCenter='' yearsSelected={this.props.yearsSelected} />
+    </div>
+    <div className="p-col-12" >
+      <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
+    </div>
+  </div>
 
       );
     }

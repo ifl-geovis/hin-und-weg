@@ -20,7 +20,7 @@ export interface ID3ChordViewProps extends WithNamespaces
 }
 interface ID3ChordViewState
 {
-  scale: string,
+//   scale: string,
 }
 
 // export default 
@@ -31,7 +31,7 @@ class D3ChordView extends React.Component<ID3ChordViewProps, ID3ChordViewState>
 	{
 		super(props);
 		this.state = {
-			scale: 'width100',
+			// scale: 'width100',
 		}
 		// this.onChartTypeSelect = this.onChartTypeSelect.bind(this);
 	 }
@@ -47,9 +47,9 @@ class D3ChordView extends React.Component<ID3ChordViewProps, ID3ChordViewState>
 		const negative_colors = classification.getNegativeColors();
 		return (
 			<div className="p-grid">
-				<div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleChord' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">{t('charts.scale100')}</label> </div>
+				{/* <div className="p-col-4 noprint"> <RadioButton inputId='rb1' value='width100' name='scaleChord' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})}  checked={this.state.scale === 'width100'}  />  <label className="p-checkbox-label">{t('charts.scale100')}</label> </div>
 				<div className="p-col-4 noprint"> <RadioButton inputId='rb2' value='width75' name='scaleChord' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width75'} /> <label className="p-checkbox-label">{t('charts.scale75')}</label>  </div>
-				<div className="p-col-4 noprint"> <RadioButton inputId='rb3' value='width50' name='scaleChord' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width50'} /> <label className="p-checkbox-label">{t('charts.scale50')}</label> </div>
+				<div className="p-col-4 noprint"> <RadioButton inputId='rb3' value='width50' name='scaleChord' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width50'} /> <label className="p-checkbox-label">{t('charts.scale50')}</label> </div> */}
 				{/* <div className="p-col-3"> <RadioButton inputId='rb4' value='width25' name='scaleChord' onChange={(e: { value: string, checked: boolean }) => this.setState({scale: e.value})} checked={this.state.scale === 'width25'} /> <label className="p-checkbox-label">Skalierung 25%</label> </div> */}
 
 				<div id="chartDivChord" className="p-col-12">
@@ -57,8 +57,10 @@ class D3ChordView extends React.Component<ID3ChordViewProps, ID3ChordViewState>
 								{ ({ width, height }) =>
 						<D3Chord basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.props.vizID}
 						yearsSelected={this.props.yearsSelected}
-							width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
-							height={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
+							width={ width}
+							// width={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
+							height={ width}
+							// height={this.state.scale === "width100" ? width : this.state.scale === "width75" ? width*0.75 : this.state.scale === "width50" ? width*0.5 : this.state.scale === "width25" ? width*0.25 : width}
 							data={this.props.items} theme={this.props.theme}
 							positive_colors={positive_colors} negative_colors={negative_colors} positive_scales={positive_scales} negative_scales={negative_scales} />
 							}
