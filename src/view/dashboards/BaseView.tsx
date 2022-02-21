@@ -424,9 +424,10 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	private setClassCount(positive: boolean, count: string)
 	{
+		const {t}:any = this.props ;
 		let optimal = this.state.basedata.getClassification().calculateSturgesRule(positive);
 		let result = count.substring(0, 1);
-		if ((this.props.geodata != null) && (this.state.basedata.getYears().length > 0) && (optimal != parseInt(result, 10)) && (!this.state.classcountset)) MessageList.getMessageList().addMessage('Die empfohlene Anzahl Klassen ist ' + optimal + '. Zu viele Klassen können eventuell zu gleichen Werten oder NaN bei Klassengrenzen führen.', 'warning');
+		if ((this.props.geodata != null) && (this.state.basedata.getYears().length > 0) && (optimal != parseInt(result, 10)) && (!this.state.classcountset)) MessageList.getMessageList().addMessage(t('baseView.warningNumClasses1') + optimal + t('baseView.warningNumClasses2') , 'warning');
 		this.setState({ classcountset: true });
 		if (positive) this.setState({ positiveClasses: result });
 		else this.setState({ negativeClasses: result });

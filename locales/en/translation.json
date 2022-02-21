@@ -133,7 +133,9 @@
         "polygon": "Reference Area",
         "theme": "Theme",
         "selection": "Select",
-        "representation": "Represent"
+        "representation": "Represent",
+        "warningNumClasses1": "The recommended number of classes is ",
+        "warningNumClasses2": ". Too many classes may result in equal values or NaN at class breaks."
     },
     "themes":{
         "from": "From",
@@ -252,11 +254,13 @@
 		"warnText7": "Attention, the selected reference area is zero. ",
         "warnText8": "Please select the reference area. ",
         "value": "Value",
-        "index": "Index"
+        "index": "Index",
+        "yearTitle": " year "
+
     },
     "statistics":{
         "title1": "Statistics for",
-        "title2": " in the years ",
+        "title2": " in the years  ",
         "mean": "Mean",
         "median": "Median",
         "maxIncoming": "Maximum incoming flow:",

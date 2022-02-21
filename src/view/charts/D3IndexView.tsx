@@ -70,7 +70,8 @@ class D3IndexView extends React.Component<ID3IndexViewProps, ID3IndexViewState>
 		else if (this.state.type === "location") selector = this.createRegionSelector();
 		else selector = this.createYearSelector();
 		let view = this.createView(data);
-		let refText : string = this.state.type === "location" ? this.state.referenceLocation : " Jahr " + this.state.referenceYear;
+		let refText : string = this.state.type === "location" ? this.state.referenceLocation : t('index.yearTitle') + this.state.referenceYear;
+		// let refText : string = this.state.type === "location" ? this.state.referenceLocation : " Jahr " + this.state.referenceYear;
 		let themeTitel = this.props.theme === "Von" ? t('index.themeFrom') : this.props.theme === "Nach" ? t('index.themeTo') : this.props.theme === "Saldi" ? t('index.themeSaldi') : "";
 		// let themeTitel = this.props.theme === "Von" ? "Wegzüge aus" : this.props.theme === "Nach" ? "Zuzüge nach" : this.props.theme === "Saldi" ? "Saldi für" : "";
 		let typesRender = [

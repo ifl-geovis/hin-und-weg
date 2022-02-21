@@ -161,7 +161,8 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											optionLabel="label"
 											options={OfflineMaps.getCurrentOfflineMaps().getData()}
 											onChange={this.onOfflineMapChange}
-											placeholder={this.state.offlineMap.label === "Offline Map auswählen" ? t('geodataView.offlineMap') : this.state.offlineMap.label === "keine" ? t('geodataView.none') :this.state.offlineMap.label}
+											placeholder={this.state.offlineMap.label === "Offline Map auswählen" ? t('geodataView.offlineMap') : this.state.offlineMap.label === "Keine" ? t('geodataView.none') : this.state.offlineMap.label}
+											// placeholder={this.state.offlineMap.label === "Offline Map auswählen" ? t('geodataView.offlineMap') : this.state.offlineMap.label === "keine" ? t('geodataView.none') :this.state.offlineMap.label}
 											disabled={OfflineMaps.getCurrentOfflineMaps().getData().length - 1 === 0}
 										/>
 									</div>

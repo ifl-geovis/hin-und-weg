@@ -78,8 +78,10 @@ class StatisticsView extends React.Component<IStatisticsViewProps>
 		}
 		let mode: number = this.determineMode();
 		let title_text = t('statistics.title1');
+		let themeLabel = this.props.theme === "Von" ? t('themes.from') : this.props.theme === "Nach" ? t('themes.to') : this.props.theme === "Saldi" ? t('themes.saldi') : "";
 		// let title_text = "Statistik für";
-		if (this.props.theme) title_text += " " + this.props.theme;
+		if (this.props.theme) title_text += " " + themeLabel;
+		// if (this.props.theme) title_text += " " + this.props.theme;
 		if (this.props.location) title_text += " " + this.props.location;
 		if (this.props.yearsSelected) {
 			title_text += t('statistics.title2');

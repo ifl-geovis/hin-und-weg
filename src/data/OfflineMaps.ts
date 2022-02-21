@@ -1,6 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 import Settings from '../settings';
+// import { withNamespaces,WithNamespaces } from 'react-i18next';
+// import i18n from './../i18n/i18nClient';
+// import { TFunction } from "i18next";
+import i18next from 'i18next';
 
 export interface IOfflineMaps {
 	label: string;
@@ -16,7 +20,8 @@ export default class OfflineMaps {
 
 	private offlineMaps: Array<IOfflineMaps> = [
 		{
-			'label': 'Keine',
+			'label': i18next.t('geodataView.none'),
+			// 'label': 'Keine',
 			'file': '',
 			'bounds': [],
 		},
@@ -74,7 +79,8 @@ export default class OfflineMaps {
 		try {
 			this.offlineMaps = [
 				{
-					'label': 'Keine',
+					'label': i18next.t('geodataView.none'),
+					// 'label': 'Keine',
 					'file': '',
 					'bounds': [],
 				},

@@ -133,7 +133,9 @@
         "polygon": "Bezugsfläche",
         "theme": "Thema",
         "selection": "Auswahl",
-        "representation": "Darstellung"
+        "representation": "Darstellung",
+        "warningNumClasses1": "Die empfohlene Anzahl Klassen ist ",
+        "warningNumClasses2": ". Zu viele Klassen können eventuell zu gleichen Werten oder NaN bei Klassengrenzen führen."
     },
     "themes":{
         "from": "Von",
@@ -201,7 +203,8 @@
         "offlineMap": "Offline Map auswählen",
         "arrowsFilter1" : "Es werden alle Werte über ",
         "arrowsFilter2" : " angezeigt.",
-        "none": "keine"
+        "none": "Keine",
+        "selectOffline": "Offline Map auswählen"
     },
     "table":{
         "value": "Wert",
@@ -252,7 +255,8 @@
 		"warnText7": "Achtung, die gewählte Bezugsfläche ist Null. ",
         "warnText8": "Bitte wählen Sie die Bezugsfläche aus. ",
         "value": "Wert",
-        "index": "Index"
+        "index": "Index",
+        "yearTitle": " Jahr "
     },
     "statistics":{
         "title1": "Statistik für",
