@@ -103,6 +103,17 @@ class D3Timeline extends React.Component<ITimelineD3Props>
 		let timelinePositiveColors = classification.getZeitreihenPositiveColors();
 		let timelineNegativeColors = classification.getZeitreihenNegativeColors();
 
+		const standardizeOutput = (value: number): string =>
+		{
+			if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+			if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+			return value.toFixed(3).replace("\.", ",");
+		}
+		const standardizeOutputString = (value: string): string =>
+        {
+          if (i18n.language == "en") return value.replace(",", ".");
+          return value.replace("\.", ",");
+        }
 		const wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 		const max: any = d3.max(data, d => { if (d.Zuzug) return d.Zuzug})
 		const min: any = d3.min(data, d => { if (d.Wegzug) return d.Wegzug})
@@ -270,6 +281,9 @@ class D3Timeline extends React.Component<ITimelineD3Props>
 			const xAxis = d3.axisBottom(x)
 			const yAxis = d3.axisLeft(y)
 				.ticks(9)
+				.tickFormat(function(d, i) {
+					return standardizeOutputString(d.toString())
+				  })
 				xAxisGroup.call(xAxis)
 				.attr('class', 'axis axis--x')
 						.selectAll("text")	
@@ -321,11 +335,11 @@ class D3Timeline extends React.Component<ITimelineD3Props>
 				let t:string
 				t = titleYear + ": " + d.Jahr
 				// t = "Jahr: " + d.Jahr
-				+ "\n" + titleZuzug + ": "  + d.Zuzug
+				+ "\n" + titleZuzug + ": "  + standardizeOutput(d.Zuzug)
 				// + "\n" +"Zuzug: "  + d.Zuzug
-				+ "\n" + titleWegzug + ": "  + d.Wegzug
+				+ "\n" + titleWegzug + ": "  + standardizeOutput(d.Wegzug)
 				// + "\n" + "Wegzug: "  + d.Wegzug
-				+ "\n" + titleSaldo + ": "  + d.Saldo
+				+ "\n" + titleSaldo + ": "  + standardizeOutput(d.Saldo)
 				// + "\n" + "Saldo: "  + d.Saldo
 				return t
 			  }) 
@@ -335,11 +349,11 @@ class D3Timeline extends React.Component<ITimelineD3Props>
 					let t:string
 					t = titleYear + ": " + d.Jahr
 					// t = "Jahr: " + d.Jahr
-					+ "\n" + titleZuzug + ": "  + d.Zuzug
+					+ "\n" + titleZuzug + ": "  + standardizeOutput(d.Zuzug)
 					// + "\n" +"Zuzug: "  + d.Zuzug
-					+ "\n" + titleWegzug + ": "  + d.Wegzug
+					+ "\n" + titleWegzug + ": "  + standardizeOutput(d.Wegzug)
 					// + "\n" + "Wegzug: "  + d.Wegzug
-					+ "\n" + titleSaldo + ": "  + d.Saldo
+					+ "\n" + titleSaldo + ": "  + standardizeOutput(d.Saldo)
 					// + "\n" + "Saldo: "  + d.Saldo
 					  return t
 					}) 
@@ -396,11 +410,11 @@ class D3Timeline extends React.Component<ITimelineD3Props>
 					let t:string
 					t = titleYear + ": " + d.Jahr
 				// t = "Jahr: " + d.Jahr
-				+ "\n" + titleZuzug + ": "  + d.Zuzug
+				+ "\n" + titleZuzug + ": "  + standardizeOutput(d.Zuzug)
 				// + "\n" +"Zuzug: "  + d.Zuzug
-				+ "\n" + titleWegzug + ": "  + d.Wegzug
+				+ "\n" + titleWegzug + ": "  + standardizeOutput(d.Wegzug)
 				// + "\n" + "Wegzug: "  + d.Wegzug
-				+ "\n" + titleSaldo + ": "  + d.Saldo
+				+ "\n" + titleSaldo + ": "  + standardizeOutput(d.Saldo)
 				// + "\n" + "Saldo: "  + d.Saldo
 					return t
 				}) 

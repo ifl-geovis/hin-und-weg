@@ -115,11 +115,23 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 
 	// DRAW D3 CHART
 	private drawIndxValChart(data: ID3IndexValuesChartItem[], theme: string) {
+		const svgIndxValChart = select(this.svgRef!);
+		
 		const {t}:any = this.props ;
 		let titleIndex = t('index.index');
 		let titleValue = t('index.value');
-
-		const svgIndxValChart = select(this.svgRef!);
+		
+		const standardizeOutput = (value: number): string =>
+		{
+			if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+			if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+			return value.toFixed(3).replace("\.", ",");
+		}
+		const standardizeOutputString = (value: string): string =>
+		{
+			if (i18n.language == "en") return value.replace(",", ".");
+			return value.replace("\.", ",");
+		}
 
 		const labels = data.map((d) => d.label);
 		let maxNameLength = Math.max(...labels.map(el => el ? el.length : 50));
@@ -158,9 +170,7 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 		const refLabelIndx = checkRef(labels, this.props.referenceYear , this.props.referenceLocation  );
 		const results = data.map((d) => d.result);
 		const calculateIfRefNaN: any = () =>  {if (typeof(refLabelIndx) === "number"){   return typeof results[refLabelIndx]  !== 'number' || !results[refLabelIndx] && results[refLabelIndx] !== 0 }};
-		// console.log("refLabelIndx: " + refLabelIndx);
 		const ifRefNaN = calculateIfRefNaN();
-		//   console.log("ifRefNaN: " + ifRefNaN);
 		const calculateIfYearSelected : any = () =>  { return ( R.contains(this.props.referenceYear, this.props.yearsSelected)) ? true : false};
 		const ifYearSelected = calculateIfYearSelected();
 
@@ -398,7 +408,10 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 			let make_y_gridlines = () => {
 				return d3.axisLeft(y);
 			};
-			const yAxisCall = d3.axisLeft(y);
+			const yAxisCall = d3.axisLeft(y)
+			.tickFormat(function(d, i) {
+				return standardizeOutputString(d.toString())
+			  });
 			yAxisGroup.call(yAxisCall).attr('class', 'axis axis--y').style('font-size', '12px');
 
 			const xAxisCall = d3.axisBottom(x);
@@ -506,9 +519,9 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 						circlesGraph.select("title")
 							.text(function(d, i) {
 							let t:string
-							t =  d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+							t =  d.label + "\n" + titleIndex + ": " + (percentage === false? standardizeOutput(d.index) : standardizeOutputString(formatRound(d.index*100))) + (percentage === false || d.index === undefined ? " " : "%")
 							// t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-							+ "\n" + titleValue + ": " + d.result
+							+ "\n" + titleValue + ": " + standardizeOutput(d.result)
 							// + "\n" + "Wert: " + d.result
 							return t
 						})
@@ -603,9 +616,9 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 				circlesGraph.select("title")
 						.text(function(d, i) {
 						let t:string 
-						t =  d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+						t =  d.label + "\n" + titleIndex + ": " + (percentage === false? standardizeOutput(d.index) : standardizeOutputString(formatRound(d.index*100))) + (percentage === false || d.index === undefined ? " " : "%")
 						// t =  d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-						+ "\n" + titleValue + ": " + d.result
+						+ "\n" + titleValue + ": " + standardizeOutput(d.result)
 						// + "\n" + "Wert: " + d.result
 						return t
 					})
@@ -642,7 +655,10 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 			let make_y_gridlines = () => {
 				return d3.axisLeft(y);
 			};
-			const yAxisCall = d3.axisLeft(y);
+			const yAxisCall = d3.axisLeft(y)
+			.tickFormat(function(d, i) {
+				return standardizeOutputString(d.toString())
+			  });
 			yAxisGroup.call(yAxisCall).attr('class', 'axis axis--y').style('font-size', '12px');
 
 			const xAxisCall = d3.axisBottom(x);
@@ -749,9 +765,9 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 							 circlesGraph.select("title")
 										.text(function(d, i) {
 										let t:string 
-										t = d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+										t = d.label + "\n" + titleIndex + ": " + (percentage === false? standardizeOutput(d.index) : standardizeOutputString(formatRound(d.index*100))) + (percentage === false || d.index === undefined ? " " : "%")
 										// t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-										+ "\n" + titleValue + ": " + d.result
+										+ "\n" + titleValue + ": " + standardizeOutput(d.result)
 										// + "\n" + "Wert: " + d.result
 										return t
 								  })
@@ -846,9 +862,9 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 					 circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string  //titleIndex
-								t = d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								t = d.label + "\n" + titleIndex + ": " + (percentage === false? standardizeOutput(d.index ): standardizeOutputString(formatRound(d.index*100))) + (percentage === false || d.index === undefined ? " " : "%")
 								// t = d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-								+ "\n" + titleValue + ": " + d.result
+								+ "\n" + titleValue + ": " + standardizeOutput(d.result)
 								// + "\n" + "Wert: " + d.result
 								return t
 						  })
@@ -885,7 +901,10 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 			let make_y_gridlines = () => {
 				return d3.axisLeft(y);
 			};
-			const yAxisCall = d3.axisLeft(y);
+			const yAxisCall = d3.axisLeft(y)
+			.tickFormat(function(d, i) {
+				return standardizeOutputString(d.toString())
+			  });
 			yAxisGroup.call(yAxisCall).attr('class', 'axis axis--y').style('font-size', '12px');
 
 			const xAxisCall = d3.axisBottom(x);
@@ -992,9 +1011,9 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 					circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string
-								t = d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								t = d.label + "\n" + titleIndex + ": " + (percentage === false? standardizeOutput(d.index) : standardizeOutputString(formatRound(d.index*100))) + (percentage === false || d.index === undefined ? " " : "%")
 								// t = d.label + "\n" + "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-							+ "\n" + titleValue + ": " + d.result
+							+ "\n" + titleValue + ": " + standardizeOutput(d.result)
 							// + "\n" + "Wert: " + d.result
 								return t
 						  })
@@ -1092,9 +1111,9 @@ class D3IndexValuesChart extends React.Component<ID3IndexValuesChartProps, ID3In
 					 circlesGraph.select("title")
 								.text(function(d, i) {
 								let t:string
-								t =  d.label + "\n" + titleIndex + ": " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
+								t =  d.label + "\n" + titleIndex + ": " + (percentage === false? standardizeOutput(d.index) : standardizeOutputString(formatRound(d.index*100))) + (percentage === false || d.index === undefined ? " " : "%")
 								// t =  d.label + "\n" +  "Index: " + (percentage === false? d.index : formatRound(d.index*100)) + (percentage === false || d.index === undefined ? " " : "%")
-								+ "\n" + titleValue + ": " + d.result
+								+ "\n" + titleValue + ": " + standardizeOutput(d.result)
 								// + "\n" + "Wert: " + d.result
 								return t
 						  })

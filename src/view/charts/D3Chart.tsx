@@ -164,7 +164,6 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		let ascending: boolean = this.state.sort === "ascending";
         let descending: boolean = this.state.sort === "descending";
         let alphabetical: boolean = this.state.sort === "alphabetical";
-		console.log("data D3 Chart start: " + JSON.stringify(data))
 		const svgBarChart = select(this.svgRef!);
 		let nach = data.map((d) => d.Nach);
 		let von = data.map((d) => d.Von);
@@ -204,7 +203,14 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 		const colorsBlue = ['#92c5de', '#2166ac'];
 		const colorsRed = ['#b2182b', '#f4a582'];
-
+		
+		const standardizeOutput = (value: number): string =>
+        {
+          if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+          if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+          return value.toFixed(3).replace("\.", ",");
+        }
+      
 		svgBarChart
 			.append('svg')
 			.attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
@@ -380,7 +386,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				.attr('text-anchor', 'start') // (d) =>(x(d.Wert) - x(0)) > 30 ? "end" : "start")
 				.style('fill', '#000000') // (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d")
 				.text((d) => {
-					return d['Wert'];
+					return standardizeOutput(d['Wert']);
 				})
 				.style('font-size', '15px')
 				.attr(
@@ -539,7 +545,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				.attr('text-anchor', 'start') // (d) =>(x(d.Wert) - x(0)) > 30 ? "end" : "start")
 				.style('fill', '#000000') // (d) => (x(d.Wert) - x(0)) > 30 ? "#ffffff" : "#3a403d")
 				.text((d) => {
-					return d['Wert'];
+					return standardizeOutput(d['Wert']);
 				})
 				.style('font-size', '15px')
 				.attr('x', (d) => x(d.Wert) + 1); // ((x(d.Wert)) > 30 ? x(d.Wert) - 2 : x(d.Wert) + 1));
@@ -757,7 +763,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				//   })
 				.style('font-size', '15px')
 				.text(function (d) {
-					return d.Wert;
+					return standardizeOutput(d.Wert);
 				})
 				.attr('x', (d) => {
 					if (d.Wert < 0) {
@@ -860,6 +866,13 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 		return chartWidth;
 	}
 
+	private standardizeOutput(value: number): string
+	{
+		if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+		if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+		return value.toFixed(3).replace("\.", ",");
+	}
+
 
 	public render() {
 		const { width, height } = this.props;
@@ -932,7 +945,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 								</div>
 
 				<div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>
-					{wanderungsRate ? min/1000 : min}
+					{wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min)}
 				</div>
 				<div className="p-col-8 noprint">
 					<div className={`banner ${this.props.theme == 'Saldi' ? this.state.checked === true ? 'slider-reversed' : "slider-saldi" : ''}`}>
@@ -958,7 +971,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					</div>
 				</div>
 				<div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>
-					{wanderungsRate ? max/1000 : max}
+					{wanderungsRate ? this.standardizeOutput(max/1000) : this.standardizeOutput(max)}
 				</div>
 
 				
@@ -974,14 +987,16 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				<div className="p-col-2 noprint ">
 					{this.props.theme == 'Saldi' ?
 						<InputText
-							value={wanderungsRate ? rangeValue1/1000 : rangeValue1}
+							placeholder={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1)}
+							value={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1)}
 							style={{ width: '6em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
 						/>
 					 :
 						<InputText
-							value={this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min: wanderungsRate ? threshold/1000 : threshold}
+							placeholder={this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min): wanderungsRate ? this.standardizeOutput(threshold/1000 ): this.standardizeOutput(threshold)}
+							value={this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min): wanderungsRate ? this.standardizeOutput(threshold/1000 ): this.standardizeOutput(threshold)}
 							style={{ width: '10em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
@@ -995,7 +1010,8 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 				<div className="p-col-2 noprint ">
 					{this.props.theme == 'Saldi' ?
 						<InputText
-							value={wanderungsRate ? rangeValue2/1000 : rangeValue2}
+							placeholder={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)}
+							value={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)}
 							style={{ width: '6em' }}
 							type="number"
 							onChange={(e: any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}

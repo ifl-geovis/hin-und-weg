@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import * as d3 from 'd3';
 import { select } from 'd3-selection';
+import i18n from './../../i18n/i18nClient';
 
 export interface ID3HistogramProps {
 	theme: string;
@@ -88,24 +89,32 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 	const yAxisGroup = svgHisto.append('g').attr('transform', `translate(0, 0)`);
 	const yAxisText = svgHisto.append('g').attr('transform', `translate(${-MARGIN.LEFT/2}, 0)`);     
 
+	const standardizeOutput = (value: string): string =>
+					{
+						if (i18n.language == "en") return value.replace(",", ".");
+						return value.replace("\.", ",");
+					}
+
 	if (theme === 'Von' ) {
         const positive_colors = this.props.positive_colors;
 		const pos_scales_string = this.props.positive_scales.map(String);
         // const [min, max] = this.getMinMax2();
+		console.log("pos_scales_string: " + pos_scales_string);
 
         let makeIntervalsString = (arr : any []) => {
 			let intrvals = [];
 				for (let i=0 ; i<arr.length-1 ; i++) {
 					if (arr[i] !== undefined) {
-						intrvals.push (arr[i] + " - " + arr[i+1]);
+						intrvals.push (standardizeOutput(arr[i]) + " - " + standardizeOutput(arr[i+1]));
 					} else {
-						intrvals.push (arr[i]);
+						intrvals.push (standardizeOutput(arr[i]));
 					}
 				}
 				return intrvals;
 			};
 
 		let intervalsString = makeIntervalsString(pos_scales_string);
+		console.log("intervalsString: " + intervalsString);
 		let numOfBins = this.props.positive_scales_short.length;
         let numOfValues = this.props.positiveValues.length;
 		let bins = [];
@@ -214,9 +223,9 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 			let intrvals = [];
 				for (let i=0 ; i<arr.length-1 ; i++) { 
 					if (arr[i] !== undefined) {
-						intrvals.push (arr[i] + " - " + arr[i+1]);
+						intrvals.push (standardizeOutput(arr[i]) + " - " + standardizeOutput(arr[i+1]));
 					} else {
-						intrvals.push (arr[i]);
+						intrvals.push (standardizeOutput(arr[i]));
 					}
 				}
 				return intrvals;
@@ -335,9 +344,9 @@ export class D3Histogram extends React.Component<ID3HistogramProps> {
 			let intrvals = [];
 				for (let i=0 ; i<arr.length-1 ; i++) { 
 					if (arr[i] !== undefined) {
-						intrvals.push (arr[i] + " - " + arr[i+1]);
+						intrvals.push (standardizeOutput(arr[i] )+ " - " + standardizeOutput(arr[i+1]));
 					} else {
-						intrvals.push (arr[i]);
+						intrvals.push (standardizeOutput(arr[i]));
 					}
 				}
 				return intrvals;

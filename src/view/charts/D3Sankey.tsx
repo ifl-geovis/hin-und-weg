@@ -260,6 +260,15 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
           let hexcolorAdd: string[] =  classColors(data);
           hexcolorAdd.push("#f7f7f7");
+
+          const standardizeOutput = (value: number): string =>
+          {
+            if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+            if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+            return value.toFixed(3).replace("\.", ",");
+          }
+         
+        
           svg.append("svg")
           .attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
           .attr("height", HEIGHT)
@@ -420,7 +429,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
                 });;
 
             link.append("title")
-              .text(function (d: any) { return d.source.name + " → " + d.target.name + "\n" + d.value; });
+              .text(function (d: any) { return d.source.name + " → " + d.target.name + "\n" + standardizeOutput(d.value); });
 
             node = node
               .data(dataSankey.nodes)
@@ -478,7 +487,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
              .attr("dy", "0.35em")
              .attr("text-anchor", "end") // "start"
-             .text(function (d: any) { return  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
+             .text(function (d: any) { return  standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000); })
 
 
              let sumLabel =  node //.filter(function(d:any) { return d.value != 0; })
@@ -488,7 +497,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
              .attr("dy", "0.35em")
              .attr("text-anchor", "start") // "end"
-             .text(Math.round((vonSum + Number.EPSILON) * 1000) / 1000 )
+             .text(standardizeOutput(Math.round((vonSum + Number.EPSILON) * 1000) / 1000) )
 
 
              }
@@ -497,14 +506,14 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
              .filter(function (d: any) { return d.x0 < WIDTH / 2; })
              .append("title")
             //  .text(Math.round((vonSum + Number.EPSILON) * 1000) / 1000 )
-             .text(function (d: any) { return d.name + "\n" +  Math.round((vonSum + Number.EPSILON) * 1000) / 1000; })
+             .text(function (d: any) { return d.name + "\n" +  standardizeOutput(Math.round((vonSum + Number.EPSILON) * 1000) / 1000); })
 
 
 
             let titles = node
             .filter(function (d: any) { return d.x0 > WIDTH / 2; })
             .append("title")
-            .text(function (d: any) { return d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000 ; });
+            .text(function (d: any) { return d.name + "\n" + standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000) ; });
 
           }
           else if (theme === "Nach")
@@ -625,7 +634,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
               });;
 
           link.append("title")
-            .text(function (d: any) { return d.source.name + " → " + d.target.name + "\n" + d.value; });
+            .text(function (d: any) { return d.source.name + " → " + d.target.name + "\n" + standardizeOutput(d.value); });
 
           node = node
             .data(dataSankey.nodes)
@@ -682,7 +691,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "end") // "start"
-           .text( Math.round((nachSum + Number.EPSILON) * 1000) / 1000 )
+           .text( standardizeOutput(Math.round((nachSum + Number.EPSILON) * 1000) / 1000 ))
 
 
           //  let sumLabel =  node.filter(function(d:any) { return d.value != 0; })
@@ -692,7 +701,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "start") // " end"
-           .text(function (d: any) { return Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
+           .text(function (d: any) { return standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000); })
 
 
            }
@@ -700,7 +709,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            let sumTitle =  node //.filter(function(d:any) { return d.value != 0; })
            .filter(function (d: any) { return d.x0 > WIDTH / 2; })
            .append("title")
-           .text(function (d: any) { return d.name + "\n" + Math.round((nachSum + Number.EPSILON) * 1000) / 1000; })
+           .text(function (d: any) { return d.name + "\n" + standardizeOutput(Math.round((nachSum + Number.EPSILON) * 1000) / 1000); })
 
           //  .text(Math.round((nachSum + Number.EPSILON) * 1000) / 1000 )
 
@@ -708,7 +717,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           let titles = node
           .filter(function (d: any) { return d.x0 < WIDTH / 2; })
           .append("title")
-          .text(function (d: any) { return d.name + "\n" +  Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
+          .text(function (d: any) { return d.name + "\n" +  standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000); });
 
           }
           else if (theme == "Saldi") {
@@ -831,7 +840,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
               });;
 
           link.append("title")
-            .text(function (d: any) { return d.source.name + " → " + d.target.name + "\n" + d.negative; });
+            .text(function (d: any) { return d.source.name + " → " + d.target.name + "\n" + standardizeOutput(d.negative); });
 
           node = node
             .data(dataSankey.nodes)
@@ -887,7 +896,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "end") //"start"
-           .text(function (d: any) { return Math.round((d.negative + Number.EPSILON) * 1000) / 1000; })
+           .text(function (d: any) { return standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000); })
 
 
            let sumLabel =  node //.filter(function(d:any) { return d.value != 0; })
@@ -897,20 +906,20 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
            .attr("y", function (d: any) { return (d.y1 + d.y0) / 2; })
            .attr("dy", "0.35em")
            .attr("text-anchor", "start") // "end"
-           .text(Math.round((vonSum + Number.EPSILON) * 1000) / 1000 )
+           .text(standardizeOutput(Math.round((vonSum + Number.EPSILON) * 1000) / 1000) )
 
            }
 
            let sumTitle =  node //.filter(function(d:any) { return d.value != 0; })
            .filter(function (d: any) { return d.x0 < WIDTH / 2; })
            .append("title")
-           .text(function (d: any) {return d.name + "\n" + Math.round((vonSum + Number.EPSILON) * 1000) / 1000 })
+           .text(function (d: any) {return d.name + "\n" + standardizeOutput(Math.round((vonSum + Number.EPSILON) * 1000) / 1000) })
 
 
           let titles = node
           .filter(function (d: any) { return d.x0 > WIDTH / 2; })
           .append("title")
-          .text(function (d: any) {  return d.index === maxIdx+1 ? d.name : d.name + "\n" + Math.round((d.negative + Number.EPSILON) * 1000) / 1000; });
+          .text(function (d: any) {  return d.index === maxIdx+1 ? d.name : d.name + "\n" + standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000); });
            }
         }
       }
@@ -1015,6 +1024,13 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     return chartWidth;
   }
 
+  private standardizeOutput(value: number): string
+	{
+		if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+		if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+		return value.toFixed(3).replace("\.", ",");
+	}
+
   public render() {
     const { width, height } = this.props;
     let [min, max] = this.getMinMax2();
@@ -1057,7 +1073,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
        
 
-            <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
+            <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min)}</div>
             <div className="p-col-8 noprint">
               <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
                 {
@@ -1080,7 +1096,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
                 }
               </div>
             </div>
-            <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
+            <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? this.standardizeOutput(max/1000) : this.standardizeOutput(max)}</div>
             {/* <div className="p-col-12 p-justify-center">{this.props.theme == "Saldi" ? 'Anzeige Werte in Bereich: ' + saldiText : 'Anzeige ab Wert: ' + threshold  }</div> */}
         
             <div className="p-col-2 noprint rdBtnContainer">
@@ -1091,13 +1107,15 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             <div className="p-col-2 noprint ">
               {this.props.theme == "Saldi" ?
                 <InputText
-                  value={wanderungsRate ? rangeValue1/1000 : rangeValue1 }
+                  placeholder={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1) }
+                  value={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1) }
                   style={{ width: '6em' }}
                   type='number'
                   onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
                 />
                 : <InputText
-                  value={this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min : wanderungsRate ? threshold/1000 :threshold}
+                  placeholder={this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min) : wanderungsRate ? this.standardizeOutput(threshold/1000) : this.standardizeOutput(threshold)}
+                  value={this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min) : wanderungsRate ? this.standardizeOutput(threshold/1000) : this.standardizeOutput(threshold)}
                   style={{ width: '10em' }}
                   type='number'
                   onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
@@ -1109,7 +1127,8 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             </div>
             <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
               <InputText
-                value={wanderungsRate ? rangeValue2/1000 : rangeValue2}
+                placeholder={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)}
+                value={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)}
                 style={{ width: '6em' }}
                 type='number'
                 onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}

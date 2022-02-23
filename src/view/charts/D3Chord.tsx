@@ -164,7 +164,6 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let smallViewtext1 = t('charts.smallView1');
       let smallViewtext2 = t('charts.smallView2');
       let smallViewtext3 = t('charts.smallView3');
-      console.log("smallViewtext1: " +  smallViewtext1);
       const [min, max] = this.getMinMax2();
       const ascending = this.state.sort === "ascending";
       // const descending = this.state.sort === "descending";
@@ -211,7 +210,14 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
       let hexcolorAdd: string[] =  classColors(data);
         hexcolorAdd.push("#f7f7f7");
-
+        
+      const standardizeOutput = (value: number): string =>
+        {
+          if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+          if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+          return value.toFixed(3).replace("\.", ",");
+        }
+     
 
       svgChord.append("svg")
       .attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
@@ -518,12 +524,12 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               let t:string
               t = vonVar[d.source.index]
               + " → " + nachVar[d.target.index]
-              + ": " + d.source.value
+              + ": " + standardizeOutput(d.source.value)
               if (vonVar[d.target.index] === nachVar[d.target.index]){
                 // if (vonVar[d.source.index] === nachVar[d.target.index]){
                 t = vonVar[d.source.index]
                 + " → " + nachVar[d.source.index]
-                + ": " + d.source.value
+                + ": " + standardizeOutput(d.source.value)
               }
               return t
            })
@@ -568,7 +574,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px" )
             .attr("font-family", "Open Sans")
             .style("font-weight", "bold")
-            .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((d.value + Number.EPSILON) * 1000) / 1000 : Math.round((d.value + Number.EPSILON) * 1000) / 1000+ " : " ; });
+            .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) : standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000)+ " : " ; });
 
           group.append("title")
           group.select("title")
@@ -707,12 +713,12 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             let t:string
             t = vonVar[d.source.index]
             + " → " + nachVar[d.source.index]
-            + ": " + d.target.value
+            + ": " + standardizeOutput(d.target.value)
             if (vonVar[d.source.index] === nachVar[d.source.index]){
               // if (vonVar[d.source.index] === nachVar[d.target.index]){
               t = vonVar[d.target.index]
               + " → " + nachVar[d.source.index]
-              + ": " + d.target.value
+              + ": " + standardizeOutput(d.target.value)
             }
             return t
           })
@@ -756,7 +762,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((d.value + Number.EPSILON) * 1000) / 1000 : Math.round((d.value + Number.EPSILON) * 1000) / 1000 + " : " ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) : standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) + " : " ; });
 
 
           group.append("title")
@@ -941,12 +947,12 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             let t:string
             t = vonVar[d.source.index]
             + " → " + nachVar[d.source.index]
-            + ": " + valueasSaldiVar[d.source.index]
+            + ": " + standardizeOutput(valueasSaldiVar[d.source.index])
             if (vonVar[d.source.index] === nachVar[d.source.index]){
               // if (vonVar[d.source.index] === nachVar[d.target.index]){
               t = vonVar[d.target.index]
               + " → " + nachVar[d.source.index]
-              + ": " + valueasSaldiVar[d.target.index]
+              + ": " + standardizeOutput(valueasSaldiVar[d.target.index])
               // + ": " + (valueasSaldiVar[d.source.index] === 0 ? valueasSaldiVar[d.target.index]:valueasSaldiVar[d.source.index])
             } return t
           })
@@ -991,7 +997,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000  : Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000  + " : " ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  : standardizeOutput(Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  + " : " ; });
 
         group.append("title")
         group.select("title")
@@ -1141,6 +1147,12 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       if (this.state.chartWidth > max) chartWidth = max;
       return chartWidth;
     }
+    private standardizeOutput(value: number): string
+	{
+		if ((Number.isInteger(value)) || (value == null) || (!Number.isFinite(value))) return "" + value;
+		if (i18n.language == "en") return value.toFixed(3).replace(",", ".");
+		return value.toFixed(3).replace("\.", ",");
+	}
 
     public render() {
 		  const {t}:any = this.props ;
@@ -1182,7 +1194,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               <div className="p-col-2 noprint rdBtnContainer">
 								{t('charts.dataFilter')}
 							</div>
-              <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? min/1000 : min}</div>
+              <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min)}</div>
               <div className="p-col-8 noprint">
                 <div className={`banner ${ this.props.theme == "Saldi" ? this.state.checked === true ?  "slider-reversed" : "slider-saldi" : ""}`}>
                   {
@@ -1193,7 +1205,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                   }
                 </div>
               </div>
-              <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? max/1000 : max}</div>
+              <div className="p-col-1 noprint rdBtnContainer" style={{ width: '3.5em' }}>{wanderungsRate ? this.standardizeOutput(max/1000) : this.standardizeOutput(max)}</div>
               
               
               
@@ -1207,8 +1219,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               </div>
             <div className="p-col-2 noprint">
               {this.props.theme == "Saldi" ?
-                <InputText value={wanderungsRate ? rangeValue1/1000 : rangeValue1 } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
-                : <InputText value={ this.state.checkedNoFilter ? wanderungsRate ? min/1000 : min: wanderungsRate ? threshold/1000 : threshold} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
+                <InputText  placeholder={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1) } value={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1) } style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) :  this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
+                : <InputText placeholder={ this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min): wanderungsRate ? this.standardizeOutput(threshold/1000) : this.standardizeOutput(threshold)}  value={ this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min): wanderungsRate ? this.standardizeOutput(threshold/1000) : this.standardizeOutput(threshold)} style={{ width: '10em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })} />
               }
             </div>
             <div className="p-col-2 noprint rdBtnContainer">{this.props.theme == "Saldi" ? this.state.checked === true?
@@ -1216,7 +1228,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             </div>
               {/* 'und ab ' : 'bis ' : ' '} </div> */}
             <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
-             <InputText  value={wanderungsRate ? rangeValue2/1000 : rangeValue2} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
+             <InputText placeholder={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)} value={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)} style={{ width: '6em' }} type='number' onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })} /> : <div className="p-col-2 p-offset-1"></div>}
             </div>
             <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
             'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
