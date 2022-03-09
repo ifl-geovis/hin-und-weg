@@ -1,6 +1,6 @@
 {
 	"profile": "production",
-	"version": "1.10.0-test2",
+	"version": "1.10.0",
 
 	"production": {
 		"logging": {
