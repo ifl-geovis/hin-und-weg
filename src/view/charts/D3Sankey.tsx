@@ -454,7 +454,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             let titles = node
             .filter(function (d: any) { return d.x0 > WIDTH / 2; })
             .append("title")
-            .text(function (d: any) { return d.name + "\n" + standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000) ; });
+            .text(function (d: any) { return d.name + "\n" + standardizeOutput(Math.round((d.label + Number.EPSILON) * 1000) / 1000) ; });
 
           }
           else if (theme === "Nach")
@@ -651,7 +651,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           let titles = node
           .filter(function (d: any) { return d.x0 < WIDTH / 2; })
           .append("title")
-          .text(function (d: any) { return d.name + "\n" +  standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000); });
+          .text(function (d: any) { return d.name + "\n" +  standardizeOutput(Math.round((d.label + Number.EPSILON) * 1000) / 1000); });
 
           }
           else if (theme === "Saldi") {
@@ -851,7 +851,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             let titles = node
             .filter(function (d: any) { return d.x0 > WIDTH / 2; })
             .append("title")
-            .text(function (d: any) {  return d.index === maxIdx+1 ? d.name : d.name + "\n" + standardizeOutput(Math.round((d.negative + Number.EPSILON) * 1000) / 1000); });
+            .text(function (d: any) {  return d.index === maxIdx+1 ? d.name : d.name + "\n" + standardizeOutput(Math.round((d.label + Number.EPSILON) * 1000) / 1000); });
            }
         }
       }
