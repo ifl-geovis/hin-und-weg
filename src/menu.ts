@@ -211,13 +211,6 @@ export default class MainMenu
 					click(event, window, content) {MainMenu.execute("viewswitcher", "statistics", event, window, content);},
 				},
 				{
-					id: 'db',
-					// label: 'Datenbank',
-					label: i18n.t('menu.database'),
-					enabled: false,
-					click(event, window, content) {MainMenu.execute("viewswitcher", "db", event, window, content);}
-				},
-				{
 					id: 'index',
 					// label: 'Indexwert',
 					label: i18n.t('menu.indexVal'),
