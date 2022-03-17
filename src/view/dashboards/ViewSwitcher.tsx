@@ -86,7 +86,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
 		this.state = {
-			activeView: this.props.geodata ? 'settings' : 'file',
+			activeView: this.props.geodata ? 'map' : 'file',
 		};
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
