@@ -59,7 +59,7 @@ export default class MainMenu
 				{
 					// label: 'Vergrößern',
 					label: i18n.t('menu.zoomIn'),
-					accelerator: (process.platform === 'darwin') ? 'CommandOrControl+Plus' : 'CommandOrControl+=',
+					accelerator: (process.platform === 'darwin') ? 'CommandOrControl+Plus' : 'CommandOrControl+L',
 					role: 'zoomIn'
 				},
 				{
