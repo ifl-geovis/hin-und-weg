@@ -34,7 +34,7 @@ class ProjektInfo extends React.Component<IProjektInfoProps, {}, {}>
 					</div><br/><br/><br/>
 					<div>
 						{t('projectInfo.text6')}<br/>
-						Aura Moldovan, A_Moldovan@leibniz-ifl.de , +49 341 600 55 103<br/>
+						kontakt@hin-und-weg.online<br/>
 					</div>
 				</div>
 			</div>
