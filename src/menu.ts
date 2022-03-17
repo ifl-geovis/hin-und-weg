@@ -260,7 +260,10 @@ export default class MainMenu
 				{
 					// label: 'Einstellungen',
 					label: i18n.t('menu.settings'),
-					click(event, window, content) {MainMenu.execute("viewswitcher", "settings", event, window, content);},
+					click(event, window, content) {
+						MainMenu.execute("dashboard", "s1", event, window, content);
+						MainMenu.execute("viewswitcher", "settings", event, window, content);
+					},
 				},
 			],
 		},
