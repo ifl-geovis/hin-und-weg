@@ -12,7 +12,7 @@ import Classification from '../../data/Classification';
 import Legend from "../elements/Legend";
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
-import { TFunction } from "i18next";
+// import { TFunction } from "i18next";
 
 export interface ID3ChordItem
 {
@@ -48,6 +48,7 @@ interface ID3ChordState
   checkedNoFilter: boolean,
   sort: string;
   chartWidth: number;
+	checkedNaN: boolean;
 }
 
 // export 
@@ -71,23 +72,26 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       checkedNoFilter: false,
       sort: "alphabetical",
 			chartWidth: this.props.width,
+			checkedNaN: false
     }
 		this.sortData = this.sortData.bind(this);
   }
 
     public componentDidMount() {
       this.svgID = this.setSvgId(this.props.vizID, this.props.baseViewId);
-
       const [min, max] = this.getMinMax2();
       let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
-      let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
+      let data1: ID3ChordItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert/1000 : item.Wert)) || (wanderungsRate? item.Wert/1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data);
+      // let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
       let data2 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.rangeValues[1] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= max, this.props.data);
       let dataFilterSmall: ID3ChordItem[] = R.concat(data1, data2);
-      let dataFilterLarge :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= this.state.rangeValues[1], this.props.data);
+      let dataFilterLarge: ID3ChordItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1],this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1] || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
+      // let dataFilterLarge :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= this.state.rangeValues[1], this.props.data);
       let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
 
-      let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.threshold, this.props.data);
+      let normalizedData:ID3ChordItem[] = this.state.checkedNaN ?  R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.threshold, this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.threshold || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
+      // let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= this.state.threshold, this.props.data);
 
       let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
       this.sortData(data) 
@@ -98,10 +102,13 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
     public shouldComponentUpdate (nextProps: ID3ChordProps, nextState: ID3ChordState) {
 
       return nextProps.data !== this.props.data || 
+      nextProps.basedata.getMigrationsInside() !== this.props.basedata.getMigrationsInside() || 
+      nextProps.basedata !== this.props.basedata ||
       nextProps.theme !== this.props.theme|| 
       nextState.checkedNoFilter !== this.state.checkedNoFilter || 
       nextState.checkedLabel !== this.state.checkedLabel  || 
       nextState.checked !== this.state.checked || 
+      nextState.checkedNaN !== this.state.checkedNaN || 
       nextProps.width !== this.props.width || 
       nextProps.height !== this.props.height || 
       nextState.threshold !==this.state.threshold || 
@@ -128,12 +135,15 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
        }
         let wanderungsRate: boolean = (this.props.dataProcessing === "wanderungsrate") || (this.props.dataProcessing === "ratevon") || (this.props.dataProcessing === "ratenach");
 
-        let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
+        let data1: ID3ChordItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data) : R.filter((item) => Number.isNaN((wanderungsRate? item.Wert/1000 : item.Wert)) || (wanderungsRate? item.Wert/1000 : item.Wert) <= this.state.rangeValues[0] && (wanderungsRate? item.Wert/1000 : item.Wert) >= min , this.props.data);
+        // let data1 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) <= rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) >= min, this.props.data);
         let data2 :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= rangeValues[1] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= max, this.props.data);
         let dataFilterSmall: ID3ChordItem[] = R.concat(data1, data2);
-        let dataFilterLarge :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= rangeValues[1], this.props.data);
+        let dataFilterLarge: ID3ChordItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1],this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.rangeValues[0] && (wanderungsRate? item.Wert*1000 : item.Wert) <= this.state.rangeValues[1] || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
+        // let dataFilterLarge :ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= rangeValues[0] && (wanderungsRate ? item.Wert*1000 :item.Wert) <= rangeValues[1], this.props.data);
         let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
-        let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= threshold, this.props.data);
+        let normalizedData: ID3ChordItem[] = this.state.checkedNaN ? R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.threshold , this.props.data) : R.filter((item) => (wanderungsRate? item.Wert*1000 : item.Wert) >= this.state.threshold || Number.isNaN((wanderungsRate? item.Wert*1000 : item.Wert)), this.props.data);
+        // let normalizedData:ID3ChordItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 :item.Wert) >= threshold, this.props.data);
         let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
         this.sortData(data) 
       this.removePreviousChart(this.svgID);
@@ -164,6 +174,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let smallViewtext1 = t('charts.smallView1');
       let smallViewtext2 = t('charts.smallView2');
       let smallViewtext3 = t('charts.smallView3');
+      const migrationInside = this.props.basedata.getMigrationsInside();
       const [min, max] = this.getMinMax2();
       const ascending = this.state.sort === "ascending";
       // const descending = this.state.sort === "descending";
@@ -176,7 +187,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       let von = data.map(d => d.Von);
       let names = nach.concat(von);
       let maxNameLength = Math.max(...names.map(el => el ? el.length : 50));
-      let marginResponsive = this.props.dataProcessing === "absolute" ? this.state.chartWidth < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
+      let marginResponsive = this.props.dataProcessing === "absolute" ? this.state.chartWidth < 500  ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
       // let marginResponsive = this.props.dataProcessing === "absolute" ? this.props.width < 500 ? this.state.checkedLabel === false ? maxNameLength*5.8 : (maxNameLength + 5)*5.8 :
       this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 :
       // this.props.width < 700 && this.props.width >= 500 ? this.state.checkedLabel === false ? maxNameLength*6.3: (maxNameLength + 5)*6.3 :
@@ -184,19 +195,14 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
       this.state.checkedLabel === false ? maxNameLength*7.4 : (maxNameLength + 5)*7.4 ; // +10
 
       let MARGIN = {TOP: marginResponsive, RIGHT: marginResponsive, BOTTOM: marginResponsive, LEFT: marginResponsive}
-		  let WIDTH = this.state.chartWidth > this.props.width? this.props.width - MARGIN.LEFT - MARGIN.RIGHT : this.state.chartWidth - MARGIN.LEFT - MARGIN.RIGHT;
+		  let WIDTH = this.state.chartWidth > this.props.width ? this.props.width - MARGIN.LEFT - MARGIN.RIGHT : this.state.chartWidth - MARGIN.LEFT - MARGIN.RIGHT;
       // let WIDTH = this.props.width - MARGIN.LEFT - MARGIN.RIGHT;
       let HEIGHT = WIDTH + MARGIN.LEFT + MARGIN.RIGHT - MARGIN.TOP - MARGIN.BOTTOM;
       // let HEIGHT = this.props.height - MARGIN.TOP - MARGIN.BOTTOM;
-
-      const colorsBlue = ["#92c5de", "#2166ac"]
-      const colorsRed = ["#b2182b", "#f4a582"]
-      const colorsBlueRed = ["#2166ac","#b2182b","#d0d1e6"]
-      // const neutralcolor = "#f7f7f7"
-      const bordercolor = "#525252"
-
+     
       const classification = this.props.basedata.getClassification();
-      // let hexcolor = classification.getColor(data[1]);
+      const nancolor = classification.getMissingColor()
+      const bordercolor = "#525252"
 
       let classColors = (data: ID3ChordItem[]) => {
         let colors = new Array(data.length);
@@ -287,6 +293,7 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let nach = data.map(d => d.Nach);
         let von = data.map(d => d.Von);
         let values =data.map(d=> +d.Wert);
+        let valuesZero =data.map(d=> !d.Wert ? 0 : +d.Wert);
         let indx = checkIndx(von, nach);
         let arr = Matrix(nach.length,nach.length,von, nach, 0);
         let valuesPlus :number[] = new Array(values.length + 1);
@@ -296,8 +303,16 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               valuesPlus[i]=values[i]
             } return valuesPlus
           }
-
-        valuesPlus = fillValuesPlus();
+          let valuesZeroPlus :number[] = new Array(valuesZero.length + 1);
+          valuesZeroPlus.fill(0);
+            let fillValuesZeroPlus = () => {
+              for(let i=0;i<valuesZero.length;i++){
+                valuesZeroPlus[i]=valuesZero[i]
+                } return valuesZeroPlus
+              }
+       
+              valuesPlus = fillValuesPlus();
+        valuesZeroPlus = fillValuesZeroPlus();
 
         let nachPlus :string[] = new Array(nach.length + 1);
         nachPlus.fill(theme === "Nach" || "Saldi" ? nach[0]:von[0]);
@@ -340,25 +355,31 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         //   }
 
         let matrixFullPlus = (ar:any[][]) => {
-          if(ar.length === values.length){
+          if(ar.length === valuesZero.length){
+            // if(ar.length === values.length){
             for(let j=0;j<ar[0].length;j++)
             { for(let i=0;i<ar.length;i++)
               { if (von[i] === nach[i] ){
-                  ar[i] = values
+                  ar[i] = valuesZero
+                  // ar[i] = values
                  } else {
                    if (typeof(indx) === "number"){
-                     ar[i][indx] = values[i]
+                     ar[i][indx] = valuesZero[i]
+                    //  ar[i][indx] = values[i]
                     }
                   }
                }
               }
-            } else if (ar.length === valuesPlus.length ){
+            } else if (ar.length === valuesZeroPlus.length ){
+              // } else if (ar.length === valuesPlus.length ){
               for(let j=0;j<ar[0].length;j++) {
                 for(let i=0;i<ar.length;i++){
                   if ( i === ar.length-1){
-                    ar[i] =valuesPlus;
+                    ar[i] =valuesZeroPlus;
+                    // ar[i] =valuesPlus;
                   } else {
-                    ar[i][ar.length-1] = valuesPlus[i];
+                    ar[i][ar.length-1] = valuesZeroPlus[i];
+                    // ar[i][ar.length-1] = valuesPlus[i];
                   }
                 }
               }
@@ -524,12 +545,14 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
               let t:string
               t = vonVar[d.source.index]
               + " → " + nachVar[d.target.index]
-              + ": " + standardizeOutput(d.source.value)
+              + ": " + standardizeOutput(migrationInside ? values[d.source.index] : valuesPlus[d.source.index])
+              // + ": " + standardizeOutput(d.source.value)
               if (vonVar[d.target.index] === nachVar[d.target.index]){
                 // if (vonVar[d.source.index] === nachVar[d.target.index]){
                 t = vonVar[d.source.index]
                 + " → " + nachVar[d.source.index]
-                + ": " + standardizeOutput(d.source.value)
+                + ": " + standardizeOutput(migrationInside ? values[d.source.index] : valuesPlus[d.source.index])
+                // + ": " + standardizeOutput(d.source.value)
               }
               return t
            })
@@ -551,7 +574,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "11px" : "13px" )
             // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px" )
             .attr("font-family", "Open Sans")
-            .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing ==="absolute" ?
+            .attr("dx", function(d:any, i:number) { return labelText === 0 ? "" : dataProcessing ==="absolute" ?
+            !values[i]  ? d.angle >Math.PI ? "-3.2em" :  "3.2em" :
             d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
             d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
             d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :
@@ -574,7 +598,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px" )
             .attr("font-family", "Open Sans")
             .style("font-weight", "bold")
-            .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) : standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000)+ " : " ; });
+            .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((migrationInside ? (d.value!== 0 ? d.value + Number.EPSILON : values[i] + Number.EPSILON) : (d.value!== 0 ? d.value + Number.EPSILON : valuesPlus[i] + Number.EPSILON)) * 1000) / 1000) : standardizeOutput(Math.round((migrationInside ? (d.value!== 0 ? d.value + Number.EPSILON : values[i] + Number.EPSILON) : (d.value!== 0 ? d.value + Number.EPSILON : valuesPlus[i] + Number.EPSILON)) * 1000) / 1000)+ " : " ; });
+            // .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) : standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000)+ " : " ; });
 
           group.append("title")
           group.select("title")
@@ -713,12 +738,14 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
             let t:string
             t = vonVar[d.source.index]
             + " → " + nachVar[d.source.index]
-            + ": " + standardizeOutput(d.target.value)
+            + ": " + standardizeOutput(migrationInside ? values[d.target.index] : valuesPlus[d.target.index])
+            // + ": " + standardizeOutput(d.target.value)
             if (vonVar[d.source.index] === nachVar[d.source.index]){
               // if (vonVar[d.source.index] === nachVar[d.target.index]){
               t = vonVar[d.target.index]
               + " → " + nachVar[d.source.index]
-              + ": " + standardizeOutput(d.target.value)
+              + ": " + standardizeOutput(migrationInside ? values[d.target.index] : valuesPlus[d.target.index])
+              // + ": " + standardizeOutput(d.target.value)
             }
             return t
           })
@@ -739,7 +766,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "11px" : "13px")
         // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" : "13px")
         .attr("font-family", "Open Sans")
-        .attr("dx", function(d:any) { return labelText === 0 ? "" :  dataProcessing ==="absolute" ?
+        .attr("dx", function(d:any, i:number) { return labelText === 0 ? "" :  dataProcessing ==="absolute" ?
+        !values[i]  ? d.angle >Math.PI ? "-3.2em" :  "3.2em" :
         d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
         d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
         d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :d.angle > Math.PI ? "-4em" : "4em" :
@@ -762,7 +790,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) : standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) + " : " ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((migrationInside ?  (d.value!== 0 ? d.value + Number.EPSILON : values[i] + Number.EPSILON) : (d.value!== 0 ? d.value + Number.EPSILON : valuesPlus[i] + Number.EPSILON)) * 1000) / 1000) : standardizeOutput(Math.round((migrationInside ?  (d.value!== 0 ? d.value + Number.EPSILON : values[i] + Number.EPSILON) : (d.value!== 0 ? d.value + Number.EPSILON : valuesPlus[i] + Number.EPSILON)) * 1000) / 1000) + " : " ; });
+        // .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) : standardizeOutput(Math.round((d.value + Number.EPSILON) * 1000) / 1000) + " : " ; });
 
 
           group.append("title")
@@ -790,6 +819,16 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
 
         valuesPlus = fillValuesPlus();
 
+        let valuesZero =data.map(d=> !d.Wert ? 0 : +d.Wert);
+        let valuesZeroPlus :number[] = new Array(valuesZero.length + 1);
+        valuesZeroPlus.fill(0);
+        let fillValuesZeroPlus = () => {
+          for(let i=0;i<valuesZero.length;i++){
+            valuesZeroPlus[i]=valuesZero[i]
+          } return valuesZeroPlus
+        }
+        valuesZeroPlus = fillValuesZeroPlus();
+       
         //matrix used in Chord as an input
         let arrFull =  matrixFullPlus(arr);
 
@@ -805,26 +844,31 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         let arrSaldi = arrAbsolute(arrFull)
 
         let valueasSaldiVar = arr.length === values.length? values : valuesPlus;
+        let valueasSaldiVarZero = arr.length === valuesZero.length? valuesZero : valuesZeroPlus;
+        // create sum label for the selected Bezugsfläche
         let valueasSaldiVarLabels = arr.length === values.length? values : valuesPlus;
+        let valueasSaldiVarZeroLabels = arr.length === valuesZero.length? valuesZero : valuesZeroPlus;
         if(indx !== undefined){
-          valueasSaldiVarLabels[indx] = valueasSaldiVarLabels.reduce((a, b) => a + b, 0)
+          valueasSaldiVarLabels[indx] = valueasSaldiVarZeroLabels.reduce((a, b) =>  a + b, 0)
+          // valueasSaldiVarLabels[indx] = valueasSaldiVarLabels.reduce((a, b) => a + b, 0)
         } else {
-          valueasSaldiVarLabels[valueasSaldiVarLabels.length - 1] = valueasSaldiVarLabels.reduce((a, b) => a + b, 0)
+          valueasSaldiVarLabels[valueasSaldiVarLabels.length - 1] = valueasSaldiVarZeroLabels.reduce((a, b) =>  a + b, 0)
+          // valueasSaldiVarLabels[valueasSaldiVarLabels.length - 1] = valueasSaldiVarLabels.reduce((a, b) => a + b, 0)
         }
-        let colorsSaldiFunctionNEW = (clrs:string[], ar:number[]) => {
-          let ar2 = new Array(ar.length);
-          ar2.fill(clrs[2]);
-          let indx2 = (typeof(indx) === "number") ? indx : (ar2.length-1)
-          for(let i=0;i<ar.length;i++){
-            if (ar[i] < 0 ){
-                ar2[i] = clrs[0]
-              } else if (ar[i]>0){
-                ar2[i] = clrs[1]
-              } else if (ar[i] === 0 || i == indx2){
-                ar2[i] = clrs[2]
-              }
-            } return ar2
-          }
+        // let colorsSaldiFunctionNEW = (clrs:string[], ar:number[]) => {
+        //   let ar2 = new Array(ar.length);
+        //   ar2.fill(clrs[2]);
+        //   let indx2 = (typeof(indx) === "number") ? indx : (ar2.length-1)
+        //   for(let i=0;i<ar.length;i++){
+        //     if (ar[i] < 0 ){
+        //         ar2[i] = clrs[0]
+        //       } else if (ar[i]>0){
+        //         ar2[i] = clrs[1]
+        //       } else if (ar[i] === 0 || i == indx2){
+        //         ar2[i] = clrs[2]
+        //       }
+        //     } return ar2
+        //   }
 
         // let colorsSaldi = colorsSaldiFunctionNEW(colorsBlueRed, valueasSaldiVar);
 
@@ -973,7 +1017,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         .style("font-size", this.state.chartWidth < 500 ? "10px" : this.state.chartWidth < 700 && this.state.chartWidth >= 500 ? "11px" :  "13px" )
         // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "11px" :  "13px" )
         .attr("font-family", "Open Sans")
-        .attr("dx", function(d:any) { return labelText === 0 ? "" : dataProcessing === "absolute" ?
+        .attr("dx", function(d:any, i:number) { return labelText === 0 ? "" : dataProcessing === "absolute" ?
+        !values[i]  ? d.angle >Math.PI ? "-3.2em" :  "3.2em" :
         d.value < 100 ? d.angle > Math.PI ? "-1.9em" :  "1.9em" :
         d.value < 1000  && d.value >= 100 ? d.angle > Math.PI ? "-2.6em" :  "2.6em" :
         d.value < 10000  && d.value >= 1000 ? d.angle > Math.PI ? "-3.2em" :  "3.2em" :
@@ -997,7 +1042,8 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         // .style("font-size", this.props.width < 500 ? "10px" : this.props.width < 700 && this.props.width >= 500 ? "10px" : "13px")
         .attr("font-family", "Open Sans")
         .style("font-weight", "bold")
-        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  : standardizeOutput(Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  + " : " ; });
+        .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round(( valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  : standardizeOutput(Math.round(( valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  + " : " ; });
+        // .text(function(d:any, i: number) {  return labelText === 0 ? '' :d.angle > Math.PI  ?   " : " + standardizeOutput(Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  : standardizeOutput(Math.round((valueasSaldiVarLabels[d.index]  + Number.EPSILON) * 1000) / 1000)  + " : " ; });
 
         group.append("title")
         group.select("title")
@@ -1258,7 +1304,16 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
                 />
                 <label className="p-checkbox-label">{t('charts.nofilter')}</label>
               </div>
-            
+              <div className="p-col rdBtnContainer">
+              {/* <div className="p-col-4 noprint"> */}
+                <Checkbox
+                  name = "noNaN"
+                  id	= "noNaN"
+                  onChange={(e: { value: any, checked: boolean }) => this.setState({checkedNaN: e.checked})}
+                  checked={this.state.checkedNaN}
+                />
+                <label className="p-checkbox-label">{t('charts.noNaN')}</label>
+              </div>
 					    <div className="p-col rdBtnContainer">
               {/* <div className="p-col-12 p-md-12 p-lg-3 noprint"> */}
                 <Checkbox id = "values" name = "values"
@@ -1288,10 +1343,10 @@ class D3Chord extends React.Component <ID3ChordProps, ID3ChordState> {
         </AccordionTab>
 			</Accordion>
       <div className="p-col-12 p-md-12 p-lg-9">
-        <Legend basedata={this.props.basedata} showCenter='' yearsSelected={this.props.yearsSelected} />
+        <Legend noNaN={this.state.checkedNaN} basedata={this.props.basedata} showCenter='' yearsSelected={this.props.yearsSelected} />
       </div>
       <div className="p-col-12" >
-        <svg id={this.svgID} width={width} height={height} ref={ref => (this.svgRef = ref)} />
+        <svg id={this.svgID} width={width === NaN ? this.props.width : width} height={height} ref={ref => (this.svgRef = ref)} />
       </div>
     </div>
     );
