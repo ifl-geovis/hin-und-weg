@@ -484,6 +484,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 		return {
 			fillColor: '#f7f7f7',
 			color: '#585858',
+			fillOpacity: this.props.polygonTransparency / 100,
 			weight: borderWidth,
 		};
 	}
