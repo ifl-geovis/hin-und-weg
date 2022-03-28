@@ -154,7 +154,7 @@
     },
     "classificationSelections":{
         "classification": "Klassifikation",
-        "scaleAndColors": "Skala und Farbscheme",
+        "scaleAndColors": "Skala und Farbschema",
         "scaleAndColorsPositive": "positive Skala und Farbschema",
         "scaleAndColorsNegative": "negative Skala und Farbschema",
         "arrowsColor": "Pfeilfarbe",
