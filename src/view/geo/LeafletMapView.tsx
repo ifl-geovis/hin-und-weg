@@ -631,6 +631,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 
 	private standardizeOutput(value: number): string
 	{
+		if (typeof value != 'number') return "" + value;
 		if (Number.isInteger(value)) return "" + value;
 		if (i18n.language == "en") return value.toFixed(3);
 		return value.toFixed(3).replace("\.", ",");
