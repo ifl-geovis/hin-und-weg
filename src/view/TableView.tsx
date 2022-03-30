@@ -25,6 +25,7 @@ class TableView extends React.Component<ITableViewProps> {
 	}
 
 	public render(): JSX.Element {
+		Log.debug("Tabledata: ", this.props.items);
 		const {t}:any = this.props ;
 		if (R.isEmpty(this.props.items)) {
 			return <div>{t('table.noData')}</div>;

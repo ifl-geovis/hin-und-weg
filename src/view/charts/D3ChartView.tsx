@@ -7,6 +7,7 @@ import { RadioButton } from "primereact/radiobutton";
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
+import Log from '../../log';
 
 export interface ID3ChartViewProps extends WithNamespaces
 {
@@ -25,7 +26,7 @@ interface ID3ChartViewState
 }
 
 
-// export default 
+// export default
 class D3ChartView extends React.Component<ID3ChartViewProps, ID3ChartViewState>
 {
 
@@ -42,6 +43,7 @@ class D3ChartView extends React.Component<ID3ChartViewProps, ID3ChartViewState>
 
 	public render(): JSX.Element
 	{
+		Log.debug("Bar-chart data: ", this.props.items);
 		const {t}:any = this.props ;
 		const heightResponsive =
 		this.props.items.length <= 2
@@ -51,7 +53,7 @@ class D3ChartView extends React.Component<ID3ChartViewProps, ID3ChartViewState>
 			: this.props.items.length > 5 && this.props.items.length < 30
 			? this.props.items.length * 25
 			: this.props.items.length * 20;
-		
+
 			const classification = this.props.basedata.getClassification();
 			const positive_scales = classification.getPositiveScales();
 			const positive_colors = classification.getPositiveColors();
@@ -71,7 +73,7 @@ class D3ChartView extends React.Component<ID3ChartViewProps, ID3ChartViewState>
 							yearsSelected={this.props.yearsSelected}
 							width={ width }
 							height={heightResponsive}
-							data={this.props.items} theme={this.props.theme} dataProcessing={this.props.dataProcessing} 
+							data={this.props.items} theme={this.props.theme} dataProcessing={this.props.dataProcessing}
 							positive_colors={positive_colors} negative_colors={negative_colors} positive_scales={positive_scales} negative_scales={negative_scales} />
 								}
 						  </ContainerDimensions>

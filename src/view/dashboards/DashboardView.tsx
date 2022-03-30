@@ -81,6 +81,7 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	public render(): JSX.Element
 	{
+		Log.debug("dashboard data: ", this.props.items);
 		return this.selectCurrentView(this.props.view);
 	}
 

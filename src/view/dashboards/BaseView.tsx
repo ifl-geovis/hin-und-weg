@@ -85,6 +85,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 	public render(): JSX.Element {
 		const {t}:any = this.props ;
 		const results = this.state.basedata.query();
+		Log.debug("baseview results: ", results);
 		const timeline = this.queryTimeline();
 		const statisticPerYearAusgabe = this.queryStatistics();
 		const classification = this.state.basedata.getClassification();

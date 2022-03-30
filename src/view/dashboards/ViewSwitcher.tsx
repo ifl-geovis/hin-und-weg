@@ -99,6 +99,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	}
 
 	public render(): JSX.Element {
+		Log.debug("view switcher data: ", this.props.items);
 		const {t}:any = this.props ;
 		let views = this.getVisibleViews();
 		let showedView = this.selectCurrentView(this.state.activeView);
@@ -205,6 +206,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	}
 
 	private selectTableView() {
+		Log.debug("tabledata 1: ", this.props.items);
 		return (
 			<div className="p-col-12">
 				<TableView items={this.props.items} maxRows={25} />
