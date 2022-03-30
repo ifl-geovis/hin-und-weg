@@ -189,7 +189,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 				</Accordion>
 				{Settings.getValue('map', 'legendPlacement') === 'top' && (
 					<div className="p-col-12">
-						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
+						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} noNaN={false} />
 					</div>
 				)}
 				<div className="p-col-12">
@@ -211,7 +211,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'bottom' && (
 					<div className="p-col-12">
-						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} />
+						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} noNaN={false} />
 					</div>
 				)}
 			</div>

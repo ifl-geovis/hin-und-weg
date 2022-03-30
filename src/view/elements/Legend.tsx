@@ -12,7 +12,7 @@ export interface ILegendProps extends WithNamespaces {
 	basedata: BaseData;
 	showCenter: string;
 	yearsSelected: string[];
-	noNaN?: boolean;
+	noNaN: boolean;
 }
 
 class Legend extends React.Component<ILegendProps> {
@@ -140,11 +140,11 @@ class Legend extends React.Component<ILegendProps> {
 		const nan_label = (has_nan) ? this.createLabel('NaN', offset + this.box_width + this.label_char_width * 3 + x, this.box_height - 6 + y, 'nan') : <svg></svg>;
 		console.log("this.props.noNaN Legend: " + this.props.noNaN);
 		return (
-			this.props.noNaN ? 
+			this.props.noNaN ?
 			<svg x={0} y={0} width={offset + this.box_width + this.label_char_width * 10 + x} height={this.box_height + y}>
 				{zero_box}
 				{zero_label}
-				
+
 			</svg> :
 			<svg x={0} y={0} width={offset + this.box_width + this.label_char_width * 10 + x} height={this.box_height + y}>
 			{zero_box}
