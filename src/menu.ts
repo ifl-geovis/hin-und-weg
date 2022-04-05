@@ -15,39 +15,32 @@ export default class MainMenu
 		let template : Electron.MenuItemConstructorOptions[] = [];
 		template.push
 		({
-			// label: 'Anwendung',
 			label: i18n.t('menu.file'),
 			submenu:
 			[
 				{
-					// label: 'Projekt öffnen',
 					label: i18n.t('menu.open'),
 					enabled: false,
 				},
 				{
-					// label: 'Projekt speichern',
 					label: i18n.t('menu.save'),
 					enabled: false,
 				},
 				{
-					// label: 'Import',
 					label: i18n.t('menu.import'),
 					enabled: false,
 				},
 				{
-					// label: 'Export',
 					label: i18n.t('menu.export'),
 					submenu:
 					[
 						{
 							id: 'export-png',
 							label: i18n.t('menu.png'),
-							// label: 'PNG',
 							click(event, window, content) {MainMenu.execute("export-image", "png", event, window, content);},
 						},
 						{
 							id: 'export-jpeg',
-							// label: 'JPEG',
 							label: i18n.t('menu.jpeg'),
 							click(event, window, content) {MainMenu.execute("export-image", "jpeg", event, window, content);},
 						},
@@ -57,18 +50,15 @@ export default class MainMenu
 					type: 'separator'
 				},
 				{
-					// label: 'Vergrößern',
 					label: i18n.t('menu.zoomIn'),
 					accelerator: (process.platform === 'darwin') ? 'CommandOrControl+Plus' : 'CommandOrControl+L',
 					role: 'zoomIn'
 				},
 				{
-					// label: 'Verkleinern',
 					label: i18n.t('menu.zoomOut'),
 					role: 'zoomOut'
 				},
 				{
-					// label: 'Zoom zurücksetzen',
 					label: i18n.t('menu.zoomReset'),
 					role: 'resetZoom'
 				},
@@ -76,7 +66,6 @@ export default class MainMenu
 					type: 'separator'
 				},
 				{
-					// label: 'Drucken',
 					label: i18n.t('menu.print'),
 					click(event, window, content) {MainMenu.print(event, window, content);}
 				},
@@ -84,7 +73,6 @@ export default class MainMenu
 					type: 'separator'
 				},
 				{
-					// label: 'Beenden',
 					label: i18n.t('menu.quit'),
 					role: 'quit'
 				}
