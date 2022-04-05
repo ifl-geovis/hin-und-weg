@@ -319,6 +319,7 @@ export default class MainMenu
 		let options: any = {};
 		console.log(i18n.t('project.open-dialog'));
 		options.title = i18n.t('project.open-dialog');
+		options.multiSelections = false;
 		let path = dialog.showOpenDialogSync(options);
 		Log.debug("path: ", path);
 		window.webContents.send("project-open", path);
@@ -328,6 +329,7 @@ export default class MainMenu
 	{
 		let options: any = {};
 		options.title = i18n.t('project.save-dialog');
+		options.showOverwriteConfirmation = true;
 		let path = dialog.showSaveDialogSync(options);
 		Log.debug("path: ", path);
 		window.webContents.send("project-save", path);
