@@ -1,4 +1,4 @@
-import { app, Menu, BrowserWindow } from "electron";
+import { app, Menu, BrowserWindow, dialog } from "electron";
 
 import Config from "./config";
 import Log from './log';
@@ -20,11 +20,11 @@ export default class MainMenu
 			[
 				{
 					label: i18n.t('menu.open'),
-					click(event, window, content) {MainMenu.execute("project-open", "project-open", event, window, content);},
+					click(event, window, content) {MainMenu.openProject(event, window, content);}
 				},
 				{
 					label: i18n.t('menu.save'),
-					click(event, window, content) {MainMenu.execute("project-save", "project-save", event, window, content);},
+					click(event, window, content) {MainMenu.saveProject(event, window, content);}
 				},
 				{
 					label: i18n.t('menu.import'),
@@ -311,6 +311,24 @@ export default class MainMenu
 	{
 		const options = { landscape: true };
 		window.webContents.print(options);
+	}
+
+	private static openProject(event: any, window: any, content: any)
+	{
+		let options = {};
+		//options.title = t('project', 'open-dialog');
+		let path = dialog.showOpenDialogSync(options);
+		Log.debug("path: ", path);
+		window.webContents.send("project-open", path);
+	}
+
+	private static saveProject(event: any, window: any, content: any)
+	{
+		let options = {};
+		//options.title = t('project', 'save-dialog');
+		let path = dialog.showSaveDialogSync(options);
+		Log.debug("path: ", path);
+		window.webContents.send("project-save", path);
 	}
 
 	private static website(url: string, window: any)
