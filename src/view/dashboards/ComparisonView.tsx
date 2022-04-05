@@ -49,15 +49,17 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 			change: true,
 		};
 		this.change = this.change.bind(this);
+		this.saveProject = this.saveProject.bind(this);
 		this.props.data.setChange(this.change);
 		const ipc = require('electron').ipcRenderer;
-		ipc.on
-		(
-			'dashboard', (event: any, message: string) =>
-			{
+		ipc.on('dashboard', (event: any, message: string) => {
 				this.setState({dashboard_configuration: message});
 			}
-		)
+		);
+		ipc.on('project-save', (event: any, message: string) => {
+				this.saveProject();
+			}
+		);
 	}
 
 	public render(): JSX.Element {
@@ -100,6 +102,15 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 
 	private change() {
 		this.setState({ change: this.state.change ? false : true });
+	}
+
+	private saveProject() {
+		Log.debug("save project");
+		/*const { dialog } = require('electron');
+		let options = {};
+		options.title = t('project', 'save-dialog');
+		let path = dialog.showSaveDialogSync(options);
+		Log.debug("path: ", path);*/
 	}
 
 }
