@@ -23,4 +23,8 @@ export default class Project {
 		}
 	}
 
+	public static addData(key: string, values: any) {
+		Project.data[key] = values;
+	}
+
 }

@@ -4,6 +4,8 @@ import R from "ramda";
 import BaseView from "./BaseView";
 import Geodata from "../../model/Geodata";
 
+import Project from '../../project';
+
 import Config from "../../config";
 import Log from "../../log";
 import AppData from "../../data/AppData";
@@ -115,6 +117,15 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 
 	private saveProject(path: string) {
 		Log.debug("save project on: ", path);
+		Project.addData("comparison", this.gatherComparisonData());
+		Project.save(path);
+	}
+
+	private gatherComparisonData()
+	{
+		let result: any = {};
+		result.dashboard_configuration = this.state.dashboard_configuration;
+		return result;
 	}
 
 }
