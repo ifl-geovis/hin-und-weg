@@ -125,6 +125,11 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	{
 		let result: any = {};
 		result.dashboard_configuration = this.state.dashboard_configuration;
+		//result.geodata = this.state.geodata;
+		result.geoId = this.state.geoId;
+		result.yearsAvailable = this.state.yearsAvailable;
+		result.shapefilename = this.state.shapefilename;
+		result.populationDataLoaded = this.state.populationDataLoaded;
 		return result;
 	}
 
