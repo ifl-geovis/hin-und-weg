@@ -326,5 +326,9 @@
         "negativeValues": "negative values",
         "style": "Style: ",
         "stylesNote": "Note: The change of style will take effect only after restarting the application."
+    },
+    "project":{
+        "open-dialog": "open project",
+        "save-dialog": "save project"
     }
 }

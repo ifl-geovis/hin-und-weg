@@ -5,6 +5,7 @@ import Log from './log';
 
 import { TFunction } from "i18next";
 import i18nConfig from "./i18n/i18nConfig";
+import i18n from './i18n/i18nClient';
 
 export default class MainMenu
 {
@@ -315,8 +316,9 @@ export default class MainMenu
 
 	private static openProject(event: any, window: any, content: any)
 	{
-		let options = {};
-		//options.title = t('project', 'open-dialog');
+		let options: any = {};
+		console.log(i18n.t('project.open-dialog'));
+		options.title = i18n.t('project.open-dialog');
 		let path = dialog.showOpenDialogSync(options);
 		Log.debug("path: ", path);
 		window.webContents.send("project-open", path);
@@ -324,8 +326,8 @@ export default class MainMenu
 
 	private static saveProject(event: any, window: any, content: any)
 	{
-		let options = {};
-		//options.title = t('project', 'save-dialog');
+		let options: any = {};
+		options.title = i18n.t('project.save-dialog');
 		let path = dialog.showSaveDialogSync(options);
 		Log.debug("path: ", path);
 		window.webContents.send("project-save", path);
