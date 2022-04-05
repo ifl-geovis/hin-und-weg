@@ -20,11 +20,11 @@ export default class MainMenu
 			[
 				{
 					label: i18n.t('menu.open'),
-					enabled: false,
+					click(event, window, content) {MainMenu.execute("project-open", "project-open", event, window, content);},
 				},
 				{
 					label: i18n.t('menu.save'),
-					enabled: false,
+					click(event, window, content) {MainMenu.execute("project-save", "project-save", event, window, content);},
 				},
 				{
 					label: i18n.t('menu.import'),
