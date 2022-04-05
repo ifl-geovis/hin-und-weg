@@ -7,12 +7,11 @@ export default class Project {
 
 	private static data: any = JSON.parse('{}');
 
-	/*public static load() {
+	/*public static load(path: string) {
 		try {
-			Settings.fixSavepathForMac();
-			Settings.settings = JSON.parse(fs.readFileSync(Settings.savepath, 'utf8'));
+			Project.data = JSON.parse(fs.readFileSync(path, 'utf8'));
 		} catch (e) {
-			Log.debug("Could not load file " + Settings.savepath + ": " + e);
+			Log.debug("Could not load file " + path + ": " + e);
 		}
 	}*/
 
