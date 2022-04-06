@@ -70,6 +70,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	}
 
 	public render(): JSX.Element {
+		Log.debug("this.state: ", this.state);
 		return this.selectCurrentView(this.state.dashboard_configuration);
 	}
 
@@ -114,7 +115,25 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	private openProject(path: string) {
 		Log.debug("open project from: ", path);
 		Project.load(path);
-		Log.debug("loaded data comparison: ", Project.getData("comparison"));
+		this.restoreComparisonData(Project.getData("comparison"));
+	}
+
+	private restoreComparisonData(data: any)
+	{
+		Log.debug("restore comparison with: ", data);
+		let geodata = null;
+		if (data.geodata) {
+			geodata = new Geodata(data.geodata.featureCollection, data.geodata.projection);
+		}
+		this.setState({
+			change: this.state.change ? false : true,
+			dashboard_configuration: data.dashboard_configuration,
+			geodata: geodata,
+			geoId: data.geoId,
+			yearsAvailable: data.yearsAvailable,
+			shapefilename: data.shapefilename,
+			populationDataLoaded: data.populationDataLoaded
+		});
 	}
 
 	private saveProject(path: string) {
@@ -128,7 +147,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	{
 		let result: any = {};
 		result.dashboard_configuration = this.state.dashboard_configuration;
-		result.geodata = this.state.geodata;
+		result.geodata = this.state.geodata ? this.state.geodata.gatherGeodata() : null;
 		result.geoId = this.state.geoId;
 		result.yearsAvailable = this.state.yearsAvailable;
 		result.shapefilename = this.state.shapefilename;
