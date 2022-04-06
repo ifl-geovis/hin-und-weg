@@ -322,7 +322,7 @@ export default class MainMenu
 		options.multiSelections = false;
 		let path = dialog.showOpenDialogSync(options);
 		Log.debug("path: ", path);
-		window.webContents.send("project-open", path);
+		window.webContents.send("project-open", (path ? path[0] : path));
 	}
 
 	private static saveProject(event: any, window: any, content: any)

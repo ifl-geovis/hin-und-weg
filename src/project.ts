@@ -7,13 +7,13 @@ export default class Project {
 
 	private static data: any = JSON.parse('{}');
 
-	/*public static load(path: string) {
+	public static load(path: string) {
 		try {
 			Project.data = JSON.parse(fs.readFileSync(path, 'utf8'));
 		} catch (e) {
 			Log.debug("Could not load file " + path + ": " + e);
 		}
-	}*/
+	}
 
 	public static save(path: string) {
 		try {
@@ -25,6 +25,10 @@ export default class Project {
 
 	public static addData(key: string, values: any) {
 		Project.data[key] = values;
+	}
+
+	public static getData(key: string): any {
+		return Project.data[key];
 	}
 
 }
