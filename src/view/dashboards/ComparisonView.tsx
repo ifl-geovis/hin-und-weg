@@ -115,6 +115,8 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	private openProject(path: string) {
 		Log.debug("open project from: ", path);
 		Project.load(path);
+		this.props.data.restoreAppData(Project.getData("appdata"));
+		Log.debug("restored db data: ", this.props.data.gatherAppData());
 		this.restoreComparisonData(Project.getData("comparison"));
 	}
 

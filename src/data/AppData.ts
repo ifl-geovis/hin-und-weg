@@ -54,4 +54,19 @@ export default class AppData {
 		return results;
 	}
 
+	public restoreAppData(data: any)
+	{
+		this.restoreDBData(data.db);
+		change();
+	}
+
+	private restoreDBData(data: any)
+	{
+		const db = this.getDB();
+		for (const tablename of ["matrices", "population"]) {
+			db(`DELETE FROM ${tablename}`);
+			db(`INSERT INTO ${tablename} SELECT * FROM ?`,[data[tablename]]);
+		}
+	}
+
 }
