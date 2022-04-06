@@ -150,6 +150,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		this.addView(views, 'statistics', t('viewSwitcher.statistics'), (this.props.yearsSelected.length > 0) && (this.props.location != null));
 		this.addView(views, 'file', t('viewSwitcher.file'), true);
 		this.addView(views, 'db', t('viewSwitcher.database'), this.props.yearsAvailable.length > 0);
+		this.addView(views, 'settings', t('viewSwitcher.settings'), true);
 		this.addView(views, 'systeminfo', t('viewSwitcher.systeminfo'), true);
 		this.addView(views, 'projektinfo', t('viewSwitcher.projectinfo'), true);
 		return views;
