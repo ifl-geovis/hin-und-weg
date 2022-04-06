@@ -36,4 +36,22 @@ export default class AppData {
 		return years;
 	}
 
+	public gatherAppData()
+	{
+		let results: any = {};
+		results.db = this.gatherDBData();
+		return results;
+	}
+
+	private gatherDBData()
+	{
+		let results: any = {};
+		const db = this.getDB();
+		for (const tablename of ["matrices", "population"]) {
+			let tableresults = db(`SELECT * FROM ${tablename}`);
+			results[tablename] = tableresults;
+		}
+		return results;
+	}
+
 }

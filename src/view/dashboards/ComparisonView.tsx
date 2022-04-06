@@ -118,6 +118,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	private saveProject(path: string) {
 		Log.debug("save project on: ", path);
 		Project.addData("comparison", this.gatherComparisonData());
+		Project.addData("appdata", this.props.data.gatherAppData());
 		Project.save(path);
 	}
 
@@ -125,7 +126,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	{
 		let result: any = {};
 		result.dashboard_configuration = this.state.dashboard_configuration;
-		//result.geodata = this.state.geodata;
+		result.geodata = this.state.geodata;
 		result.geoId = this.state.geoId;
 		result.yearsAvailable = this.state.yearsAvailable;
 		result.shapefilename = this.state.shapefilename;
