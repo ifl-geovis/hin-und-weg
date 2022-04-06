@@ -87,4 +87,13 @@ export default class Geodata {
 		}
 		return new Geodata(reproject.reproject(this.featureCollection, this.projection, Proj4.WGS84), Proj4.WGS84);
 	}
+
+	public gatherGeodata()
+	{
+		let results: any = {};
+		results.featureCollection = this.featureCollection;
+		results.projection = this.projection;
+		return results;
+	}
+
 }
