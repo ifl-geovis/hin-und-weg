@@ -99,7 +99,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	}
 
 	public render(): JSX.Element {
-		Log.debug("view switcher data: ", this.props.items);
+		Log.trace("view switcher data: ", this.props.items);
 		const {t}:any = this.props ;
 		let views = this.getVisibleViews();
 		let showedView = this.selectCurrentView(this.state.activeView);
