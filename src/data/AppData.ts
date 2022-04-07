@@ -57,7 +57,7 @@ export default class AppData {
 	public restoreAppData(data: any)
 	{
 		this.restoreDBData(data.db);
-		change();
+		this.change();
 	}
 
 	private restoreDBData(data: any)

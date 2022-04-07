@@ -122,7 +122,6 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 
 	private restoreComparisonData(data: any)
 	{
-		Log.debug("restore comparison with: ", data);
 		let geodata = null;
 		if (data.geodata) {
 			geodata = new Geodata(data.geodata.featureCollection, data.geodata.projection);
