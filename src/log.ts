@@ -4,7 +4,7 @@ import Config from "./config";
 export default class Log
 {
 
-	private static filename: string = null;
+	private static filename: string = "";
 
 	public static ERROR: boolean = Config.getValue("logging", "error");
 	public static WARNING: boolean = Config.getValue("logging", "warning");
@@ -20,15 +20,30 @@ export default class Log
 			{
 				// tslint:disable-next-line: no-console
 				console.log(message);
-				fs.appendFileSync("./hin&weg-log", message + '\n', 'utf8');
+				fs.appendFileSync(Log.getSavePath(), message + '\n', 'utf8');
 			}
 			else
 			{
 				// tslint:disable-next-line: no-console
 				console.log(message, some);
-				fs.appendFileSync("./hin&weg-log", message + some + '\n', 'utf8');
+				fs.appendFileSync(Log.getSavePath(), message + some + '\n', 'utf8');
 			}
 		}
+	}
+
+	private static getSavePath()
+	{
+		const logdir = "./hin&weg-logs";
+		if (!fs.existsSync(logdir))
+		{
+			fs.mkdirSync(logdir);
+		}
+		if (Log.filename === "")
+		{
+			const date = new Date();
+			Log.filename = date.toISOString();
+		}
+		return logdir + "/"+ Log.filename;
 	}
 
 	public static error(message: string, some?: any)
