@@ -17,6 +17,10 @@ export default class MessageList {
 	public addMessage(message: string, type: string) {
 		this.messages.push(message);
 		this.types.push(type);
+		if (type === "error") Log.error(message);
+		else if (type === "warning") Log.warning(message);
+		else if (type === "success") Log.success(message);
+		else Log.debug(message);
 	}
 
 	public clear() {

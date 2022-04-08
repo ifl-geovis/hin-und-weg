@@ -4,6 +4,11 @@ import Config from "./config";
 export default class Log
 {
 
+	private static filename: string = null;
+
+	public static ERROR: boolean = Config.getValue("logging", "error");
+	public static WARNING: boolean = Config.getValue("logging", "warning");
+	public static SUCCESS: boolean = Config.getValue("logging", "success");
 	public static DEBUG: boolean = Config.getValue("logging", "debug");
 	public static TRACE: boolean = Config.getValue("logging", "trace");
 
@@ -24,6 +29,21 @@ export default class Log
 				fs.appendFileSync("./hin&weg-log", message + some + '\n', 'utf8');
 			}
 		}
+	}
+
+	public static error(message: string, some?: any)
+	{
+		Log.log(Log.ERROR, message, some);
+	}
+
+	public static warning(message: string, some?: any)
+	{
+		Log.log(Log.WARNING, message, some);
+	}
+
+	public static success(message: string, some?: any)
+	{
+		Log.log(Log.SUCCESS, message, some);
 	}
 
 	public static debug(message: string, some?: any)

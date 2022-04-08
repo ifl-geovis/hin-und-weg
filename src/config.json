@@ -54,6 +54,9 @@
 			"settings": true,
 		},
 		"logging": {
+			"error": true,
+			"warning": true,
+			"success": true,
 			"debug": true,
 			"trace": false
 		},
