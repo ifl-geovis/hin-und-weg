@@ -85,10 +85,10 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		return this.selectCurrentView(this.props.view);
 	}
 
-	private getViewSwitcher(): JSX.Element
+	private getViewSwitcher(first: boolean): JSX.Element
 	{
 		return (
-			<ViewSwitcher basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.state.count} onSwitchView={this.updateCounter} geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} shapefilename={this.props.shapefilename} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} setShapefileName={this.props.setShapefileName} addYear={this.props.addYear} change={this.props.change}
+			<ViewSwitcher first={first} basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.state.count} onSwitchView={this.updateCounter} geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} shapefilename={this.props.shapefilename} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} setShapefileName={this.props.setShapefileName} addYear={this.props.addYear} change={this.props.change}
 			migrationsInside={this.props.migrationsInside} setPopulationDataLoaded={this.props.setPopulationDataLoaded}
 			/>
 		);
@@ -108,19 +108,20 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		if (view == "l1r2") return this.select_l1r2();
 		if (view == "v3") return this.select_v3();
 		if (view == "l2r2") return this.select_l2r2();
-		return this.getViewSwitcher();
+		return this.getViewSwitcher(true);
 	}
 
 	private select_t1b1(): JSX.Element
 	{
-		let viewswitcher = this.getViewSwitcher();
+		let viewswitcher1 = this.getViewSwitcher(true);
+		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-12 pb">
-					{viewswitcher}
+					{viewswitcher1}
 				</div>
 				<div className="p-col-12 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 			</div>
 		);
@@ -128,14 +129,15 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_l1r1(): JSX.Element
 	{
-		let viewswitcher = this.getViewSwitcher();
+		let viewswitcher1 = this.getViewSwitcher(true);
+		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher1}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 			</div>
 		);
@@ -143,17 +145,18 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_t1b2(): JSX.Element
 	{
-		let viewswitcher = this.getViewSwitcher();
+		let viewswitcher1 = this.getViewSwitcher(true);
+		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-12 pb">
-					{viewswitcher}
+					{viewswitcher1}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 			</div>
 		);
@@ -161,17 +164,18 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_t2b1(): JSX.Element
 	{
-		let viewswitcher = this.getViewSwitcher();
+		let viewswitcher1 = this.getViewSwitcher(true);
+		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher1}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 				<div className="p-col-12 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 			</div>
 		);
@@ -179,18 +183,19 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_l1r2(): JSX.Element
 	{
-		let viewswitcher = this.getViewSwitcher();
+		let viewswitcher1 = this.getViewSwitcher(true);
+		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher1}
 				</div>
 				<div className="p-col-6">
 					<div className="p-col-12 pb">
-						{viewswitcher}
+						{viewswitcher2}
 					</div>
 					<div className="p-col-12 pb">
-						{viewswitcher}
+						{viewswitcher2}
 					</div>
 				</div>
 			</div>
@@ -199,17 +204,18 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_v3(): JSX.Element
 	{
-		let viewswitcher = this.getViewSwitcher();
+		let viewswitcher1 = this.getViewSwitcher(true);
+		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-4 pb">
-					{viewswitcher}
+					{viewswitcher1}
 				</div>
 				<div className="p-col-4 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 				<div className="p-col-4 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 			</div>
 		);
@@ -217,20 +223,21 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_l2r2(): JSX.Element
 	{
-		let viewswitcher = this.getViewSwitcher();
+		let viewswitcher1 = this.getViewSwitcher(true);
+		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher1}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher}
+					{viewswitcher2}
 				</div>
 			</div>
 		);

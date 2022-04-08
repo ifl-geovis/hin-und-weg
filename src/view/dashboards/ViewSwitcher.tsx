@@ -47,6 +47,7 @@ export interface StatisticPerYearAusgabe {
 
 export interface IViewSwitcherProps extends WithNamespaces {
 	basedata: BaseData;
+	first: boolean;
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
 	items: TableItem[];
@@ -93,7 +94,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		(
 			'viewswitcher', (event: any, message: string) =>
 			{
-				this.switchView(message);
+				if (this.props.first) this.switchView(message);
 			}
 		)
 	}
