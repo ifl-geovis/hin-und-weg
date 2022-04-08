@@ -1,3 +1,4 @@
+import fs from 'fs';
 import Config from "./config";
 
 export default class Log
@@ -14,11 +15,13 @@ export default class Log
 			{
 				// tslint:disable-next-line: no-console
 				console.log(message);
+				fs.appendFileSync("./hin&weg-log", message + '\n', 'utf8');
 			}
 			else
 			{
 				// tslint:disable-next-line: no-console
 				console.log(message, some);
+				fs.appendFileSync("./hin&weg-log", message + some + '\n', 'utf8');
 			}
 		}
 	}
