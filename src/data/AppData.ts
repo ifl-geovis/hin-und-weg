@@ -1,6 +1,7 @@
 import Log from '../log';
 import Config from '../config';
 import Settings from '../settings';
+import Project from '../project';
 
 /**
 	Represents the application data (loaded geometries and migration and population data).
@@ -9,6 +10,7 @@ export default class AppData {
 
 	private change: () => void;
 	private db: alaSQLSpace.AlaSQL;
+	private saveRegister: any = {};
 
 	constructor(db: alaSQLSpace.AlaSQL) {
 		this.change = () => {};
@@ -17,6 +19,17 @@ export default class AppData {
 
 	public setChange(change: () => void) {
 		this.change = change;
+	}
+
+	public registerSaveFunction(key: string, save: () => void) {
+		this.saveRegister[key] = save;
+	}
+
+	public callSaveFunctions()
+	{
+		for (const key of Object.keys(this.saveRegister)) {
+			this.saveRegister[key]();
+		}
 	}
 
 	public setDB(db: alaSQLSpace.AlaSQL) {

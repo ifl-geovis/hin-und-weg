@@ -140,6 +140,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 		Log.debug("save project on: ", path);
 		Project.addData("comparison", this.gatherComparisonData());
 		Project.addData("appdata", this.props.data.gatherAppData());
+		this.props.data.callSaveFunctions();
 		Project.save(path);
 	}
 

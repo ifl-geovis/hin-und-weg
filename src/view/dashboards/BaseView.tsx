@@ -8,6 +8,10 @@ import { GeoJsonProperties } from 'geojson';
 import AppData from "../../data/AppData";
 import BaseData from "../../data/BaseData";
 
+import Config from '../../config';
+import Log from '../../log';
+import Project from '../../project';
+
 import Classification from '../../data/Classification';
 import MessageList from '../../data/MessageList';
 
@@ -18,8 +22,6 @@ import Messages from '../elements/Messages';
 import ClassificationSelections from '../selections/ClassificationSelections';
 import DashboardView from './DashboardView';
 
-import Config from '../../config';
-import Log from '../../log';
 import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
@@ -79,7 +81,9 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		this.setGeoName = this.setGeoName.bind(this);
 		this.setClassCount = this.setClassCount.bind(this);
 		this.setLocation = this.setLocation.bind(this);
+		this.saveData = this.saveData.bind(this);
 		this.state.basedata.setChange(this.change);
+		this.props.appdata.registerSaveFunction("basedata" + this.props.baseViewId, this.saveData);
 	}
 
 	public render(): JSX.Element {
@@ -469,6 +473,26 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		let negativeClassCount = '' + classification.calculateSturgesRule(false);
 		Log.trace('negativeClassCount:', negativeClassCount);
 		this.setState({ negativeClasses: negativeClassCount });
+	}
+
+	private saveData() {
+		Log.debug("save baseview" + this.props.baseViewId);
+		Project.addData("baseview" + this.props.baseViewId, this.gatherBaseviewData());
+		Project.addData("basedata" + this.props.baseViewId, this.state.basedata.gatherBaseData());
+	}
+
+	private gatherBaseviewData()
+	{
+		let result: any = {};
+		result.algorithm = this.state.algorithm;
+		result.positiveColors = this.state.positiveColors;
+		result.negativeColors = this.state.negativeColors;
+		result.positiveClasses = this.state.positiveClasses;
+		result.negativeClasses = this.state.negativeClasses;
+		result.classcountset = this.state.classcountset;
+		result.updateclasscount = this.state.updateclasscount;
+		result.activeLeftTab = this.state.activeLeftTab;
+		return result;
 	}
 
 }

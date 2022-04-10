@@ -55,6 +55,17 @@ export default class BaseData {
 		this.cached_results = null;
 	}
 
+	public gatherBaseData()
+	{
+		let results: any = {};
+		results.theme = this.theme;
+		results.dataprocessing = this.dataprocessing;
+		results.location = this.location;
+		results.migrationsinside = this.migrationsinside;
+		results.years = this.years;
+		return results;
+	}
+
 	public setAppData(appdata: AppData) {
 		this.appdata = appdata;
 	}
