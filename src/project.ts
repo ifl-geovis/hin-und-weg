@@ -26,6 +26,8 @@ export default class Project {
 	}
 
 	public static addData(key: string, values: any) {
+		// @ts-ignore
+		Project.loaded.push(key);
 		Project.data[key] = values;
 	}
 
