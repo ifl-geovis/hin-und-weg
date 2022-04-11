@@ -103,14 +103,16 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		let attributes: GeoJsonProperties[] = [];
 		let fieldNameLoc = this.props.geoName as string;
 		let locations: string[] = [];
-		const projektinfo = Config.getValue('components', 'projektinfo') == true;
-		const systeminfo = Config.getValue('components', 'systeminfo') == true;
+		Log.debug("BaseView - this.props.geodata: ", this.props.geodata);
+		Log.debug("BaseView - this.props.geoName: ", this.props.geoName);
 		if (this.props.geodata != null && this.props.geoName != null) {
 			attributes = this.props.geodata.attributes();
+			Log.debug("BaseView - attributes", attributes);
 			locations = R.sort(
 				(a: string, b: string) => a.localeCompare(b),
 				R.map((item) => item![fieldNameLoc], attributes)
 			);
+			Log.debug("BaseView - locations", locations);
 		}
 		return (
 			<div className="p-grid">
