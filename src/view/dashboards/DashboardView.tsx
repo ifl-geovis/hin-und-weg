@@ -85,8 +85,9 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		return this.selectCurrentView(this.props.view);
 	}
 
-	private getViewSwitcher(first: boolean): JSX.Element
+	private getViewSwitcher(index: number): JSX.Element
 	{
+		const first = (index === 1) ? true : false;
 		return (
 			<ViewSwitcher first={first} basedata={this.props.basedata} dataProcessing={this.props.dataProcessing} baseViewId={this.props.baseViewId} vizID={this.state.count} onSwitchView={this.updateCounter} geodata={this.props.geodata} db={this.props.db} items={this.props.items} statisticPerYearAusgabe={this.props.statisticPerYearAusgabe} timeline={this.props.timeline} geoName={this.props.geoName} geoId={this.props.geoId} shapefilename={this.props.shapefilename} locations={this.props.locations} location={this.props.location} theme={this.props.theme} yearsAvailable={this.props.yearsAvailable} yearsSelected={this.props.yearsSelected} onSelectLocation={this.props.onSelectLocation} setGeodata={this.props.setGeodata} setGeoName={this.props.setGeoName} setGeoId={this.props.setGeoId} setShapefileName={this.props.setShapefileName} addYear={this.props.addYear} change={this.props.change}
 			migrationsInside={this.props.migrationsInside} setPopulationDataLoaded={this.props.setPopulationDataLoaded}
@@ -108,20 +109,18 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 		if (view == "l1r2") return this.select_l1r2();
 		if (view == "v3") return this.select_v3();
 		if (view == "l2r2") return this.select_l2r2();
-		return this.getViewSwitcher(true);
+		return this.getViewSwitcher(1);
 	}
 
 	private select_t1b1(): JSX.Element
 	{
-		let viewswitcher1 = this.getViewSwitcher(true);
-		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-12 pb">
-					{viewswitcher1}
+					{this.getViewSwitcher(1)}
 				</div>
 				<div className="p-col-12 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(2)}
 				</div>
 			</div>
 		);
@@ -129,15 +128,13 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_l1r1(): JSX.Element
 	{
-		let viewswitcher1 = this.getViewSwitcher(true);
-		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher1}
+					{this.getViewSwitcher(1)}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(2)}
 				</div>
 			</div>
 		);
@@ -145,18 +142,16 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_t1b2(): JSX.Element
 	{
-		let viewswitcher1 = this.getViewSwitcher(true);
-		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-12 pb">
-					{viewswitcher1}
+					{this.getViewSwitcher(1)}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(2)}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(3)}
 				</div>
 			</div>
 		);
@@ -164,18 +159,16 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_t2b1(): JSX.Element
 	{
-		let viewswitcher1 = this.getViewSwitcher(true);
-		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher1}
+					{this.getViewSwitcher(1)}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(2)}
 				</div>
 				<div className="p-col-12 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(3)}
 				</div>
 			</div>
 		);
@@ -183,19 +176,17 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_l1r2(): JSX.Element
 	{
-		let viewswitcher1 = this.getViewSwitcher(true);
-		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher1}
+					{this.getViewSwitcher(1)}
 				</div>
 				<div className="p-col-6">
 					<div className="p-col-12 pb">
-						{viewswitcher2}
+						{this.getViewSwitcher(2)}
 					</div>
 					<div className="p-col-12 pb">
-						{viewswitcher2}
+						{this.getViewSwitcher(3)}
 					</div>
 				</div>
 			</div>
@@ -204,18 +195,16 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_v3(): JSX.Element
 	{
-		let viewswitcher1 = this.getViewSwitcher(true);
-		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-4 pb">
-					{viewswitcher1}
+					{this.getViewSwitcher(1)}
 				</div>
 				<div className="p-col-4 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(2)}
 				</div>
 				<div className="p-col-4 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(3)}
 				</div>
 			</div>
 		);
@@ -223,21 +212,19 @@ export default class DashboardView extends React.Component<IDashboardProps, IDas
 
 	private select_l2r2(): JSX.Element
 	{
-		let viewswitcher1 = this.getViewSwitcher(true);
-		let viewswitcher2 = this.getViewSwitcher(false);
 		return (
 			<div className="p-grid">
 				<div className="p-col-6 pb">
-					{viewswitcher1}
+					{this.getViewSwitcher(1)}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(2)}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(3)}
 				</div>
 				<div className="p-col-6 pb">
-					{viewswitcher2}
+					{this.getViewSwitcher(4)}
 				</div>
 			</div>
 		);
