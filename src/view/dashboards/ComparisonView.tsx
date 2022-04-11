@@ -130,6 +130,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 			dashboard_configuration: data.dashboard_configuration,
 			geodata: geodata,
 			geoId: data.geoId,
+			geoName: data.geoName,
 			yearsAvailable: data.yearsAvailable,
 			shapefilename: data.shapefilename,
 			populationDataLoaded: data.populationDataLoaded
@@ -150,6 +151,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 		result.dashboard_configuration = this.state.dashboard_configuration;
 		result.geodata = this.state.geodata ? this.state.geodata.gatherGeodata() : null;
 		result.geoId = this.state.geoId;
+		result.geoName = this.state.geoName;
 		result.yearsAvailable = this.state.yearsAvailable;
 		result.shapefilename = this.state.shapefilename;
 		result.populationDataLoaded = this.state.populationDataLoaded;
