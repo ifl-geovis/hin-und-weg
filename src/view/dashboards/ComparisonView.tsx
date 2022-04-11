@@ -70,7 +70,7 @@ export default class ComparisonView extends React.Component<IComparisonProps, IC
 	}
 
 	public render(): JSX.Element {
-		Log.debug("this.state: ", this.state);
+		Log.debug("ComparisonView - this.state: ", this.state);
 		return this.selectCurrentView(this.state.dashboard_configuration);
 	}
 
