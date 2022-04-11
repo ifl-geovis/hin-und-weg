@@ -66,6 +66,17 @@ export default class BaseData {
 		return results;
 	}
 
+	public restoreBaseData(data: any)
+	{
+		if (!data) return;
+		this.theme = data.theme;
+		this.dataprocessing = data.dataprocessing;
+		this.location = data.location;
+		this.migrationsinside = data.migrationsinside;
+		this.years = data.years;
+		this.update();
+	}
+
 	public setAppData(appdata: AppData) {
 		this.appdata = appdata;
 	}

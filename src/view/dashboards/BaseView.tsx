@@ -88,6 +88,8 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 
 	public render(): JSX.Element {
 		const {t}:any = this.props ;
+		this.state.basedata.restoreBaseData(Project.getData("basedata" + this.props.baseViewId));
+		this.restoreBaseviewData(Project.getData("baseview" + this.props.baseViewId));
 		const results = this.state.basedata.query();
 		Log.debug("baseview results: ", results);
 		const timeline = this.queryTimeline();
@@ -493,6 +495,22 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		result.updateclasscount = this.state.updateclasscount;
 		result.activeLeftTab = this.state.activeLeftTab;
 		return result;
+	}
+
+	private restoreBaseviewData(data: any)
+	{
+		if (!data) return;
+		this.setState({
+			change: this.state.change ? false : true,
+			algorithm: data.algorithm,
+			positiveColors: data.positiveColors,
+			negativeColors: data.negativeColors,
+			positiveClasses: data.positiveClasses,
+			negativeClasses: data.negativeClasses,
+			classcountset: data.classcountset,
+			updateclasscount: data.updateclasscount,
+			activeLeftTab: data.activeLeftTab
+		});
 	}
 
 }
