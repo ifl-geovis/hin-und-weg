@@ -49,7 +49,7 @@ export interface StatisticPerYearAusgabe {
 export interface IViewSwitcherProps extends WithNamespaces {
 	basedata: BaseData;
 	first: boolean;
-	viewid: string;
+	viewid: number;
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
 	items: TableItem[];
@@ -89,7 +89,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
 		this.saveData = this.saveData.bind(this);
-		this.props.basedata.getAppData().registerSaveFunction("viewscwitcher" + this.props.baseViewId + "-" + this.props.viewid, this.saveData);
+		this.props.basedata.getAppData().registerSaveFunction("viewswitcher" + this.props.baseViewId + "-" + this.props.viewid, this.saveData);
 		this.state = {
 			activeView: this.props.geodata ? 'map' : 'file',
 		};
@@ -104,6 +104,8 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	}
 
 	public render(): JSX.Element {
+		Log.debug("restoreViewSwitcherData with id: ", "viewswitcher" + this.props.baseViewId + "-" + this.props.viewid);
+		this.restoreViewSwitcherData(Project.getData("viewswitcher" + this.props.baseViewId + "-" + this.props.viewid));
 		Log.trace("view switcher data: ", this.props.items);
 		const {t}:any = this.props ;
 		let views = this.getVisibleViews();
@@ -358,6 +360,15 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 		let result: any = {};
 		result.activeView = this.state.activeView;
 		return result;
+	}
+
+	private restoreViewSwitcherData(data: any)
+	{
+		Log.debug("restoreViewSwitcherData with data: ", data);
+		if (!data) return;
+		this.setState({
+			activeView: data.activeView
+		});
 	}
 
 }
