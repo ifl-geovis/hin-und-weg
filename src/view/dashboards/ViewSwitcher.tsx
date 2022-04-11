@@ -4,6 +4,7 @@ import React from 'react';
 
 import Config from '../../config';
 import Log from '../../log';
+import Project from '../../project';
 
 import Geodata from '../../model/Geodata';
 import { ITimelineD3Item } from '../charts/D3Timeline';
@@ -48,6 +49,7 @@ export interface StatisticPerYearAusgabe {
 export interface IViewSwitcherProps extends WithNamespaces {
 	basedata: BaseData;
 	first: boolean;
+	viewid: string;
 	db: alaSQLSpace.AlaSQL;
 	geodata: Geodata | null;
 	items: TableItem[];
@@ -86,6 +88,8 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	constructor(props: IViewSwitcherProps) {
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
+		this.saveData = this.saveData.bind(this);
+		this.props.basedata.getAppData().registerSaveFunction("viewscwitcher" + this.props.baseViewId + "-" + this.props.viewid, this.saveData);
 		this.state = {
 			activeView: this.props.geodata ? 'map' : 'file',
 		};
@@ -343,5 +347,18 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 			</div>
 		);
 	}
+
+	private saveData() {
+		Log.debug("save viewswitcher" + this.props.baseViewId + "-" + this.props.viewid);
+		Project.addData("viewswitcher" + this.props.baseViewId + "-" + this.props.viewid, this.gatherViewSwitcherData());
+	}
+
+	private gatherViewSwitcherData()
+	{
+		let result: any = {};
+		result.activeView = this.state.activeView;
+		return result;
+	}
+
 }
 export default withNamespaces()(ViewSwitcher);
