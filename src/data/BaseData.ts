@@ -66,6 +66,7 @@ export default class BaseData {
 		results.location = this.location;
 		results.migrationsinside = this.migrationsinside;
 		results.years = this.years;
+		results.viewdata = this.viewdata.gatherViewData();
 		return results;
 	}
 

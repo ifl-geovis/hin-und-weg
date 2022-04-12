@@ -21,4 +21,11 @@ export default class ViewData {
 		return this.dashboards[index];
 	}
 
+	public gatherViewData()
+	{
+		let results: any = {};
+		results.dashboards = this.dashboards;
+		return results;
+	}
+
 }
