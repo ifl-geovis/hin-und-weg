@@ -28,4 +28,10 @@ export default class ViewData {
 		return results;
 	}
 
+	public restoreViewData(data: any)
+	{
+		if (!data) return;
+		this.dashboards = data.dashboards;
+	}
+
 }

@@ -78,6 +78,7 @@ export default class BaseData {
 		this.location = data.location;
 		this.migrationsinside = data.migrationsinside;
 		this.years = data.years;
+		this.viewdata.restoreViewData(data.viewdata);
 		this.update();
 	}
 

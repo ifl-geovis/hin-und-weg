@@ -88,7 +88,9 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	constructor(props: IViewSwitcherProps) {
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
-		this.props.basedata.getViewData().setDashboardView(this.props.viewid, this.props.geodata ? 'map' : 'file');
+		if (!this.props.basedata.getViewData().getDashboardView(this.props.viewid)) {
+			this.props.basedata.getViewData().setDashboardView(this.props.viewid, this.props.geodata ? 'map' : 'file');
+		}
 		this.state = {
 			change: true,
 		};
