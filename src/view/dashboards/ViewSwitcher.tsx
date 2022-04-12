@@ -79,7 +79,7 @@ export interface IViewSwitcherProps extends WithNamespaces {
 }
 
 interface IViewSwitcherState {
-	activeView: string;
+	change: boolean;
 }
 
 // export default
@@ -88,10 +88,9 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	constructor(props: IViewSwitcherProps) {
 		super(props);
 		this.onViewSelect = this.onViewSelect.bind(this);
-		this.saveData = this.saveData.bind(this);
-		this.props.basedata.getAppData().registerSaveFunction("viewswitcher" + this.props.baseViewId + "-" + this.props.viewid, this.saveData);
+		this.props.basedata.getViewData().setDashboardView(this.props.viewid, this.props.geodata ? 'map' : 'file');
 		this.state = {
-			activeView: this.props.geodata ? 'map' : 'file',
+			change: true,
 		};
 		const ipc = require('electron').ipcRenderer;
 		ipc.on
@@ -104,13 +103,11 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 	}
 
 	public render(): JSX.Element {
-		Log.debug("restoreViewSwitcherData with id: ", "viewswitcher" + this.props.baseViewId + "-" + this.props.viewid);
-		this.restoreViewSwitcherData(Project.getData("viewswitcher" + this.props.baseViewId + "-" + this.props.viewid));
-		Log.trace("view switcher data: ", this.props.items);
 		const {t}:any = this.props ;
 		let views = this.getVisibleViews();
-		let showedView = this.selectCurrentView(this.state.activeView);
-		let onlyFile = (((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 )) && (this.state.activeView === 'file') );
+		const activeView = this.props.basedata.getViewData().getDashboardView(this.props.viewid);
+		let showedView = this.selectCurrentView(activeView);
+		let onlyFile = (((this.props.geodata == null) || (this.props.geoId == null) || (this.props.geoName == null) || (this.props.geodata.fields().indexOf(this.props.geoId) < 0) || (this.props.yearsAvailable.length === 0 )) && (activeView === 'file') );
 		return (
 			<div className="viewswitcher">
 				<div className="p-grid">
@@ -118,7 +115,7 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 						{onlyFile ? t('viewSwitcher.fileImport') : t('viewSwitcher.selectVisOrFunc')}</div>
 					<div className="p-col-8 noprint">
 					{onlyFile ? <div></div>
-					: <ViewSelector views={views} selected={this.state.activeView} onSelectView={this.onViewSelect} />}
+					: <ViewSelector views={views} selected={activeView} onSelectView={this.onViewSelect} />}
 					</div>
 					<div className="p-col-12">{showedView}</div>
 				</div>
@@ -139,7 +136,8 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 			if (view.value === newview) isvisible = true;
 		}
 		if (isvisible) {
-			this.setState({ activeView: newview });
+			this.props.basedata.getViewData().setDashboardView(this.props.viewid, newview);
+			this.setState({ change: this.state.change ? false : true });
 			this.props.onSwitchView();
 		}
 	}
@@ -348,27 +346,6 @@ class ViewSwitcher extends React.Component<IViewSwitcherProps, IViewSwitcherStat
 				<SettingsView change={this.props.change} />
 			</div>
 		);
-	}
-
-	private saveData() {
-		Log.debug("save viewswitcher" + this.props.baseViewId + "-" + this.props.viewid);
-		Project.addData("viewswitcher" + this.props.baseViewId + "-" + this.props.viewid, this.gatherViewSwitcherData());
-	}
-
-	private gatherViewSwitcherData()
-	{
-		let result: any = {};
-		result.activeView = this.state.activeView;
-		return result;
-	}
-
-	private restoreViewSwitcherData(data: any)
-	{
-		Log.debug("restoreViewSwitcherData with data: ", data);
-		if (!data) return;
-		this.setState({
-			activeView: data.activeView
-		});
 	}
 
 }

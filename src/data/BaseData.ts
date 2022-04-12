@@ -1,5 +1,6 @@
 import AppData from './AppData';
 import Classification from './Classification';
+import ViewData from './ViewData';
 
 import Log from '../log';
 import Config from '../config';
@@ -20,6 +21,7 @@ export default class BaseData {
 	private change: () => void;
 	private appdata: AppData;
 	private classification: Classification;
+	private viewdata: ViewData;
 
 	private theme: string;
 	private dataprocessing: string;
@@ -34,6 +36,7 @@ export default class BaseData {
 		this.change = () => {};
 		this.appdata = appdata;
 		this.classification = new Classification(this);
+		this.viewdata = new ViewData(this);
 		this.theme = 'Von';
 		this.dataprocessing = 'absolute';
 		this.location = null;
@@ -87,6 +90,10 @@ export default class BaseData {
 
 	public getClassification(): Classification {
 		return this.classification;
+	}
+
+	public getViewData(): ViewData {
+		return this.viewdata;
 	}
 
 	public setTheme(theme: string) {
