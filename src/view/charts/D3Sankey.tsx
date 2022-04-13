@@ -4,7 +4,7 @@ import {Slider as Slider} from "primereact/slider";
 import { Checkbox } from 'primereact/checkbox';
 import { RadioButton } from "primereact/radiobutton";
 import { Accordion, AccordionTab } from 'primereact/accordion';
-import { InputText } from 'primereact/inputtext';
+// import { InputText } from 'primereact/inputtext';
 import * as d3 from 'd3';
 import * as d3Sankey from 'd3-sankey';
 import { select } from 'd3-selection';
@@ -15,6 +15,7 @@ import { withNamespaces,WithNamespaces } from 'react-i18next';
 import i18n from './../../i18n/i18nClient';
 import { TFunction } from "i18next";
 import any from "ramda/es/any";
+import { InputNumber } from 'primereact/inputnumber';
 
 export interface ID3SankeyItem
 {
@@ -966,7 +967,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
     const { width, height } = this.props;
     let [min, max] = this.getMinMax2();
     max = max - 1;
-    let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
+		let threshold: number = this.state.checkedNoFilter ? min : this.calculateCurrentThreshold();
     let rangeValues: [number, number] = this.state.checkedNoFilter ? [min, max] : this.getInitialValuesSliderSaldi();
     // let saldiText: string = (this.state.checked === true)? ('ab ' + min + ' bis: ' + rangeValues[0] + '       und          ab: ' + rangeValues[1] + ' bis: ' + max) : ('ab ' + rangeValues[0] + ' bis: ' + rangeValues[1]);
     let rangeValue1: number = this.state.checkedNoFilter ? min : rangeValues[0];
@@ -1032,42 +1033,113 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
         
             <div className="p-col-2 noprint rdBtnContainer">
               {this.props.theme == "Saldi" ? this.state.checked ?
-                t('charts.sliderSaldi1') + (wanderungsRate ? min/1000 : min) +t('charts.sliderSaldi2')  :
+                t('charts.sliderSaldi1') + (wanderungsRate ? this.standardizeOutput(min/1000) : min) +t('charts.sliderSaldi2')  :
                 t('charts.sliderSaldi1')  : t('charts.slider') }
             </div>
             <div className="p-col-2 noprint ">
-              {this.props.theme == "Saldi" ?
-                <InputText
-                  placeholder={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1) }
-                  value={wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : this.standardizeOutput(rangeValue1) }
-                  style={{ width: '6em' }}
-                  type='number'
-                  onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })}
-                />
-                : <InputText
-                  placeholder={this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min) : wanderungsRate ? this.standardizeOutput(threshold/1000) : this.standardizeOutput(threshold)}
-                  value={this.state.checkedNoFilter ? wanderungsRate ? this.standardizeOutput(min/1000) : this.standardizeOutput(min) : wanderungsRate ? this.standardizeOutput(threshold/1000) : this.standardizeOutput(threshold)}
-                  style={{ width: '10em' }}
-                  type='number'
-                  onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold: min as number }) : this.setState({ threshold: e.target.value as number })}
-                />
+              {this.props.theme == "Saldi" ? wanderungsRate ? 
+				// english? 
+				// 	<InputNumber inputId="locale-us" 
+				// 		value={rangeValue1/1000} 
+				// 		onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value < min/1000 ? min : e.target.value as number, rangeValue2] })} 
+				// 		mode="decimal" 
+				// 		//  min={min }
+				// 		step={0.001}
+				// 		max={max}
+				// 		locale="en-US" 
+				// 		minFractionDigits={3}/> : 
+				// 	<InputNumber 
+				// 		inputId="locale-german" 
+				// 		value={rangeValue1/1000} 
+				// 		onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value < min/1000 ? min : e.target.value  as number, rangeValue2] })}
+				// 		//  min={min }
+				// 		step={0.001}
+				// 		max={max}
+				// 		mode="decimal" 
+				// 		locale="de-DE" 
+				// 		minFractionDigits={3}/> 
+						<div> {this.state.checkedNoFilter ? (wanderungsRate ? this.standardizeOutput(min/1000 ): min)  : (wanderungsRate ? this.standardizeOutput(rangeValue1/1000) : rangeValue1) } </div>
+
+					: 
+					<InputNumber
+						inputId="withoutgrouping" 
+						value={rangeValue1} 
+						onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
+					: wanderungsRate ? 
+					//  english ? 
+					//  <InputNumber inputId="locale-us" 
+					// 	value={this.state.checkedNoFilter ? min/1000 : threshold/1000} 
+					// 	onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold:  min as number }) : this.setState({ threshold: e.target.value < min/1000 ? min : e.target.value*1000 as number })}
+					// 	//  min={min }
+					// 	step={0.001}
+					// 	max={max}
+					// 	showButtons
+					// 	mode="decimal" 
+					// 	locale="en-US" 
+					// 	minFractionDigits={3}/> : 
+					// <InputNumber 
+					// 	inputId="locale-german" 
+					// 	value={this.state.checkedNoFilter ? min/1000 : threshold/1000} 
+					// 	onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold:  min as number }) : this.setState({ threshold: e.target.value < min/1000 ? min : e.target.value*1000 as number })}
+					// 	showButtons
+					// 	step={0.001}
+					// 	//  min={min}
+					// 	max={max}
+					// 	mode="decimal" 
+					// 	locale="de-DE" 
+					// 	minFractionDigits={3}/> 
+					<div> {this.state.checkedNoFilter ? (wanderungsRate ? this.standardizeOutput(min/1000) : min) : (wanderungsRate ? this.standardizeOutput(threshold/1000) : threshold)} </div>
+					: 
+					<InputNumber
+						 inputId="withoutgrouping" 
+						 value={this.state.checkedNoFilter ? min : threshold} 
+						 showButtons
+						  //  min={min} 
+						 max={max}
+						 onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ threshold:  min as number }) : this.setState({ threshold: e.target.value < min ? min :  e.target.value  as number })}/>             
              }
             </div>
-            <div className="p-col-2 noprint rdBtnContainer ">{this.props.theme == "Saldi" ? this.state.checked === true?
-              t('charts.sliderSaldi3')  : t('charts.sliderSaldi2')  : ' '}
+            <div className="p-col-2 noprint rdBtnContainer">{this.props.theme == "Saldi" ? this.state.checked === true?
+              t('charts.sliderSaldi3') : t('charts.sliderSaldi2') : ' '}
             </div>
-            <div className="p-col-2 noprint"> {this.props.theme == "Saldi" ?
-              <InputText
-                placeholder={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)}
-                value={wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : this.standardizeOutput(rangeValue2)}
-                style={{ width: '6em' }}
-                type='number'
-                onChange={(e:any) => this.state.checkedNoFilter ? this.setState({ rangeValues: [rangeValue1, max as number] }) : this.setState({ rangeValues: [rangeValue1, e.target.value as number] })}
-              /> :
-            <div className="p-col-2 p-offset-1"></div>}
+            <div className="p-col-3 noprint"> 
+              {this.props.theme == "Saldi" ?
+              wanderungsRate ? 
+              // english? 
+              // <InputNumber inputId="locale-us" 
+              // 	value={rangeValue2/1000} 
+              // 	onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [rangeValue1 , max as number]}) : this.setState({ rangeValues: [rangeValue1, e.target.value > max/1000 ? max : e.target.value as number ] })} 
+              // 	mode="decimal" 
+              // 	//  min={min }
+              // 	step={0.001}
+              // 	max={max}
+              // 	showButtons
+              // 	locale="en-US" 
+              // 	minFractionDigits={3}/> : 
+              // <InputNumber 
+              // 	inputId="locale-german" 
+              // 	value={rangeValue2/1000} 
+              // 	onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [rangeValue1 , rangeValue2 as number]}) : this.setState({ rangeValues: [rangeValue1, e.target.value > max/1000 ? max : e.target.value as number ] })} 
+              // 	//  min={min }
+              // 	step={0.001}
+              // 	max={max}
+              // 	mode="decimal" 
+              // 	showButtons
+              // 	locale="de-DE" 
+              // 	minFractionDigits={3}/> 
+              <div> {this.state.checkedNoFilter ? (wanderungsRate? this.standardizeOutput(max/1000) : max) : (wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : rangeValue2)} </div>
+              : 
+              <InputNumber 
+                inputId="withoutgrouping" 
+                showButtons
+                value={rangeValue2} 
+                onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [rangeValue1, max as number]}) : this.setState({ rangeValues: [rangeValue1, e.target.value > max ? max : e.target.value as number ] })} />         
+               :
+            <div className="p-col-3 p-offset-1"></div>}
             </div>
-            <div className="p-col-2">{this.props.theme == "Saldi" && this.state.checked === true?
-              'bis ' + wanderungsRate ? max/1000 : max : ' '} </div>
+            <div className="p-col-2">{this.props.theme == "Saldi" ? this.state.checked === true?
+						t('charts.sliderSaldi2') + (wanderungsRate ? this.standardizeOutput(max/1000) : max) : ' ' : ' '} </div>
+				<div className="p-col-1 noprint"> </div>
             
             <div className="p-grid p-col-3 p-dir-col">		
             {/* <div className="p-col-6 noprint"> */}
