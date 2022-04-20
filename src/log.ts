@@ -33,7 +33,7 @@ export default class Log
 
 	private static getSavePath()
 	{
-		const logdir = "./hin&weg-logs";
+		const logdir = (process.platform === 'darwin') ? os.homedir() + "./hin&weg-logs" : "./hin&weg-logs";
 		if (!fs.existsSync(logdir))
 		{
 			fs.mkdirSync(logdir);
