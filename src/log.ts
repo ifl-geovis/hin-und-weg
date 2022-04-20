@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import Config from "./config";
 
 export default class Log
