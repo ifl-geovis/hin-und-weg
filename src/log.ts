@@ -42,7 +42,7 @@ export default class Log
 		if (Log.filename === "")
 		{
 			const date = new Date();
-			Log.filename = date.toISOString();
+			Log.filename = date.toISOString() + ".txt";
 		}
 		return logdir + "/"+ Log.filename;
 	}
