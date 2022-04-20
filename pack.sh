@@ -5,8 +5,8 @@ VERSION=1.11.0
 npm run build
 
 # create installations
-npx electron-packager --platform=darwin ./ --icon=assets/hinundweg_logo_2_32.icns
-npx electron-packager --platform=win32,linux . --icon=assets/huw-logo_32
+electron-packager --platform=darwin ./ --icon=assets/hinundweg_logo_2_32.icns
+electron-packager --platform=win32,linux . --icon=assets/huw-logo_32
 
 # cleanup and fix mac installation
 rm -rf hin-und-weg-darwin-x64/hin-und-weg.app/Contents/Resources/app/.*
