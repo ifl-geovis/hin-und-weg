@@ -502,6 +502,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 	private restoreBaseviewData(data: any)
 	{
 		if (!data) return;
+		MessageList.getMessageList().clear();
 		this.setState({
 			change: this.state.change ? false : true,
 			algorithm: data.algorithm,
