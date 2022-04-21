@@ -27,7 +27,7 @@ export default class Log
 			{
 				// tslint:disable-next-line: no-console
 				console.log(message, some);
-				fs.appendFileSync(Log.getSavePath(), message + some + '\n', 'utf8');
+				fs.appendFileSync(Log.getSavePath(), message + some + '\n', {encoding: 'utf8', flag: 'as+'});
 			}
 		}
 	}
