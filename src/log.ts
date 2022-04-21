@@ -42,7 +42,8 @@ export default class Log
 		if (Log.filename === "")
 		{
 			const date = new Date();
-			Log.filename = date.toISOString() + ".txt";
+			let filename = date.toISOString() + ".txt";
+			Log.filename = filename.replace(/:/g, ".");
 		}
 		return logdir + "/"+ Log.filename;
 	}
