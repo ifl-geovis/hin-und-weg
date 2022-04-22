@@ -72,6 +72,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 
 	public render(): JSX.Element {
 		// console.log('RENDER LEAFLETMAPVIEW');
+		if (!this.props.geodata) return (<div></div>);
 		this.classification = this.props.basedata.getClassification();
 
 		// Swoopy Arrows are always added when arrows1 or arrows2 are called.
