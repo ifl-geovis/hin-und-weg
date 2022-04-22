@@ -295,7 +295,7 @@ class BaseView extends React.Component<IBaseProps, IBaseState> {
 		if (this.state.basedata.getDataProcessing() === 'ratevon') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateVon, 3) as wegzug FROM matrices where Von = '${this.state.basedata.getLocation()}' ORDER BY Jahr asc`;
 		if (this.state.basedata.getDataProcessing() === 'ratenach') query_wegzug = `SELECT Von, Nach, Jahr, ROUND(RateNach, 3) as wegzug FROM matrices where Von = '${this.state.basedata.getLocation()}' ORDER BY Jahr asc`;
 		const results_wegzug = this.props.db(query_wegzug);
-		if ((results_zuzug == null) || (results_wegzug == null)) return results;
+		if ((results_zuzug == null) || (results_wegzug == null) || (results_zuzug.length == 0) || (results_wegzug.length == 0)) return results;
 		Log.debug('queryStatistics()→results_wegzug', results_wegzug);
 		letztesJahr = results_zuzug[0].Jahr;
 		//console.log("Jahr: " + results_zuzug[0].Jahr + "; zuzug: " + results_zuzug[0].Von);
