@@ -28,7 +28,6 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 	resetAutomaticClasses: (automatic: boolean) => void;
 }
 
-// export default
  class ClassificationSelections extends React.Component<IClassificationSelectionsProps>
 {
 
@@ -42,7 +41,6 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 		//{label: "Standardabweichung", value: "stddeviation"},
 		{label: "Quantile", value: "quantile", translatedLabel: "classificationSelections.classifications.quantile"},
 	];
-	// private classes : string[] = ["1 Klasse", "2 Klassen", "3 Klassen", "4 Klassen", "5 Klassen", "6 Klassen", "7 Klassen", "8 Klassen", "9 Klassen"];
 
 	constructor(props: IClassificationSelectionsProps)
 	{
@@ -74,13 +72,10 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 		return (
 			<Accordion activeIndex={0}>
 				<AccordionTab header={t('classificationSelections.classification')}>
-				{/* <AccordionTab header="Klassifikation"> */}
-					<Dropdown optionLabel="translatedLabel" value={this.getSelectedAlgorithm()} options={algorithmsRender} onChange={this.setAlgorithm} style={{width: "100%"}}  />
-					{/* <Dropdown optionLabel="label" value={this.getSelectedAlgorithm()} options={this.algorithms} onChange={this.setAlgorithm} style={{width: "100%"}}  /> */}
+					<Dropdown optionLabel="translatedLabel" value={this.getSelectedAlgorithm()} options={algorithmsRender} onChange={this.setAlgorithm} style={{width: "100%"}} />
 					<br /><br />
 					<div>{label}</div>
 					<SelectInput options={classesRender} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + t('classificationSelections.class')) : (this.props.positiveClasses + t('classificationSelections.classes'))} onSelected={this.props.setPositiveClasses}/>
-					{/* <SelectInput options={this.classes} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + " Klasse") : (this.props.positiveClasses + " Klassen")} onSelected={this.props.setPositiveClasses}/> */}
 					<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.positiveColors)} onChange={this.setPositiveColors} style={{ width: "100%" }}/>
 					{negativeScale}
 					{automaticClassesButton}
@@ -88,7 +83,7 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 			</Accordion>
 		);
 	}
-	
+
 	private createColorOptions(raw: string[]): any[] {
 		console.log("ClassSelections color schemes: " + this.props.colorSchemes);
 		const {t}:any = this.props ;
@@ -100,8 +95,6 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 			if (colorscheme === "rot") item.label = t('classificationSelections.red');
 			if (colorscheme === "blau") item.label = t('classificationSelections.blue');
 			if (colorscheme === "grün") item.label = t('classificationSelections.green');
-
-			// if (colorscheme.startsWith('scheme')) item.label = 'Schema ' + colorscheme.substring(6);
 			results.push(item);
 		}
 		return results;
@@ -148,9 +141,7 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 			<div>
 				<br />
 				<div>{t('classificationSelections.scaleAndColorsNegative')}</div>
-				{/* <div>negative Skala und Farbschema</div> */}
 				<SelectInput options={classesRender} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + t('classificationSelections.class')) : (this.props.negativeClasses + t('classificationSelections.classes'))} onSelected={this.props.setNegativeClasses}/>
-				{/* <SelectInput options={this.classes} selected={(this.props.negativeClasses == "1") ? (this.props.negativeClasses + " Klasse") : (this.props.negativeClasses + " Klassen")} onSelected={this.props.setNegativeClasses}/> */}
 				<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.negativeColors)} onChange={this.setNegativeColors} style={{ width: "100%" }}/>
 			</div>
 		);
@@ -163,7 +154,6 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 			<div>
 				<br />
 				<Button onClick={this.resetAutomaticClasses} label={t('classificationSelections.classesNumber')}/>
-				{/* <Button onClick={this.resetAutomaticClasses} label="empfohlene Klassenanzahl"/> */}
 			</div>
 		);
 	}
