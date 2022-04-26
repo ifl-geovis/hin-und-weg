@@ -31,8 +31,7 @@ export interface IGeodataProps extends WithNamespaces{
 }
 
 interface IGeodataState {
-	showCenter: string;
-	showMap: boolean;
+	change: boolean;
 	threshold: number;
 	polygonTransparency: number;
 	offlineMap: IOfflineMaps;
@@ -47,8 +46,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 		this.onShowMapChange = this.onShowMapChange.bind(this);
 		this.onOfflineMapChange = this.onOfflineMapChange.bind(this);
 		this.state = {
-			showCenter: '1',
-			showMap: true,
+			change: true,
 			threshold: 0,
 			polygonTransparency: 80,
 			offlineMap: {
@@ -79,7 +77,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											name="center"
 											value="1"
 											onChange={this.onShowCenterChange}
-											checked={this.state.showCenter === '1'}
+											checked={this.props.basedata.getViewData().getShowCenter() === '1'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb1">
 											{t('geodataView.names')}
@@ -91,7 +89,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											name="center"
 											value="2"
 											onChange={this.onShowCenterChange}
-											checked={this.state.showCenter === '2'}
+											checked={this.props.basedata.getViewData().getShowCenter() === '2'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb2">
 											{t('geodataView.arrows')}
@@ -103,7 +101,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											name="center"
 											value="3"
 											onChange={this.onShowCenterChange}
-											checked={this.state.showCenter === '3'}
+											checked={this.props.basedata.getViewData().getShowCenter() === '3'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb3">
 											{t('geodataView.values')}
@@ -115,7 +113,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											name="center"
 											value="4"
 											onChange={this.onShowCenterChange}
-											checked={this.state.showCenter === '4'}
+											checked={this.props.basedata.getViewData().getShowCenter() === '4'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb4">
 											{t('geodataView.ids')}
@@ -127,7 +125,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 											name="center"
 											value="5"
 											onChange={this.onShowCenterChange}
-											checked={this.state.showCenter === '5'}
+											checked={this.props.basedata.getViewData().getShowCenter() === '5'}
 										/>
 										<label className="p-checkbox-label pointer" htmlFor="rb5">
 											{t('geodataView.noLabels')}
@@ -151,7 +149,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 								<div className="p-grid p-dir-col">
 									<strong className="p-col">{t('geodataView.backgroundMap')}</strong>
 									<div className="p-col rdBtnContainer">
-										<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.state.showMap}></Checkbox>
+										<Checkbox inputId="showMap" value="showMap" onChange={this.onShowMapChange} checked={this.props.basedata.getViewData().getShowMap()}></Checkbox>
 										<label className="p-checkbox-label pointer" htmlFor="showMap">
 											{t('geodataView.onlineMap')}
 										</label>
@@ -168,7 +166,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 									</div>
 								</div>
 							</div>
-							<div className={`p-col-12 mapSlider ${this.state.showCenter === '2' && 'show'}`}>
+							<div className={`p-col-12 mapSlider ${this.props.basedata.getViewData().getShowCenter() === '2' && 'show'}`}>
 								<hr className={`noprint`} />
 								<div className="p-grid p-align-center noprint">
 									<p className="p-col-4">{t('geodataView.arrowsFilter1')} {(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold}{t('geodataView.arrowsFilter2')}</p>
@@ -189,7 +187,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 				</Accordion>
 				{Settings.getValue('map', 'legendPlacement') === 'top' && (
 					<div className="p-col-12">
-						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} noNaN={false} />
+						<Legend basedata={this.props.basedata} showCenter={this.props.basedata.getViewData().getShowCenter()} yearsSelected={this.props.yearsSelected} noNaN={false} />
 					</div>
 				)}
 				<div className="p-col-12">
@@ -201,8 +199,8 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 						items={this.props.items}
 						selectedLocation={this.props.selectedLocation}
 						onSelectLocation={this.props.onSelectLocation}
-						showCenter={this.state.showCenter}
-						showMap={this.state.showMap}
+						showCenter={this.props.basedata.getViewData().getShowCenter()}
+						showMap={this.props.basedata.getViewData().getShowMap()}
 						offlineMap={this.state.offlineMap}
 						theme={this.props.theme}
 						threshold={(fractions) ? (this.state.threshold / 1000.0) : this.state.threshold}
@@ -211,7 +209,7 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 				</div>
 				{Settings.getValue('map', 'legendPlacement') === 'bottom' && (
 					<div className="p-col-12">
-						<Legend basedata={this.props.basedata} showCenter={this.state.showCenter} yearsSelected={this.props.yearsSelected} noNaN={false} />
+						<Legend basedata={this.props.basedata} showCenter={this.props.basedata.getViewData().getShowCenter()} yearsSelected={this.props.yearsSelected} noNaN={false} />
 					</div>
 				)}
 			</div>
@@ -219,7 +217,8 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	}
 
 	private onShowCenterChange(e: { originalEvent: Event; value: string; checked: boolean }) {
-		this.setState({ showCenter: e.value });
+		this.props.basedata.getViewData().setShowCenter(e.value);
+		this.setState({ change: this.state.change ? false : true });
 	}
 
 	private onSliderChange(e: { originalEvent: Event; value: number }) {
@@ -230,7 +229,8 @@ class GeodataView extends React.Component<IGeodataProps, IGeodataState> {
 	}
 
 	private onShowMapChange(e: { originalEvent: Event; value: string; checked: boolean }) {
-		this.setState({ showMap: e.checked });
+		this.props.basedata.getViewData().setShowMap(e.checked);
+		this.setState({ change: this.state.change ? false : true });
 	}
 
 	private onOfflineMapChange(e: { value: IOfflineMaps }) {
