@@ -21,6 +21,7 @@ export default class Classification {
 	//http://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
 	private positive_colors = ['#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
 	private negative_colors = ['#d1e5f0', '#92c5de', '#4393c3', '#2166ac', '#053061'];
+	private stddev_colors = Config.getValue('special-color-schemes', 'stddeviation');
 	//private colorsAll = ['#67001f','#b2182b','#d6604d','#f4a582','#fddbc7','#f7f7f7',"#d1e5f0", "#92c5de", "#4393c3", "#2166ac", "#053061"];
 	private selected_color = '#cbf719';
 	private error_color = '#000000';
@@ -329,6 +330,7 @@ export default class Classification {
 			Log.debug("Classification.calculateClassification this.stddev_stats.getClassStdDeviation()", this.stddev_stats.getClassStdDeviation(7));
 			Log.debug("Classification.calculateClassification this.stddev_stats.getClassStdDeviation()", this.stddev_stats.getClassStdDeviation(5));
 			Log.debug("Classification.calculateClassification this.stddev_scales", this.stddev_scales);
+			Log.debug("Classification.calculateClassification this.stddev_colors", this.stddev_colors);
 		}
 		if (positives.length > 0) {
 			let foundvalues: number[] = [];
