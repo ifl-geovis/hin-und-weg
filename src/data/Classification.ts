@@ -31,6 +31,7 @@ export default class Classification {
 
 	private positive_stats: any;
 	private negative_stats: any;
+	private stddev_stats: any;
 
 	private zero_values: boolean = false;
 	private nan_values: boolean = false;
@@ -40,6 +41,8 @@ export default class Classification {
 
 	private negative_scales: number[] | null = null;
 	private negative_scales_d3labels: number[] | null = null;
+
+	private stddev_scales: number[] | null = null;
 
 	private arrow_max_width = 6;
 
@@ -225,6 +228,19 @@ export default class Classification {
 		return parseFloat(num.toFixed(3));
 	}
 
+	private fillStddevScales() {
+		this.stddev_scales = [];
+		if (this.algorithm != 'stddeviation') return;
+		let ranges = this.getRanges(this.stddev_stats, 5);
+		this.stddev_scales.push((this.stddev_stats.min() < ranges[0]) ? this.stddev_stats.min() : Math.floor(ranges[0]));
+		if ((this.basedata.getDataProcessing() === 'wanderungsrate') || (this.basedata.getDataProcessing() === 'ratevon') || (this.basedata.getDataProcessing() === 'ratenach')) {
+			for (let i = 0; i < ranges.length; i++) this.stddev_scales.push(this.roundValueThree(ranges[i]));
+		} else {
+			for (let i = 0; i < ranges.length; i++) this.stddev_scales.push(this.roundValue(ranges[i]));
+		}
+		this.stddev_scales.push((this.stddev_stats.max() > ranges[ranges.length - 1]) ? this.stddev_stats.max() : Math.ceil(ranges[ranges.length - 1]));
+	}
+
 	private fillPositiveScales() {
 		this.positive_scales = [];
 		let ranges = [];
@@ -286,18 +302,34 @@ export default class Classification {
 		this.nan_values = false;
 		let positives = [];
 		let negatives = [];
+		let all = [];
 		for (let item of this.basedata.query()) {
 			if (!isNaN(item.Wert)) {
+				all.push(item.Wert);
 				if (item.Wert > 0) positives.push(item.Wert);
 				if (item.Wert < 0) negatives.push(item.Wert);
 				if (item.Wert == 0) this.zero_values = true;
 			}
 			else this.nan_values = true;
 		}
-		Log.trace('positives: ' + positives);
-		Log.trace('negatives: ' + negatives);
+		Log.trace('positives: ', positives);
+		Log.trace('negatives: ', negatives);
+		Log.trace('Classification.calculateClassification all: ', all);
 		this.distinct_positives = 1;
 		this.distinct_negatives = 1;
+		if ((all.length > 0) && (this.algorithm == 'stddeviation')) {
+			this.stddev_stats = new geostats(all);
+			this.fillStddevScales();
+			Log.debug("Classification.calculateClassification this.stddev_stats", this.stddev_stats);
+			Log.debug("Classification.calculateClassification this.stddev_stats.mean()", this.stddev_stats.mean());
+			Log.debug("Classification.calculateClassification this.stddev_stats.variance()", this.stddev_stats.variance());
+			Log.debug("Classification.calculateClassification this.stddev_stats.stddev()", this.stddev_stats.stddev());
+			Log.debug("Classification.calculateClassification this.stddev_stats.min()", this.stddev_stats.min());
+			Log.debug("Classification.calculateClassification this.stddev_stats.max()", this.stddev_stats.max());
+			Log.debug("Classification.calculateClassification this.stddev_stats.getClassStdDeviation()", this.stddev_stats.getClassStdDeviation(7));
+			Log.debug("Classification.calculateClassification this.stddev_stats.getClassStdDeviation()", this.stddev_stats.getClassStdDeviation(5));
+			Log.debug("Classification.calculateClassification this.stddev_scales", this.stddev_scales);
+		}
 		if (positives.length > 0) {
 			let foundvalues: number[] = [];
 			for (let value of positives) {
