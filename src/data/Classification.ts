@@ -329,16 +329,7 @@ export default class Classification {
 		let stats = positive ? this.positive_stats : this.negative_stats;
 		if (stats == null) return 1;
 		let number = stats.pop();
-		/*if (number < 5) return 1;
-		if (number < 10) return 2;
-		if (number < 15) return 3;
-		if (number < 20) return 4;*/
-		//let sturges = Math.round(1 + 3.3 * Math.log10(number));
 		let distinct_number = positive ? this.distinct_positives : this.distinct_negatives;
-		/*Log.debug("sturges", sturges);
-		Log.debug("distinct_number", distinct_number);
-		Log.debug("count", Math.round(1 + Math.log(number)));
-		if (sturges > distinct_number) return Math.round(1 + Math.log(distinct_number));*/
 		return Math.round(Math.sqrt(distinct_number));
 	}
 
