@@ -426,6 +426,14 @@ export default class Classification {
 		return this.negative_scales_d3labels;
 	}
 
+	public getStddevColors(): string[] {
+		return this.stddev_colors;
+	}
+
+	public getStddevScales(): number[] | null {
+		return this.stddev_scales;
+	}
+
 	public getPositiveArrowColor(): string {
 		Log.debug(Settings.getValue('user-colors', 'arrow-positive-color'));
 		return '#' + Settings.getValue('user-colors', 'arrow-positive-color');

@@ -59,11 +59,16 @@ class Legend extends React.Component<ILegendProps> {
 
 	private createLegendStdDev(): JSX.Element {
 		const classification = this.props.basedata.getClassification();
+		const stddev_scales = classification.getStddevScales();
+		const stddev_colors = classification.getStddevColors();
+		const stddev = this.createStddevScale(stddev_scales, stddev_colors);
+		const neutral = this.createNeutralBox(false, classification.getNeutralColor(), classification.hasNanValues(), classification.getMissingColor(), this.label_offset, 6);
 		return (
 			<div>
 				<h4>{this.createLegendTitle(classification)}</h4>
+				{stddev}
 				<br />
-				Das ist ein Test!
+				{neutral}
 			</div>
 		);
 	}
@@ -226,6 +231,38 @@ class Legend extends React.Component<ILegendProps> {
 				{boxes}
 				{lines}
 				{labels}
+			</svg>
+		);
+	}
+
+	private createStddevScale(scales: number[] | null, colors: string[]): object {
+		if (scales == null) return <svg key="legend-stddev" width={0} height={0}></svg>;
+		const classification = this.props.basedata.getClassification();
+		Log.debug("stddev scales: ", scales);
+		let boxes = [];
+		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[colors.length - i - 1], i * this.box_width, 0, 'stddev-' + i));
+		//let lines1 = [];
+		let lines2 = [];
+		//let labels1 = [];
+		let labels2 = [];
+		for (let i = 1; i < (scales.length - 1); i++) {
+			labels2.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width, this.box_height + 21, 'stddev-' + i));
+			lines2.push(
+				this.createLine(
+					this.stroke_color,
+					'stddev-' + i,
+					i * this.box_width,
+					this.box_height,
+					i * this.box_width,
+					this.box_height + 10
+				)
+			);
+		}
+		return (
+			<svg key="legend-stddev" width={(scales.length - 1) * this.box_width + 2 * this.label_offset} height={this.box_height + 22}>
+				{boxes}
+				{lines2}
+				{labels2}
 			</svg>
 		);
 	}
