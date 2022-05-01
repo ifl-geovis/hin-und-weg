@@ -32,6 +32,7 @@ class Legend extends React.Component<ILegendProps> {
 
 	private createLegend(): JSX.Element {
 		const classification = this.props.basedata.getClassification();
+		if (classification.getAlgorithm() === 'stddeviation') return this.createLegendStdDev();
 		let i = 0;
 		const negative_scales = classification.getNegativeScales();
 		const negative_colors = classification.getNegativeColors();
@@ -52,6 +53,17 @@ class Legend extends React.Component<ILegendProps> {
 				{positive}
 				<br />
 				{neutral}
+			</div>
+		);
+	}
+
+	private createLegendStdDev(): JSX.Element {
+		const classification = this.props.basedata.getClassification();
+		return (
+			<div>
+				<h4>{this.createLegendTitle(classification)}</h4>
+				<br />
+				Das ist ein Test!
 			</div>
 		);
 	}
