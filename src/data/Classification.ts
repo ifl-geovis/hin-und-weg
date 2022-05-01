@@ -68,6 +68,15 @@ export default class Classification {
 	public getColor(item: { [name: string]: any }) {
 		if (item == null) return this.error_color;
 		if (isNaN(item.Wert)) return this.getMissingColor();
+		if (this.algorithm === 'stddeviation')
+		{
+			if (this.stddev_scales === null) return this.stddev_colors[3];
+			for (let i = 0; i < this.stddev_scales.length; i++) {
+				if ((i < (this.stddev_scales.length - 1)) && (item.Wert == this.stddev_scales[i])) return this.stddev_colors[i];
+				if (item.Wert < this.stddev_scales[i]) return this.stddev_colors[i - 1];
+			}
+			return this.stddev_colors[3];
+		}
 		if (item.Wert == 0) return this.getNeutralColor();
 		if (item.Wert > 0) {
 			if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];
