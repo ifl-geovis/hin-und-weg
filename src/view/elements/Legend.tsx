@@ -241,14 +241,14 @@ class Legend extends React.Component<ILegendProps> {
 		const classification = this.props.basedata.getClassification();
 		Log.debug("stddev scales: ", scales);
 		let boxes = [];
-		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[colors.length - i - 1], i * this.box_width, 21, 'stddev-' + i));
+		for (let i = 0; i < colors.length; i++) boxes.push(this.createBox(colors[i], i * this.box_width, 21, 'stddev-' + i));
 		let lines = [];
 		let labels1 = [];
 		let labels2 = [];
 		let stddevlabel = this.createLabel(t('legend.stddevlabel'), 6.5 * this.box_width + 10, 9, 'stddevlabel');
 		for (let i = 1; i < (scales.length - 1); i++) {
-			labels1.push(this.createLabel('' + i, i * this.box_width, 9, 'stddev-' + i));
-			labels2.push(this.createLabel('' + scales[scales.length - i - 1], i * this.box_width, this.box_height + 21 + 21, 'stddev-' + i));
+			labels1.push(this.createLabel('' + (i - 3.5), i * this.box_width + 1, 9, 'stddev-' + i));
+			labels2.push(this.createLabel('' + scales[i], i * this.box_width, this.box_height + 21 + 21, 'stddev-' + i));
 			lines.push(
 				this.createLine(
 					this.stroke_color,
