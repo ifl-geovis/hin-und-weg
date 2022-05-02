@@ -187,7 +187,8 @@
         "inMovement": "Zuzug",
         "negativeSaldi": "negative Saldi ",
         "positiveSaldi": "positive Saldi ",
-        "titleTimeline": "Zeitreihen"
+        "titleTimeline": "Zeitreihen",
+        "stddevlabel": "STABW"
     },
     "geodataView": {
         "controlElements": "Kontrollelemente",

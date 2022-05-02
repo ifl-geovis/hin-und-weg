@@ -187,7 +187,8 @@
         "inMovement": "incoming flow",
         "negativeSaldi": "negative total result ",
         "positiveSaldi": "positive total result ",
-        "titleTimeline": "Timeline"
+        "titleTimeline": "Timeline",
+        "stddevlabel": "STDDEV"
     },
     "geodataView": {
         "controlElements": "Control Elements",

@@ -21,6 +21,7 @@ export default class Classification {
 	//http://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
 	private positive_colors = ['#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'];
 	private negative_colors = ['#d1e5f0', '#92c5de', '#4393c3', '#2166ac', '#053061'];
+	private stddev_colors = Config.getValue('special-color-schemes', 'stddeviation');
 	//private colorsAll = ['#67001f','#b2182b','#d6604d','#f4a582','#fddbc7','#f7f7f7',"#d1e5f0", "#92c5de", "#4393c3", "#2166ac", "#053061"];
 	private selected_color = '#cbf719';
 	private error_color = '#000000';
@@ -31,6 +32,7 @@ export default class Classification {
 
 	private positive_stats: any;
 	private negative_stats: any;
+	private stddev_stats: any;
 
 	private zero_values: boolean = false;
 	private nan_values: boolean = false;
@@ -40,6 +42,8 @@ export default class Classification {
 
 	private negative_scales: number[] | null = null;
 	private negative_scales_d3labels: number[] | null = null;
+
+	private stddev_scales: number[] | null = null;
 
 	private arrow_max_width = 6;
 
@@ -64,6 +68,15 @@ export default class Classification {
 	public getColor(item: { [name: string]: any }) {
 		if (item == null) return this.error_color;
 		if (isNaN(item.Wert)) return this.getMissingColor();
+		if (this.algorithm === 'stddeviation')
+		{
+			if (this.stddev_scales === null) return this.stddev_colors[3];
+			for (let i = 0; i < this.stddev_scales.length; i++) {
+				if ((i < (this.stddev_scales.length - 1)) && (item.Wert == this.stddev_scales[i])) return this.stddev_colors[i];
+				if (item.Wert < this.stddev_scales[i]) return this.stddev_colors[i - 1];
+			}
+			return this.stddev_colors[3];
+		}
 		if (item.Wert == 0) return this.getNeutralColor();
 		if (item.Wert > 0) {
 			if (this.positive_scales === null) return this.positive_colors[this.positive_colors.length - 1];
@@ -225,6 +238,19 @@ export default class Classification {
 		return parseFloat(num.toFixed(3));
 	}
 
+	private fillStddevScales() {
+		this.stddev_scales = [];
+		if (this.algorithm != 'stddeviation') return;
+		let ranges = this.getRanges(this.stddev_stats, 5);
+		this.stddev_scales.push((this.stddev_stats.min() < ranges[0]) ? this.stddev_stats.min() : Math.floor(ranges[0]));
+		if ((this.basedata.getDataProcessing() === 'wanderungsrate') || (this.basedata.getDataProcessing() === 'ratevon') || (this.basedata.getDataProcessing() === 'ratenach')) {
+			for (let i = 0; i < ranges.length; i++) this.stddev_scales.push(this.roundValueThree(ranges[i]));
+		} else {
+			for (let i = 0; i < ranges.length; i++) this.stddev_scales.push(this.roundValue(ranges[i]));
+		}
+		this.stddev_scales.push((this.stddev_stats.max() > ranges[ranges.length - 1]) ? this.stddev_stats.max() : Math.ceil(ranges[ranges.length - 1]));
+	}
+
 	private fillPositiveScales() {
 		this.positive_scales = [];
 		let ranges = [];
@@ -286,18 +312,35 @@ export default class Classification {
 		this.nan_values = false;
 		let positives = [];
 		let negatives = [];
+		let all = [];
 		for (let item of this.basedata.query()) {
 			if (!isNaN(item.Wert)) {
+				all.push(item.Wert);
 				if (item.Wert > 0) positives.push(item.Wert);
 				if (item.Wert < 0) negatives.push(item.Wert);
 				if (item.Wert == 0) this.zero_values = true;
 			}
 			else this.nan_values = true;
 		}
-		Log.trace('positives: ' + positives);
-		Log.trace('negatives: ' + negatives);
+		Log.trace('positives: ', positives);
+		Log.trace('negatives: ', negatives);
+		Log.trace('Classification.calculateClassification all: ', all);
 		this.distinct_positives = 1;
 		this.distinct_negatives = 1;
+		if ((all.length > 0) && (this.algorithm == 'stddeviation')) {
+			this.stddev_stats = new geostats(all);
+			this.fillStddevScales();
+			Log.debug("Classification.calculateClassification this.stddev_stats", this.stddev_stats);
+			Log.debug("Classification.calculateClassification this.stddev_stats.mean()", this.stddev_stats.mean());
+			Log.debug("Classification.calculateClassification this.stddev_stats.variance()", this.stddev_stats.variance());
+			Log.debug("Classification.calculateClassification this.stddev_stats.stddev()", this.stddev_stats.stddev());
+			Log.debug("Classification.calculateClassification this.stddev_stats.min()", this.stddev_stats.min());
+			Log.debug("Classification.calculateClassification this.stddev_stats.max()", this.stddev_stats.max());
+			Log.debug("Classification.calculateClassification this.stddev_stats.getClassStdDeviation()", this.stddev_stats.getClassStdDeviation(7));
+			Log.debug("Classification.calculateClassification this.stddev_stats.getClassStdDeviation()", this.stddev_stats.getClassStdDeviation(5));
+			Log.debug("Classification.calculateClassification this.stddev_scales", this.stddev_scales);
+			Log.debug("Classification.calculateClassification this.stddev_colors", this.stddev_colors);
+		}
 		if (positives.length > 0) {
 			let foundvalues: number[] = [];
 			for (let value of positives) {
@@ -329,16 +372,7 @@ export default class Classification {
 		let stats = positive ? this.positive_stats : this.negative_stats;
 		if (stats == null) return 1;
 		let number = stats.pop();
-		/*if (number < 5) return 1;
-		if (number < 10) return 2;
-		if (number < 15) return 3;
-		if (number < 20) return 4;*/
-		//let sturges = Math.round(1 + 3.3 * Math.log10(number));
 		let distinct_number = positive ? this.distinct_positives : this.distinct_negatives;
-		/*Log.debug("sturges", sturges);
-		Log.debug("distinct_number", distinct_number);
-		Log.debug("count", Math.round(1 + Math.log(number)));
-		if (sturges > distinct_number) return Math.round(1 + Math.log(distinct_number));*/
 		return Math.round(Math.sqrt(distinct_number));
 	}
 
@@ -390,6 +424,14 @@ export default class Classification {
 
 	public getNegativeScalesD3Labels(): number[] | null {
 		return this.negative_scales_d3labels;
+	}
+
+	public getStddevColors(): string[] {
+		return this.stddev_colors;
+	}
+
+	public getStddevScales(): number[] | null {
+		return this.stddev_scales;
 	}
 
 	public getPositiveArrowColor(): string {

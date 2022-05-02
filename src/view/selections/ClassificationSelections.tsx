@@ -38,7 +38,7 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 		{label: "benutzerdefiniert", value: "custom", translatedLabel: "classificationSelections.classifications.custom"},
 		{label: "Brüche nach Jenks", value: "jenks", translatedLabel: "classificationSelections.classifications.jenks"},
 		{label: "geometrische Reihe", value: "geometric_progression", translatedLabel: "classificationSelections.classifications.geometric_progression"},
-		//{label: "Standardabweichung", value: "stddeviation"},
+		{label: "Standardabweichung", value: "stddeviation", translatedLabel: "classificationSelections.classifications.stddeviation"},
 		{label: "Quantile", value: "quantile", translatedLabel: "classificationSelections.classifications.quantile"},
 	];
 
@@ -61,7 +61,7 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 			{label: "benutzerdefiniert", value: "custom", translatedLabel: t("classificationSelections.classifications.custom")},
 			{label: "Brüche nach Jenks", value: "jenks", translatedLabel: t("classificationSelections.classifications.jenks")},
 			{label: "geometrische Reihe", value: "geometric_progression", translatedLabel: t("classificationSelections.classifications.geometric_progression")},
-			//{label: "Standardabweichung", value: "stddeviation"},
+			{label: "Standardabweichung", value: "stddeviation", translatedLabel: t("classificationSelections.classifications.stddeviation")},
 			{label: "Quantile", value: "quantile", translatedLabel: t("classificationSelections.classifications.quantile")},
 		];
 		const label = (this.props.withNegative) ? t('classificationSelections.scaleAndColorsPositive') : t('classificationSelections.scaleAndColors');
@@ -73,12 +73,15 @@ export interface IClassificationSelectionsProps extends WithNamespaces
 			<Accordion activeIndex={0}>
 				<AccordionTab header={t('classificationSelections.classification')}>
 					<Dropdown optionLabel="translatedLabel" value={this.getSelectedAlgorithm()} options={algorithmsRender} onChange={this.setAlgorithm} style={{width: "100%"}} />
-					<br /><br />
-					<div>{label}</div>
-					<SelectInput options={classesRender} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + t('classificationSelections.class')) : (this.props.positiveClasses + t('classificationSelections.classes'))} onSelected={this.props.setPositiveClasses}/>
-					<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.positiveColors)} onChange={this.setPositiveColors} style={{ width: "100%" }}/>
-					{negativeScale}
-					{automaticClassesButton}
+					{this.props.algorithm != 'stddeviation' && (
+						<div><br />
+						<div>{label}</div>
+						<SelectInput options={classesRender} selected={(this.props.positiveClasses == "1") ? (this.props.positiveClasses + t('classificationSelections.class')) : (this.props.positiveClasses + t('classificationSelections.classes'))} onSelected={this.props.setPositiveClasses}/>
+						<Dropdown optionLabel="label" options={this.createColorOptions(this.props.colorSchemes)} value={this.getSelectedColorscheme(this.props.positiveColors)} onChange={this.setPositiveColors} style={{ width: "100%" }}/>
+						{negativeScale}
+						{automaticClassesButton}
+						</div>
+					)}
 				</AccordionTab>
 			</Accordion>
 		);
