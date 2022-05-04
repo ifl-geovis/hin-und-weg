@@ -242,13 +242,13 @@ export default class Classification {
 		this.stddev_scales = [];
 		if (this.algorithm != 'stddeviation') return;
 		let ranges = this.getRanges(this.stddev_stats, 5);
-		this.stddev_scales.push((this.stddev_stats.min() < ranges[0]) ? this.stddev_stats.min() : Math.floor(ranges[0]));
+		this.stddev_scales.push((this.stddev_stats.min() < ranges[0]) ? (this.stddev_stats.min() - 1) : Math.floor(ranges[0]));
 		if ((this.basedata.getDataProcessing() === 'wanderungsrate') || (this.basedata.getDataProcessing() === 'ratevon') || (this.basedata.getDataProcessing() === 'ratenach')) {
 			for (let i = 0; i < ranges.length; i++) this.stddev_scales.push(this.roundValueThree(ranges[i]));
 		} else {
 			for (let i = 0; i < ranges.length; i++) this.stddev_scales.push(this.roundValue(ranges[i]));
 		}
-		this.stddev_scales.push((this.stddev_stats.max() > ranges[ranges.length - 1]) ? this.stddev_stats.max() : Math.ceil(ranges[ranges.length - 1]));
+		this.stddev_scales.push((this.stddev_stats.max() > ranges[ranges.length - 1]) ? (this.stddev_stats.max() + 1) : Math.ceil(ranges[ranges.length - 1]));
 	}
 
 	private fillPositiveScales() {
