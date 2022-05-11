@@ -983,7 +983,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 
 					: 
 					<InputNumber
-						inputId="withoutgrouping" 
+						useGrouping={false} 
 						value={rangeValue1} 
 						onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
 					: wanderungsRate ? 
@@ -1012,7 +1012,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					<div> {this.state.checkedNoFilter ? (wanderungsRate ? this.standardizeOutput(min/1000) : min) : (wanderungsRate ? this.standardizeOutput(threshold/1000) : threshold)} </div>
 					: 
 					<InputNumber
-						 inputId="withoutgrouping" 
+						 useGrouping={false} 
 						 value={this.state.checkedNoFilter ? min : threshold} 
 						 showButtons
 						//  min={min} 
@@ -1052,7 +1052,7 @@ class D3Chart extends React.Component<ID3ChartProps, ID3ChartState> {
 					<div> {this.state.checkedNoFilter ? (wanderungsRate? this.standardizeOutput(max/1000) : max) : (wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : rangeValue2)} </div>
 					: 
 					<InputNumber 
-						inputId="withoutgrouping" 
+						useGrouping={false} 
 						showButtons
 						value={rangeValue2} 
 						onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [rangeValue1, max as number]}) : this.setState({ rangeValues: [rangeValue1, e.target.value > max ? max : e.target.value as number ] })} />

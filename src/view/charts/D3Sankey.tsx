@@ -162,6 +162,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           // let dataFilterLarge :ID3SankeyItem[] = R.filter((item) => (wanderungsRate ? item.Wert*1000 : item.Wert)  >= rangeValues[0] && (wanderungsRate ? item.Wert*1000 : item.Wert)  <= rangeValues[1]   , this.props.data);
           let dataSaldi = (this.state.checked === false) ? dataFilterLarge :dataFilterSmall ;
           let data =  (this.props.theme == "Saldi") ? dataSaldi : normalizedData
+          console.log(data);
           this.sortData(data) 
           this.removePreviousChart(this.svgID);
           this.drawSankeyChart(data, this.props.theme);
@@ -187,6 +188,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
         // DRAW D3 CHART
         private drawSankeyChart (data: ID3SankeyItem[], theme: string) {
+          const noNaN = this.state.checkedNaN;
           const svg = select(this.svgRef!);
           let nach = data.map(d => d.Nach);
           let von = data.map(d => d.Von);
@@ -274,7 +276,6 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             }
 
             nodesAr.push( nodeVon)
-
             let nodesArPlus = data.map((d,i) => ({
               nodeId: i,
               name: d.Nach, 
@@ -315,7 +316,12 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             let linksArPlus = linksF(data);
             linksArPlus.push(linkVonZero);
 
-            const dataSankey:DAG = (indx === undefined)? {
+            const dataSankey:DAG = (indx === undefined)? noNaN ? 
+            {
+              "nodes" : nodesAr,
+              "links": linksAr
+             } :
+            {
               "nodes" : nodesArPlus,
               "links": linksArPlus
             } :
@@ -521,7 +527,12 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           let linksArPlus = linksF(data);
           linksArPlus.push(linkNachZero);
 
-          const dataSankey:DAG = (indx === undefined)? {
+          const dataSankey:DAG = (indx === undefined)? noNaN ?
+          {
+            "nodes" : nodesAr,
+            "links": linksAr
+          } :
+          {
             "nodes" : nodesArPlus,
             "links": linksArPlus
           } :
@@ -663,6 +674,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
               negative: +d.Wert,
               label: !d.Wert && d.Wert !== 0 ? NaN : d.Wert === null ? 0 : +d.Wert
           })); 
+
           let nameSource = nach[0]
           let valueTarget = ()=> {
               return (typeof(indx) === "number") ? values[indx] : NaN
@@ -676,7 +688,6 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
             }
             nodesAr.push(nodeNachNaN)
           }
-
           let nodeNach = {
               nodeId: +((typeof(indx) === "number") ? maxIdx+1 : maxIdx+2),
               name: nameSource,
@@ -685,7 +696,12 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
           }
 
           nodesAr.push(nodeNach)
-
+          console.log(nodesAr);
+          if (noNaN && indx === undefined) {
+            nodesAr.splice(-1)
+          }
+          console.log(nodesAr);
+          console.log(indx === undefined);
           let arrAbsolute = (ar:any[]) => { for(let i=0;i< ar.length;i++){
             if (ar[i] < 0 ){
                   ar[i] = Math.abs(ar[i])
@@ -1062,7 +1078,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 
 					: 
 					<InputNumber
-						inputId="withoutgrouping" 
+						useGrouping={false} 
 						value={rangeValue1} 
 						onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [min as number, rangeValue2]}) : this.setState({ rangeValues: [e.target.value as number, rangeValue2] })} />
 					: wanderungsRate ? 
@@ -1091,7 +1107,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
 					<div> {this.state.checkedNoFilter ? (wanderungsRate ? this.standardizeOutput(min/1000) : min) : (wanderungsRate ? this.standardizeOutput(threshold/1000) : threshold)} </div>
 					: 
 					<InputNumber
-						 inputId="withoutgrouping" 
+						 useGrouping={false} 
 						 value={this.state.checkedNoFilter ? min : threshold} 
 						 showButtons
 						  //  min={min} 
@@ -1130,7 +1146,7 @@ class D3Sankey extends React.Component <ID3SankeyProps, ID3SankeyState> {
               <div> {this.state.checkedNoFilter ? (wanderungsRate? this.standardizeOutput(max/1000) : max) : (wanderungsRate ? this.standardizeOutput(rangeValue2/1000) : rangeValue2)} </div>
               : 
               <InputNumber 
-                inputId="withoutgrouping" 
+                useGrouping={false} 
                 showButtons
                 value={rangeValue2} 
                 onChange={(e:any) => this.state.checkedNoFilter ? this.setState({rangeValues: [rangeValue1, max as number]}) : this.setState({ rangeValues: [rangeValue1, e.target.value > max ? max : e.target.value as number ] })} />         
