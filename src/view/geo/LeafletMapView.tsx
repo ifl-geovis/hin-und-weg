@@ -215,6 +215,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 			const pattern = new RegExp(/\d+/);
 			const id = arrowpathID.match(pattern);
 			let color = "#007ad9";
+			let textcolor = "#000000";
 			let lat = 0;
 			let lng = 0;
 			let indexCurrentArrow = 0;
@@ -233,6 +234,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 			// console.log("SwoopyArrows ID:",this.SwoopyArrows[id]);
 
 			color = this.SwoopyArrows[indexCurrentArrow].color;
+			textcolor = this.SwoopyArrows[indexCurrentArrow].textcolor;
 			lat = this.SwoopyArrows[indexCurrentArrow].lat;
 			lng = this.SwoopyArrows[indexCurrentArrow].lng}
 
@@ -261,6 +263,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 			let i = 0;
 			for(i = 0; i < hoverbox.length; i++){
 				hoverbox[i].style.backgroundColor = color;
+				hoverbox[i].style.color = textcolor;
 				hoverbox[i].style.display = "block";
 			}
 			}
@@ -723,7 +726,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 									weight: this.classification.getArrowWidth(item.Wert),
 									hideArrowHead: true,
 								}).openTooltip();
-								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
+								this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(), textcolor: "white",
 									// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// @ts-ignore
 								lat: latlng.lat, lng: latlng.lng});
@@ -778,7 +781,7 @@ export default class LeafletMapView extends Component<ILeafletMapViewProps, Leaf
 								weight: this.classification.getArrowWidth(item.Wert),
 								hideArrowHead: true,
 							}).openTooltip();
-							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(),
+							this.SwoopyArrows.push({idarrow: swoopyarrow._currentId ,label: item.Von, value: item.Wert, color: this.classification.getNegativeArrowColor(), textcolor: "white",
 								// this.SwoopyArrows.push({label: feature1.properties.Name, value: item.Wert, color: this.classification.getNegativeArrowColor(),
 								// @ts-ignore
 								lat: latlng.lat, lng: latlng.lng});
